@@ -2,15 +2,63 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Util : MonoBehaviour {
+public static class Util {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    [SerializeField]
+    private static float gridWidth = 10.0f;
+    public static float GridWidth {
+        get {
+            return gridWidth;
+        }
+        set {
+            gridWidth = value;
+        }
+    }
+
+    [SerializeField]
+    private static float gridHeight = 4.0f;
+    public static float GridHeight {
+        get {
+            return gridHeight;
+        }
+        set {
+            gridHeight = value;
+        }
+    }
+
+
+    public static Vector3 WorldToGrid(Vector3 world) {
+        return new Vector3(world.x / GridWidth, world.y / GridWidth, world.z / GridHeight);
+    }
+
+    public static Vector3 GridToWorld(Vector3 grid) {
+        return new Vector3(grid.x * GridWidth, grid.y * GridWidth, grid.z * GridHeight);
+    }
+
+
+    public void highlightObject(GameObject objectToHighlight) {
+        Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
+        foreach (Material material in materials) {
+            //Set the main Color of the Material to green
+            material.shader = Shader.Find("_Color");
+            material.SetColor("_Color", Color.green);
+
+            //Find the Specular shader and change its Color to red
+            material.shader = Shader.Find("Specular");
+            material.SetColor("_SpecColor", Color.red);
+        }
+    }
+
+    public void unhighlightObject(GameObject objectToHighlight) {
+        Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
+        foreach (Material material in materials) {
+            //Set the main Color of the Material to green
+            material.shader = Shader.Find("_Color");
+            material.SetColor("_Color", Color.blue);
+
+            //Find the Specular shader and change its Color to red
+            material.shader = Shader.Find("Specular");
+            material.SetColor("_SpecColor", Color.red);
+        }
+    }
 }
