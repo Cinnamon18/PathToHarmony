@@ -5,8 +5,10 @@ using UnityEngine;
 namespace Constants {
     public enum TerrainType {
         None,
-        Normal,
+        Underground,
+        Grass,
         Woods,
-        Road
+        Road,
+        Water
     }
 }

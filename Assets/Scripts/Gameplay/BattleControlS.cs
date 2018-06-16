@@ -5,15 +5,21 @@ using Units;
 
 public class BattleControlS : MonoBehaviour {
 
+    //TODO swap const for the one that you can set once, i think const is compile time fixed
     public const int mapXSize = 10;
     public const int mapYSize = 10;
-    public Unit[,] units = new Unit[mapXSize, mapYSize];
-    public Terrain[,] terrain = new Terrain[mapXSize, mapYSize];
+    public const int mapZSize = 5;
+    //x, y, height (from the bottom)
+    private Terrain[,,] terrain;
+    private Unit[,,] units;
+    private GameObject highlightedObject;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+
+    // Use this for initialization
+    void Start () {
+		units = new Unit[mapXSize, mapYSize, mapZSize];
+        terrain = new Terrain[mapXSize, mapYSize, mapZSize];
+    }
 	
 	// Update is called once per frame
 	void Update () {

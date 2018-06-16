@@ -28,15 +28,19 @@ public static class Util {
 
 
     public static Vector3 WorldToGrid(Vector3 world) {
-        return new Vector3(world.x / GridWidth, world.y / GridWidth, world.z / GridHeight);
+        Vector3 grid = new Vector3(world.x / GridWidth, world.z / GridWidth, world.y / GridHeight);
+        if (((int)(grid.x) != grid.x) || ((int)(grid.y) != grid.y) || ((int)(grid.z) != grid.z)) {
+            Debug.Log("The coordinate being converted doesn't fall perfectly on the grid: " + world);
+        }
+        return grid;
     }
 
     public static Vector3 GridToWorld(Vector3 grid) {
-        return new Vector3(grid.x * GridWidth, grid.y * GridWidth, grid.z * GridHeight);
+        return new Vector3(grid.x * GridWidth, grid.z * GridHeight, grid.y * GridWidth);
     }
 
 
-    public void highlightObject(GameObject objectToHighlight) {
+    public static void highlightObject(GameObject objectToHighlight) {
         Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
         foreach (Material material in materials) {
             //Set the main Color of the Material to green
@@ -49,7 +53,7 @@ public static class Util {
         }
     }
 
-    public void unhighlightObject(GameObject objectToHighlight) {
+    public static void unhighlightObject(GameObject objectToHighlight) {
         Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
         foreach (Material material in materials) {
             //Set the main Color of the Material to green
