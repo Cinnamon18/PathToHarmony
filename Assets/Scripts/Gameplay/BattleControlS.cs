@@ -31,7 +31,8 @@ public class BattleControlS : MonoBehaviour {
             Terrain tile = terrain[(int)tileCoords.x, (int)tileCoords.y, (int)tileCoords.z];
             Debug.Log(tile.terrain); // ensure you picked right object
 
-            if (Input.GetMouseButtonDown(0)) {
+			//LMB
+            if (Input.GetButtonDown("Select")) {
                 if (highlightedObject != null) {
                     //Deselect the old object
                     Util.unhighlightObject(highlightedObject);

@@ -10,6 +10,7 @@ public static class Serialization {
             Debug.Log(fileName + " already exists.");
             return;
         }
+		
         StreamWriter sr = File.CreateText(fileName);
         sr.WriteLine(data);
         sr.Close();

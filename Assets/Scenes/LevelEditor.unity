@@ -312,7 +312,18 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1475899753}
+        m_MethodName: serializeTerrain
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
@@ -1130,6 +1141,12 @@ Transform:
   m_PrefabParentObject: {fileID: 4968038942280118, guid: d132d16b270344648a0f790fe57a7b21,
     type: 2}
   m_PrefabInternal: {fileID: 1475899750}
+--- !u!114 &1475899753 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
+    type: 2}
+  m_PrefabInternal: {fileID: 1475899750}
+  m_Script: {fileID: 11500000, guid: 429f75a9fba671e4c85be9fd9db068f3, type: 3}
 --- !u!1001 &1493803260
 Prefab:
   m_ObjectHideFlags: 0
