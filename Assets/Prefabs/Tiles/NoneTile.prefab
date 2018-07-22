@@ -24,7 +24,6 @@ GameObject:
   - component: {fileID: 95034377629624734}
   - component: {fileID: 65206084227923484}
   - component: {fileID: 114566324228475598}
-  - component: {fileID: 114804639910336248}
   m_Layer: 0
   m_Name: NoneTile
   m_TagString: Untagged
@@ -129,15 +128,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialType: 0
---- !u!114 &114804639910336248
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1124543106267346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f4ae16629824004c9ac6d507c117cd9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 0

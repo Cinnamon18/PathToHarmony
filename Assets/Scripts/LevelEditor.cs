@@ -23,6 +23,7 @@ public class LevelEditor : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		terrains = new Terrain[10, 10, 5];
+
 		//Just for testing
 		for (int x = 0; x < terrains.GetLength(0); x++) {
 			for (int y = 0; y < terrains.GetLength(1); y++) {
@@ -36,7 +37,6 @@ public class LevelEditor : MonoBehaviour {
 		drawBorders();
 	}
 
-	// Update is called once per frame
 	void Update() {
 		//Creation and deletion of tiles
 		RaycastHit hit;
@@ -66,7 +66,7 @@ public class LevelEditor : MonoBehaviour {
 
 		//You can't remove the bottom one, or if there's a tile above you
 		if (!removingBottom && (removingTop || !isTileAbove)) {
-			//pointless refactor idea: 2d array of stacks
+			//refactor idea: 2d array of stacks
 			terrains[(int)tileCoords.x, (int)tileCoords.y, (int)(tileCoords.z)] = null;
 			Destroy(hit.collider.gameObject);
 		} else {
@@ -79,8 +79,12 @@ public class LevelEditor : MonoBehaviour {
 	public void createTile(Vector3 tileCoords, Terrain tile) {
 		if (tileCoords.z == terrains.GetLength(2) - 1) {
 			Sfx.playSound("Bad noise");
+			tile.vibrateUnhappily();
 		} else {
 			GameObject newTile = Instantiate(tilePrefabs[currentTile], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
+			Terrain newTileTerrain = newTile.GetComponent<Terrain>();
+			//This doesn't really feel right but, uh. It's how it's gonna be, at least for now. tilePrefabs[x].terrain is always TerrainType.None and idk why :(
+			newTileTerrain.terrain = (TerrainType)(currentTile);
 			terrains[(int)tileCoords.x, (int)tileCoords.y, (int)(tileCoords.z + 1)] = newTile.GetComponent<Terrain>();
 		}
 	}
@@ -116,14 +120,8 @@ public class LevelEditor : MonoBehaviour {
 		drawBorders();
 	}
 
-	public void add(int x, int y, int z, Terrain data) {
-		terrains[x, y, z] = data;
-	}
-
-	public Terrain remove(int x, int y, int z) {
-		Terrain removed = terrains[x, y, z];
-		terrains[x, y, z] = null;
-		return removed;
+	public void updateMapName(String newName) {
+		this.mapName = newName;
 	}
 
 	public void drawBorders() {
@@ -154,17 +152,14 @@ public class LevelEditor : MonoBehaviour {
 
 	public void serializeTerrain() {
 		StringBuilder serialized = new StringBuilder(terrains.GetLength(0) + "," + terrains.GetLength(1) + "," + terrains.GetLength(2) + ",");
-		Terrain[] flattenedTerrain = new Terrain[terrains.GetLength(0) * terrains.GetLength(1) * terrains.GetLength(2)];
-		for (int x = 0; x < terrains.GetLength(0); x++) {
-			for (int y = 0; y < terrains.GetLength(1); y++) {
-				for (int z = 0; z < terrains.GetLength(2); z++) {
-					flattenedTerrain[z + terrains.GetLength(1) * y + (x * terrains.GetLength(2) * terrains.GetLength(1))] = terrains[x, y, z];
-				}
-			}
-		}
+		Terrain[] flattenedTerrain = Util.Flatten3DArray(terrains);
 
-		foreach (Terrain terrains in flattenedTerrain) {
-			serialized.Append(terrains);
+		foreach (Terrain terrain in flattenedTerrain) {
+			if (terrain == null) {
+				serialized.Append(",");
+			} else {
+				serialized.Append(terrain.serialize() + ",");
+			}
 		}
 
 		Serialization.WriteData(serialized.ToString(), mapName, overwriteData);
