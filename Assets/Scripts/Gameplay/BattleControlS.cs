@@ -26,9 +26,9 @@ public class BattleControlS : MonoBehaviour {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, 1000.0f)) {
-            Vector3 tileCoords = Util.WorldToGrid(hit.transform.position);
+            Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
             //Terrain tile = hit.collider.gameObject.GetComponent<Terrain>();
-            Terrain tile = terrain[(int)tileCoords.x, (int)tileCoords.y, (int)tileCoords.z];
+            Terrain tile = terrain[tileCoords.x, tileCoords.y, tileCoords.z];
             Debug.Log(tile.terrain); // ensure you picked right object
 
 			//LMB

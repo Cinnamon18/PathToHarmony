@@ -28,15 +28,15 @@ public static class Util {
 		}
 	}
 
-	public static Vector3 WorldToGrid(Vector3 world) {
-		Vector3 grid = new Vector3(world.x / GridWidth, world.z / GridWidth, world.y / GridHeight);
+	public static Vector3Int WorldToGrid(Vector3 world) {
+		Vector3Int grid = new Vector3Int((int) (world.x / GridWidth), (int) (world.z / GridWidth), (int) (world.y / GridHeight));
 		if (((int)(grid.x) != grid.x) || ((int)(grid.y) != grid.y) || ((int)(grid.z) != grid.z)) {
-			Debug.Log("The coordinate being converted doesn't fall perfectly on the grid: " + world);
+			Debug.LogWarning("The coordinate being converted doesn't fall perfectly on the grid: " + world);
 		}
 		return grid;
 	}
 
-	public static Vector3 GridToWorld(Vector3 grid) {
+	public static Vector3 GridToWorld(Vector3Int grid) {
 		return new Vector3(grid.x * GridWidth, grid.z * GridHeight, grid.y * GridWidth);
 	}
 
@@ -85,7 +85,6 @@ public static class Util {
 				for (int z = 0; z < unflatArray.GetLength(2); z++) {
 					// flattenedArray[z + unflatArray.GetLength(1) * y + (x * unflatArray.GetLength(2) * unflatArray.GetLength(1))] = unflatArray[x, y, z];
 					flattenedArray[x + unflatArray.GetLength(1) * (y + unflatArray.GetLength(0) * z)] = unflatArray[x, y, z];
-					
 				}
 			}
 		}

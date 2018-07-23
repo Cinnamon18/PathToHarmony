@@ -4,6 +4,7 @@ using UnityEngine;
 using Constants;
 using System.Text;
 using System;
+using System.Linq;
 
 public class LevelEditor : MonoBehaviour {
 
@@ -17,7 +18,7 @@ public class LevelEditor : MonoBehaviour {
 	private GameObject[] tilePrefabs;
 	private int currentTile = 0;
 	private string mapName;
-	private bool overwriteData;
+	private bool overwriteData = false;
 
 
 	// Use this for initialization
@@ -27,12 +28,10 @@ public class LevelEditor : MonoBehaviour {
 		//Just for testing
 		for (int x = 0; x < terrains.GetLength(0); x++) {
 			for (int y = 0; y < terrains.GetLength(1); y++) {
-				GameObject newTile = Instantiate(tilePrefabs[currentTile], Util.GridToWorld(new Vector3(x, y, 0)), tilePrefabs[currentTile].transform.rotation);
+				GameObject newTile = Instantiate(tilePrefabs[currentTile], Util.GridToWorld(new Vector3Int(x, y, 0)), tilePrefabs[currentTile].transform.rotation);
 				terrains[x, y, 0] = newTile.GetComponent<Terrain>();
 			}
 		}
-		mapName = "testMap";
-		overwriteData = true;
 
 		drawBorders();
 	}
@@ -42,9 +41,9 @@ public class LevelEditor : MonoBehaviour {
 		RaycastHit hit;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		if (Physics.Raycast(ray, out hit, 1000.0f)) {
-			Vector3 tileCoords = Util.WorldToGrid(hit.transform.position);
+			Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
 			//Terrain tile = hit.collider.gameObject.GetComponent<Terrain>();
-			Terrain tile = terrains[(int)tileCoords.x, (int)tileCoords.y, (int)tileCoords.z];
+			Terrain tile = terrains[tileCoords.x, tileCoords.y, tileCoords.z];
 			if (Input.GetButtonDown("Select")) {
 				createTile(tileCoords, tile);
 			} else if (Input.GetButtonDown("AltSelect")) {
@@ -55,19 +54,19 @@ public class LevelEditor : MonoBehaviour {
 		updateTile(Input.GetAxis("MouseScrollWheel"));
 	}
 
-	public void removeTile(Vector3 tileCoords, Terrain tile, RaycastHit hit) {
+	public void removeTile(Vector3Int tileCoords, Terrain tile, RaycastHit hit) {
 		//Remove tile. 
 		bool removingBottom = tileCoords.z == 0;
 		bool removingTop = tileCoords.z == terrains.GetLength(2) - 1;
 		bool isTileAbove = false;
 		if (!removingTop) {
-			isTileAbove = terrains[(int)tileCoords.x, (int)tileCoords.y, (int)(tileCoords.z + 1)] != null;
+			isTileAbove = terrains[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] != null;
 		}
 
 		//You can't remove the bottom one, or if there's a tile above you
 		if (!removingBottom && (removingTop || !isTileAbove)) {
 			//refactor idea: 2d array of stacks
-			terrains[(int)tileCoords.x, (int)tileCoords.y, (int)(tileCoords.z)] = null;
+			terrains[tileCoords.x, tileCoords.y, (tileCoords.z)] = null;
 			Destroy(hit.collider.gameObject);
 		} else {
 			//give the user some feedback that this is a badness
@@ -76,7 +75,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 	}
 
-	public void createTile(Vector3 tileCoords, Terrain tile) {
+	public void createTile(Vector3Int tileCoords, Terrain tile) {
 		if (tileCoords.z == terrains.GetLength(2) - 1) {
 			Sfx.playSound("Bad noise");
 			tile.vibrateUnhappily();
@@ -85,7 +84,7 @@ public class LevelEditor : MonoBehaviour {
 			Terrain newTileTerrain = newTile.GetComponent<Terrain>();
 			//This doesn't really feel right but, uh. It's how it's gonna be, at least for now. tilePrefabs[x].terrain is always TerrainType.None and idk why :(
 			newTileTerrain.terrain = (TerrainType)(currentTile);
-			terrains[(int)tileCoords.x, (int)tileCoords.y, (int)(tileCoords.z + 1)] = newTile.GetComponent<Terrain>();
+			terrains[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile.GetComponent<Terrain>();
 		}
 	}
 
@@ -124,6 +123,10 @@ public class LevelEditor : MonoBehaviour {
 		this.mapName = newName;
 	}
 
+	public void updateOverwriteMode(bool state) {
+		this.overwriteData = state;
+	}
+
 	public void drawBorders() {
 		float height = Util.GridHeight * terrains.GetLength(2);
 		float length = Util.GridWidth * terrains.Length;
@@ -151,6 +154,11 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	public void serializeTerrain() {
+		if (mapName == null || mapName == "") {
+			Debug.LogError("Can't save without a file name");
+			return;
+		}
+
 		StringBuilder serialized = new StringBuilder(terrains.GetLength(0) + "," + terrains.GetLength(1) + "," + terrains.GetLength(2) + ",");
 		Terrain[] flattenedTerrain = Util.Flatten3DArray(terrains);
 
@@ -163,5 +171,39 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		Serialization.WriteData(serialized.ToString(), mapName, overwriteData);
+	}
+
+	public void deserializeTerrain() {
+		string rawData = Serialization.ReadData(mapName);
+		//Parse the saved data. If there's nothing there, indicate that by -1
+		int[] data = rawData.Split(',').Select((datum) => {
+			int num = -1;
+			if (!Int32.TryParse(datum, out num)) {
+				num = -1;
+			}
+			return num;
+		}).ToArray();
+		Terrain[,,] parsedTerrains = new Terrain[data[0], data[1], data[2]];
+		data = data.Skip(3).ToArray();
+
+		//Reconstruct the map
+		for (int x = 0; x < parsedTerrains.GetLength(0); x++) {
+			for (int y = 0; y < parsedTerrains.GetLength(1); y++) {
+				for (int z = 0; z < parsedTerrains.GetLength(2); z++) {
+					int flatIndex = x + parsedTerrains.GetLength(1) * (y + parsedTerrains.GetLength(0) * z);
+					if (data[flatIndex] != -1) {
+						Terrain terrain = Instantiate(tilePrefabs[data[flatIndex]],
+							Util.GridToWorld(new Vector3Int(x, y, z)),
+							tilePrefabs[data[flatIndex]].transform.rotation)
+							.AddComponent<Terrain>();
+						terrain.terrain = (TerrainType)(data[flatIndex]);
+						parsedTerrains[x, y, z] = terrain;
+					}
+				}
+			}
+		}
+
+
+		terrains = parsedTerrains;
 	}
 }
