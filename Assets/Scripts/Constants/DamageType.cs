@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Constants {
-    public enum WeaponType {
+    public enum DamageType {
         None,
         Slash,
         Stab,

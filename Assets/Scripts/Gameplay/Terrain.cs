@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Constants;
 using System;
+using Gameplay;
 
-public class Terrain : MonoBehaviour {
+public class Terrain : MonoBehaviour, IBattlefieldItem {
 	private Material originalMaterial;
 
 	[SerializeField]
