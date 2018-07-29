@@ -13,17 +13,22 @@ namespace Gameplay {
 		[SerializeField]
 		private GameObject[] tilePrefabs;
 
-		public void deserializeTerrain() {
-			battlefield.map = Serialization.DeserializeTerrain(Serialization.ReadData(mapName), tilePrefabs);
+		public void deserializeTiles() {
+			battlefield.map = Serialization.DeserializeTiles(Serialization.ReadData(mapName), tilePrefabs);
+			foreach (IBattlefieldItem tile in battlefield.map) {
+				// if (tile.GetType() == Tile.GetType()) {
+
+				// }
+			}
 		}
 
 		// Use this for initialization
 		void Start() {
 			//Just for testing
 			this.mapName = "asdf";
+			battlefield = new Battlefield();
 
-			
-			deserializeTerrain();
+			deserializeTiles();
 		}
 
 		// Update is called once per frame
@@ -33,7 +38,6 @@ namespace Gameplay {
 			if (Physics.Raycast(ray, out hit, 1000.0f)) {
 				Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
 				IBattlefieldItem tile = battlefield.map[tileCoords.x, tileCoords.y, tileCoords.z];
-				Util.Log(tile);
 
 				//LMB
 				if (Input.GetButtonDown("Select")) {

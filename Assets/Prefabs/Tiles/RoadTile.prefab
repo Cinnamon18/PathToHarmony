@@ -22,8 +22,8 @@ GameObject:
   - component: {fileID: 33396290930258466}
   - component: {fileID: 23224175152980868}
   - component: {fileID: 95849594738451072}
-  - component: {fileID: 114131548156987684}
   - component: {fileID: 65481650216200120}
+  - component: {fileID: 114964380063641440}
   m_Layer: 0
   m_Name: RoadTile
   m_TagString: Untagged
@@ -118,7 +118,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114131548156987684
+--- !u!114 &114964380063641440
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1380285279712962}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09f01fe0f1b20124d8f148c7956a87bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c41367d629182546a139fdd96ffc324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   initialType: 4

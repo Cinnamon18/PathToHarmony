@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Constants {
-	public enum TerrainType {
+	public enum TileType {
 		None,
 		Underground,
 		Grass,

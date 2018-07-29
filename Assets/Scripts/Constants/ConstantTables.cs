@@ -2,7 +2,7 @@
 namespace Constants {
 	public static class ConstantTables {
 
-		//First dimension is MoveType, second is TerrainType
+		//First dimension is MoveType, second is TileType
 		public static int[,] MovementCost = new int[,] {{0,0,0},
 														{0,0,0},
 														{0,0,0} };
@@ -14,23 +14,23 @@ namespace Constants {
 													   {0,0,0},
 													   {0,0,0} };
 
-		//First dimension is TerrainType. Holds the % defense a terrain piece grants
-		public static int[] TerrainDefense = new int[] { 0, 0, 0, 0 };
+		//First dimension is TileType. Holds the % defense a Tile piece grants
+		public static int[] TileDefense = new int[] { 0, 0, 0, 0 };
 
 
 	}
 
 	public static class Extensions {
-		public static int Cost(this MoveType moveType, TerrainType terrainType) {
-			return ConstantTables.MovementCost[(int)(moveType), (int)(terrainType)];
+		public static int Cost(this MoveType moveType, TileType tileType) {
+			return ConstantTables.MovementCost[(int)(moveType), (int)(tileType)];
 		}
 
-		public static int Cost(this TerrainType terrainType, MoveType moveType) {
-			return moveType.Cost(terrainType);
+		public static int Cost(this TileType tileType, MoveType moveType) {
+			return moveType.Cost(tileType);
 		}
 
-		public static int DefenseBonus(this TerrainType terrainType) {
-			return ConstantTables.TerrainDefense[(int)(terrainType)];
+		public static int DefenseBonus(this TileType tileType) {
+			return ConstantTables.TileDefense[(int)(tileType)];
 		}
 
 		public static int DamageReduction(this DamageType damageType, ArmorType armorType) {

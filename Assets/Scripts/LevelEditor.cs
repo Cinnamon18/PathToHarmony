@@ -5,11 +5,12 @@ using Constants;
 using System.Text;
 using System;
 using System.Linq;
+using Gameplay;
 
 public class LevelEditor : MonoBehaviour {
 
 	//x, y, height (from the bottom)
-	private Terrain[,,] terrains;
+	private Tile[,,] tiles;
 	[SerializeField]
 	private LineRenderer lineRenderer;
 	[SerializeField]
@@ -23,13 +24,13 @@ public class LevelEditor : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		terrains = new Terrain[10, 10, 5];
+		tiles = new Tile[10, 10, 5];
 
 		//Just for testing
-		for (int x = 0; x < terrains.GetLength(0); x++) {
-			for (int y = 0; y < terrains.GetLength(1); y++) {
+		for (int x = 0; x < tiles.GetLength(0); x++) {
+			for (int y = 0; y < tiles.GetLength(1); y++) {
 				GameObject newTile = Instantiate(tilePrefabs[currentTile], Util.GridToWorld(new Vector3Int(x, y, 0)), tilePrefabs[currentTile].transform.rotation);
-				terrains[x, y, 0] = newTile.GetComponent<Terrain>();
+				tiles[x, y, 0] = newTile.GetComponent<Tile>();
 			}
 		}
 
@@ -42,8 +43,8 @@ public class LevelEditor : MonoBehaviour {
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		if (Physics.Raycast(ray, out hit, 1000.0f)) {
 			Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
-			//Terrain tile = hit.collider.gameObject.GetComponent<Terrain>();
-			Terrain tile = terrains[tileCoords.x, tileCoords.y, tileCoords.z];
+			//Tile tile = hit.collider.gameObject.GetComponent<Tile>();
+			Tile tile = tiles[tileCoords.x, tileCoords.y, tileCoords.z];
 			if (Input.GetButtonDown("Select")) {
 				createTile(tileCoords, tile);
 			} else if (Input.GetButtonDown("AltSelect")) {
@@ -54,19 +55,19 @@ public class LevelEditor : MonoBehaviour {
 		updateTile(Input.GetAxis("MouseScrollWheel"));
 	}
 
-	public void removeTile(Vector3Int tileCoords, Terrain tile, RaycastHit hit) {
+	public void removeTile(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
 		//Remove tile. 
 		bool removingBottom = tileCoords.z == 0;
-		bool removingTop = tileCoords.z == terrains.GetLength(2) - 1;
+		bool removingTop = tileCoords.z == tiles.GetLength(2) - 1;
 		bool isTileAbove = false;
 		if (!removingTop) {
-			isTileAbove = terrains[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] != null;
+			isTileAbove = tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] != null;
 		}
 
 		//You can't remove the bottom one, or if there's a tile above you
 		if (!removingBottom && (removingTop || !isTileAbove)) {
 			//refactor idea: 2d array of stacks
-			terrains[tileCoords.x, tileCoords.y, (tileCoords.z)] = null;
+			tiles[tileCoords.x, tileCoords.y, (tileCoords.z)] = null;
 			Destroy(hit.collider.gameObject);
 		} else {
 			//give the user some feedback that this is a badness
@@ -75,16 +76,16 @@ public class LevelEditor : MonoBehaviour {
 		}
 	}
 
-	public void createTile(Vector3Int tileCoords, Terrain tile) {
-		if (tileCoords.z == terrains.GetLength(2) - 1) {
+	public void createTile(Vector3Int tileCoords, Tile tile) {
+		if (tileCoords.z == tiles.GetLength(2) - 1) {
 			Sfx.playSound("Bad noise");
 			tile.vibrateUnhappily();
 		} else {
 			GameObject newTile = Instantiate(tilePrefabs[currentTile], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
-			Terrain newTileTerrain = newTile.GetComponent<Terrain>();
-			//This doesn't really feel right but, uh. It's how it's gonna be, at least for now. tilePrefabs[x].terrain is always TerrainType.None and idk why :(
-			newTileTerrain.terrain = (TerrainType)(currentTile);
-			terrains[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile.GetComponent<Terrain>();
+			Tile newTileTile = newTile.GetComponent<Tile>();
+			//This doesn't really feel right but, uh. It's how it's gonna be, at least for now. tilePrefabs[x].tile is always TileType.None and idk why :(
+			newTileTile.tile = (TileType)(currentTile);
+			tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile.GetComponent<Tile>();
 		}
 	}
 
@@ -107,15 +108,15 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	public void updateSize(int x, int y, int z) {
-		Terrain[,,] newTerrain = new Terrain[x, y, z];
-		for (int i = 0; i < terrains.Length; i++) {
-			for (int ii = 0; ii < terrains.GetLength(1); ii++) {
-				for (int iii = 0; iii < terrains.GetLength(2); iii++) {
-					newTerrain[i, ii, iii] = terrains[i, ii, iii];
+		Tile[,,] newTile = new Tile[x, y, z];
+		for (int i = 0; i < tiles.Length; i++) {
+			for (int ii = 0; ii < tiles.GetLength(1); ii++) {
+				for (int iii = 0; iii < tiles.GetLength(2); iii++) {
+					newTile[i, ii, iii] = tiles[i, ii, iii];
 				}
 			}
 		}
-		terrains = newTerrain;
+		tiles = newTile;
 		drawBorders();
 	}
 
@@ -128,8 +129,8 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	public void drawBorders() {
-		float height = Util.GridHeight * terrains.GetLength(2);
-		float length = Util.GridWidth * terrains.Length;
+		float height = Util.GridHeight * tiles.GetLength(2);
+		float length = Util.GridWidth * tiles.Length;
 		float zero = 0;
 		Vector3[] positions = {
 			new Vector3(zero, zero, zero),
@@ -153,27 +154,27 @@ public class LevelEditor : MonoBehaviour {
 		lineRenderer.SetPositions(positions);
 	}
 
-	public void serializeTerrain() {
+	public void serializeTiles() {
 		if (mapName == null || mapName == "") {
 			Debug.LogError("Can't save without a file name");
 			return;
 		}
 
-		StringBuilder serialized = new StringBuilder(terrains.GetLength(0) + "," + terrains.GetLength(1) + "," + terrains.GetLength(2) + ",");
-		Terrain[] flattenedTerrain = Util.Flatten3DArray(terrains);
+		StringBuilder serialized = new StringBuilder(tiles.GetLength(0) + "," + tiles.GetLength(1) + "," + tiles.GetLength(2) + ",");
+		Tile[] flattenedTile = Util.Flatten3DArray(tiles);
 
-		foreach (Terrain terrain in flattenedTerrain) {
-			if (terrain == null) {
+		foreach (Tile tile in flattenedTile) {
+			if (tile == null) {
 				serialized.Append(",");
 			} else {
-				serialized.Append(terrain.serialize() + ",");
+				serialized.Append(tile.serialize() + ",");
 			}
 		}
 
 		Serialization.WriteData(serialized.ToString(), mapName, overwriteData);
 	}
 
-	public void deserializeTerrain() {
-		terrains = Serialization.DeserializeTerrain(Serialization.ReadData(mapName), tilePrefabs);
+	public void deserializeTiles() {
+		tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName), tilePrefabs);
 	}
 }

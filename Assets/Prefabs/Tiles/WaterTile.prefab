@@ -22,8 +22,8 @@ GameObject:
   - component: {fileID: 33950523664033412}
   - component: {fileID: 23547464206189212}
   - component: {fileID: 95966819976314104}
-  - component: {fileID: 114465366484308568}
   - component: {fileID: 65367892421403748}
+  - component: {fileID: 114437858386065054}
   m_Layer: 0
   m_Name: WaterTile
   m_TagString: Untagged
@@ -117,7 +117,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114465366484308568
+--- !u!114 &114437858386065054
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -125,7 +125,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1812626124276284}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09f01fe0f1b20124d8f148c7956a87bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c41367d629182546a139fdd96ffc324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   initialType: 5

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System;
 using Constants;
+using Gameplay;
 
 public static class Serialization {
 	public static void WriteData(string data, string fileName, bool overwriteFile) {
@@ -36,36 +37,36 @@ public static class Serialization {
 	}
 
 
-	//Basically, give it the data as encoded by LevelEditor.serializeTerrain
-	public static Terrain[,,] DeserializeTerrain(string terrainRaw, GameObject[] tilePrefabs) {
+	//Basically, give it the data as encoded by LevelEditor.serializeTile
+	public static Tile[,,] DeserializeTiles(string tileRaw, GameObject[] tilePrefabs) {
 		//Parse the saved data. If there's nothing there, indicate that by -1
-		int[] data = terrainRaw.Split(',').Select((datum) => {
+		int[] data = tileRaw.Split(',').Select((datum) => {
 			int num = -1;
 			if (!Int32.TryParse(datum, out num)) {
 				num = -1;
 			}
 			return num;
 		}).ToArray();
-		Terrain[,,] parsedTerrains = new Terrain[data[0], data[1], data[2]];
+		Tile[,,] parsedTiles = new Tile[data[0], data[1], data[2]];
 		data = data.Skip(3).ToArray();
 
 		//Reconstruct the map
-		for (int x = 0; x < parsedTerrains.GetLength(0); x++) {
-			for (int y = 0; y < parsedTerrains.GetLength(1); y++) {
-				for (int z = 0; z < parsedTerrains.GetLength(2); z++) {
-					int flatIndex = x + parsedTerrains.GetLength(1) * (y + parsedTerrains.GetLength(0) * z);
+		for (int x = 0; x < parsedTiles.GetLength(0); x++) {
+			for (int y = 0; y < parsedTiles.GetLength(1); y++) {
+				for (int z = 0; z < parsedTiles.GetLength(2); z++) {
+					int flatIndex = x + parsedTiles.GetLength(1) * (y + parsedTiles.GetLength(0) * z);
 					if (data[flatIndex] != -1) {
-						Terrain terrain = GameObject.Instantiate(tilePrefabs[data[flatIndex]],
+						Tile tileObject = GameObject.Instantiate(tilePrefabs[data[flatIndex]],
 							Util.GridToWorld(new Vector3Int(x, y, z)),
 							tilePrefabs[data[flatIndex]].transform.rotation)
-							.AddComponent<Terrain>();
-						terrain.terrain = (TerrainType)(data[flatIndex]);
-						parsedTerrains[x, y, z] = terrain;
+							.AddComponent<Tile>();
+						tileObject.tile = (TileType)(data[flatIndex]);
+						parsedTiles[x, y, z] = tileObject;
 					}
 				}
 			}
 		}
 
-		return parsedTerrains;
+		return parsedTiles;
 	}
 }
