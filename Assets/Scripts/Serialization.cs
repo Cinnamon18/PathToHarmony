@@ -57,7 +57,7 @@ public static class Serialization {
 					int flatIndex = x + parsedTiles.GetLength(1) * (y + parsedTiles.GetLength(0) * z);
 					if (data[flatIndex] != -1) {
 						Tile tileObject = GameObject.Instantiate(tilePrefabs[data[flatIndex]],
-							Util.GridToWorld(new Vector3Int(x, y, z)),
+							Util.GridToWorld(x, y, z),
 							tilePrefabs[data[flatIndex]].transform.rotation)
 							.AddComponent<Tile>();
 						tileObject.tile = (TileType)(data[flatIndex]);

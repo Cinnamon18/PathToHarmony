@@ -10,6 +10,8 @@ using Gameplay;
 public class LevelEditor : MonoBehaviour {
 
 	//x, y, height (from the bottom)
+	[SerializeField]
+	private Vector3Int initialDim;
 	private Tile[,,] tiles;
 	[SerializeField]
 	private LineRenderer lineRenderer;
@@ -24,12 +26,12 @@ public class LevelEditor : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		tiles = new Tile[10, 10, 5];
+		tiles = new Tile[initialDim.x, initialDim.y, initialDim.z];
 
 		//Just for testing
 		for (int x = 0; x < tiles.GetLength(0); x++) {
 			for (int y = 0; y < tiles.GetLength(1); y++) {
-				GameObject newTile = Instantiate(tilePrefabs[currentTile], Util.GridToWorld(new Vector3Int(x, y, 0)), tilePrefabs[currentTile].transform.rotation);
+				GameObject newTile = Instantiate(tilePrefabs[currentTile], Util.GridToWorld(x, y, 0), tilePrefabs[currentTile].transform.rotation);
 				tiles[x, y, 0] = newTile.GetComponent<Tile>();
 			}
 		}
@@ -82,10 +84,11 @@ public class LevelEditor : MonoBehaviour {
 			tile.vibrateUnhappily();
 		} else {
 			GameObject newTile = Instantiate(tilePrefabs[currentTile], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
+			//I recognize now the folly in my naming convention...
 			Tile newTileTile = newTile.GetComponent<Tile>();
 			//This doesn't really feel right but, uh. It's how it's gonna be, at least for now. tilePrefabs[x].tile is always TileType.None and idk why :(
 			newTileTile.tile = (TileType)(currentTile);
-			tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile.GetComponent<Tile>();
+			tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTileTile;
 		}
 	}
 
@@ -108,16 +111,68 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	public void updateSize(int x, int y, int z) {
-		Tile[,,] newTile = new Tile[x, y, z];
-		for (int i = 0; i < tiles.Length; i++) {
-			for (int ii = 0; ii < tiles.GetLength(1); ii++) {
-				for (int iii = 0; iii < tiles.GetLength(2); iii++) {
-					newTile[i, ii, iii] = tiles[i, ii, iii];
-				}
+		initialDim = new Vector3Int(x, y, z);
+
+		foreach (Tile tile in tiles) {
+			if (tile != null) {
+				Destroy(tile.gameObject);
 			}
 		}
-		tiles = newTile;
-		drawBorders();
+
+		Start();
+
+
+		// The code following was my noble attempt at doing this method in a way that didn't erase the whole board.
+		// I saved it so that if I come back to it I'll have something to go off of. But if you're not me, and you
+		// want to take a crack at making it work feel free to start over.
+		// 
+		// It would've made for much more convenient prototyping... but alas... the demo is due in a few weeks so
+		// this is getting put off into the #TODO void. Sorry abt that map makers!
+
+
+		//This method isn't especially readable... sorry abt that... It changes the board size.
+		//Wow I really hate looking at this method. I sure hope no one ever has to maintain it.
+		//Before we do anything, if we're shrinking the map delete the game objects we don't need
+		//We have to do this maxDim nonsense because you might shrink in one dimension but increase in another.
+		// Vector3Int maxDim = new Vector3Int(
+		// 	Math.Max(x, tiles.GetLength(0)),
+		// 	Math.Max(y, tiles.GetLength(1)),
+		// 	Math.Max(z, tiles.GetLength(2)));
+		// for (int i = 0; i < maxDim.x; i++) {
+		// 	for (int ii = 0; ii < maxDim.y; ii++) {
+		// 		for (int iii = 0; iii < maxDim.z; iii++) {
+		// 			if (i > x || i > y || iii > z) {
+		// 				if (tiles[i, ii, iii] != null) {
+		// 					Destroy(tiles[i, ii, iii].gameObject);
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		// //Copy the remaining ones over
+		// Tile[,,] newTiles = new Tile[x, y, z];
+		// for (int i = 0; i < x; i++) {
+		// 	for (int ii = 0; ii < y; ii++) {
+		// 		for (int iii = 0; iii < z; iii++) {
+		// 			if (i < tiles.GetLength(0) && ii < tiles.GetLength(1) && iii < tiles.GetLength(2)) {
+		// 				//Prevent out of bounds on "tiles" if dimensions are being increased
+		// 				newTiles[i, ii, iii] = tiles[i, ii, iii];
+		// 			} else if (iii == 0) {
+		// 				//If size is being increased, fill in the bottom row with none tiles
+		// 				//Mmm, juicy code duplication.
+		// 				GameObject newTile = Instantiate(tilePrefabs[(int)(TileType.None)],
+		// 					Util.GridToWorld(i, ii, 0),
+		// 					tilePrefabs[(int)(TileType.None)].gameObject.transform.rotation);
+		// 				Tile newTileTile = newTile.GetComponent<Tile>();
+		// 				newTileTile.tile = TileType.None;
+		// 				newTiles[i, ii, 0] = newTileTile;
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// tiles = newTiles;
+		// drawBorders();
 	}
 
 	public void updateMapName(String newName) {
@@ -129,27 +184,35 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	public void drawBorders() {
-		float height = Util.GridHeight * tiles.GetLength(2);
-		float length = Util.GridWidth * tiles.Length;
-		float zero = 0;
-		Vector3[] positions = {
-			new Vector3(zero, zero, zero),
-			new Vector3(zero, zero, height),
-			new Vector3(length, length, height),
-			new Vector3(length, length, zero),
-			new Vector3(zero, zero, zero),
-			new Vector3(-length, length, zero),
-			new Vector3(-length, length, height),
-			new Vector3(zero, zero, height),
-			new Vector3(-length, length, height),
-			new Vector3(zero, Mathf.Sqrt(2) * length, height),
-			new Vector3(zero, Mathf.Sqrt(2) * length, zero),
-			new Vector3(-length, length, zero),
-			new Vector3(zero, Mathf.Sqrt(2) * length, zero),
-			new Vector3(length, length, zero),
-			new Vector3(length, length, height),
-			new Vector3(zero, Mathf.Sqrt(2) * length, height)
+		//Just a pinch more readable
+		int w = tiles.GetLength(0);
+		int l = tiles.GetLength(1);
+		int h = tiles.GetLength(2);
+
+		Vector3 offset = Util.GridToWorld(-0.5f, -0.5f, -1.0f);
+
+		Vector3[] positions = new Vector3[] {
+			Util.GridToWorld(0, 0, 0),
+			Util.GridToWorld(0, 0, h),
+			Util.GridToWorld(w, 0, h),
+			Util.GridToWorld(w, 0, 0),
+			Util.GridToWorld(0, 0, 0),
+			Util.GridToWorld(0, l, 0),
+			Util.GridToWorld(0, l, h),
+			Util.GridToWorld(0, 0, h),
+			Util.GridToWorld(0, l, h),
+			Util.GridToWorld(w, l, h),
+			Util.GridToWorld(w, l, 0),
+			Util.GridToWorld(0, l, 0),
+			Util.GridToWorld(w, l, 0),
+			Util.GridToWorld(w, 0, 0),
+			Util.GridToWorld(w, 0, h),
+			Util.GridToWorld(w, l, h)
 		};
+
+		positions = positions.Select((pos) => {
+			return pos + offset;
+		}).ToArray();
 
 		lineRenderer.SetPositions(positions);
 	}
@@ -176,5 +239,17 @@ public class LevelEditor : MonoBehaviour {
 
 	public void deserializeTiles() {
 		tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName), tilePrefabs);
+	}
+
+	public void updateSizeUI(string newSize) {
+		int[] dimensions = newSize.Split(',').Select((dimension) => {
+			//If you're used to java this might look weird. In c# you can explicitly pass by refrence with the keyword "out". Neat, isn't it?
+			int num = 1;
+			if (!Int32.TryParse(dimension, out num)) {
+				Debug.LogError("Cannot parse provided dimension. Using default of 1");
+			}
+			return num;
+		}).ToArray();
+		updateSize(dimensions[0], dimensions[1], dimensions[2]);
 	}
 }

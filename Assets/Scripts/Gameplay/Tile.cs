@@ -15,7 +15,7 @@ namespace Gameplay {
 		public TileType tile { get; set; }
 
 		public Tile() {
-			tile = initialType;
+			tile = TileType.None;
 		}
 
 		public Tile(TileType tileType) {

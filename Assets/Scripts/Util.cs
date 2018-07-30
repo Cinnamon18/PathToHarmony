@@ -29,15 +29,27 @@ public static class Util {
 	}
 
 	public static Vector3Int WorldToGrid(Vector3 world) {
-		Vector3Int grid = new Vector3Int((int) (world.x / GridWidth), (int) (world.z / GridWidth), (int) (world.y / GridHeight));
+		Vector3Int grid = new Vector3Int((int)(world.x / GridWidth), (int)(world.z / GridWidth), (int)(world.y / GridHeight));
 		if (((int)(grid.x) != grid.x) || ((int)(grid.y) != grid.y) || ((int)(grid.z) != grid.z)) {
 			Debug.LogWarning("The coordinate being converted doesn't fall perfectly on the grid: " + world);
 		}
 		return grid;
 	}
 
+	public static Vector3Int WorldToGrid(float x, float y, float z) {
+		return WorldToGrid(new Vector3(x, y, z));
+	}
+
 	public static Vector3 GridToWorld(Vector3Int grid) {
 		return new Vector3(grid.x * GridWidth, grid.z * GridHeight, grid.y * GridWidth);
+	}
+
+	public static Vector3 GridToWorld(int x, int y, int z) {
+		return GridToWorld(new Vector3Int(x, y, z));
+	}
+
+	public static Vector3 GridToWorld(float x, float y, float z) {
+		return new Vector3(x * GridWidth, z * GridHeight, y * GridWidth);
 	}
 
 	//TODO: Find a way to programatically create a highlight effect. Shader??
