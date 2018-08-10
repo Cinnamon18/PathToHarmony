@@ -60,7 +60,7 @@ public static class Serialization {
 							Util.GridToWorld(x, y, z),
 							tilePrefabs[data[flatIndex]].transform.rotation)
 							.AddComponent<Tile>();
-						tileObject.tile = (TileType)(data[flatIndex]);
+						tileObject.tileType = (TileType)(data[flatIndex]);
 						parsedTiles[x, y, z] = tileObject;
 					}
 				}
@@ -68,5 +68,17 @@ public static class Serialization {
 		}
 
 		return parsedTiles;
+	}
+
+	//TODO: Decide on semantics for this
+	public static Campaign deserializeCampaign(string fileName) {
+		Campaign campaign = new Campaign();
+		string serializedCampaign = Serialization.ReadData(fileName);
+		string[] campaignArr = serializedCampaign.Split(',');
+		campaign.name = campaignArr[0];
+
+		//TODO: Finish deserialization routine
+
+		return campaign;
 	}
 }

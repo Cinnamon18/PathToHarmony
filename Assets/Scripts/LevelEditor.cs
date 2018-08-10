@@ -31,7 +31,7 @@ public class LevelEditor : MonoBehaviour {
 		//Just for testing
 		for (int x = 0; x < tiles.GetLength(0); x++) {
 			for (int y = 0; y < tiles.GetLength(1); y++) {
-				GameObject newTile = Instantiate(tilePrefabs[currentTile], Util.GridToWorld(x, y, 0), tilePrefabs[currentTile].transform.rotation);
+				GameObject newTile = Instantiate(tilePrefabs[(int)(TileType.None)], Util.GridToWorld(x, y, 0), tilePrefabs[currentTile].transform.rotation);
 				tiles[x, y, 0] = newTile.GetComponent<Tile>();
 			}
 		}
@@ -87,7 +87,7 @@ public class LevelEditor : MonoBehaviour {
 			//I recognize now the folly in my naming convention...
 			Tile newTileTile = newTile.GetComponent<Tile>();
 			//This doesn't really feel right but, uh. It's how it's gonna be, at least for now. tilePrefabs[x].tile is always TileType.None and idk why :(
-			newTileTile.tile = (TileType)(currentTile);
+			newTileTile.tileType = (TileType)(currentTile);
 			tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTileTile;
 		}
 	}
@@ -112,13 +112,7 @@ public class LevelEditor : MonoBehaviour {
 
 	public void updateSize(int x, int y, int z) {
 		initialDim = new Vector3Int(x, y, z);
-
-		foreach (Tile tile in tiles) {
-			if (tile != null) {
-				Destroy(tile.gameObject);
-			}
-		}
-
+		eraseTiles();
 		Start();
 
 
@@ -175,12 +169,35 @@ public class LevelEditor : MonoBehaviour {
 		// drawBorders();
 	}
 
+	public void incrementTile() {
+		updateTile(1);
+	}
+
+	public void decrementTile() {
+		updateTile(-1);
+	}
+
 	public void updateMapName(String newName) {
 		this.mapName = newName;
 	}
 
 	public void updateOverwriteMode(bool state) {
 		this.overwriteData = state;
+	}
+
+
+	public void deserializeTiles() {
+		eraseTiles();
+		tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName), tilePrefabs);
+	}
+
+	private void eraseTiles() {
+		foreach (Tile tile in tiles) {
+			if (tile != null) {
+				Destroy(tile.gameObject);
+			}
+		}
+		tiles = null;
 	}
 
 	public void drawBorders() {
@@ -237,14 +254,12 @@ public class LevelEditor : MonoBehaviour {
 		Serialization.WriteData(serialized.ToString(), mapName, overwriteData);
 	}
 
-	public void deserializeTiles() {
-		tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName), tilePrefabs);
-	}
-
 	public void updateSizeUI(string newSize) {
+		Debug.Log(newSize);
 		int[] dimensions = newSize.Split(',').Select((dimension) => {
 			//If you're used to java this might look weird. In c# you can explicitly pass by refrence with the keyword "out". Neat, isn't it?
 			int num = 1;
+			Debug.Log(dimension);
 			if (!Int32.TryParse(dimension, out num)) {
 				Debug.LogError("Cannot parse provided dimension. Using default of 1");
 			}

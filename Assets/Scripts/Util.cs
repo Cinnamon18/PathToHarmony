@@ -103,11 +103,6 @@ public static class Util {
 		return flattenedArray;
 	}
 
-
-
-
-	//turns out this is a surprisngly tricky concept, so we're just gonna stick with the standard unity one for now.
-
 	public static void Log(params System.Object[] logItems) {
 		foreach (System.Object logItem in logItems) {
 			//If its an array (or collection or w/e), go ahead and print out all the items
@@ -123,32 +118,4 @@ public static class Util {
 			}
 		}
 	}
-
-	//I'm not totally sure how this behaves with collections. I guess address that as it comes up
-	//I'm spoiled by browser js log, so i'm gonna remake it :p
-	// public static string deepToString(System.Object obj) {
-	// 	if (obj == null) {
-	// 		return "null";
-	// 	}
-
-	// 	Type objType = obj.GetType();
-	// 	if (objType.IsPrimitive || objType == typeof(Decimal) || objType == typeof(String)) {
-	// 		return objType + ": " + obj.ToString() + "\n";
-	// 	}
-
-	// 	StringBuilder serializedObject = new StringBuilder();
-	// 	if (objType.IsArray) {
-	// 		IEnumerable enumerable = obj as IEnumerable;
-	// 		foreach (var value in enumerable) {
-	// 			serializedObject.Append(deepToString(value));
-	// 		}
-	// 		return serializedObject.ToString();
-	// 	} else {
-	// 		serializedObject.Append(obj.ToString());
-	// 		foreach (var field in objType.GetFields()) {
-	// 			serializedObject.Append(field.Name + ": " + deepToString(field.GetValue(obj)));
-	// 		}
-	// 		return serializedObject.ToString();
-	// 	}
-	// }
 }

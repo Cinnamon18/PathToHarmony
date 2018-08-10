@@ -11,27 +11,32 @@ namespace Gameplay {
 
 		[SerializeField]
 		private TileType initialType;
+		public TileType tileType { get; set; }
 
-		public TileType tile { get; set; }
-
-		public Tile() {
-			tile = TileType.None;
-		}
+		public Tile() : this(TileType.None) { }
 
 		public Tile(TileType tileType) {
-			tile = tileType;
+			this.tileType = tileType;
 		}
 
-		public string serialize() {
-			return "" + ((int)(this.tile));
+		void Start() {
+			animate();
 		}
 
-		public override string ToString() {
-			return tile.ToString();
+		private void animate() {
+			
 		}
 
 		public void vibrateUnhappily() {
 			//TODO (just some programatic animation to make this reusable between different tiles, probably)
+		}
+
+		public string serialize() {
+			return "" + ((int)(this.tileType));
+		}
+
+		public override string ToString() {
+			return tileType.ToString();
 		}
 	}
 }

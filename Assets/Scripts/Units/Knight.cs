@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Units {
 	// public class Knight : Unit {
 
-	// 	public Knight(ArmorType armorType, WeaponType weaponType, int numMoveTiles) {
+	// 	public Knight(ArmorType armorType, WeaponType weaponType, int numMoveTiles): super(armorType, weaponType, numMoveTiles) {
 			
 	// 	}
 	// }
