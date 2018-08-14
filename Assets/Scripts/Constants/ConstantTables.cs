@@ -20,7 +20,7 @@ namespace Constants {
 
 	}
 
-	public static class Extensions {
+	public static class ConstantExtensions {
 		public static int Cost(this MoveType moveType, TileType tileType) {
 			return ConstantTables.MovementCost[(int)(moveType), (int)(tileType)];
 		}
@@ -37,7 +37,7 @@ namespace Constants {
 			return ConstantTables.DamageReduction[(int)(damageType), (int)(armorType)];
 		}
 
-				public static int DamageReduction(this ArmorType armorType, DamageType damageType) {
+		public static int DamageReduction(this ArmorType armorType, DamageType damageType) {
 			return damageType.DamageReduction(armorType);
 		}
 	}

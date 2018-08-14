@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System;
 using UnityEngine;
+using System.Threading;
 
 public static class Util {
 
@@ -50,6 +51,17 @@ public static class Util {
 
 	public static Vector3 GridToWorld(float x, float y, float z) {
 		return new Vector3(x * GridWidth, z * GridHeight, y * GridWidth);
+	}
+
+	//What can I say, I've come to love typescript. We might have to overload this. But hey, if you're new to async
+	//here's an easy way to start! And you wont get spoiled by the .net 5 async/await sugar :p
+	//also oof don't use ui methods with this....
+	public static void setTimeout(Action action, int timeout) {
+		Thread t = new Thread(() => {
+			Thread.Sleep(timeout);
+			action.Invoke();
+		});
+		t.Start();
 	}
 
 	//TODO: Find a way to programatically create a highlight effect. Shader??

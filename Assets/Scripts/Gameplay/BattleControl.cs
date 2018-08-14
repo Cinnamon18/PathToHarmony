@@ -15,6 +15,7 @@ namespace Gameplay {
 		private Level level;
 		[SerializeField]
 		private GameObject[] tilePrefabs;
+		private BattleLoopStage battleStage;
 
 		private int currentPlayer;
 		[SerializeField]
@@ -22,7 +23,6 @@ namespace Gameplay {
 
 		// Use this for initialization
 		void Start() {
-
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] { new Character("Alice"), new Character("Just some guy") };
 			Vector2Int[] aliceMoves = new[] { new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(1, 0) };
@@ -34,30 +34,63 @@ namespace Gameplay {
 
 
 			battlefield = new Battlefield();
+			battleStage = BattleLoopStage.Initial;
+			turnPlayerText.enabled = false;
 			getLevel();
 			deserializeMap();
 		}
 
 		// Update is called once per frame
 		void Update() {
-			
-			//Player input
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out hit, 1000.0f)) {
-				Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
-				IBattlefieldItem tile = battlefield.map[tileCoords.x, tileCoords.y, tileCoords.z];
+			switch (battleStage) {
+				case BattleLoopStage.Initial:
+					advancePhase();
+					break;
+				case BattleLoopStage.Pick:
+					//TODO
+					advancePhase();
+					break;
+				case BattleLoopStage.BattleLoopStart:
+					advancePhase();
+					break;
+				case BattleLoopStage.TurnChange:
+					//There's probably a less fragile way of doing this. It's just to make sure this call only happens once per turn loop.
+					if (!turnPlayerText.enabled) {
+						currentPlayer = (currentPlayer + 1) % level.players.Length;
+						turnPlayerText.text = level.players[currentPlayer].name + "'s turn";
+						turnPlayerText.enabled = true;
+						Util.setTimeout(() => {
+							advancePhase();
+						}, 1000);
+					}
+					break;
+				case BattleLoopStage.TurnChangeEnd:
+					turnPlayerText.enabled = false;
+					advancePhase();
+					break;
+				case BattleLoopStage.MoveSelection:
+					//Player input
+					RaycastHit hit;
+					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+					if (Physics.Raycast(ray, out hit, 1000.0f)) {
+						Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
+						IBattlefieldItem tile = battlefield.map[tileCoords.x, tileCoords.y, tileCoords.z];
 
-				//LMB
-				if (Input.GetButtonDown("Select")) {
-					highlightItem(hit);
-				}
+						//LMB
+						if (Input.GetButtonDown("Select")) {
+							highlightItem(hit);
+						}
+					}
+
+
+					//If player has selected a move:
+					//Play the animation
+					advancePhase();
+					break;
+				case BattleLoopStage.EndTurn:
+					advancePhase();
+					break;
 			}
-		}
-
-		private void advanceTurnPlayer() {
-			currentPlayer = (currentPlayer + 1) % level.players.Length;
-			this.turnPlayerText.text = level.players[currentPlayer] + "'s turn";
 		}
 
 		private void highlightItem(RaycastHit hit) {
@@ -88,6 +121,11 @@ namespace Gameplay {
 					}
 				}
 			}
+		}
+
+		//Convenience
+		private void advancePhase() {
+			battleStage = battleStage.NextPhase();
 		}
 
 		private void getLevel() {
