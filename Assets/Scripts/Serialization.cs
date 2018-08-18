@@ -70,6 +70,21 @@ public static class Serialization {
 		return parsedTiles;
 	}
 
+		//I know this is a hacky way of doing this, but it'll work.... for now....  #TODO
+	public static Stack<Tile>[,] DeserializeTilesStack(string tileRaw, GameObject[] tilePrefabs) {
+		Tile[,,] parsedTiles = DeserializeTiles(tileRaw, tilePrefabs);
+		Stack<Tile>[,] stackedTiles = new Stack<Tile>[parsedTiles.GetLength(0), parsedTiles.GetLength(1)];
+		for (int x = 0; x < parsedTiles.GetLength(0); x++) {
+			for (int y = 0; y < parsedTiles.GetLength(1); y++) {
+				stackedTiles[x, y] = new Stack<Tile>();
+				for (int z = 0; z < parsedTiles.GetLength(2); z++) {
+					stackedTiles[x, y].Push(parsedTiles[x, y, z]);
+				}
+			}
+		}
+		return stackedTiles;
+	}
+
 	//TODO: Decide on semantics for this
 	public static Campaign deserializeCampaign(string fileName) {
 		Campaign campaign = new Campaign();

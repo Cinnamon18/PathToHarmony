@@ -10,5 +10,7 @@ namespace Constants {
 			this.isRanged = isRanged;
 			this.baseDamage = baseDamage;
 		}
+
+		public static readonly WeaponType KnightWeapon = new WeaponType(DamageType.Slash, false, 50);
 	}
 }

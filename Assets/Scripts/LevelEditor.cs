@@ -12,6 +12,8 @@ public class LevelEditor : MonoBehaviour {
 	//x, y, height (from the bottom)
 	[SerializeField]
 	private Vector3Int initialDim;
+	//Oof so I realized after the fact that a 2D stack would be a better way to do this. However, it's abstracted by the serialization
+	//layer, so this is perfectly funcitonal atm.... #TODO
 	private Tile[,,] tiles;
 	[SerializeField]
 	private LineRenderer lineRenderer;
@@ -206,7 +208,7 @@ public class LevelEditor : MonoBehaviour {
 		int l = tiles.GetLength(1);
 		int h = tiles.GetLength(2);
 
-		Vector3 offset = Util.GridToWorld(-0.5f, -0.5f, -1.0f);
+		Vector3 offset = Util.GridToWorld(-0.5f, -0.5f, -0.8f);
 
 		Vector3[] positions = new Vector3[] {
 			Util.GridToWorld(0, 0, 0),

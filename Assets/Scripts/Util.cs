@@ -64,33 +64,6 @@ public static class Util {
 		t.Start();
 	}
 
-	//TODO: Find a way to programatically create a highlight effect. Shader??
-	public static void highlightObject(GameObject objectToHighlight) {
-		Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
-		foreach (Material material in materials) {
-			//Set the main Color of the Material to green
-			material.shader = Shader.Find("_Color");
-			material.SetColor("_Color", Color.green);
-
-			//Find the Specular shader and change its Color to red
-			material.shader = Shader.Find("Specular");
-			material.SetColor("_SpecColor", Color.red);
-		}
-	}
-
-	public static void unhighlightObject(GameObject objectToHighlight) {
-		Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
-		foreach (Material material in materials) {
-			//Set the main Color of the Material to green
-			material.shader = Shader.Find("_Color");
-			material.SetColor("_Color", Color.blue);
-
-			//Find the Specular shader and change its Color to red
-			material.shader = Shader.Find("Specular");
-			material.SetColor("_SpecColor", Color.red);
-		}
-	}
-
 	//Is there a way to generalize this? I'm sure! But it sounds like it'd involve recursion and i don't feel like dealing with that rn
 	public static T[] Flatten2DArray<T>(T[,] unflatArray) {
 		T[] flattenedArray = new T[unflatArray.GetLength(0) * unflatArray.GetLength(1)];

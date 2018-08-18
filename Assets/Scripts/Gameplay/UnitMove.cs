@@ -1,6 +1,6 @@
 namespace Gameplay {
 	//A move for a unit, only contains destination information
-	public struct UnitMove {
+	public class UnitMove {
 		public int x;
 		public int y;
 

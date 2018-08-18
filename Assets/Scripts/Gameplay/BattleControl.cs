@@ -47,7 +47,14 @@ namespace Gameplay {
 					advancePhase();
 					break;
 				case BattleLoopStage.Pick:
-					//TODO
+					//This is temp just for testing until I build pick phase.
+					battlefield.addUnit(new Knight(), level.players[0], 0, 0);
+					battlefield.addUnit(new Knight(), level.players[0], 1, 0);
+					battlefield.addUnit(new Knight(), level.players[0], 0, 1);
+					battlefield.addUnit(new Knight(), level.players[1], 8, 4);
+					battlefield.addUnit(new Knight(), level.players[1], 8, 5);
+					//TODO make game objects
+
 					advancePhase();
 					break;
 				case BattleLoopStage.BattleLoopStart:
@@ -69,12 +76,15 @@ namespace Gameplay {
 					advancePhase();
 					break;
 				case BattleLoopStage.MoveSelection:
+					//TODO: get player selection
+
 					//Player input
 					RaycastHit hit;
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 					if (Physics.Raycast(ray, out hit, 1000.0f)) {
 						Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
-						IBattlefieldItem tile = battlefield.map[tileCoords.x, tileCoords.y, tileCoords.z];
+						//TODO: adjust this to allow players to select tiles...
+						Unit unit = battlefield.units[tileCoords.x, tileCoords.y];
 
 						//LMB
 						if (Input.GetButtonDown("Select")) {
@@ -96,22 +106,22 @@ namespace Gameplay {
 		private void highlightItem(RaycastHit hit) {
 			//Deselect the old object
 			if (highlightedObject != null) {
-				Util.unhighlightObject(highlightedObject);
+				unhighlightObject(highlightedObject);
 			}
 
 			//Deselect the currently selected one one if we're clicking on it
 			if (highlightedObject == hit.collider.gameObject) {
-				Util.unhighlightObject(highlightedObject);
+				unhighlightObject(highlightedObject);
 				highlightedObject = null;
 			} else {
 				//Select the new one
 				highlightedObject = hit.collider.gameObject;
-				Util.highlightObject(highlightedObject);
+				highlightObject(highlightedObject);
 			}
 		}
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTiles(Serialization.ReadData(level.mapFileName), tilePrefabs);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName), tilePrefabs);
 			foreach (IBattlefieldItem tileMaybe in battlefield.map) {
 				Tile tile = tileMaybe as Tile;
 				if (tile != null) {
@@ -120,6 +130,33 @@ namespace Gameplay {
 						tile = null;
 					}
 				}
+			}
+		}
+
+		//TODO: Find a way to programatically create a highlight effect. Shader??
+		private void highlightObject(GameObject objectToHighlight) {
+			Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
+			foreach (Material material in materials) {
+				//Set the main Color of the Material to green
+				material.shader = Shader.Find("_Color");
+				material.SetColor("_Color", Color.green);
+
+				//Find the Specular shader and change its Color to red
+				material.shader = Shader.Find("Specular");
+				material.SetColor("_SpecColor", Color.red);
+			}
+		}
+
+		private void unhighlightObject(GameObject objectToHighlight) {
+			Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
+			foreach (Material material in materials) {
+				//Set the main Color of the Material to green
+				material.shader = Shader.Find("_Color");
+				material.SetColor("_Color", Color.blue);
+
+				//Find the Specular shader and change its Color to red
+				material.shader = Shader.Find("Specular");
+				material.SetColor("_SpecColor", Color.red);
 			}
 		}
 

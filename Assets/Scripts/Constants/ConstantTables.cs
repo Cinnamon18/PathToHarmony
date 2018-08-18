@@ -1,4 +1,7 @@
 
+using System;
+using Units;
+
 namespace Constants {
 	public static class ConstantTables {
 
@@ -11,12 +14,14 @@ namespace Constants {
 		//This ones a little tricky, it's the % reduction to the base damage, so a reduction of
 		// 20 means 20%, and final damage would be baseDamage * 0.8
 		public static int[,] DamageReduction = new int[,] {{0,0,0},
-													   {0,0,0},
-													   {0,0,0} };
+														   {0,0,0},
+														   {0,0,0} };
 
 		//First dimension is TileType. Holds the % defense a Tile piece grants
 		public static int[] TileDefense = new int[] { 0, 0, 0, 0 };
 
+		//First dimension is the unit's type. Holds how many tiles the unit can move.
+		public static int[] UnitMoveDistance = new int[] { 0, 0, 0, 0 };
 
 	}
 
