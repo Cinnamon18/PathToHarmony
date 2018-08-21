@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Constants {
     public enum DamageType {
-        None,
+        None = 0,
         Slash,
         Stab,
         Blunt

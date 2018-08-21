@@ -5,10 +5,10 @@ namespace Constants {
 	public static class ConstantTables {
 
 		//First dimension is MoveType, second is TileType
-		public static int[,] MovementCost = new int[,] {{1,1,1,1,1,2},
-														{1,1,1,1,1,2},
-														{1,1,1,1,1,2},
-														{1,1,1,1,1,2} };
+		public static int[,] MovementCost = new int[,] {{1,1,1,2,1,100},
+														{1,1,1,2,1,100},
+														{1,1,1,2,1,100},
+														{1,1,1,2,1,100} };
 
 		//First dimension is DamageType, second is ArmorType
 		//This ones a little tricky, it's the % reduction to the base damage, so a reduction of
@@ -21,8 +21,8 @@ namespace Constants {
 		//First dimension is TileType. Holds the % defense a Tile piece grants
 		public static int[] TileDefense = new int[] { 10, 10, 10, 10, 10, 10 };
 
-		//First dimension is the unit's type. Holds how many tiles the unit can move.
-		public static int[] UnitMoveDistance = new int[] { 5, 5, 5, 5 };
+		//First dimension is MoveType. Holds how many tiles the unit can move.
+		public static int[] UnitMoveDistance = new int[] { 4, 4, 1, 4 };
 
 	}
 

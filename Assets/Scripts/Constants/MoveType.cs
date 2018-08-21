@@ -1,7 +1,7 @@
 
 namespace Constants {
 	public enum MoveType {
-		None,
+		None = 0,
 		Light,
 		Medium,
 		Heavy,

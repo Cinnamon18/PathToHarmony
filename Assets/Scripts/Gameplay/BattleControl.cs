@@ -21,7 +21,8 @@ namespace Gameplay {
 		private GameObject highlightedObject;
 		private BattleLoopStage battleStage;
 		private List<UnitMove> moveOptions;
-		private Unit highlightedUnit;
+		private List<Unit> highlightedEnemyUnits;
+		private Unit highlightedFriendlyUnit;
 
 		private int currentPlayer;
 		[SerializeField]
@@ -87,25 +88,27 @@ namespace Gameplay {
 						if (Physics.Raycast(ray, out hit, 1000.0f)) {
 							Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
 							IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(tileCoords.x, tileCoords.y, tileCoords.z);
-							//TODO: Show info about tile if a tile is clicked
 							if (selectedItem is Tile) {
+								//Selected a tile, show info abt that tile
+								//TODO: Show info about tile if a tile is clicked
 								Tile selectedTile = selectedItem as Tile;
 								highlightSingleObject(selectedTile.gameObject);
-								advanceBattleStage();
 							} else if (selectedItem is Unit) {
 								Unit selectedUnit = selectedItem as Unit;
 								if (selectedUnit.getCharacter(battlefield) == level.players[currentPlayer]) {
+									//Selected friendly unit. show move options.
 									highlightSingleObject(selectedUnit.gameObject, 1);
-									this.highlightedUnit = selectedUnit;
+									this.highlightedFriendlyUnit = selectedUnit;
 
 									List<UnitMove> validMoves = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
 									this.moveOptions = validMoves;
-									foreach (UnitMove moveOptions in moveOptions) {
-										highlightMultipleObjects(battlefield.map[moveOptions.x, moveOptions.y].Peek().gameObject);
+									foreach (UnitMove moveOption in moveOptions) {
+										highlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 									}
 
 									advanceBattleStage();
 								} else {
+									//Selected enemy unit. Show unit and its move options.
 									//TODO: highlight enemy's valid move tiles.
 								}
 							} else if (selectedItem == null) {
@@ -129,29 +132,29 @@ namespace Gameplay {
 							Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
 							IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(tileCoords.x, tileCoords.y, tileCoords.z);
 							if (selectedItem is Tile) {
-								//Check that it's a valid tile. .Contains() uses refrence :(
+								//We selected a tile! lets move to it
 								if (moveOptions.Any(move => (move.x == tileCoords.x && move.y == tileCoords.y))) {
-									moveUnit(highlightedUnit, tileCoords);
+									moveUnit(highlightedFriendlyUnit, tileCoords);
 									deselectMoveOptions();
 									advanceBattleStage();
 								}
-							} else if (highlightedUnit == selectedItem || selectedItem == null) {
+							} else if (highlightedFriendlyUnit == selectedItem || selectedItem == null) {
+								//Decided not to move that unit afterall, deselect it
 								deselectMoveOptions();
 								battleStage = BattleLoopStage.UnitSelection;
 							} else if (selectedItem is Unit) {
 								Unit selectedUnit = selectedItem as Unit;
 								if (selectedUnit.getCharacter(battlefield) == level.players[currentPlayer]) {
+									//Clicked on a friendly unit. Deselect the current one.
 									deselectMoveOptions();
 									battleStage = BattleLoopStage.UnitSelection;
 								} else {
-
-									moveUnit(highlightedUnit, tileCoords + new Vector3Int(1, 0, 0));
-
-									highlightedUnit.doBattleWith(selectedUnit, battlefield.map[tileCoords.x, tileCoords.y].Peek());
+									//Clicked on a hostile unit! fight!
+									highlightedFriendlyUnit.doBattleWith(selectedUnit, battlefield.map[tileCoords.x, tileCoords.y].Peek());
 									//If we didnt' defeat the enemy unit in battle, they get a counter attack
 									if (selectedUnit != null) {
-										Vector3Int unitCoords = battlefield.getUnitCoords(highlightedUnit);
-										selectedUnit.doBattleWith(highlightedUnit, battlefield.map[unitCoords.x, unitCoords.y].Peek());
+										Vector3Int unitCoords = battlefield.getUnitCoords(highlightedFriendlyUnit);
+										selectedUnit.doBattleWith(highlightedFriendlyUnit, battlefield.map[unitCoords.x, unitCoords.y].Peek());
 									}
 									deselectMoveOptions();
 									advanceBattleStage();

@@ -1,6 +1,6 @@
 ﻿namespace Constants {
 	public enum TileType {
-		None,
+		None = 0,
 		Underground,
 		Grass,
 		Woods,

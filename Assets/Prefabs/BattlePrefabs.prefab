@@ -432,7 +432,7 @@ MonoBehaviour:
   fillAmount: 0.3
   lineColor0: {r: 1, g: 1, b: 0, a: 1}
   lineColor1: {r: 1, g: 1, b: 0, a: 1}
-  lineColor2: {r: 0, g: 0, b: 1, a: 1}
+  lineColor2: {r: 1, g: 0, b: 0, a: 1}
   additiveRendering: 0
   backfaceCulling: 1
   cornerOutlines: 0

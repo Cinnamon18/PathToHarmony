@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Constants {
     public enum ArmorType {
-        Unarmored,
+        Unarmored = 0,
         Light,
         Medium,
         Heavy

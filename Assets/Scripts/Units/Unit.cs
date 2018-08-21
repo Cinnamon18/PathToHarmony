@@ -52,14 +52,14 @@ namespace Units {
 
 		//returns true if the enemy was destroyed by battle
 		public void doBattleWith(Unit enemy, Tile enemyTile) {
-			float damage = this.weapon.baseDamage * (this.health / this.maxHealth);
+			float damage = this.weapon.baseDamage * ( 1.0f * this.health / this.maxHealth);
 			damage = damage * ((100 - this.weapon.damageType.DamageReduction(enemy.armor)) / 100.0f);
 			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
 			//Damage rounds up
 			enemy.health -= (int)(Mathf.Ceil(damage));
 			Debug.Log("battle happened! " + damage + " damage dealt, leaving the target with " + enemy.health + " health.");
-			
+
 			if (enemy.health <= 0) {
 				enemy.defeated();
 			}
@@ -77,25 +77,27 @@ namespace Units {
 
 			HashSet<UnitMove> visited = new HashSet<UnitMove>();
 			PriorityQueue<AIUnitMove> movePQueue = new PriorityQueue<AIUnitMove>();
-			movePQueue.Enqueue(new AIUnitMove(myX, myY, unitType.unitMoveDistance()));
+			movePQueue.Enqueue(new AIUnitMove(myX, myY, 0));
 			while (movePQueue.Count() > 0) {
 				AIUnitMove currentMove = movePQueue.Dequeue();
 				//check all four directions
 				int[,] moveDirs = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
-
+				
 				for (int x = 0; x < moveDirs.GetLength(0); x++) {
 					int targetX = currentMove.x + moveDirs[x, 0];
 					int targetY = currentMove.y + moveDirs[x, 1];
 					if (targetX < battlefield.map.GetLength(0) && targetY < battlefield.map.GetLength(1) && targetX >= 0 && targetY >= 0) {
 						Stack<Tile> targetTile = battlefield.map[targetX, targetY];
 
-						int remainingMovePoints = currentMove.movePointsLeft - targetTile.Peek().tileType.Cost(this.moveType);
+						int movePointsExpended = currentMove.movePoints + targetTile.Peek().tileType.Cost(this.moveType);
 						UnitMove targetMove = new UnitMove(targetX, targetY);
-						AIUnitMove targetMoveAI = new AIUnitMove(targetX, targetY, remainingMovePoints);
+						AIUnitMove targetMoveAI = new AIUnitMove(targetX, targetY, movePointsExpended);
 
-						if (remainingMovePoints >= 0 && !visited.Contains(targetMove)) {
-							visited.Add(new UnitMove(currentMove.x, currentMove.y));
-							movePQueue.Enqueue(targetMoveAI);
+						if (movePointsExpended <= unitType.unitMoveDistance()) {
+							if (!visited.Contains(targetMove)) {
+								visited.Add(targetMove);
+								movePQueue.Enqueue(targetMoveAI);
+							}
 						}
 					}
 				}
