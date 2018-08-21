@@ -106,6 +106,8 @@ namespace Gameplay {
 										highlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 									}
 
+									//TODO: Highlight all enemy units in range.
+
 									advanceBattleStage();
 								} else {
 									//Selected enemy unit. Show unit and its move options.
@@ -150,6 +152,7 @@ namespace Gameplay {
 									battleStage = BattleLoopStage.UnitSelection;
 								} else {
 									//Clicked on a hostile unit! fight!
+									//TODO: Check that the enemy unit is in range
 									highlightedFriendlyUnit.doBattleWith(selectedUnit, battlefield.map[tileCoords.x, tileCoords.y].Peek());
 									//If we didnt' defeat the enemy unit in battle, they get a counter attack
 									if (selectedUnit != null) {

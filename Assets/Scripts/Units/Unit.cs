@@ -5,6 +5,7 @@ using Gameplay;
 using System;
 using AI;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace Units {
 	public abstract class Unit : MonoBehaviour, IBattlefieldItem {
@@ -21,6 +22,9 @@ namespace Units {
 		private bool hasMovedThisTurn;
 		//How many tiles this unit can move per turn turn
 		private int numMoveTiles { get; set; }
+
+		[SerializeField]
+		private Image healthBar;
 
 		public Unit(ArmorType armorType, WeaponType weaponType, MoveType moveType, UnitType unitType) {
 			armor = armorType;
@@ -52,14 +56,15 @@ namespace Units {
 
 		//returns true if the enemy was destroyed by battle
 		public void doBattleWith(Unit enemy, Tile enemyTile) {
-			float damage = this.weapon.baseDamage * ( 1.0f * this.health / this.maxHealth);
+			float damage = this.weapon.baseDamage * ( 1f * this.health / this.maxHealth);
 			damage = damage * ((100 - this.weapon.damageType.DamageReduction(enemy.armor)) / 100.0f);
 			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
 			//Damage rounds up
 			enemy.health -= (int)(Mathf.Ceil(damage));
+			enemy.healthBar.fillAmount = 1f * this.health / this.maxHealth;
 			Debug.Log("battle happened! " + damage + " damage dealt, leaving the target with " + enemy.health + " health.");
-
+			
 			if (enemy.health <= 0) {
 				enemy.defeated();
 			}
@@ -82,7 +87,7 @@ namespace Units {
 				AIUnitMove currentMove = movePQueue.Dequeue();
 				//check all four directions
 				int[,] moveDirs = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
-				
+
 				for (int x = 0; x < moveDirs.GetLength(0); x++) {
 					int targetX = currentMove.x + moveDirs[x, 0];
 					int targetY = currentMove.y + moveDirs[x, 1];
