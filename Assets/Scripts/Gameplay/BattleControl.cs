@@ -95,20 +95,19 @@ namespace Gameplay {
 							} else if (selectedItem is Unit) {
 								Unit selectedUnit = selectedItem as Unit;
 								if (selectedUnit.getCharacter(battlefield) == level.players[currentPlayer]) {
-									highlightSingleObject(selectedUnit.gameObject);
+									highlightSingleObject(selectedUnit.gameObject, 1);
+									this.highlightedUnit = selectedUnit;
 
 									List<UnitMove> validMoves = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
-									foreach (UnitMove validMove in validMoves) {
-										highlightMultipleObjects(battlefield.map[validMove.x, validMove.y].Peek().gameObject);
-									}
 									this.moveOptions = validMoves;
-									this.highlightedUnit = selectedUnit;
+									foreach (UnitMove moveOptions in moveOptions) {
+										highlightMultipleObjects(battlefield.map[moveOptions.x, moveOptions.y].Peek().gameObject);
+									}
+
 									advancePhase();
 								} else {
 									//TODO: highlight enemy's valid move tiles.
 								}
-
-
 							} else if (selectedItem == null) {
 								//Clicked on empty space! Nbd, don't do anything.
 								Debug.Log("Clicked on empty space");
@@ -175,7 +174,7 @@ namespace Gameplay {
 			unit.gameObject.transform.position = Util.GridToWorld(target + new Vector3Int(0, 0, 1));
 		}
 
-		private void highlightSingleObject(GameObject objectToHighlight) {
+		private void highlightSingleObject(GameObject objectToHighlight, int colorIndex = 0) {
 			//Deselect the old object
 			if (highlightedObject != null) {
 				unhighlightMultipleObjects(highlightedObject);
@@ -188,35 +187,30 @@ namespace Gameplay {
 			} else {
 				//Select the new one
 				highlightedObject = objectToHighlight;
-				highlightMultipleObjects(highlightedObject);
+				highlightMultipleObjects(highlightedObject, colorIndex);
 			}
 		}
 
-		//TODO: Find a way to programatically create a highlight effect. Shader??
-		private void highlightMultipleObjects(GameObject objectToHighlight) {
-			Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
-			foreach (Material material in materials) {
-				//Set the main Color of the Material to green
-				material.shader = Shader.Find("Self-Illumin/Outlined Diffuse");
-				// material.SetColor("_Color", Color.green);
+		private void highlightMultipleObjects(GameObject objectToHighlight, int colorIndex = 0) {
+			objectToHighlight.AddComponent<cakeslice.Outline>();
+			objectToHighlight.GetComponent<cakeslice.Outline>().color = colorIndex;
+			// Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
+			// foreach (Material material in materials) {
+			//Set the main Color of the Material to green
+			// material.shader = Shader.Find("Self-Illumin/Outlined Diffuse");
+			// material.SetColor("_Color", Color.green);
 
-				//Find the Specular shader and change its Color to red
-				// material.shader = Shader.Find("Specular");
-				// material.SetColor("_SpecColor", Color.red);
-			}
+			// }
 		}
 
 		private void unhighlightMultipleObjects(GameObject objectToHighlight) {
-			Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
-			foreach (Material material in materials) {
-				//Set the main Color of the Material to green
-				material.shader = Shader.Find("Standard");
-				// material.SetColor("_Color", Color.blue);
-
-				//Find the Specular shader and change its Color to red
-				// material.shader = Shader.Find("Specular");
-				// material.SetColor("_SpecColor", Color.red);
-			}
+			Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
+			// Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
+			// foreach (Material material in materials) {
+			//Set the main Color of the Material to green
+			// material.shader = Shader.Find("Standard");
+			// material.SetColor("_Color", Color.blue);
+			// }
 		}
 
 		//Convenience
@@ -237,6 +231,7 @@ namespace Gameplay {
 			foreach (UnitMove moveOption in moveOptions) {
 				unhighlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 			}
+
 			highlightSingleObject(highlightedObject);
 			moveOptions = null;
 			highlightedObject = null;

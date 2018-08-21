@@ -53,8 +53,8 @@ namespace Units {
 		//returns true if the enemy was destroyed by battle
 		public void doBattleWith(Unit enemy, Tile enemyTile) {
 			float damage = this.weapon.baseDamage * (this.health / this.maxHealth);
-			damage = damage * ((100 - this.weapon.damageType.DamageReduction(enemy.armor)) / 100);
-			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100);
+			damage = damage * ((100 - this.weapon.damageType.DamageReduction(enemy.armor)) / 100.0f);
+			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
 			//Damage rounds up
 			enemy.health -= (int)(Mathf.Ceil(damage));
