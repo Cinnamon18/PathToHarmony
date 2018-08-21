@@ -94,7 +94,7 @@ namespace Units {
 						AIUnitMove targetMoveAI = new AIUnitMove(targetX, targetY, remainingMovePoints);
 
 						if (remainingMovePoints >= 0 && !visited.Contains(targetMove)) {
-							visited.Add(new AIUnitMove(currentMove.x, currentMove.y, remainingMovePoints));
+							visited.Add(new UnitMove(currentMove.x, currentMove.y));
 							movePQueue.Enqueue(targetMoveAI);
 						}
 					}

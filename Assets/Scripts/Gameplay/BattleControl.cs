@@ -51,7 +51,7 @@ namespace Gameplay {
 		void Update() {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
-					advancePhase();
+					advanceBattleStage();
 					break;
 				case BattleLoopStage.Pick:
 					//This is temp just for testing until I build pick phase.
@@ -61,10 +61,10 @@ namespace Gameplay {
 					addUnit(UnitType.Knight, level.players[1], 3, 7);
 					addUnit(UnitType.Knight, level.players[1], 4, 7);
 
-					advancePhase();
+					advanceBattleStage();
 					break;
 				case BattleLoopStage.BattleLoopStart:
-					advancePhase();
+					advanceBattleStage();
 					break;
 				case BattleLoopStage.TurnChange:
 					//There's probably a less fragile way of doing this. It's just to make sure this call only happens once per turn loop.
@@ -72,12 +72,12 @@ namespace Gameplay {
 						currentPlayer = (currentPlayer + 1) % level.players.Length;
 						turnPlayerText.text = level.players[currentPlayer].name + "'s turn";
 						turnPlayerText.enabled = true;
-						Util.setTimeout(advancePhase, 1000);
+						Util.setTimeout(advanceBattleStage, 1000);
 					}
 					break;
 				case BattleLoopStage.TurnChangeEnd:
 					turnPlayerText.enabled = false;
-					advancePhase();
+					advanceBattleStage();
 					break;
 				case BattleLoopStage.UnitSelection:
 					//Player input. LMB
@@ -91,7 +91,7 @@ namespace Gameplay {
 							if (selectedItem is Tile) {
 								Tile selectedTile = selectedItem as Tile;
 								highlightSingleObject(selectedTile.gameObject);
-								advancePhase();
+								advanceBattleStage();
 							} else if (selectedItem is Unit) {
 								Unit selectedUnit = selectedItem as Unit;
 								if (selectedUnit.getCharacter(battlefield) == level.players[currentPlayer]) {
@@ -104,7 +104,7 @@ namespace Gameplay {
 										highlightMultipleObjects(battlefield.map[moveOptions.x, moveOptions.y].Peek().gameObject);
 									}
 
-									advancePhase();
+									advanceBattleStage();
 								} else {
 									//TODO: highlight enemy's valid move tiles.
 								}
@@ -133,14 +133,16 @@ namespace Gameplay {
 								if (moveOptions.Any(move => (move.x == tileCoords.x && move.y == tileCoords.y))) {
 									moveUnit(highlightedUnit, tileCoords);
 									deselectMoveOptions();
-									advancePhase();
+									advanceBattleStage();
 								}
 							} else if (highlightedUnit == selectedItem || selectedItem == null) {
 								deselectMoveOptions();
+								battleStage = BattleLoopStage.UnitSelection;
 							} else if (selectedItem is Unit) {
 								Unit selectedUnit = selectedItem as Unit;
 								if (selectedUnit.getCharacter(battlefield) == level.players[currentPlayer]) {
 									deselectMoveOptions();
+									battleStage = BattleLoopStage.UnitSelection;
 								} else {
 
 									moveUnit(highlightedUnit, tileCoords + new Vector3Int(1, 0, 0));
@@ -152,7 +154,7 @@ namespace Gameplay {
 										selectedUnit.doBattleWith(highlightedUnit, battlefield.map[unitCoords.x, unitCoords.y].Peek());
 									}
 									deselectMoveOptions();
-									advancePhase();
+									advanceBattleStage();
 								}
 							} else {
 								Debug.LogWarning("Item of unrecognized type clicked on.");
@@ -162,7 +164,7 @@ namespace Gameplay {
 
 					break;
 				case BattleLoopStage.EndTurn:
-					advancePhase();
+					advanceBattleStage();
 					break;
 			}
 		}
@@ -214,7 +216,7 @@ namespace Gameplay {
 		}
 
 		//Convenience
-		private void advancePhase() {
+		private void advanceBattleStage() {
 			battleStage = battleStage.NextPhase();
 		}
 

@@ -85,12 +85,10 @@ public class LevelEditor : MonoBehaviour {
 			Sfx.playSound("Bad noise");
 			tile.vibrateUnhappily();
 		} else {
-			GameObject newTile = Instantiate(tilePrefabs[currentTile], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
-			//I recognize now the folly in my naming convention...
-			Tile newTileTile = newTile.GetComponent<Tile>();
-			//This doesn't really feel right but, uh. It's how it's gonna be, at least for now. tilePrefabs[x].tile is always TileType.None and idk why :(
-			newTileTile.tileType = (TileType)(currentTile);
-			tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTileTile;
+			GameObject newTileObj = Instantiate(tilePrefabs[currentTile], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
+			Tile newTile = newTileObj.GetComponent<Tile>();
+			newTile.tileType = (TileType)(currentTile);
+			tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile;
 		}
 	}
 

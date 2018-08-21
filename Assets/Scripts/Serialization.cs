@@ -60,7 +60,7 @@ public static class Serialization {
 						Tile tileObject = GameObject.Instantiate(tilePrefabs[data[flatIndex]],
 							Util.GridToWorld(x, y, z),
 							tilePrefabs[data[flatIndex]].transform.rotation)
-							.AddComponent<Tile>();
+							.GetComponent<Tile>();
 						tileObject.tileType = (TileType)(data[flatIndex]);
 						parsedTiles[x, y, z] = tileObject;
 					}
