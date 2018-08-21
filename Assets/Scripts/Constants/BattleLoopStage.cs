@@ -7,7 +7,8 @@ namespace Constants {
 		BattleLoopStart,
 		TurnChange,
 		TurnChangeEnd,
-		MoveSelection,
+		UnitSelection,
+		ActionSelection,
 		EndTurn
 	}
 

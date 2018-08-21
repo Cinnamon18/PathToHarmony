@@ -1,29 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Constants;
 using Gameplay;
 using System;
 using AI;
+using System.Linq;
 
 namespace Units {
 	public abstract class Unit : MonoBehaviour, IBattlefieldItem {
 		private const int DEFAULT_DAMAGE = 10;
 		private const int DEFAULT_MOVE = 4;
+		private const int DEFAULT_HEALTH = 100;
 
 		private readonly ArmorType armor;
 		private readonly WeaponType weapon;
 		private readonly MoveType moveType;
+		private readonly UnitType unitType;
+		private readonly int maxHealth;
+		private int health;
 		private bool hasMovedThisTurn;
 		//How many tiles this unit can move per turn turn
 		private int numMoveTiles { get; set; }
 
-		public Unit(ArmorType armorType, WeaponType weaponType, MoveType moveType, int numMoveTiles) {
+		public Unit(ArmorType armorType, WeaponType weaponType, MoveType moveType, UnitType unitType) {
 			armor = armorType;
 			weapon = weaponType;
 			this.moveType = moveType;
-			this.numMoveTiles = numMoveTiles;
+			this.unitType = unitType;
+
+			maxHealth = DEFAULT_HEALTH;
+			health = maxHealth;
 			hasMovedThisTurn = false;
+			this.numMoveTiles = unitType.unitMoveDistance();
 		}
 
 		void Start() {
@@ -32,56 +40,68 @@ namespace Units {
 
 		}
 
-		public abstract int unitMoveDistance();
-
-		public static int unitMoveDistance(Type unitType) {
-			int unitTypeIndex = 0;
-
-			if (unitType == typeof(Knight)) {
-				unitTypeIndex = 0;
-			} else {
-				throw new TypeUnloadedException("Type " + unitType + " not recognized as a valid type for units");
+		public Character getCharacter(Battlefield battlefield) {
+			Character myCharacter = null;
+			foreach (Character character in battlefield.charactersUnits.Keys) {
+				if (battlefield.charactersUnits[character].Contains(this)) {
+					myCharacter = character;
+				}
 			}
-
-			return ConstantTables.UnitMoveDistance[unitTypeIndex];
+			return myCharacter;
 		}
 
-		//For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
-		//We can get away with this because there's only one "flow" source point (the unit)
-		public List<AIUnitMove> getValidMoves(int myX, int myY, Battlefield battlefield) {
-			HashSet<AIUnitMove> visited = new HashSet<AIUnitMove>();
+		//returns true if the enemy was destroyed by battle
+		public void doBattleWith(Unit enemy, Tile enemyTile) {
+			float damage = this.weapon.baseDamage * (this.health / this.maxHealth);
+			damage = damage * ((100 - this.weapon.damageType.DamageReduction(enemy.armor)) / 100);
+			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100);
 
-			//Look breadth first to use the heuristic of "straighter path is probably faster"
-			//this'll help to cut out bad trees earlier too.
-			Queue<AIUnitMove> moveQueue = new Queue<AIUnitMove>();
-			moveQueue.Enqueue(new AIUnitMove(myX, myY, unitMoveDistance()));
-			while (moveQueue.Count > 0) {
-				AIUnitMove currentMove = moveQueue.Dequeue();
+			//Damage rounds up
+			enemy.health -= (int)(Mathf.Ceil(damage));
+			Debug.Log("battle happened! " + damage + " damage dealt, leaving the target with " + enemy.health + " health.");
+			
+			if (enemy.health <= 0) {
+				enemy.defeated();
+			}
+		}
 
-				//do all four directions
-				List<AIUnitMove> validMoves = new List<AIUnitMove>();
+		public void defeated() {
+			Destroy(this.gameObject);
+		}
+
+		/*
+		For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
+		We can get away with this because there's only one "flow" source point (the unit).
+		 */
+		public List<UnitMove> getValidMoves(int myX, int myY, Battlefield battlefield) {
+
+			HashSet<UnitMove> visited = new HashSet<UnitMove>();
+			PriorityQueue<AIUnitMove> movePQueue = new PriorityQueue<AIUnitMove>();
+			movePQueue.Enqueue(new AIUnitMove(myX, myY, unitType.unitMoveDistance()));
+			while (movePQueue.Count() > 0) {
+				AIUnitMove currentMove = movePQueue.Dequeue();
+				//check all four directions
 				int[,] moveDirs = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+
 				for (int x = 0; x < moveDirs.GetLength(0); x++) {
-					Stack<Tile> targetTile = battlefield.map[currentMove.x + moveDirs[x, 0], currentMove.y + moveDirs[x, 1]];
-					int remainingMovePoints = currentMove.movePointsLeft - targetTile.Peek().tileType.Cost(this.moveType);
-					if (remainingMovePoints > 0) {
-						//TODO if the move is already in the visited set for cheaper, don't add it.
-						validMoves.Add(new AIUnitMove(currentMove.x, currentMove.y, remainingMovePoints));
-					}
-				}
+					int targetX = currentMove.x + moveDirs[x, 0];
+					int targetY = currentMove.y + moveDirs[x, 1];
+					if (targetX < battlefield.map.GetLength(0) && targetY < battlefield.map.GetLength(1) && targetX >= 0 && targetY >= 0) {
+						Stack<Tile> targetTile = battlefield.map[targetX, targetY];
 
-				foreach (AIUnitMove move in validMoves) {
-					if (!visited.Contains(move)) {
-						moveQueue.Enqueue(move);
+						int remainingMovePoints = currentMove.movePointsLeft - targetTile.Peek().tileType.Cost(this.moveType);
+						UnitMove targetMove = new UnitMove(targetX, targetY);
+						AIUnitMove targetMoveAI = new AIUnitMove(targetX, targetY, remainingMovePoints);
+
+						if (remainingMovePoints >= 0 && !visited.Contains(targetMove)) {
+							visited.Add(new AIUnitMove(currentMove.x, currentMove.y, remainingMovePoints));
+							movePQueue.Enqueue(targetMoveAI);
+						}
 					}
 				}
 			}
 
-			List<AIUnitMove> visitedList = new List<AIUnitMove>();
-			foreach (AIUnitMove move in visited) {
-				visitedList.Add(move);
-			}
-			return visitedList;
+			return visited.ToList();
 		}
 	}
 }

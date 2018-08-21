@@ -55,7 +55,8 @@ public static class Serialization {
 			for (int y = 0; y < parsedTiles.GetLength(1); y++) {
 				for (int z = 0; z < parsedTiles.GetLength(2); z++) {
 					int flatIndex = x + parsedTiles.GetLength(1) * (y + parsedTiles.GetLength(0) * z);
-					if (data[flatIndex] != -1) {
+					//If its an actual gameplay tile
+					if (data[flatIndex] != -1 && data[flatIndex] != 0) {
 						Tile tileObject = GameObject.Instantiate(tilePrefabs[data[flatIndex]],
 							Util.GridToWorld(x, y, z),
 							tilePrefabs[data[flatIndex]].transform.rotation)
@@ -70,7 +71,7 @@ public static class Serialization {
 		return parsedTiles;
 	}
 
-		//I know this is a hacky way of doing this, but it'll work.... for now....  #TODO
+	//I know this is a hacky way of doing this, but it'll work.... for now....  #TODO
 	public static Stack<Tile>[,] DeserializeTilesStack(string tileRaw, GameObject[] tilePrefabs) {
 		Tile[,,] parsedTiles = DeserializeTiles(tileRaw, tilePrefabs);
 		Stack<Tile>[,] stackedTiles = new Stack<Tile>[parsedTiles.GetLength(0), parsedTiles.GetLength(1)];
@@ -78,7 +79,9 @@ public static class Serialization {
 			for (int y = 0; y < parsedTiles.GetLength(1); y++) {
 				stackedTiles[x, y] = new Stack<Tile>();
 				for (int z = 0; z < parsedTiles.GetLength(2); z++) {
-					stackedTiles[x, y].Push(parsedTiles[x, y, z]);
+					if (parsedTiles[x, y, z] != null) {
+						stackedTiles[x, y].Push(parsedTiles[x, y, z]);
+					}
 				}
 			}
 		}

@@ -29,6 +29,7 @@ public static class Util {
 		}
 	}
 
+	//It'll integer cast, so if you give it a coord off the grid it's rounding down
 	public static Vector3Int WorldToGrid(Vector3 world) {
 		Vector3Int grid = new Vector3Int((int)(world.x / GridWidth), (int)(world.z / GridWidth), (int)(world.y / GridHeight));
 		if (((int)(grid.x) != grid.x) || ((int)(grid.y) != grid.y) || ((int)(grid.z) != grid.z)) {
