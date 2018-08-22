@@ -24,14 +24,22 @@ namespace Gameplay {
 		private List<Unit> highlightedEnemyUnits;
 		private Unit highlightedFriendlyUnit;
 
-		private int currentPlayer;
+		private int currentCharacter;
+		private int playerCharacter;
+
 		[SerializeField]
 		private Text turnPlayerText;
+		[SerializeField]
+		private Image turnChangeBackground;
+		[SerializeField]
+		private Image victoryImage;
+		[SerializeField]
+		private Image defeatImage;
 
 		// Use this for initialization
 		void Start() {
 			//Just for testing because we don't have any way to set the campaign yet:
-			Character[] characters = new[] { new Character("Alice"), new Character("Just some guy") };
+			Character[] characters = new[] { new Character("Alice"), new Character("The evil lord zxqv") };
 			Vector2Int[] aliceMoves = new[] { new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(1, 0) };
 			Vector2Int[] evilGuyMoves = new[] { new Vector2Int(3, 7), new Vector2Int(7, 4) };
 			Vector2Int[][] validPickTiles = new[] { aliceMoves, evilGuyMoves };
@@ -39,11 +47,15 @@ namespace Gameplay {
 			Campaign testCampaign = new Campaign("test", 0, new[] { level });
 			Persistance.campaign = testCampaign;
 
-
+			playerCharacter = 0;
 			battlefield = new Battlefield();
-			currentPlayer = -1;
+			currentCharacter = -1;
 			battleStage = BattleLoopStage.Initial;
+
 			turnPlayerText.enabled = false;
+			turnChangeBackground.enabled = false;
+			victoryImage.enabled = false;
+			defeatImage.enabled = false;
 			getLevel();
 			deserializeMap();
 		}
@@ -55,12 +67,12 @@ namespace Gameplay {
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.Pick:
-					//This is temp just for testing until I build pick phase.
-					addUnit(UnitType.Knight, level.players[0], 0, 0);
-					addUnit(UnitType.Knight, level.players[0], 1, 0);
-					addUnit(UnitType.Knight, level.players[0], 0, 1);
-					addUnit(UnitType.Knight, level.players[1], 3, 7);
-					addUnit(UnitType.Knight, level.players[1], 4, 7);
+					//TODO This is temp just for testing until pick phase gets built. 
+					addUnit(UnitType.Knight, level.characters[0], 0, 0);
+					addUnit(UnitType.Knight, level.characters[0], 1, 0);
+					addUnit(UnitType.Knight, level.characters[0], 0, 1);
+					addUnit(UnitType.Knight, level.characters[1], 3, 7);
+					addUnit(UnitType.Knight, level.characters[1], 4, 7);
 
 					advanceBattleStage();
 					break;
@@ -70,14 +82,16 @@ namespace Gameplay {
 				case BattleLoopStage.TurnChange:
 					//There's probably a less fragile way of doing this. It's just to make sure this call only happens once per turn loop.
 					if (!turnPlayerText.enabled) {
-						currentPlayer = (currentPlayer + 1) % level.players.Length;
-						turnPlayerText.text = level.players[currentPlayer].name + "'s turn";
+						currentCharacter = (currentCharacter + 1) % level.characters.Length;
+						turnPlayerText.text = level.characters[currentCharacter].name + "'s turn";
 						turnPlayerText.enabled = true;
+						turnChangeBackground.enabled = true;
 						Util.setTimeout(advanceBattleStage, 1000);
 					}
 					break;
 				case BattleLoopStage.TurnChangeEnd:
 					turnPlayerText.enabled = false;
+					turnChangeBackground.enabled = false;
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.UnitSelection:
@@ -95,7 +109,7 @@ namespace Gameplay {
 								highlightSingleObject(selectedTile.gameObject);
 							} else if (selectedItem is Unit) {
 								Unit selectedUnit = selectedItem as Unit;
-								if (selectedUnit.getCharacter(battlefield) == level.players[currentPlayer]) {
+								if (selectedUnit.getCharacter(battlefield) == level.characters[currentCharacter]) {
 									//Selected friendly unit. show move options.
 									highlightSingleObject(selectedUnit.gameObject, 1);
 									this.highlightedFriendlyUnit = selectedUnit;
@@ -146,19 +160,26 @@ namespace Gameplay {
 								battleStage = BattleLoopStage.UnitSelection;
 							} else if (selectedItem is Unit) {
 								Unit selectedUnit = selectedItem as Unit;
-								if (selectedUnit.getCharacter(battlefield) == level.players[currentPlayer]) {
+								if (selectedUnit.getCharacter(battlefield) == level.characters[currentCharacter]) {
 									//Clicked on a friendly unit. Deselect the current one.
 									deselectMoveOptions();
 									battleStage = BattleLoopStage.UnitSelection;
 								} else {
 									//Clicked on a hostile unit! fight!
 									//TODO: Check that the enemy unit is in range
-									highlightedFriendlyUnit.doBattleWith(selectedUnit, battlefield.map[tileCoords.x, tileCoords.y].Peek());
-									//If we didnt' defeat the enemy unit in battle, they get a counter attack
-									if (selectedUnit != null) {
+									bool defenderDefeated = highlightedFriendlyUnit.doBattleWith(
+										selectedUnit,
+										battlefield.map[tileCoords.x, tileCoords.y].Peek(),
+										battlefield);
+
+									if (!defenderDefeated) {
 										Vector3Int unitCoords = battlefield.getUnitCoords(highlightedFriendlyUnit);
-										selectedUnit.doBattleWith(highlightedFriendlyUnit, battlefield.map[unitCoords.x, unitCoords.y].Peek());
+										bool attackerDefeated = selectedUnit.doBattleWith(
+											highlightedFriendlyUnit,
+											battlefield.map[unitCoords.x, unitCoords.y].Peek(),
+											battlefield);
 									}
+
 									deselectMoveOptions();
 									advanceBattleStage();
 								}
@@ -170,9 +191,36 @@ namespace Gameplay {
 
 					break;
 				case BattleLoopStage.EndTurn:
-					advanceBattleStage();
+					if (winCondition()) {
+						//TODO: advance campaign
+						victoryImage.enabled = true;
+					} else if (loseCondition()) {
+						defeatImage.enabled = true;
+					} else {
+						advanceBattleStage();
+					}
 					break;
 			}
+		}
+
+		//Returns true if the human player has won, false otherwise
+		private bool winCondition() {
+			foreach (Character character in battlefield.charactersUnits.Keys) {
+				if (character != level.characters[playerCharacter]) {
+					if (battlefield.charactersUnits[character].Count() != 0) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		//returns true if the human player has lost, false otherwise
+		private bool loseCondition() {
+			if (battlefield.charactersUnits[level.characters[playerCharacter]].Count() == 0) {
+				return true;
+			}
+			return false;
 		}
 
 		private void moveUnit(Unit unit, Vector3Int target) {
@@ -202,23 +250,10 @@ namespace Gameplay {
 		private void highlightMultipleObjects(GameObject objectToHighlight, int colorIndex = 0) {
 			objectToHighlight.AddComponent<cakeslice.Outline>();
 			objectToHighlight.GetComponent<cakeslice.Outline>().color = colorIndex;
-			// Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
-			// foreach (Material material in materials) {
-			//Set the main Color of the Material to green
-			// material.shader = Shader.Find("Self-Illumin/Outlined Diffuse");
-			// material.SetColor("_Color", Color.green);
-
-			// }
 		}
 
 		private void unhighlightMultipleObjects(GameObject objectToHighlight) {
 			Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
-			// Material[] materials = objectToHighlight.GetComponent<Renderer>().materials;
-			// foreach (Material material in materials) {
-			//Set the main Color of the Material to green
-			// material.shader = Shader.Find("Standard");
-			// material.SetColor("_Color", Color.blue);
-			// }
 		}
 
 		//Convenience

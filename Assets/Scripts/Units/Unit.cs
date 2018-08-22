@@ -55,23 +55,28 @@ namespace Units {
 		}
 
 		//returns true if the enemy was destroyed by battle
-		public void doBattleWith(Unit enemy, Tile enemyTile) {
-			float damage = this.weapon.baseDamage * ( 1f * this.health / this.maxHealth);
+		public bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
+			float damage = this.weapon.baseDamage * (1f * this.health / this.maxHealth);
 			damage = damage * ((100 - this.weapon.damageType.DamageReduction(enemy.armor)) / 100.0f);
 			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
 			//Damage rounds up
 			enemy.health -= (int)(Mathf.Ceil(damage));
-			enemy.healthBar.fillAmount = 1f * this.health / this.maxHealth;
-			Debug.Log("battle happened! " + damage + " damage dealt, leaving the target with " + enemy.health + " health.");
-			
+			enemy.healthBar.fillAmount = 1f * enemy.health / enemy.maxHealth;
+			// Debug.Log(this + " attacked " + enemy + " dealing " + damage + " damage, leaving the target with " + enemy.health + " health.");
+
 			if (enemy.health <= 0) {
-				enemy.defeated();
+				enemy.defeated(battlefield);
+				return true;
+			} else {
+				return false;
 			}
+
 		}
 
-		public void defeated() {
+		public void defeated(Battlefield battlefield) {
 			Destroy(this.gameObject);
+			battlefield.charactersUnits[this.getCharacter(battlefield)].Remove(this);
 		}
 
 		/*

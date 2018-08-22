@@ -78,7 +78,7 @@ namespace Gameplay {
 			units[x, y] = unit;
 
 			if (!charactersUnits.ContainsKey(character)) {
-				charactersUnits[character] = new List<Unit>(new[] { unit });
+				charactersUnits[character] = new List<Unit>();
 			}
 
 			List<Unit> unitList = charactersUnits[character];
