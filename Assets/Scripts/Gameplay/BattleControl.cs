@@ -114,13 +114,15 @@ namespace Gameplay {
 									highlightSingleObject(selectedUnit.gameObject, 1);
 									this.highlightedFriendlyUnit = selectedUnit;
 
-									List<UnitMove> validMoves = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
-									this.moveOptions = validMoves;
+									moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
 									foreach (UnitMove moveOption in moveOptions) {
 										highlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 									}
 
-									//TODO: Highlight all enemy units in range.
+									this.highlightedEnemyUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, level.characters[currentCharacter]);
+									foreach (Unit targetableUnit in highlightedEnemyUnits) {
+										highlightMultipleObjects(targetableUnit.gameObject, 2);
+									}
 
 									advanceBattleStage();
 								} else {
@@ -166,22 +168,23 @@ namespace Gameplay {
 									battleStage = BattleLoopStage.UnitSelection;
 								} else {
 									//Clicked on a hostile unit! fight!
-									//TODO: Check that the enemy unit is in range
-									bool defenderDefeated = highlightedFriendlyUnit.doBattleWith(
-										selectedUnit,
-										battlefield.map[tileCoords.x, tileCoords.y].Peek(),
-										battlefield);
-
-									if (!defenderDefeated) {
-										Vector3Int unitCoords = battlefield.getUnitCoords(highlightedFriendlyUnit);
-										bool attackerDefeated = selectedUnit.doBattleWith(
-											highlightedFriendlyUnit,
-											battlefield.map[unitCoords.x, unitCoords.y].Peek(),
+									if (highlightedEnemyUnits.Contains(selectedUnit)) {
+										bool defenderDefeated = highlightedFriendlyUnit.doBattleWith(
+											selectedUnit,
+											battlefield.map[tileCoords.x, tileCoords.y].Peek(),
 											battlefield);
-									}
 
-									deselectMoveOptions();
-									advanceBattleStage();
+										if (!defenderDefeated) {
+											UnitMove unitCoords = battlefield.getUnitCoords(highlightedFriendlyUnit);
+											bool attackerDefeated = selectedUnit.doBattleWith(
+												highlightedFriendlyUnit,
+												battlefield.map[unitCoords.x, unitCoords.y].Peek(),
+												battlefield);
+										}
+
+										deselectMoveOptions();
+										advanceBattleStage();
+									}
 								}
 							} else {
 								Debug.LogWarning("Item of unrecognized type clicked on.");
@@ -224,7 +227,7 @@ namespace Gameplay {
 		}
 
 		private void moveUnit(Unit unit, Vector3Int target) {
-			Vector3Int unitCoords = battlefield.getUnitCoords(unit);
+			UnitMove unitCoords = battlefield.getUnitCoords(unit);
 			battlefield.units[target.x, target.y] = unit;
 			battlefield.units[unitCoords.x, unitCoords.y] = null;
 			unit.gameObject.transform.position = Util.GridToWorld(target + new Vector3Int(0, 0, 1));
@@ -275,8 +278,13 @@ namespace Gameplay {
 				unhighlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 			}
 
+			foreach (Unit highlightedEnemyUnit in highlightedEnemyUnits) {
+				unhighlightMultipleObjects(highlightedEnemyUnit.gameObject);
+			}
+
 			highlightSingleObject(highlightedObject);
 			moveOptions = null;
+			highlightedEnemyUnits = null;
 			highlightedObject = null;
 		}
 

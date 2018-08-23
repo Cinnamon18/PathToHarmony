@@ -115,5 +115,18 @@ namespace Units {
 
 			return visited.ToList();
 		}
+
+		public List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+			//TODO: Replace this with an actual implementation taking into account range and junk.
+			List<Unit> targets = new List<Unit>();
+			List<UnitMove> tiles = getValidMoves(myX, myY, battlefield);
+			foreach(UnitMove tile in tiles) {
+				Unit targetUnit = battlefield.units[tile.x, tile.y];
+				if(targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
+					targets.Add(targetUnit);
+				}
+			}
+			return targets;
+		}
 	}
 }

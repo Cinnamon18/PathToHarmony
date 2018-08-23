@@ -62,16 +62,16 @@ namespace Gameplay {
 			return null;
 		}
 
-		public Vector3Int getUnitCoords(Unit unit) {
+		public UnitMove getUnitCoords(Unit unit) {
 			for (int x = 0; x < units.GetLength(0); x++) {
 				for (int y = 0; y < units.GetLength(1); y++) {
 					if (units[x, y] == unit) {
-						return new Vector3Int(x, y, map[x, y].Count);
+						return new UnitMove(x, y);
 					}
 				}
 			}
 			//Vector3Int is non nullable apparently? sorry abt this.
-			return new Vector3Int(-999, -999, -999);
+			return null;
 		}
 
 		public void addUnit(Unit unit, Character character, int x, int y) {
