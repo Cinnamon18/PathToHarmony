@@ -28,6 +28,8 @@ namespace Gameplay {
 		private int playerCharacter;
 
 		[SerializeField]
+		private Cutscene cutscene;
+		[SerializeField]
 		private Text turnPlayerText;
 		[SerializeField]
 		private Image turnChangeBackground;
@@ -58,6 +60,8 @@ namespace Gameplay {
 			defeatImage.enabled = false;
 			getLevel();
 			deserializeMap();
+
+			GameObject.Instantiate(cutscene);
 		}
 
 		// Update is called once per frame
