@@ -1,10 +1,10 @@
 namespace Gameplay {
-	//A move for a unit, only contains destination information
-	public class UnitMove {
+	//coordinate on the board, often a vector for the movement of a unit
+	public class Coord {
 		public int x;
 		public int y;
 
-		public UnitMove(int x, int y) {
+		public Coord(int x, int y) {
 			this.x = x;
 			this.y = y;
 		}
@@ -13,7 +13,7 @@ namespace Gameplay {
 			if (obj == null || GetType() != obj.GetType())
 				return false;
 
-			UnitMove p = (UnitMove)obj;
+			Coord p = (Coord)obj;
 			return (x == p.x) && (y == p.y);
 		}
 

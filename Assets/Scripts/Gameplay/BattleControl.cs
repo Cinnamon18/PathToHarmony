@@ -20,7 +20,7 @@ namespace Gameplay {
 
 		private GameObject highlightedObject;
 		private BattleLoopStage battleStage;
-		private List<UnitMove> moveOptions;
+		private List<Coord> moveOptions;
 		private List<Unit> highlightedEnemyUnits;
 		private Unit highlightedFriendlyUnit;
 
@@ -119,7 +119,7 @@ namespace Gameplay {
 									this.highlightedFriendlyUnit = selectedUnit;
 
 									moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
-									foreach (UnitMove moveOption in moveOptions) {
+									foreach (Coord moveOption in moveOptions) {
 										highlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 									}
 
@@ -179,7 +179,7 @@ namespace Gameplay {
 											battlefield);
 
 										if (!defenderDefeated) {
-											UnitMove unitCoords = battlefield.getUnitCoords(highlightedFriendlyUnit);
+											Coord unitCoords = battlefield.getUnitCoords(highlightedFriendlyUnit);
 											bool attackerDefeated = selectedUnit.doBattleWith(
 												highlightedFriendlyUnit,
 												battlefield.map[unitCoords.x, unitCoords.y].Peek(),
@@ -231,7 +231,7 @@ namespace Gameplay {
 		}
 
 		private void moveUnit(Unit unit, Vector3Int target) {
-			UnitMove unitCoords = battlefield.getUnitCoords(unit);
+			Coord unitCoords = battlefield.getUnitCoords(unit);
 			battlefield.units[target.x, target.y] = unit;
 			battlefield.units[unitCoords.x, unitCoords.y] = null;
 			unit.gameObject.transform.position = Util.GridToWorld(target + new Vector3Int(0, 0, 1));
@@ -278,7 +278,7 @@ namespace Gameplay {
 		}
 
 		private void deselectMoveOptions() {
-			foreach (UnitMove moveOption in moveOptions) {
+			foreach (Coord moveOption in moveOptions) {
 				unhighlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 			}
 

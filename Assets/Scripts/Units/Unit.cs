@@ -83,13 +83,13 @@ namespace Units {
 		For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
 		We can get away with this because there's only one "flow" source point (the unit).
 		 */
-		public List<UnitMove> getValidMoves(int myX, int myY, Battlefield battlefield) {
+		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
 
-			HashSet<UnitMove> visited = new HashSet<UnitMove>();
-			PriorityQueue<AIUnitMove> movePQueue = new PriorityQueue<AIUnitMove>();
-			movePQueue.Enqueue(new AIUnitMove(myX, myY, 0));
+			HashSet<Coord> visited = new HashSet<Coord>();
+			PriorityQueue<AIMove> movePQueue = new PriorityQueue<AIMove>();
+			movePQueue.Enqueue(new AIMove(myX, myY, 0));
 			while (movePQueue.Count() > 0) {
-				AIUnitMove currentMove = movePQueue.Dequeue();
+				AIMove currentMove = movePQueue.Dequeue();
 				//check all four directions
 				int[,] moveDirs = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 
@@ -99,9 +99,9 @@ namespace Units {
 					if (targetX < battlefield.map.GetLength(0) && targetY < battlefield.map.GetLength(1) && targetX >= 0 && targetY >= 0) {
 						Stack<Tile> targetTile = battlefield.map[targetX, targetY];
 
-						int movePointsExpended = currentMove.movePoints + targetTile.Peek().tileType.Cost(this.moveType);
-						UnitMove targetMove = new UnitMove(targetX, targetY);
-						AIUnitMove targetMoveAI = new AIUnitMove(targetX, targetY, movePointsExpended);
+						int movePointsExpended = currentMove.weight + targetTile.Peek().tileType.Cost(this.moveType);
+						Coord targetMove = new Coord(targetX, targetY);
+						AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
 
 						if (movePointsExpended <= unitType.unitMoveDistance()) {
 							if (!visited.Contains(targetMove)) {
@@ -119,8 +119,8 @@ namespace Units {
 		public List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
 			//TODO: Replace this with an actual implementation taking into account range and junk.
 			List<Unit> targets = new List<Unit>();
-			List<UnitMove> tiles = getValidMoves(myX, myY, battlefield);
-			foreach(UnitMove tile in tiles) {
+			List<Coord> tiles = getValidMoves(myX, myY, battlefield);
+			foreach(Coord tile in tiles) {
 				Unit targetUnit = battlefield.units[tile.x, tile.y];
 				if(targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
 					targets.Add(targetUnit);

@@ -62,11 +62,11 @@ namespace Gameplay {
 			return null;
 		}
 
-		public UnitMove getUnitCoords(Unit unit) {
+		public Coord getUnitCoords(Unit unit) {
 			for (int x = 0; x < units.GetLength(0); x++) {
 				for (int y = 0; y < units.GetLength(1); y++) {
 					if (units[x, y] == unit) {
-						return new UnitMove(x, y);
+						return new Coord(x, y);
 					}
 				}
 			}
