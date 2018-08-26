@@ -6,6 +6,8 @@ using Constants;
 using UnityEngine.UI;
 using System;
 using System.Linq;
+using Cutscenes;
+using System.Threading.Tasks;
 
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
@@ -27,6 +29,7 @@ namespace Gameplay {
 		private int currentCharacter;
 		private int playerCharacter;
 
+		//Just a refrence to the cutscene prefab
 		[SerializeField]
 		private Cutscene cutscene;
 		[SerializeField]
@@ -61,14 +64,18 @@ namespace Gameplay {
 			getLevel();
 			deserializeMap();
 
-			GameObject.Instantiate(cutscene);
+			CutsceneCharacter blair = CutsceneCharacter.blair;
+			CutsceneCharacter juniper = CutsceneCharacter.juniper;
+			cutscene.setup(new CutsceneCharacter[] { CutsceneCharacter.blair, CutsceneCharacter.juniper }, blair, juniper);
 		}
 
 		// Update is called once per frame
-		void Update() {
+		async void Update() {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
-					advanceBattleStage();
+					if (!cutscene.inProgress) {
+						advanceBattleStage();
+					}
 					break;
 				case BattleLoopStage.Pick:
 					//TODO This is temp just for testing until pick phase gets built. 
@@ -177,6 +184,8 @@ namespace Gameplay {
 											selectedUnit,
 											battlefield.map[tileCoords.x, tileCoords.y].Peek(),
 											battlefield);
+
+										await Task.Delay(TimeSpan.FromMilliseconds(1000));
 
 										if (!defenderDefeated) {
 											Coord unitCoords = battlefield.getUnitCoords(highlightedFriendlyUnit);
