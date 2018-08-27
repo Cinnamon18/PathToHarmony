@@ -1,6 +1,6 @@
 namespace Cutscenes {
 	//TODO: Need to cut these down too....
-	public enum CutsceneBackgrounds {
+	public enum CutsceneBackground {
 		None,
 		Academy,
 		Camp,

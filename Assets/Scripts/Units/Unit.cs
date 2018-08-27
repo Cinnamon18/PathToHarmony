@@ -19,7 +19,7 @@ namespace Units {
 		private readonly UnitType unitType;
 		private readonly int maxHealth;
 		private int health;
-		private bool hasMovedThisTurn;
+		public bool hasMovedThisTurn;
 		//How many tiles this unit can move per turn turn
 		private int numMoveTiles { get; set; }
 

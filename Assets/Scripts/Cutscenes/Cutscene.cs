@@ -8,10 +8,13 @@ using System.Threading.Tasks;
 namespace Cutscenes {
 	public class Cutscene : MonoBehaviour {
 
+		private readonly float TRANSITION_DELAY_TIME = 0.35f;
+
 		private static Sprite[] backgrounds;
 		private CutsceneCharacter[] characters;
 		private CutsceneCharacter leftCharacter;
 		private CutsceneCharacter rightCharacter;
+		private CutsceneScript script;
 		public bool inProgress;
 
 		[SerializeField]
@@ -20,6 +23,10 @@ namespace Cutscenes {
 		public Image leftImage;
 		[SerializeField]
 		public Image rightImage;
+		[SerializeField]
+		public Image dialogueBackground;
+		[SerializeField]
+		public Text dialogueText;
 
 		void Awake() {
 			backgrounds = new Sprite[] {
@@ -32,16 +39,26 @@ namespace Cutscenes {
 		// (which i'm pretty sure means we can't use a factory) and avoid the "can we beat the first frame"
 		// race condition. I hope. I think. Godddd unity :( 
 
-		public void setup(CutsceneCharacter[] characters, CutsceneCharacter left, CutsceneCharacter right) {
+		public void setup(CutsceneCharacter[] characters, CutsceneScript script) {
 			this.characters = characters;
-			leftCharacter = left;
-			rightCharacter = right;
+			this.script = script;
 		}
 
 		// Use this for initialization
 		IEnumerator Start() {
 			inProgress = true;
 			yield return PlayScene();
+			currentBackground.enabled = false;
+			dialogueBackground.enabled = false;
+			dialogueText.enabled = false;
+
+			if (leftImage != null) {
+				leftImage.enabled = false;
+			}
+			if (rightImage != null) {
+				rightImage.enabled = false;
+			}
+
 			this.inProgress = false;
 		}
 
@@ -49,44 +66,83 @@ namespace Cutscenes {
 		// the ugly ugly PlayScene and the CutsceneAction type I'll love you forever. Maybe smth like:
 		// https://answers.unity.com/questions/542115/is-there-any-way-to-use-coroutines-with-anonymous.html
 		IEnumerator PlayScene() {
-			yield return transitionIn(leftCharacter, CharacterSide.Left);
-			yield return transitionIn(rightCharacter, CharacterSide.Right);
-			setBackground(CutsceneBackgrounds.None);
-			yield return transitionOut(CharacterSide.Left);
-			yield return transitionOut(CharacterSide.Right);
+			foreach (CutsceneScriptLine line in script.script) {
+				switch (line.action) {
+					case CutsceneAction.TransitionIn:
+						yield return transitionIn(line.character, line.side);
+						break;
+					case CutsceneAction.TransitionOut:
+						yield return transitionOut(line.side);
+						break;
+					case CutsceneAction.SetCharacter:
+						yield return setCharacter(line.character, line.side);
+						break;
+					case CutsceneAction.FocusSide:
+						focusSide(line.side);
+						break;
+					case CutsceneAction.SetBackground:
+						setBackground(line.background);
+						break;
+					case CutsceneAction.SayDialogue:
+						yield return sayDialogue(line.character, line.dialogue);
+						break;
+					default:
+						Debug.LogError("Unrecognized CutsceneAction type");
+						break;
+				}
+
+				yield return new WaitForSeconds(0.5f);
+			}
 		}
 
+		public IEnumerator sayDialogue(CutsceneCharacter character, string dialogue) {
+			focusSide(character);
+			dialogue = character.name.ToUpper() + ": " + dialogue;
+			dialogueText.text = dialogue;
+			yield return new WaitForSeconds(dialogue.Length * 0.04f + 1.5f);
+		}
 
-		public void setBackground(CutsceneBackgrounds background) {
+		public void setBackground(CutsceneBackground background) {
 			currentBackground.sprite = backgrounds[(int)(background)];
 		}
 
-		public void focusSide(CharacterSide side) {
-			if (side == CharacterSide.Left) {
+		public void focusSide(CutsceneCharacter character) {
+			CutsceneSide side = (character == leftCharacter) ? CutsceneSide.Left : CutsceneSide.Right;
+			focusSide(side);
+		}
+
+		public void focusSide(CutsceneSide side) {
+			if (side == CutsceneSide.Left) {
 				restoreColor(leftImage);
 				greyOut(rightImage);
-			} else if (side == CharacterSide.Right) {
+			} else if (side == CutsceneSide.Right) {
 				restoreColor(rightImage);
 				greyOut(leftImage);
 			}
 		}
 
-		public async void setCharacter(CutsceneCharacter character, CharacterSide side) {
-			CutsceneCharacter oldCharacter = (side == CharacterSide.Left) ? leftCharacter : rightCharacter;
+		public IEnumerator setCharacter(CutsceneCharacter character, CutsceneSide side) {
+			bool isLeft = (side == CutsceneSide.Left);
+			CutsceneCharacter oldCharacter = isLeft ? leftCharacter : rightCharacter;
 			if (oldCharacter != null) {
-				transitionOut(side);
-
+				yield return transitionOut(side);
+				yield return new WaitForSeconds(0.5f);
 			}
-			await Task.Delay(TimeSpan.FromMilliseconds(500));
-			oldCharacter = character;
-			transitionIn(character, side);
+
+			if (isLeft) {
+				leftCharacter = character;
+			} else {
+				rightCharacter = character;
+			}
+			yield return transitionIn(character, side);
 		}
 
-		public IEnumerator transitionOut(CharacterSide side) {
+		public IEnumerator transitionOut(CutsceneSide side) {
 			Image img;
 			CutsceneCharacter oldCharacter;
 			string animationName;
-			if (side == CharacterSide.Left) {
+			bool isLeft = side == CutsceneSide.Left;
+			if (isLeft) {
 				img = leftImage;
 				oldCharacter = leftCharacter;
 				animationName = "CutsceneLeftCharacterOut";
@@ -98,20 +154,22 @@ namespace Cutscenes {
 
 			Animation anim = img.GetComponent<Animation>();
 			anim.Play(animationName);
-			// while (anim.isPlaying) {
-			// 	yield return null;
-			// }
 			yield return WaitForAnimation(anim);
 
-			img = null;
-			oldCharacter = null;
+			if (isLeft) {
+				leftImage = null;
+				leftCharacter = null;
+			} else {
+				rightImage = null;
+				rightCharacter = null;
+			}
 		}
 
-		public IEnumerator transitionIn(CutsceneCharacter character, CharacterSide side) {
+		public IEnumerator transitionIn(CutsceneCharacter character, CutsceneSide side) {
 			Image img;
 			CutsceneCharacter oldCharacter;
 			string animationName;
-			if (side == CharacterSide.Left) {
+			if (side == CutsceneSide.Left) {
 				img = leftImage;
 				oldCharacter = leftCharacter;
 				animationName = "CutsceneLeftCharacterIn";
@@ -124,9 +182,6 @@ namespace Cutscenes {
 			img.sprite = character.currentExpression;
 			Animation anim = img.GetComponent<Animation>();
 			anim.Play(animationName);
-			// while (anim.isPlaying) {
-			// 	yield return null;
-			// }
 			yield return WaitForAnimation(anim);
 		}
 
@@ -137,11 +192,11 @@ namespace Cutscenes {
 		}
 
 		public void restoreColor(Image img) {
-
+			img.color = Color.white;
 		}
 
 		public void greyOut(Image img) {
-
+			img.color = new Color(0.5f, 0.5f, 0.5f);
 		}
 
 	}

@@ -52,6 +52,23 @@ namespace Gameplay {
 			Campaign testCampaign = new Campaign("test", 0, new[] { level });
 			Persistance.campaign = testCampaign;
 
+			//This will be encoded in the campaign
+			CutsceneCharacter blair = CutsceneCharacter.blair;
+			CutsceneCharacter juniper = CutsceneCharacter.juniper;
+			CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine> {
+				new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.Academy),
+				new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
+				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is Blair!"),
+				new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
+				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm Juniper."),
+				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "There's a third major character, Bruno. He would've been here, but he got tied up with paperwork"),
+				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Which is to say we ran out of art budget"),
+				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Anyways, I hope you enjoy this slick as h*ck demo"),
+				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right)
+			});
+			cutscene.setup(new CutsceneCharacter[] { blair, juniper }, script);
+
+			//Actual constructor code. This should still be here after the demo :p
 			playerCharacter = 0;
 			battlefield = new Battlefield();
 			currentCharacter = -1;
@@ -63,10 +80,6 @@ namespace Gameplay {
 			defeatImage.enabled = false;
 			getLevel();
 			deserializeMap();
-
-			CutsceneCharacter blair = CutsceneCharacter.blair;
-			CutsceneCharacter juniper = CutsceneCharacter.juniper;
-			cutscene.setup(new CutsceneCharacter[] { CutsceneCharacter.blair, CutsceneCharacter.juniper }, blair, juniper);
 		}
 
 		// Update is called once per frame
@@ -165,7 +178,14 @@ namespace Gameplay {
 								if (moveOptions.Any(move => (move.x == tileCoords.x && move.y == tileCoords.y))) {
 									moveUnit(highlightedFriendlyUnit, tileCoords);
 									deselectMoveOptions();
-									advanceBattleStage();
+
+									highlightedFriendlyUnit.hasMovedThisTurn = true;
+
+									if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => unit.hasMovedThisTurn)) {
+										advanceBattleStage();
+									} else {
+										this.battleStage = BattleLoopStage.UnitSelection;
+									}
 								}
 							} else if (highlightedFriendlyUnit == selectedItem || selectedItem == null) {
 								//Decided not to move that unit afterall, deselect it
@@ -185,18 +205,29 @@ namespace Gameplay {
 											battlefield.map[tileCoords.x, tileCoords.y].Peek(),
 											battlefield);
 
-										await Task.Delay(TimeSpan.FromMilliseconds(1000));
+										await Task.Delay(TimeSpan.FromMilliseconds(250));
 
-										if (!defenderDefeated) {
+										if (defenderDefeated) {
+											highlightedEnemyUnits.RemoveAll(units => units == null);
+										} else {
+											//Counterattack
 											Coord unitCoords = battlefield.getUnitCoords(highlightedFriendlyUnit);
 											bool attackerDefeated = selectedUnit.doBattleWith(
 												highlightedFriendlyUnit,
 												battlefield.map[unitCoords.x, unitCoords.y].Peek(),
 												battlefield);
 										}
+										checkWinAndLose();
 
+										highlightedFriendlyUnit.hasMovedThisTurn = true;
+										await Task.Delay(TimeSpan.FromMilliseconds(250));
 										deselectMoveOptions();
-										advanceBattleStage();
+
+										if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => unit.hasMovedThisTurn)) {
+											advanceBattleStage();
+										} else {
+											this.battleStage = BattleLoopStage.UnitSelection;
+										}
 									}
 								}
 							} else {
@@ -207,15 +238,22 @@ namespace Gameplay {
 
 					break;
 				case BattleLoopStage.EndTurn:
-					if (winCondition()) {
-						//TODO: advance campaign
-						victoryImage.enabled = true;
-					} else if (loseCondition()) {
-						defeatImage.enabled = true;
-					} else {
-						advanceBattleStage();
+					foreach (Unit unit in battlefield.charactersUnits[level.characters[currentCharacter]]) {
+						unit.hasMovedThisTurn = false;
 					}
+
+					checkWinAndLose();
+					advanceBattleStage();
 					break;
+			}
+		}
+
+		private void checkWinAndLose() {
+			if (winCondition()) {
+				//TODO: advance campaign
+				victoryImage.enabled = true;
+			} else if (loseCondition()) {
+				defeatImage.enabled = true;
 			}
 		}
 
@@ -269,7 +307,9 @@ namespace Gameplay {
 		}
 
 		private void unhighlightMultipleObjects(GameObject objectToHighlight) {
-			Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
+			if (objectToHighlight != null) {
+				Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
+			}
 		}
 
 		//Convenience

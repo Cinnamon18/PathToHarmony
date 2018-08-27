@@ -15,21 +15,23 @@ namespace Cutscenes {
 			null
 		};
 
+		public string name;
 		public Sprite[] expressions;
 		public Sprite currentExpression;
 
-		public CutsceneCharacter(Sprite[] expressions) {
+		public CutsceneCharacter(string name, Sprite[] expressions) {
+			this.name = name;
 			this.expressions = expressions;
 			currentExpression = this.expressions[0];
 		}
 
-		public void setExpression(CutsceneCharacterExpressions expression) {
+		public void setExpression(CharacterExpression expression) {
 			currentExpression = expressions[(int)(expression)];
 		}
 
-		public static readonly CutsceneCharacter blair = new CutsceneCharacter(blairExpressions);
-		public static readonly CutsceneCharacter juniper = new CutsceneCharacter(juniperExpressions);
-		public static readonly CutsceneCharacter bruno = new CutsceneCharacter(brunoExpressions);
+		public static readonly CutsceneCharacter blair = new CutsceneCharacter("Blair", blairExpressions);
+		public static readonly CutsceneCharacter juniper = new CutsceneCharacter("Juniper", juniperExpressions);
+		public static readonly CutsceneCharacter bruno = new CutsceneCharacter("Bruno", brunoExpressions);
 
 	}
 }
