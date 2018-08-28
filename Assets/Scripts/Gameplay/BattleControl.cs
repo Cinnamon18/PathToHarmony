@@ -62,7 +62,7 @@ namespace Gameplay {
 				new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm Juniper."),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "There's a third major character, Bruno. He would've been here, but he got tied up with paperwork"),
-				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Which is to say we ran out of art budget"),
+				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Which is to say we ran out of budget"),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Anyways, I hope you enjoy this slick as h*ck demo"),
 				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right)
 			});
@@ -97,6 +97,13 @@ namespace Gameplay {
 					addUnit(UnitType.Knight, level.characters[0], 0, 1);
 					addUnit(UnitType.Knight, level.characters[1], 3, 7);
 					addUnit(UnitType.Knight, level.characters[1], 4, 7);
+					foreach (Unit unit in battlefield.charactersUnits[level.characters[1]]) {
+						Renderer rend = unit.gameObject.GetComponent<Renderer>();
+						rend.material.shader = Shader.Find("_Color");
+						rend.material.SetColor("_Color", Color.green);
+						rend.material.shader = Shader.Find("Specular");
+						rend.material.SetColor("_SpecColor", Color.green);
+					}
 
 					advanceBattleStage();
 					break;
