@@ -11,7 +11,12 @@ ModelImporter:
     4300000: Cube
     7400000: Default Take
     9500000: //RootNode
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Dirt
+    second: {fileID: 2100000, guid: b9e8439c0733e494f9d89a78fe6f38b4, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

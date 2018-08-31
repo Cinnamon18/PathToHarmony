@@ -14,7 +14,27 @@ ModelImporter:
     4300000: Cube
     7400000: Default Take
     9500000: //RootNode
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Dirt
+    second: {fileID: 2100000, guid: 13be2a816ebd66c4389eb2228800c706, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GrassBlades
+    second: {fileID: 2100000, guid: 8e0632e42a1f9f840a56cb3caa4cb3f3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leaves
+    second: {fileID: 2100000, guid: 5ab798a760250b94db5e7a7465b3025e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood
+    second: {fileID: 2100000, guid: 33ebf371b4ac7fd4aa9436135a541b47, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
