@@ -39,25 +39,25 @@ namespace Cutscenes {
 		// (which i'm pretty sure means we can't use a factory) and avoid the "can we beat the first frame"
 		// race condition. I hope. I think. Godddd unity :( 
 
-		public void setup(CutsceneCharacter[] characters, CutsceneScript script) {
+		public void setup(CutsceneCharacter[] characters, CutsceneScript script, Cutscene refrenceDupe = null) {
 			this.characters = characters;
 			this.script = script;
+
+			if (refrenceDupe != null) {
+				this.currentBackground = refrenceDupe.currentBackground;
+				this.leftImage = refrenceDupe.leftImage;
+				this.rightImage = refrenceDupe.rightImage;
+				this.dialogueBackground = refrenceDupe.dialogueBackground;
+				this.dialogueText = refrenceDupe.dialogueText;
+			}
 		}
 
 		// Use this for initialization
-		IEnumerator Start() {
+		public IEnumerator Start() {
 			inProgress = true;
+			setUIVisibility(true);
 			yield return PlayScene();
-			currentBackground.enabled = false;
-			dialogueBackground.enabled = false;
-			dialogueText.enabled = false;
-
-			if (leftImage != null) {
-				leftImage.enabled = false;
-			}
-			if (rightImage != null) {
-				rightImage.enabled = false;
-			}
+			setUIVisibility(false);
 
 			this.inProgress = false;
 		}
@@ -114,10 +114,14 @@ namespace Cutscenes {
 		public void focusSide(CutsceneSide side) {
 			if (side == CutsceneSide.Left) {
 				restoreColor(leftImage);
-				greyOut(rightImage);
+				if (rightImage != null) {
+					greyOut(rightImage);
+				}
 			} else if (side == CutsceneSide.Right) {
 				restoreColor(rightImage);
-				greyOut(leftImage);
+				if (leftImage != null) {
+					greyOut(leftImage);
+				}
 			}
 		}
 
@@ -157,10 +161,10 @@ namespace Cutscenes {
 			yield return WaitForAnimation(anim);
 
 			if (isLeft) {
-				leftImage = null;
+				// leftImage = null;
 				leftCharacter = null;
 			} else {
-				rightImage = null;
+				// rightImage = null;
 				rightCharacter = null;
 			}
 		}
@@ -197,6 +201,19 @@ namespace Cutscenes {
 
 		public void greyOut(Image img) {
 			img.color = new Color(0.5f, 0.5f, 0.5f);
+		}
+
+		private void setUIVisibility(bool visible) {
+			currentBackground.enabled = visible;
+			dialogueBackground.enabled = visible;
+			dialogueText.enabled = visible;
+
+			if (leftImage != null) {
+				leftImage.enabled = visible;
+			}
+			if (rightImage != null) {
+				rightImage.enabled = visible;
+			}
 		}
 
 	}

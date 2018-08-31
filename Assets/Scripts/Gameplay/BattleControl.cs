@@ -64,7 +64,8 @@ namespace Gameplay {
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "There's a third major character, Bruno. He would've been here, but he got tied up with paperwork"),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Which is to say we ran out of budget"),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Anyways, I hope you enjoy this slick as h*ck demo"),
-				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right)
+				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
+				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
 			});
 			cutscene.setup(new CutsceneCharacter[] { blair, juniper }, script);
 
@@ -140,7 +141,7 @@ namespace Gameplay {
 								highlightSingleObject(selectedTile.gameObject);
 							} else if (selectedItem is Unit) {
 								Unit selectedUnit = selectedItem as Unit;
-								if (selectedUnit.getCharacter(battlefield) == level.characters[currentCharacter]) {
+								if (selectedUnit.getCharacter(battlefield) == level.characters[currentCharacter] && !selectedUnit.hasMovedThisTurn) {
 									//Selected friendly unit. show move options.
 									highlightSingleObject(selectedUnit.gameObject, 1);
 									this.highlightedFriendlyUnit = selectedUnit;
@@ -255,10 +256,27 @@ namespace Gameplay {
 			}
 		}
 
-		private void checkWinAndLose() {
+		private async void checkWinAndLose() {
 			if (winCondition()) {
 				//TODO: advance campaign
 				victoryImage.enabled = true;
+
+				await Task.Delay(TimeSpan.FromMilliseconds(3000));
+
+				victoryImage.enabled = false;
+
+				//This will be encoded in the campaign
+				CutsceneCharacter blair = CutsceneCharacter.blair;
+				CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine> {
+					new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.None),
+					new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
+					new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "That sure was a intense battle huh?"),
+					new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "Oh no! it looks like the evil lord zxqv is getting away. Does this qualify as a plot hook?"),
+				});
+				Cutscene endCutscene = Instantiate(cutscene);
+				endCutscene.setup(new CutsceneCharacter[] { blair }, script, cutscene);
+				endCutscene.dialogueText.text = "";
+
 			} else if (loseCondition()) {
 				defeatImage.enabled = true;
 			}
