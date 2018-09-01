@@ -1,9 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System;
 using UnityEngine;
 using System.Threading;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 public static class Util {
 
@@ -103,5 +105,25 @@ public static class Util {
 				Debug.Log(logItem);
 			}
 		}
+	}
+
+	/// <summary>
+	///	The regex pattern grabs everything between <%> and </%> where % is a char.
+	///	For example, calling getStringsInTag('a', "Hello <a>World</a>. Bye <a>Planet</a>." will
+	///	return a string array with [ World, Planet ]
+	///	
+	/// Regex:
+	/// https://ntam.me/regex-match-all-characters-between-two-html-tags/
+	/// 
+	/// Linq query:
+	/// https://stackoverflow.com/questions/11416191/converting-a-matchcollection-to-string-array/11416739#11416739
+	/// </summary>
+	/// <param name="symbol"> symbol in tag to parse </param>
+	/// <param name="message"> message to parse tagged substrings out of </param>
+	/// <returns></returns>
+	public static MatchCollection GetTaggedSubstrings(char symbol, string message) {
+		return Regex.Matches(message, string.Format(
+			"(?s)(?<=<{0}>)(.*?)(?=</{0}>)", 
+			symbol));
 	}
 }

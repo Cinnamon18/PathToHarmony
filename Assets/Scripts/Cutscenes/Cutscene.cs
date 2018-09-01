@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using TMPro;
+using Cutscenes.Textboxes;
 
 namespace Cutscenes {
 	public class Cutscene : MonoBehaviour {
@@ -26,7 +28,7 @@ namespace Cutscenes {
 		[SerializeField]
 		public Image dialogueBackground;
 		[SerializeField]
-		public Text dialogueText;
+		public Textbox textbox;
 
 		void Awake() {
 			backgrounds = new Sprite[] {
@@ -48,10 +50,9 @@ namespace Cutscenes {
 				this.leftImage = refrenceDupe.leftImage;
 				this.rightImage = refrenceDupe.rightImage;
 				this.dialogueBackground = refrenceDupe.dialogueBackground;
-				this.dialogueText = refrenceDupe.dialogueText;
 			}
 		}
-
+	
 		// Use this for initialization
 		public IEnumerator Start() {
 			inProgress = true;
@@ -66,6 +67,7 @@ namespace Cutscenes {
 		// the ugly ugly PlayScene and the CutsceneAction type I'll love you forever. Maybe smth like:
 		// https://answers.unity.com/questions/542115/is-there-any-way-to-use-coroutines-with-anonymous.html
 		IEnumerator PlayScene() {
+			yield return new WaitUntil(() => script != null);
 			foreach (CutsceneScriptLine line in script.script) {
 				switch (line.action) {
 					case CutsceneAction.TransitionIn:
@@ -98,7 +100,7 @@ namespace Cutscenes {
 		public IEnumerator sayDialogue(CutsceneCharacter character, string dialogue) {
 			focusSide(character);
 			dialogue = character.name.ToUpper() + ": " + dialogue;
-			dialogueText.text = dialogue;
+			textbox.AddText(dialogue);
 			yield return new WaitForSeconds(dialogue.Length * 0.04f + 1.5f);
 		}
 
@@ -206,7 +208,7 @@ namespace Cutscenes {
 		private void setUIVisibility(bool visible) {
 			currentBackground.enabled = visible;
 			dialogueBackground.enabled = visible;
-			dialogueText.enabled = visible;
+			textbox.gameObject.SetActive(visible);
 
 			if (leftImage != null) {
 				leftImage.enabled = visible;

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Units;
@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Cutscenes;
 using System.Threading.Tasks;
+using TMPro;
 
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
@@ -33,7 +34,7 @@ namespace Gameplay {
 		[SerializeField]
 		private Cutscene cutscene;
 		[SerializeField]
-		private Text turnPlayerText;
+		private TextMeshProUGUI turnPlayerText;
 		[SerializeField]
 		private Image turnChangeBackground;
 		[SerializeField]
@@ -58,10 +59,10 @@ namespace Gameplay {
 			CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine> {
 				new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.Academy),
 				new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
-				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is Blair!"),
+				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is <r>Blair</r>!"),
 				new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
-				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm Juniper."),
-				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "There's a third major character, Bruno. He would've been here, but he got tied up with paperwork"),
+				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm <w>Juniper</w>."),
+				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "There's a <color=red>third</color> major character, <w><r>Bruno</r></w>. He would've been here, but he got tied up with paperwork"),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Which is to say we ran out of budget"),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Anyways, I hope you enjoy this slick as h*ck demo"),
 				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
@@ -275,7 +276,6 @@ namespace Gameplay {
 				});
 				Cutscene endCutscene = Instantiate(cutscene);
 				endCutscene.setup(new CutsceneCharacter[] { blair }, script, cutscene);
-				endCutscene.dialogueText.text = "";
 
 			} else if (loseCondition()) {
 				defeatImage.enabled = true;
