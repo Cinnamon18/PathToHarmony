@@ -45,10 +45,12 @@ namespace Gameplay {
 		void Start() {
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] { new Character("Alice"), new Character("The evil lord zxqv") };
-			Vector2Int[] aliceMoves = new[] { new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(1, 0) };
-			Vector2Int[] evilGuyMoves = new[] { new Vector2Int(3, 7), new Vector2Int(7, 4) };
-			Vector2Int[][] validPickTiles = new[] { aliceMoves, evilGuyMoves };
-			Level level = new Level("DemoMap", characters, new[] { 1000, 1000 }, validPickTiles);
+			List<Coord> alicePickTiles = new List<Coord> { new Coord(0, 0), new Coord(0, 1), new Coord(1, 0) };
+			List<Coord> evilGuyPickTiles = new List<Coord> { new Coord(3, 7), new Coord(7, 4) };
+			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
+			validPickTiles[characters[0]] = alicePickTiles;
+			validPickTiles[characters[1]] = evilGuyPickTiles;
+			Level level = new Level("DemoMap", characters, null, validPickTiles);
 			Campaign testCampaign = new Campaign("test", 0, new[] { level });
 			Persistance.campaign = testCampaign;
 
@@ -67,7 +69,7 @@ namespace Gameplay {
 				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
 				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
 			});
-			cutscene.setup(new CutsceneCharacter[] { blair, juniper }, script);
+			cutscene.setup(script);
 
 			//Actual constructor code. This should still be here after the demo :p
 			playerCharacter = 0;
@@ -172,7 +174,7 @@ namespace Gameplay {
 
 
 					//If player has selected a move:
-					//Play the animation
+					//TODO play the animation
 					break;
 				case BattleLoopStage.ActionSelection:
 					if (Input.GetButtonDown("Select")) {
@@ -220,7 +222,7 @@ namespace Gameplay {
 										} else {
 											//Counterattack
 											Coord unitCoords = battlefield.getUnitCoords(highlightedFriendlyUnit);
-											bool attackerDefeated = selectedUnit.doBattleWith(
+											selectedUnit.doBattleWith(
 												highlightedFriendlyUnit,
 												battlefield.map[unitCoords.x, unitCoords.y].Peek(),
 												battlefield);
@@ -231,6 +233,7 @@ namespace Gameplay {
 										await Task.Delay(TimeSpan.FromMilliseconds(250));
 										deselectMoveOptions();
 
+										//If all of our units have moved advance. Otherwise, go back to unit selection.
 										if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => unit.hasMovedThisTurn)) {
 											advanceBattleStage();
 										} else {
@@ -274,8 +277,7 @@ namespace Gameplay {
 					new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "Oh no! it looks like the evil lord zxqv is getting away. Does this qualify as a plot hook?"),
 				});
 				Cutscene endCutscene = Instantiate(cutscene);
-				endCutscene.setup(new CutsceneCharacter[] { blair }, script, cutscene);
-				endCutscene.dialogueText.text = "";
+				endCutscene.setup(script, cutscene);
 
 			} else if (loseCondition()) {
 				defeatImage.enabled = true;

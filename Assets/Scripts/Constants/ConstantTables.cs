@@ -22,10 +22,12 @@ namespace Constants {
 		public static int[] TileDefense = new int[] { 10, 10, 10, 10, 10, 10 };
 
 		//First dimension is MoveType. Holds how many tiles the unit can move.
-		public static int[] UnitMoveDistance = new int[] { 4, 4, 1, 4 };
+		public static int[] UnitMoveDistance = new int[] { 4, 4, 4, 4 };
 
 	}
 
+	//If these look real weird to you coming from java they're called exension methods!
+	//google 'em, they're handy (but also a bit irrisponsible).
 	public static class ConstantExtensions {
 		public static int Cost(this MoveType moveType, TileType tileType) {
 			return ConstantTables.MovementCost[(int)(moveType), (int)(tileType)];

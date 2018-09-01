@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 namespace Cutscenes {
 	public class Cutscene : MonoBehaviour {
 
-		private readonly float TRANSITION_DELAY_TIME = 0.35f;
-
 		private static Sprite[] backgrounds;
-		private CutsceneCharacter[] characters;
+		// private CutsceneCharacter[] characters;
 		private CutsceneCharacter leftCharacter;
 		private CutsceneCharacter rightCharacter;
 		private CutsceneScript script;
@@ -37,11 +35,11 @@ namespace Cutscenes {
 
 		//Called by the level writer. This is my attempt to both let the user assign refrences in the inspector
 		// (which i'm pretty sure means we can't use a factory) and avoid the "can we beat the first frame"
-		// race condition. I hope. I think. Godddd unity :( 
+		// race condition. I hope. I think. Godddd unity :(
 
-		public void setup(CutsceneCharacter[] characters, CutsceneScript script, Cutscene refrenceDupe = null) {
-			this.characters = characters;
+		public void setup(CutsceneScript script, Cutscene refrenceDupe = null) {
 			this.script = script;
+			dialogueText.text = "";
 
 			if (refrenceDupe != null) {
 				this.currentBackground = refrenceDupe.currentBackground;
@@ -143,16 +141,13 @@ namespace Cutscenes {
 
 		public IEnumerator transitionOut(CutsceneSide side) {
 			Image img;
-			CutsceneCharacter oldCharacter;
 			string animationName;
 			bool isLeft = side == CutsceneSide.Left;
 			if (isLeft) {
 				img = leftImage;
-				oldCharacter = leftCharacter;
 				animationName = "CutsceneLeftCharacterOut";
 			} else {
 				img = rightImage;
-				oldCharacter = rightCharacter;
 				animationName = "CutsceneRightCharacterOut";
 			}
 
@@ -161,25 +156,20 @@ namespace Cutscenes {
 			yield return WaitForAnimation(anim);
 
 			if (isLeft) {
-				// leftImage = null;
 				leftCharacter = null;
 			} else {
-				// rightImage = null;
 				rightCharacter = null;
 			}
 		}
 
 		public IEnumerator transitionIn(CutsceneCharacter character, CutsceneSide side) {
 			Image img;
-			CutsceneCharacter oldCharacter;
 			string animationName;
 			if (side == CutsceneSide.Left) {
 				img = leftImage;
-				oldCharacter = leftCharacter;
 				animationName = "CutsceneLeftCharacterIn";
 			} else {
 				img = rightImage;
-				oldCharacter = rightCharacter;
 				animationName = "CutsceneRightCharacterIn";
 			}
 
