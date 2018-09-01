@@ -261,7 +261,7 @@ namespace Gameplay {
 				//TODO: advance campaign
 				victoryImage.enabled = true;
 
-				await Task.Delay(TimeSpan.FromMilliseconds(3000));
+				await Task.Delay(TimeSpan.FromMilliseconds(6000));
 
 				victoryImage.enabled = false;
 
