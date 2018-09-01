@@ -354,6 +354,11 @@ namespace Gameplay {
 		}
 
 		private void deselectMoveOptions() {
+			if (moveOptions == null) {
+				//Someone accidentally called this twice in a row
+				return;
+			}
+
 			foreach (Coord moveOption in moveOptions) {
 				unhighlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 			}
