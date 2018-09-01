@@ -15,6 +15,9 @@ namespace Cutscenes {
 		private CutsceneScript script;
 		public bool inProgress;
 
+		//Lets us skip a dialogue line
+		public IEnumerator currentCutsceneScriptLine;
+
 		[SerializeField]
 		public Image currentBackground;
 		[SerializeField]
@@ -67,13 +70,16 @@ namespace Cutscenes {
 			foreach (CutsceneScriptLine line in script.script) {
 				switch (line.action) {
 					case CutsceneAction.TransitionIn:
-						yield return transitionIn(line.character, line.side);
+						currentCutsceneScriptLine = transitionIn(line.character, line.side);
+						yield return currentCutsceneScriptLine;
 						break;
 					case CutsceneAction.TransitionOut:
-						yield return transitionOut(line.side);
+						currentCutsceneScriptLine = transitionOut(line.side);
+						yield return currentCutsceneScriptLine;
 						break;
 					case CutsceneAction.SetCharacter:
-						yield return setCharacter(line.character, line.side);
+						currentCutsceneScriptLine = setCharacter(line.character, line.side);
+						yield return currentCutsceneScriptLine;
 						break;
 					case CutsceneAction.FocusSide:
 						focusSide(line.side);
@@ -82,14 +88,23 @@ namespace Cutscenes {
 						setBackground(line.background);
 						break;
 					case CutsceneAction.SayDialogue:
-						yield return sayDialogue(line.character, line.dialogue);
+						currentCutsceneScriptLine = sayDialogue(line.character, line.dialogue);
+						yield return currentCutsceneScriptLine;
 						break;
 					default:
 						Debug.LogError("Unrecognized CutsceneAction type");
 						break;
 				}
 
-				yield return new WaitForSeconds(0.5f);
+				Debug.Log("dialgoue line finished " + line.action);
+
+				yield return new WaitForSeconds(0.25f);
+			}
+		}
+
+		void Update() {
+			if (Input.GetButtonDown("Select")) {
+				StopCoroutine(currentCutsceneScriptLine);
 			}
 		}
 
