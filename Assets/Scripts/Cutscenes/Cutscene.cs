@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using StoppableCoroutines;
 
 namespace Cutscenes {
 	public class Cutscene : MonoBehaviour {
@@ -16,7 +17,7 @@ namespace Cutscenes {
 		public bool inProgress;
 
 		//Lets us skip a dialogue line
-		public IEnumerator currentCutsceneScriptLine;
+		public StoppableCoroutine currentScriptLine;
 
 		[SerializeField]
 		public Image currentBackground;
@@ -70,16 +71,16 @@ namespace Cutscenes {
 			foreach (CutsceneScriptLine line in script.script) {
 				switch (line.action) {
 					case CutsceneAction.TransitionIn:
-						currentCutsceneScriptLine = transitionIn(line.character, line.side);
-						yield return currentCutsceneScriptLine;
+						currentScriptLine = this.StartStoppableCoroutine(transitionIn(line.character, line.side));
+						yield return currentScriptLine.WaitFor();
 						break;
 					case CutsceneAction.TransitionOut:
-						currentCutsceneScriptLine = transitionOut(line.side);
-						yield return currentCutsceneScriptLine;
+						currentScriptLine = this.StartStoppableCoroutine(transitionOut(line.side));
+						yield return currentScriptLine.WaitFor();
 						break;
 					case CutsceneAction.SetCharacter:
-						currentCutsceneScriptLine = setCharacter(line.character, line.side);
-						yield return currentCutsceneScriptLine;
+						currentScriptLine = this.StartStoppableCoroutine(setCharacter(line.character, line.side));
+						yield return currentScriptLine.WaitFor();
 						break;
 					case CutsceneAction.FocusSide:
 						focusSide(line.side);
@@ -88,15 +89,13 @@ namespace Cutscenes {
 						setBackground(line.background);
 						break;
 					case CutsceneAction.SayDialogue:
-						currentCutsceneScriptLine = sayDialogue(line.character, line.dialogue);
-						yield return currentCutsceneScriptLine;
+						currentScriptLine = this.StartStoppableCoroutine(sayDialogue(line.character, line.dialogue));
+						yield return currentScriptLine.WaitFor();
 						break;
 					default:
 						Debug.LogError("Unrecognized CutsceneAction type");
 						break;
 				}
-
-				Debug.Log("dialgoue line finished " + line.action);
 
 				yield return new WaitForSeconds(0.25f);
 			}
@@ -104,7 +103,7 @@ namespace Cutscenes {
 
 		void Update() {
 			if (Input.GetButtonDown("Select")) {
-				StopCoroutine(currentCutsceneScriptLine);
+				currentScriptLine.Stop();
 			}
 		}
 
