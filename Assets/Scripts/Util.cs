@@ -127,8 +127,11 @@ public static class Util {
 			symbol));
 	}
 
-	public static MatchCollection GetTags(char symbol, string message) {
-		return Regex.Matches(message, string.Format("<(/)?({0}\\{0})[^>]*>", symbol));
+	public static string RemoveTags(char symbol, string message) {
+		return Regex.Replace(message, 
+			string.Format("<(/)?({0}\b)[^>]*>", 
+			symbol), 
+			string.Empty);
 	}
 
 	/// <summary>

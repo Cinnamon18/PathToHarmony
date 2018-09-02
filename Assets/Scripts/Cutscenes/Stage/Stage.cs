@@ -26,7 +26,7 @@ namespace Cutscenes.Stages {
 				S().AddActor(Instantiate(actorPrefab), "B*ll"),
 				S().SetMessage("Tell me about <w>J*n</w>! Why does she wear the <r>mask</r>?!")
 				   .SetSpeaker("B*ll"),
-				S().SetMessage("A lotta loyalty <r>for</r> a <r><w>hired gun</w></r>!")
+				S().SetMessage("A lotta <color=blue>loyalty</color> <r>for</r> a <w><r>hired gun</r></w>!")
 					.SetSpeaker("B*ll")
 				));
 		}

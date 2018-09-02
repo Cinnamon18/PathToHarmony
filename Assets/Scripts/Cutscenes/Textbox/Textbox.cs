@@ -25,21 +25,16 @@ namespace Cutscenes.Textboxes {
 
 		private List<Tween> currentEffects = new List<Tween>();
 
-		private CharTweener charTweener = null;
-
 		private IDictionary<TextEffect, MatchCollection> effectSubstrings 
 			= new Dictionary<TextEffect, MatchCollection>();
 
 		public void AddText(NameType name, string speaker, string message) {
 			ResetDictionary();
 
-			if (charTweener != null) {
-				charTweener.DOKill();
-			}
 			foreach (Tween tween in currentEffects) {
-				tween.TogglePause();
-				tween.Kill();
+				tween.Kill(true);
 			}
+			currentEffects.Clear();
 
 			switch (name) {
 				case NameType.LEFT:
@@ -74,10 +69,18 @@ namespace Cutscenes.Textboxes {
 		}
 
 		public void AnimateText() {
-			charTweener = text.GetCharTweener();
+			CharTweener charTweener = text.GetCharTweener();
+
+			Tweener[] resets = new Tweener[text.text.Length];
+			for (int i = 0; i < text.text.Length; i++) {
+				resets[i] = charTweener.DOColor(i, Color.white, 0);
+			}
+
 			foreach (KeyValuePair<TextEffect, MatchCollection> pair in effectSubstrings) {
 				foreach (Match match in pair.Value) {
 					for (int i = match.Index; i < (match.Index + match.Length); i++) {
+						resets[i].Kill();
+
 						Debug.Log(text.text[i]);
 						var timeOffset = Mathf.Lerp(0, 1, i / (float)(charTweener.CharacterCount - 1));
 
@@ -91,7 +94,6 @@ namespace Cutscenes.Textboxes {
 		}
 
 		public void AddText(string message) {
-			currentEffects.Clear();
 			AddText(NameType.NONE, string.Empty, message);
 		}
 

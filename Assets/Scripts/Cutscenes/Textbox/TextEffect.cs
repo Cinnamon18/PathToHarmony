@@ -12,10 +12,11 @@ namespace Cutscenes.Textboxes {
 		public static readonly TextEffect Rainbow = new TextEffect('r', 
 			(i, c) => {
 				return DOTween.Sequence()
-				 .Append(c.DOColor(i, Color.magenta, 0)) // ensures there's no white flash at start
+				 .Append(c.DOColor(i, Color.magenta, 0.01f)) // ensures there's no white flash at start
 				 .Append(c.DOColor(i, Color.red, 0.35f))
 				 .Append(c.DOColor(i, Color.yellow, 0.35f))
 				 .Append(c.DOColor(i, Color.green, 0.35f))
+				 .Append(c.DOColor(i, Color.cyan, 0.35f))
 				 .Append(c.DOColor(i, Color.blue, 0.35f))
 				 .Append(c.DOColor(i, Color.magenta, 0.35f))
 				 .SetLoops(-1, LoopType.Restart)
