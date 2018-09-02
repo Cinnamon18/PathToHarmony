@@ -13,11 +13,11 @@ namespace Cutscenes.Textboxes {
 			(i, c) => {
 				return DOTween.Sequence()
 				 .Append(c.DOColor(i, Color.magenta, 0)) // ensures there's no white flash at start
-				 .Append(c.DOColor(i, Color.red, 0.5f))
-				 .Append(c.DOColor(i, Color.yellow, 0.5f))
-				 .Append(c.DOColor(i, Color.green, 0.5f))
-				 .Append(c.DOColor(i, Color.blue, 0.5f))
-				 .Append(c.DOColor(i, Color.magenta, 0.5f))
+				 .Append(c.DOColor(i, Color.red, 0.35f))
+				 .Append(c.DOColor(i, Color.yellow, 0.35f))
+				 .Append(c.DOColor(i, Color.green, 0.35f))
+				 .Append(c.DOColor(i, Color.blue, 0.35f))
+				 .Append(c.DOColor(i, Color.magenta, 0.35f))
 				 .SetLoops(-1, LoopType.Restart)
 				 .SetEase(Ease.Linear);
 			});

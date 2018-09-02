@@ -126,4 +126,23 @@ public static class Util {
 			"(?s)(?<=<{0}>)(.*?)(?=</{0}>)", 
 			symbol));
 	}
+
+	public static MatchCollection GetTags(char symbol, string message) {
+		return Regex.Matches(message, string.Format("<(/)?({0}\\{0})[^>]*>", symbol));
+	}
+
+	/// <summary>
+	/// Lerping function. Straight from Fl**red.
+	/// </summary>
+	/// <param name="duration"></param>
+	/// <param name="perStep"></param>
+	/// <returns></returns>
+	public static IEnumerator Lerp(float duration, Action<float> perStep) {
+		float timer = 0;
+		while ((timer += Time.deltaTime) < duration) {
+			perStep(timer / duration);
+			yield return null;
+		}
+		perStep(1);
+	}
 }
