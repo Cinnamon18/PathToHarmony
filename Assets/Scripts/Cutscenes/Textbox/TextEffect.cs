@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cutscenes.Textboxes {
+
+	/// <summary>
+	/// Various text effects using a char tag parser.
+	/// </summary>
 	public sealed class TextEffect {
 
 		private static readonly List<TextEffect> _allEffects = new List<TextEffect>();
@@ -12,7 +16,7 @@ namespace Cutscenes.Textboxes {
 		public static readonly TextEffect Rainbow = new TextEffect('r', 
 			(i, c) => {
 				return DOTween.Sequence()
-				 .Append(c.DOColor(i, Color.magenta, 0.01f)) // ensures there's no white flash at start
+				 .Append(c.DOColor(i, Color.magenta, 0.0f)) // ensures there's no white flash at start
 				 .Append(c.DOColor(i, Color.red, 0.35f))
 				 .Append(c.DOColor(i, Color.yellow, 0.35f))
 				 .Append(c.DOColor(i, Color.green, 0.35f))
@@ -25,9 +29,18 @@ namespace Cutscenes.Textboxes {
 
 		public static readonly TextEffect Wave = new TextEffect('w',
 			(i, c) => {
-				return c.DOCircle(i, 5.0f, 0.5f)
+				return c.DOCircle(i, 3f, 0.5f)
 							.SetEase(Ease.Linear)
 							.SetLoops(-1, LoopType.Restart);
+			});
+
+		public static readonly TextEffect Shake = new TextEffect('s',
+			(i, c) => {
+				Tweener t = c.DOCircle(i, 3.5f, 0.07f, 3)
+							.SetEase(Ease.Linear)
+							.SetLoops(-1, LoopType.Restart);
+				t.fullPosition += UnityEngine.Random.value;
+				return t;
 			});
 
 		public readonly char symbol;

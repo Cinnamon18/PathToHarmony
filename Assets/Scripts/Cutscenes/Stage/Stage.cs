@@ -21,13 +21,27 @@ namespace Cutscenes.Stages {
 		[SerializeField]
 		private Transform actorPrefab;
 
+		/// <summary>
+		/// Rich text tags won't work now. Sad!
+		/// </summary>
 		public void Start() {
 			StartCoroutine(Invoke(
 				S().AddActor(Instantiate(actorPrefab), "B*ll"),
-				S().SetMessage("Tell me about <w>J*n</w>! Why does she wear the <r>mask</r>?!")
+				S().SetMessage("Tell me about <w>J*n</w>! <s>Why does she wear the</s> <r>mask</r>?!")
 				   .SetSpeaker("B*ll"),
-				S().SetMessage("A lotta <color=blue>loyalty</color> <r>for</r> a <w><r>hired gun</r></w>!")
-					.SetSpeaker("B*ll")
+				S().SetMessage("<s>Just like that... I've failed you.</s>"),
+				S().SetMessage("A lotta <s>loyalty</s> <r>for</r> a <w><r>hired gun</r></w>!")
+					.SetSpeaker("B*ll"),
+				S().AddActor(Instantiate(actorPrefab), "J*n")
+					.SetSpeaker("J*n")
+					.SetMessage("<w><r>Or perhaps she's wondering why someone would shoot a man before throwing him off a plane.</w></r>"),
+				S().SetMessage("<w><r>At least you can talk! Who are you</r></w>?!")
+					.SetSpeaker("B*ll"),
+				S().SetMessage("No one cared who I was until I put on the <r><w>The Mask</r></w>.")
+					.SetSpeaker("J*n"),
+				S().SetMessage("<w>Who</w> are <r>you?</r>"),
+				S().SetMessage("It doesn't matter who <w>WE</w> are. What matters is our <w><r>plan.</r></w>")
+					.SetSpeaker("J*n")
 				));
 		}
 
@@ -38,6 +52,16 @@ namespace Cutscenes.Stages {
 		}
 
 		public IEnumerator Invoke(StageBuilder stageBuilder) {
+
+			if (stageBuilder.newcomer != null) {
+				if (FindActor(stageBuilder.newcomer.name) != null) {
+					throw new UnityException(
+						"There already exists an actor in the scene with name: "
+						+ stageBuilder.newcomer.name);
+				}
+				yield return AddActor(stageBuilder.newcomer);
+			}
+
 			if (stageBuilder.message != null) {
 				NameType nameType = NameType.NONE;
 
@@ -53,15 +77,6 @@ namespace Cutscenes.Stages {
 
 				textbox.AddText(nameType, stageBuilder.speaker, stageBuilder.message);
 				yield return new WaitForSeconds(5);
-			}
-
-			if (stageBuilder.newcomer != null) {
-				if (FindActor(stageBuilder.newcomer.name) != null) {
-					throw new UnityException(
-						"There already exists an actor in the scene with name: " 
-						+ stageBuilder.newcomer.name);
-				}
-				yield return AddActor(stageBuilder.newcomer);
 			}
 
 			if (!string.IsNullOrEmpty(stageBuilder.leaverName)) {
@@ -91,10 +106,15 @@ namespace Cutscenes.Stages {
 
 			Destroy(dummy);
 
+			Debug.Log(endPos);
+
 			Vector2 startPos = new Vector2(
 				Mathf.Sign(endPos.x) * dimensions.rect.width / 2, 
 				actor.transform.position.y);
 
+			Debug.Log(startPos);
+
+			actor.transform.SetParent(background.transform);
 			actor.transform.position = startPos;
 
 			yield return Util.Lerp(1, t => {

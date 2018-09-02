@@ -65,36 +65,53 @@ namespace Cutscenes.Textboxes {
 
 			text.SetText(new string(chars));
 
-			AnimateText();
+			StartCoroutine(AnimateText());
 		}
 
-		public void AnimateText() {
+		public IEnumerator AnimateText() {
 			CharTweener charTweener = text.GetCharTweener();
 
-			Tweener[] resets = new Tweener[text.text.Length];
-			for (int i = 0; i < text.text.Length; i++) {
-				resets[i] = charTweener.DOColor(i, Color.white, 0);
-			}
-
+			Tween[] resets = GetResetTweens(charTweener);
 			foreach (KeyValuePair<TextEffect, MatchCollection> pair in effectSubstrings) {
 				foreach (Match match in pair.Value) {
 					for (int i = match.Index; i < (match.Index + match.Length); i++) {
 						resets[i].Kill();
 
-						Debug.Log(text.text[i]);
-						var timeOffset = Mathf.Lerp(0, 1, i / (float)(charTweener.CharacterCount - 1));
+						var timeOffset = Mathf.Lerp(0, 1, i / (float)(text.text.Length - 1));
 
 						Tween tween = pair.Key.DoEffect(i, charTweener);
 						currentEffects.Add(tween);
 
-						tween.fullPosition = timeOffset;
+						tween.fullPosition += timeOffset;
 					}
 				}
+			}
+
+			for (int i = 0; i < text.text.Length; i++) {
+
+				// Otherwise we'll linger too long on zero width spaces
+				while (i < text.text.Length && text.text[i] == ZERO_WIDTH_SPACE) {
+					i++;
+				}
+				text.maxVisibleCharacters = (i + 1);
+				yield return null;
 			}
 		}
 
 		public void AddText(string message) {
 			AddText(NameType.NONE, string.Empty, message);
+		}
+
+		// Reset state between runs so we don't have random colors from last call everywhere
+		private Tween[] GetResetTweens(CharTweener charTweener) {
+			Tween[] resets = new Tween[text.text.Length];
+			for (int i = 0; i < text.text.Length; i++) {
+				resets[i] =
+					DOTween.Sequence()
+					.Append(charTweener.DOColor(i, Color.white, 0))
+					.Append(charTweener.DOCircle(i, 0, 0));
+			}
+			return resets;
 		}
 
 		private void ResetDictionary() {
