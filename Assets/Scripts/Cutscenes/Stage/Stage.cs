@@ -16,38 +16,43 @@ namespace Cutscenes.Stages {
 		private Image background;
 
 		[SerializeField]
-		private Transform leftActorHolder;
+		private Transform left;
 
 		[SerializeField]
-		private Transform rightActorHolder;
+		private Transform farLeft;
 
 		[SerializeField]
-		private Transform actorPrefab;
+		private Transform right;
 
-		// uses instanceid
-		private IDictionary<int, Side> actorSide = new Dictionary<int, Side>();
+		[SerializeField]
+		private Transform farRight;
+
+		[SerializeField]
+		private Actor actorPrefab;
+		
+		private List<Actor> actors = new List<Actor>();
 
 		/// <summary>
 		/// Rich text tags won't work now. Sad!
 		/// </summary>
 		public void Start() {
 			StartCoroutine(Invoke(
-				S().AddActor(Side.Left, Instantiate(actorPrefab), "B*ll"),
-				S().SetMessage("Tell me about <w>J*n</w>! <s>Why does she wear the</s> <r>mask</r>?!")
-				   .SetSpeaker("B*ll"),
-				S().SetMessage("<s>Just like that... I've failed you.</s>"),
-				S().SetMessage("A lotta <s>loyalty</s> <r>for</r> a <w><r>hired gun</r></w>!")
-					.SetSpeaker("B*ll"),
-				S().AddActor(Side.Right, Instantiate(actorPrefab), "J*n")
-					.SetSpeaker("J*n")
-					.SetMessage("<w><r>Or perhaps she's wondering why someone would shoot a man before throwing him off a plane.</w></r>"),
-				S().SetMessage("<w><r>At least you can talk! Who are you</r></w>?!")
-					.SetSpeaker("B*ll"),
-				S().SetMessage("No one cared who I was until I put on the <r><w>The Mask</r></w>.")
+				S().AddActor(Side.FarLeft, Instantiate(actorPrefab), "J*n"),
+				S().AddActor(Side.FarRight, Instantiate(actorPrefab), "L*za"),
+				S().SetMessage("I wanna show you something.")
+					.SetSpeaker("L*za"),
+				S().SetMessage("It's a little...<s><r>unconventional</r></s>.")
+					.SetSpeaker("L*za"),
+				S().SetMessage("Is it...<s>illegal</s>?")
 					.SetSpeaker("J*n"),
-				S().SetMessage("<w>Who</w> are <r>you?</r>"),
-				S().SetMessage("It doesn't matter who <w>WE</w> are. What matters is our <w><r>plan.</r></w>")
-					.SetSpeaker("J*n")
+				S().AddLeaver("L*za"),
+				S().AddActor(Side.Left, Instantiate(actorPrefab), "H*race"),
+				S().AddActor(Side.Right, Instantiate(actorPrefab), "C*risse"),
+				S().SetMessage("Would you believe I'm actually from <w><r>Earth</r></w>?")
+					.SetSpeaker("J*n"),
+				S().AddLeaver("H*race"),
+				S().AddLeaver("J*n"),
+				S().AddLeaver("C*risse")
 				));
 		}
 
@@ -65,14 +70,15 @@ namespace Cutscenes.Stages {
 						"There already exists an actor in the scene with name: "
 						+ stageBuilder.newcomer.name);
 				}
-				yield return AddActor(stageBuilder.newcomer, stageBuilder.newcomerSide);
+
+				yield return AddActor(stageBuilder.newcomer, stageBuilder.newcomer.side);
 			}
 
 			if (stageBuilder.message != null) {
 				Side side = Side.None;
 
 				if (!string.IsNullOrEmpty(stageBuilder.speaker)) {
-					side = GetSide(FindActor(stageBuilder.speaker).GetInstanceID());			
+					side = FindActor(stageBuilder.speaker).side;	
 				}
 
 				textbox.AddText(side, stageBuilder.speaker, stageBuilder.message);
@@ -80,7 +86,7 @@ namespace Cutscenes.Stages {
 			}
 
 			if (!string.IsNullOrEmpty(stageBuilder.leaverName)) {
-				Transform foundActor = FindActor(stageBuilder.leaverName);
+				Actor foundActor = FindActor(stageBuilder.leaverName);
 
 				if (foundActor == null) {
 					throw new UnityException(
@@ -94,30 +100,21 @@ namespace Cutscenes.Stages {
 			yield break;
 		}
 
-		private Transform FindActor(string name) {
-			return leftActorHolder.Find(name) ?? rightActorHolder.Find(name);
+		private Actor FindActor(string name) {
+			return actors.Find(a => a.name.Equals(name));
 		}
 
-		private Side GetSide(int instanceId) {
-			return actorSide[instanceId];
-		}
+		private IEnumerator AddActor(Actor actor, Side side) {
+			Transform holderToUse = GetSideParent(side);
 
-		private IEnumerator AddActor(Transform actor, Side side) {
-			Transform dummy = Instantiate(actorPrefab);
+			if (holderToUse.GetComponentInChildren<Actor>() != null) {
+				throw new UnityException("There is aleady an actor in this spot:" + holderToUse.name);
+			}
 
-			Transform holderToUse = (side == Side.Left) ? leftActorHolder.transform : rightActorHolder.transform;
-
-			dummy.transform.SetParent(holderToUse);
-			dummy.GetComponent<Image>().enabled = false;
-			yield return new WaitForSeconds(0.001f); // lol
-			Vector2 endPos = new Vector2(dummy.transform.position.x, 0);
-
-			Destroy(dummy.gameObject);
-
-			Debug.Log(endPos);
+			Vector2 endPos = new Vector2(holderToUse.transform.position.x, 0);
 
 			Vector2 startPos = new Vector2(
-				((side == Side.Left) ? -1 : 1) * (dimensions.rect.width / 2 + 300), 
+				((side == Side.Left || side == Side.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300), 
 				actor.transform.position.y);
 			
 			Debug.Log(startPos);
@@ -130,28 +127,50 @@ namespace Cutscenes.Stages {
 			});
 
 			actor.transform.SetParent(holderToUse);
-			actorSide.Add(actor.GetInstanceID(), side);
+			actors.Add(actor);
 
 			yield break;
 		}
 
-		private IEnumerator RemoveActor(Transform actor) {
+		private IEnumerator RemoveActor(Actor actor) {
 
-			Side side = GetSide(actor.GetInstanceID());
+			Side side = actor.side;
+
 
 			Vector2 endPos = new Vector2(
-				((side == Side.Left) ? -1 : 1) * dimensions.rect.width / 2,
-				actor.position.y
+				((side == Side.Left || side == Side.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300),
+				actor.transform.position.y
 				);
 
-			Vector2 startPos = actor.transform.position;
+			Vector2 startPos = new Vector2(actor.transform.position.x, left.position.y);
+
+			actor.transform.SetParent(background.transform);
 
 			yield return Util.Lerp(1, t => {
-				actor.transform.localPosition = Vector2.Lerp(startPos, endPos, t * t);
+				actor.transform.position = Vector2.Lerp(startPos, endPos, t * t);
 			});
 
 			Destroy(actor.gameObject);
-			actorSide.Remove(actor.GetInstanceID());
+			actors.Remove(actor);
+		}
+
+		private Transform GetSideParent(Side side) {
+			Transform parent = null;
+			switch (side) {
+				case Side.FarLeft:
+					parent = farLeft;
+					break;
+				case Side.Left:
+					parent = left;
+					break;
+				case Side.Right:
+					parent = right; 
+					break;
+				case Side.FarRight:
+					parent = farRight;
+					break;
+			}
+			return parent;
 		}
 
 		// shorthand for easier setup

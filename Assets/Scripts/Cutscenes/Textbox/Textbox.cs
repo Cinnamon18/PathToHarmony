@@ -28,23 +28,19 @@ namespace Cutscenes.Textboxes {
 		private IDictionary<TextEffect, MatchCollection> effectSubstrings 
 			= new Dictionary<TextEffect, MatchCollection>();
 
-		public void AddText(Side name, string speaker, string message) {
+		public void AddText(Side nameSide, string speaker, string message) {
 			ResetDictionary();
-
 			foreach (Tween tween in currentEffects) {
 				tween.Kill(true);
 			}
 			currentEffects.Clear();
 
-			switch (name) {
-				case Side.Left:
-					leftName.SetText(speaker);
-					rightName.SetText(string.Empty);
-					break;
-				case Side.Right:
-					rightName.SetText(speaker);
-					leftName.SetText(string.Empty);
-					break;
+			if (nameSide == Side.FarLeft || nameSide == Side.Left) {
+				leftName.SetText(speaker);
+				rightName.SetText(string.Empty);
+			} else if (nameSide == Side.FarRight || nameSide == Side.Right) {
+				rightName.SetText(speaker);
+				leftName.SetText(string.Empty);
 			}
 
 			char[] chars = message.ToCharArray();
