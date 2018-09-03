@@ -79,10 +79,19 @@ namespace Cutscenes.Stages {
 
 				if (!string.IsNullOrEmpty(stageBuilder.speaker)) {
 					side = FindActor(stageBuilder.speaker).side;	
+
+					foreach (Actor actor in actors) {
+						if (actor.side != side) {
+							actor.IsDark = true;
+						}
+					}
 				}
 
 				textbox.AddText(side, stageBuilder.speaker, stageBuilder.message);
 				yield return new WaitForSeconds(5);
+				foreach (Actor actor in actors) {
+					actor.IsDark = false;
+				}
 			}
 
 			if (!string.IsNullOrEmpty(stageBuilder.leaverName)) {

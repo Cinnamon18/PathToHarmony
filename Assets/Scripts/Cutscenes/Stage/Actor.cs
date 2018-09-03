@@ -25,5 +25,11 @@ namespace Cutscenes.Stages {
 				layoutElement.ignoreLayout = value;
 			}
 		}
+
+		public bool IsDark {
+			set {
+				image.color = (value ? Color.grey : Color.white);
+			}
+		}
 	}
 }
