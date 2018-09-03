@@ -109,17 +109,17 @@ namespace Cutscenes {
 		}
 
 		public void focusSide(CutsceneCharacter character) {
-			CutsceneSide side = (character == leftCharacter) ? CutsceneSide.Left : CutsceneSide.Right;
+			Side side = (character == leftCharacter) ? Side.Left : Side.Right;
 			focusSide(side);
 		}
 
-		public void focusSide(CutsceneSide side) {
-			if (side == CutsceneSide.Left) {
+		public void focusSide(Side side) {
+			if (side == Side.Left) {
 				restoreColor(leftImage);
 				if (rightImage != null) {
 					greyOut(rightImage);
 				}
-			} else if (side == CutsceneSide.Right) {
+			} else if (side == Side.Right) {
 				restoreColor(rightImage);
 				if (leftImage != null) {
 					greyOut(leftImage);
@@ -127,8 +127,8 @@ namespace Cutscenes {
 			}
 		}
 
-		public IEnumerator setCharacter(CutsceneCharacter character, CutsceneSide side) {
-			bool isLeft = (side == CutsceneSide.Left);
+		public IEnumerator setCharacter(CutsceneCharacter character, Side side) {
+			bool isLeft = (side == Side.Left);
 			CutsceneCharacter oldCharacter = isLeft ? leftCharacter : rightCharacter;
 			if (oldCharacter != null) {
 				yield return transitionOut(side);
@@ -143,11 +143,11 @@ namespace Cutscenes {
 			yield return transitionIn(character, side);
 		}
 
-		public IEnumerator transitionOut(CutsceneSide side) {
+		public IEnumerator transitionOut(Side side) {
 			Image img;
 			CutsceneCharacter oldCharacter;
 			string animationName;
-			bool isLeft = side == CutsceneSide.Left;
+			bool isLeft = side == Side.Left;
 			if (isLeft) {
 				img = leftImage;
 				oldCharacter = leftCharacter;
@@ -171,11 +171,11 @@ namespace Cutscenes {
 			}
 		}
 
-		public IEnumerator transitionIn(CutsceneCharacter character, CutsceneSide side) {
+		public IEnumerator transitionIn(CutsceneCharacter character, Side side) {
 			Image img;
 			CutsceneCharacter oldCharacter;
 			string animationName;
-			if (side == CutsceneSide.Left) {
+			if (side == Side.Left) {
 				img = leftImage;
 				oldCharacter = leftCharacter;
 				animationName = "CutsceneLeftCharacterIn";

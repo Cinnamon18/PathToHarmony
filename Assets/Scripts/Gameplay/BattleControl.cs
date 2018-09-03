@@ -58,15 +58,15 @@ namespace Gameplay {
 			CutsceneCharacter juniper = CutsceneCharacter.juniper;
 			CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine> {
 				new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.Academy),
-				new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
+				new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: Side.Left),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is <r>Blair</r>!"),
-				new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
+				new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: Side.Right),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm <w>Juniper</w>."),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "There's a <color=red>third</color> major character, <w><r>Bruno</r></w>. He would've been here, but he got tied up with paperwork"),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Which is to say we ran out of budget"),
 				new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Anyways, I hope you enjoy this slick as h*ck demo"),
-				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
-				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
+				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: Side.Right),
+				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: Side.Left)
 			});
 			cutscene.setup(new CutsceneCharacter[] { blair, juniper }, script);
 
@@ -270,7 +270,7 @@ namespace Gameplay {
 				CutsceneCharacter blair = CutsceneCharacter.blair;
 				CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine> {
 					new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.None),
-					new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
+					new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: Side.Left),
 					new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "That sure was a intense battle huh?"),
 					new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "Oh no! it looks like the evil lord zxqv is getting away. Does this qualify as a plot hook?"),
 				});

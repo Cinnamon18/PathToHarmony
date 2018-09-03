@@ -10,29 +10,35 @@ namespace Cutscenes.Stages {
 		private RectTransform dimensions;
 
 		[SerializeField]
-		public Textbox textbox;
+		private Textbox textbox;
 
 		[SerializeField]
-		public Image background;
+		private Image background;
 
 		[SerializeField]
-		public Transform actorHolder;
+		private Transform leftActorHolder;
+
+		[SerializeField]
+		private Transform rightActorHolder;
 
 		[SerializeField]
 		private Transform actorPrefab;
+
+		// uses instanceid
+		private IDictionary<int, Side> actorSide = new Dictionary<int, Side>();
 
 		/// <summary>
 		/// Rich text tags won't work now. Sad!
 		/// </summary>
 		public void Start() {
 			StartCoroutine(Invoke(
-				S().AddActor(Instantiate(actorPrefab), "B*ll"),
+				S().AddActor(Side.Left, Instantiate(actorPrefab), "B*ll"),
 				S().SetMessage("Tell me about <w>J*n</w>! <s>Why does she wear the</s> <r>mask</r>?!")
 				   .SetSpeaker("B*ll"),
 				S().SetMessage("<s>Just like that... I've failed you.</s>"),
 				S().SetMessage("A lotta <s>loyalty</s> <r>for</r> a <w><r>hired gun</r></w>!")
 					.SetSpeaker("B*ll"),
-				S().AddActor(Instantiate(actorPrefab), "J*n")
+				S().AddActor(Side.Right, Instantiate(actorPrefab), "J*n")
 					.SetSpeaker("J*n")
 					.SetMessage("<w><r>Or perhaps she's wondering why someone would shoot a man before throwing him off a plane.</w></r>"),
 				S().SetMessage("<w><r>At least you can talk! Who are you</r></w>?!")
@@ -59,23 +65,17 @@ namespace Cutscenes.Stages {
 						"There already exists an actor in the scene with name: "
 						+ stageBuilder.newcomer.name);
 				}
-				yield return AddActor(stageBuilder.newcomer);
+				yield return AddActor(stageBuilder.newcomer, stageBuilder.newcomerSide);
 			}
 
 			if (stageBuilder.message != null) {
-				NameType nameType = NameType.NONE;
+				Side side = Side.None;
 
 				if (!string.IsNullOrEmpty(stageBuilder.speaker)) {
-
-					if (FindActor(stageBuilder.speaker).localPosition.x < 0) {
-						nameType = NameType.LEFT;
-					} else {
-						nameType = NameType.RIGHT;
-					}
-					
+					side = GetSide(FindActor(stageBuilder.speaker).GetInstanceID());			
 				}
 
-				textbox.AddText(nameType, stageBuilder.speaker, stageBuilder.message);
+				textbox.AddText(side, stageBuilder.speaker, stageBuilder.message);
 				yield return new WaitForSeconds(5);
 			}
 
@@ -95,41 +95,52 @@ namespace Cutscenes.Stages {
 		}
 
 		private Transform FindActor(string name) {
-			return actorHolder.Find(name);
+			return leftActorHolder.Find(name) ?? rightActorHolder.Find(name);
 		}
 
-		private IEnumerator AddActor(Transform actor) {
-			GameObject dummy = new GameObject();
-			dummy.transform.SetParent(actorHolder.transform);
+		private Side GetSide(int instanceId) {
+			return actorSide[instanceId];
+		}
 
-			Vector2 endPos = dummy.transform.position;
+		private IEnumerator AddActor(Transform actor, Side side) {
+			Transform dummy = Instantiate(actorPrefab);
 
-			Destroy(dummy);
+			Transform holderToUse = (side == Side.Left) ? leftActorHolder.transform : rightActorHolder.transform;
+
+			dummy.transform.SetParent(holderToUse);
+			dummy.GetComponent<Image>().enabled = false;
+			yield return new WaitForSeconds(0.001f); // lol
+			Vector2 endPos = new Vector2(dummy.transform.position.x, 0);
+
+			Destroy(dummy.gameObject);
 
 			Debug.Log(endPos);
 
 			Vector2 startPos = new Vector2(
-				Mathf.Sign(endPos.x) * dimensions.rect.width / 2, 
+				((side == Side.Left) ? -1 : 1) * (dimensions.rect.width / 2 + 300), 
 				actor.transform.position.y);
-
+			
 			Debug.Log(startPos);
 
 			actor.transform.SetParent(background.transform);
 			actor.transform.position = startPos;
 
 			yield return Util.Lerp(1, t => {
-				actor.transform.localPosition = Vector2.Lerp(startPos, endPos, Mathf.Sqrt(t));
+				actor.transform.localPosition = Util.SmoothStep(startPos, endPos, t);
 			});
 
-			actor.transform.SetParent(actorHolder);
+			actor.transform.SetParent(holderToUse);
+			actorSide.Add(actor.GetInstanceID(), side);
 
 			yield break;
 		}
 
 		private IEnumerator RemoveActor(Transform actor) {
 
+			Side side = GetSide(actor.GetInstanceID());
+
 			Vector2 endPos = new Vector2(
-				Mathf.Sign(actor.localPosition.x) * (dimensions.rect.width / 2),
+				((side == Side.Left) ? -1 : 1) * dimensions.rect.width / 2,
 				actor.position.y
 				);
 
@@ -140,6 +151,7 @@ namespace Cutscenes.Stages {
 			});
 
 			Destroy(actor.gameObject);
+			actorSide.Remove(actor.GetInstanceID());
 		}
 
 		// shorthand for easier setup

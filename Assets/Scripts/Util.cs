@@ -148,4 +148,11 @@ public static class Util {
 		}
 		perStep(1);
 	}
+
+	public static Vector2 SmoothStep(Vector2 start, Vector2 end, float t) {
+		return new Vector2(
+			Mathf.SmoothStep(start.x, end.x, t),
+			Mathf.SmoothStep(start.y, end.y, t)
+			);
+	}
 }

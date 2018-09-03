@@ -36,7 +36,7 @@ namespace Cutscenes.Textboxes {
 
 		public static readonly TextEffect Shake = new TextEffect('s',
 			(i, c) => {
-				Tweener t = c.DOCircle(i, 3.5f, 0.07f, 3)
+				Tweener t = c.DOCircle(i, 3.25f, 0.07f, 3)
 							.SetEase(Ease.Linear)
 							.SetLoops(-1, LoopType.Restart);
 				t.fullPosition += UnityEngine.Random.value;
