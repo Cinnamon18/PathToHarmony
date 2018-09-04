@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Threading;
 using System.Text.RegularExpressions;
 using System.Linq;
+using UnityEngine.UI;
 
 public static class Util {
 
@@ -154,5 +155,13 @@ public static class Util {
 			Mathf.SmoothStep(start.x, end.x, t),
 			Mathf.SmoothStep(start.y, end.y, t)
 			);
+	}
+
+	public static void SetChildrenAlpha(Transform parent, float target) {
+		foreach (Image image in parent.GetComponentsInChildren<Image>()) {
+			Color color = image.color;
+			color.a = target;
+			image.color = color;
+		}
 	}
 }

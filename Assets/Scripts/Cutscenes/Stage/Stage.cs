@@ -29,6 +29,9 @@ namespace Cutscenes.Stages {
 
 		[SerializeField]
 		private Actor actorPrefab;
+
+		[SerializeField]
+		private Transform textboxBackground;
 		
 		private List<Actor> actors = new List<Actor>();
 
@@ -57,6 +60,18 @@ namespace Cutscenes.Stages {
 		}
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
+
+			float targetY = textboxBackground.position.y;
+
+			yield return Util.Lerp(0.75f, t => {
+				Util.SetChildrenAlpha(textboxBackground, Mathf.Sqrt(t));
+				textboxBackground.position = Util.SmoothStep(
+					new Vector2(0, targetY * 4),
+					new Vector2(0, targetY),
+					Mathf.Sqrt(t)
+					);
+			});
+
 			foreach (StageBuilder stageBuilder in stageBuilders) {
 				yield return Invoke(stageBuilder);
 			}
