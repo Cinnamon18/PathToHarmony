@@ -4,6 +4,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Entry point for these cutscenes. See Start() method.
+/// i dunno (yet) how to make this workable mid-battle because...
+/// 
+/// (1) CharTweener's code is buggy and likes to shift any movement based
+/// character effects up by 350 y units. To counteract this I shift my
+/// textbox and camera up as well.
+/// 
+/// (2) The cutscene system used in the Demo scene uses Screen Space Overlay as the Canvas
+/// This one uses World Space because of issue (1). Screen Space Overlay doesn't let me shift
+/// up my textboxes, causing some characters in the text to be offset (literally unplayable).
+/// 
+/// like seriously if you decide to do the wave effect and don't do the offsetting stuff
+/// it'll shift the wavy text offscreen so you won't be able to see it >:(
+/// </summary>
 namespace Cutscenes.Stages {
 	public class Stage : MonoBehaviour {
 		[SerializeField]
@@ -36,7 +51,11 @@ namespace Cutscenes.Stages {
 		private List<Actor> actors = new List<Actor>();
 
 		/// <summary>
-		/// Rich text tags won't work now. Sad!
+		/// Built in rich text tags won't work now, will need to implement custom
+		/// tags in its place.
+		/// 
+		/// Don't forget to close those tags! The text gets very glitchy if you don't close them.
+		/// <w>This is how you close a tag</w>
 		/// </summary>
 		public void Start() {
 			StartCoroutine(Invoke(
@@ -61,6 +80,14 @@ namespace Cutscenes.Stages {
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
 
+			yield return RaiseUpTextbox();
+
+			foreach (StageBuilder stageBuilder in stageBuilders) {
+				yield return Invoke(stageBuilder);
+			}
+		}
+
+		private IEnumerator RaiseUpTextbox() {
 			float targetY = textboxBackground.position.y;
 
 			yield return Util.Lerp(0.75f, t => {
@@ -71,13 +98,9 @@ namespace Cutscenes.Stages {
 					Mathf.Sqrt(t)
 					);
 			});
-
-			foreach (StageBuilder stageBuilder in stageBuilders) {
-				yield return Invoke(stageBuilder);
-			}
 		}
 
-		public IEnumerator Invoke(StageBuilder stageBuilder) {
+		private IEnumerator Invoke(StageBuilder stageBuilder) {
 
 			if (stageBuilder.newcomer != null) {
 				if (FindActor(stageBuilder.newcomer.name) != null) {

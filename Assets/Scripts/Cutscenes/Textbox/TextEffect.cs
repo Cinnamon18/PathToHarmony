@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Cutscenes.Textboxes {
 
 	/// <summary>
-	/// Various text effects using a char tag parser.
+	/// Various text effects using a char tag parser. Acts like an enum.
 	/// </summary>
 	public sealed class TextEffect {
 

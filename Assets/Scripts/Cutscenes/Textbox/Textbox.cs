@@ -9,7 +9,9 @@ using UnityEngine.UI;
 
 namespace Cutscenes.Textboxes {
 	public class Textbox : MonoBehaviour {
-		private const char ZERO_WIDTH_SPACE = '​';
+		private const char ZERO_WIDTH_SPACE = '​'; // lol
+		private const int OPEN_TAG_LENGTH = 3;
+		private const int CLOSE_TAG_LENGTH = 4;
 
 		[SerializeField]
 		private TMP_Text text;
@@ -48,11 +50,13 @@ namespace Cutscenes.Textboxes {
 			// parse out tagged strings
 			foreach (TextEffect te in TextEffect.All) {
 				MatchCollection matches = Util.GetTaggedSubstrings(te.symbol, message);
+
+				// Replace tags with zero width space to maintain index accuracy bc lazy
 				foreach (Match match in matches) {
-					for (int i = match.Index - 3; i < match.Index; i++) {
+					for (int i = match.Index - OPEN_TAG_LENGTH; i < match.Index; i++) {
 						chars[i] = ZERO_WIDTH_SPACE;
 					}
-					for (int i = match.Index + match.Length; i < match.Index + match.Length + 4; i++) {
+					for (int i = match.Index + match.Length; i < match.Index + match.Length + CLOSE_TAG_LENGTH; i++) {
 						chars[i] = ZERO_WIDTH_SPACE;
 					}
 				}
@@ -64,7 +68,8 @@ namespace Cutscenes.Textboxes {
 			StartCoroutine(AnimateText());
 		}
 
-		public IEnumerator AnimateText() {
+		// CharTweener black magic happens here.
+		private IEnumerator AnimateText() {
 			CharTweener charTweener = text.GetCharTweener();
 
 			Tween[] resets = GetResetTweens(charTweener);
