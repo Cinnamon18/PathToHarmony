@@ -570,6 +570,7 @@ MonoBehaviour:
   farRight: {fileID: 2144401115}
   actorPrefab: {fileID: 114973715971095220, guid: b4441dc0998b6764790ac6e974dacda3,
     type: 2}
+  textboxBackground: {fileID: 1551956501}
 --- !u!1 &985711730
 GameObject:
   m_ObjectHideFlags: 0
