@@ -1,5 +1,5 @@
 namespace Cutscenes {
-	public enum Side {
+	public enum CutsceneSide {
 		None,
 		Left,
 		Right,

@@ -22,14 +22,6 @@ public class CameraController : MonoBehaviour {
 		if (Input.GetAxis("Horizontal") != 0) {
 			gameObject.transform.Translate(new Vector3(-1, 0, 1) * speed * Time.deltaTime * Input.GetAxis("Horizontal"), Space.World);
 		}
-		//S
-		// if (Input.GetAxis("Vertical") < 0) {
-		// 	gameObject.transform.Translate(new Vector3(-1, 0, -1) * speed * Time.deltaTime, Space.World);
-		// }
-		//D
-		// if (Input.GetAxis("Horizontal") > 0) {
-		// 	gameObject.transform.Translate(new Vector3(1, 0, -1) * speed * Time.deltaTime, Space.World);
-		// }
 		//E
 		if (Input.GetAxis("InteractE") > 0) {
 			snapToGrid();

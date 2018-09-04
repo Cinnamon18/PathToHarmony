@@ -1,23 +1,23 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
-using TMPro;
-using Cutscenes.Textboxes;
+using StoppableCoroutines;
 
 namespace Cutscenes {
 	public class Cutscene : MonoBehaviour {
 
-		private readonly float TRANSITION_DELAY_TIME = 0.35f;
-
 		private static Sprite[] backgrounds;
-		private CutsceneCharacter[] characters;
+		// private CutsceneCharacter[] characters;
 		private CutsceneCharacter leftCharacter;
 		private CutsceneCharacter rightCharacter;
 		private CutsceneScript script;
 		public bool inProgress;
+
+		//Lets us skip a dialogue line
+		public StoppableCoroutine currentScriptLine;
 
 		[SerializeField]
 		public Image currentBackground;
@@ -28,7 +28,7 @@ namespace Cutscenes {
 		[SerializeField]
 		public Image dialogueBackground;
 		[SerializeField]
-		public Textbox textbox;
+		public Text dialogueText;
 
 		void Awake() {
 			backgrounds = new Sprite[] {
@@ -39,20 +39,21 @@ namespace Cutscenes {
 
 		//Called by the level writer. This is my attempt to both let the user assign refrences in the inspector
 		// (which i'm pretty sure means we can't use a factory) and avoid the "can we beat the first frame"
-		// race condition. I hope. I think. Godddd unity :( 
+		// race condition. I hope. I think. Godddd unity :(
 
-		public void setup(CutsceneCharacter[] characters, CutsceneScript script, Cutscene refrenceDupe = null) {
-			this.characters = characters;
+		public void setup(CutsceneScript script, Cutscene refrenceDupe = null) {
 			this.script = script;
+			dialogueText.text = "";
 
 			if (refrenceDupe != null) {
 				this.currentBackground = refrenceDupe.currentBackground;
 				this.leftImage = refrenceDupe.leftImage;
 				this.rightImage = refrenceDupe.rightImage;
 				this.dialogueBackground = refrenceDupe.dialogueBackground;
+				this.dialogueText = refrenceDupe.dialogueText;
 			}
 		}
-	
+
 		// Use this for initialization
 		public IEnumerator Start() {
 			inProgress = true;
@@ -67,17 +68,19 @@ namespace Cutscenes {
 		// the ugly ugly PlayScene and the CutsceneAction type I'll love you forever. Maybe smth like:
 		// https://answers.unity.com/questions/542115/is-there-any-way-to-use-coroutines-with-anonymous.html
 		IEnumerator PlayScene() {
-			yield return new WaitUntil(() => script != null);
 			foreach (CutsceneScriptLine line in script.script) {
 				switch (line.action) {
 					case CutsceneAction.TransitionIn:
-						yield return transitionIn(line.character, line.side);
+						currentScriptLine = this.StartStoppableCoroutine(transitionIn(line.character, line.side));
+						yield return currentScriptLine.WaitFor();
 						break;
 					case CutsceneAction.TransitionOut:
-						yield return transitionOut(line.side);
+						currentScriptLine = this.StartStoppableCoroutine(transitionOut(line.side));
+						yield return currentScriptLine.WaitFor();
 						break;
 					case CutsceneAction.SetCharacter:
-						yield return setCharacter(line.character, line.side);
+						currentScriptLine = this.StartStoppableCoroutine(setCharacter(line.character, line.side));
+						yield return currentScriptLine.WaitFor();
 						break;
 					case CutsceneAction.FocusSide:
 						focusSide(line.side);
@@ -86,21 +89,28 @@ namespace Cutscenes {
 						setBackground(line.background);
 						break;
 					case CutsceneAction.SayDialogue:
-						yield return sayDialogue(line.character, line.dialogue);
+						currentScriptLine = this.StartStoppableCoroutine(sayDialogue(line.character, line.dialogue));
+						yield return currentScriptLine.WaitFor();
 						break;
 					default:
 						Debug.LogError("Unrecognized CutsceneAction type");
 						break;
 				}
 
-				yield return new WaitForSeconds(0.5f);
+				yield return new WaitForSeconds(0.25f);
+			}
+		}
+
+		void Update() {
+			if (Input.GetButtonDown("Select")) {
+				currentScriptLine.Stop();
 			}
 		}
 
 		public IEnumerator sayDialogue(CutsceneCharacter character, string dialogue) {
 			focusSide(character);
 			dialogue = character.name.ToUpper() + ": " + dialogue;
-			textbox.AddText(dialogue);
+			dialogueText.text = dialogue;
 			yield return new WaitForSeconds(dialogue.Length * 0.04f + 1.5f);
 		}
 
@@ -109,17 +119,17 @@ namespace Cutscenes {
 		}
 
 		public void focusSide(CutsceneCharacter character) {
-			Side side = (character == leftCharacter) ? Side.Left : Side.Right;
+			CutsceneSide side = (character == leftCharacter) ? CutsceneSide.Left : CutsceneSide.Right;
 			focusSide(side);
 		}
 
-		public void focusSide(Side side) {
-			if (side == Side.Left) {
+		public void focusSide(CutsceneSide side) {
+			if (side == CutsceneSide.Left) {
 				restoreColor(leftImage);
 				if (rightImage != null) {
 					greyOut(rightImage);
 				}
-			} else if (side == Side.Right) {
+			} else if (side == CutsceneSide.Right) {
 				restoreColor(rightImage);
 				if (leftImage != null) {
 					greyOut(leftImage);
@@ -127,8 +137,8 @@ namespace Cutscenes {
 			}
 		}
 
-		public IEnumerator setCharacter(CutsceneCharacter character, Side side) {
-			bool isLeft = (side == Side.Left);
+		public IEnumerator setCharacter(CutsceneCharacter character, CutsceneSide side) {
+			bool isLeft = (side == CutsceneSide.Left);
 			CutsceneCharacter oldCharacter = isLeft ? leftCharacter : rightCharacter;
 			if (oldCharacter != null) {
 				yield return transitionOut(side);
@@ -143,18 +153,15 @@ namespace Cutscenes {
 			yield return transitionIn(character, side);
 		}
 
-		public IEnumerator transitionOut(Side side) {
+		public IEnumerator transitionOut(CutsceneSide side) {
 			Image img;
-			CutsceneCharacter oldCharacter;
 			string animationName;
-			bool isLeft = side == Side.Left;
+			bool isLeft = side == CutsceneSide.Left;
 			if (isLeft) {
 				img = leftImage;
-				oldCharacter = leftCharacter;
 				animationName = "CutsceneLeftCharacterOut";
 			} else {
 				img = rightImage;
-				oldCharacter = rightCharacter;
 				animationName = "CutsceneRightCharacterOut";
 			}
 
@@ -163,25 +170,20 @@ namespace Cutscenes {
 			yield return WaitForAnimation(anim);
 
 			if (isLeft) {
-				// leftImage = null;
 				leftCharacter = null;
 			} else {
-				// rightImage = null;
 				rightCharacter = null;
 			}
 		}
 
-		public IEnumerator transitionIn(CutsceneCharacter character, Side side) {
+		public IEnumerator transitionIn(CutsceneCharacter character, CutsceneSide side) {
 			Image img;
-			CutsceneCharacter oldCharacter;
 			string animationName;
-			if (side == Side.Left) {
+			if (side == CutsceneSide.Left) {
 				img = leftImage;
-				oldCharacter = leftCharacter;
 				animationName = "CutsceneLeftCharacterIn";
 			} else {
 				img = rightImage;
-				oldCharacter = rightCharacter;
 				animationName = "CutsceneRightCharacterIn";
 			}
 
@@ -208,7 +210,7 @@ namespace Cutscenes {
 		private void setUIVisibility(bool visible) {
 			currentBackground.enabled = visible;
 			dialogueBackground.enabled = visible;
-			textbox.gameObject.SetActive(visible);
+			dialogueText.enabled = visible;
 
 			if (leftImage != null) {
 				leftImage.enabled = visible;

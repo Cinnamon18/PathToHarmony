@@ -177,7 +177,6 @@ Shader "Hidden/OutlineEffect"
 
 				if (_CornerOutlines)
 				{
-					// TODO: Conditional compile
 					half4 sample5 = tex2D(_OutlineSource, uv + float2(_LineThicknessX, _LineThicknessY));
 					half4 sample6 = tex2D(_OutlineSource, uv + float2(-_LineThicknessX, -_LineThicknessY));
 					half4 sample7 = tex2D(_OutlineSource, uv + float2(_LineThicknessX, -_LineThicknessY));

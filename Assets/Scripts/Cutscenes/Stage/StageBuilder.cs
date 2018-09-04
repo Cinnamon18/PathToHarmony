@@ -21,7 +21,7 @@ namespace Cutscenes.Stages {
 			return this;
 		}
 
-		public StageBuilder AddActor(Side side, Actor newcomer, string name) {
+		public StageBuilder AddActor(CutsceneSide side, Actor newcomer, string name) {
 			newcomer.name = name;
 			this.newcomer = newcomer;
 			this.newcomer.side = side;

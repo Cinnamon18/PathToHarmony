@@ -1233,7 +1233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a78da3f00f3328541b4526c0b0b5ec5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineThickness: 2
+  lineThickness: 1
   lineIntensity: 1
   fillAmount: 0.3
   lineColor0: {r: 1, g: 1, b: 0, a: 1}

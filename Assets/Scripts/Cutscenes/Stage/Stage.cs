@@ -40,8 +40,8 @@ namespace Cutscenes.Stages {
 		/// </summary>
 		public void Start() {
 			StartCoroutine(Invoke(
-				S().AddActor(Side.FarLeft, Instantiate(actorPrefab), "J*n"),
-				S().AddActor(Side.FarRight, Instantiate(actorPrefab), "L*za"),
+				S().AddActor(CutsceneSide.FarLeft, Instantiate(actorPrefab), "J*n"),
+				S().AddActor(CutsceneSide.FarRight, Instantiate(actorPrefab), "L*za"),
 				S().SetMessage("I wanna show you something.")
 					.SetSpeaker("L*za"),
 				S().SetMessage("It's a little...<s><r>unconventional</r></s>.")
@@ -49,8 +49,8 @@ namespace Cutscenes.Stages {
 				S().SetMessage("Is it...<s>illegal</s>?")
 					.SetSpeaker("J*n"),
 				S().AddLeaver("L*za"),
-				S().AddActor(Side.Left, Instantiate(actorPrefab), "H*race"),
-				S().AddActor(Side.Right, Instantiate(actorPrefab), "C*risse"),
+				S().AddActor(CutsceneSide.Left, Instantiate(actorPrefab), "H*race"),
+				S().AddActor(CutsceneSide.Right, Instantiate(actorPrefab), "C*risse"),
 				S().SetMessage("Would you believe I'm actually from <w><r>Earth</r></w>?")
 					.SetSpeaker("J*n"),
 				S().AddLeaver("H*race"),
@@ -90,7 +90,7 @@ namespace Cutscenes.Stages {
 			}
 
 			if (stageBuilder.message != null) {
-				Side side = Side.None;
+				CutsceneSide side = CutsceneSide.None;
 
 				if (!string.IsNullOrEmpty(stageBuilder.speaker)) {
 					side = FindActor(stageBuilder.speaker).side;	
@@ -128,7 +128,7 @@ namespace Cutscenes.Stages {
 			return actors.Find(a => a.name.Equals(name));
 		}
 
-		private IEnumerator AddActor(Actor actor, Side side) {
+		private IEnumerator AddActor(Actor actor, CutsceneSide side) {
 			Transform holderToUse = GetSideParent(side);
 
 			if (holderToUse.GetComponentInChildren<Actor>() != null) {
@@ -138,7 +138,7 @@ namespace Cutscenes.Stages {
 			Vector2 endPos = new Vector2(holderToUse.transform.position.x, 0);
 
 			Vector2 startPos = new Vector2(
-				((side == Side.Left || side == Side.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300), 
+				((side == CutsceneSide.Left || side == CutsceneSide.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300), 
 				actor.transform.position.y);
 			
 			Debug.Log(startPos);
@@ -158,11 +158,11 @@ namespace Cutscenes.Stages {
 
 		private IEnumerator RemoveActor(Actor actor) {
 
-			Side side = actor.side;
+			CutsceneSide side = actor.side;
 
 
 			Vector2 endPos = new Vector2(
-				((side == Side.Left || side == Side.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300),
+				((side == CutsceneSide.Left || side == CutsceneSide.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300),
 				actor.transform.position.y
 				);
 
@@ -178,19 +178,19 @@ namespace Cutscenes.Stages {
 			actors.Remove(actor);
 		}
 
-		private Transform GetSideParent(Side side) {
+		private Transform GetSideParent(CutsceneSide side) {
 			Transform parent = null;
 			switch (side) {
-				case Side.FarLeft:
+				case CutsceneSide.FarLeft:
 					parent = farLeft;
 					break;
-				case Side.Left:
+				case CutsceneSide.Left:
 					parent = left;
 					break;
-				case Side.Right:
+				case CutsceneSide.Right:
 					parent = right; 
 					break;
-				case Side.FarRight:
+				case CutsceneSide.FarRight:
 					parent = farRight;
 					break;
 			}

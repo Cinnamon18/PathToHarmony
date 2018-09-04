@@ -7,7 +7,7 @@ namespace Cutscenes.Stages {
 		private Image image;
 
 		[SerializeField]
-		public Side side;
+		public CutsceneSide side;
 
 		[SerializeField]
 		private LayoutElement layoutElement;

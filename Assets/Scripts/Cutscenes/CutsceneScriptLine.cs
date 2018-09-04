@@ -2,7 +2,7 @@ namespace Cutscenes {
 	public class CutsceneScriptLine {
 		public CutsceneAction action;
 		public CutsceneBackground background;
-		public Side side;
+		public CutsceneSide side;
 		public CutsceneCharacter character;
 		public CharacterExpression expression;
 		public string dialogue;
@@ -10,7 +10,7 @@ namespace Cutscenes {
 		public CutsceneScriptLine(
 			CutsceneAction action,
 			CutsceneBackground background = CutsceneBackground.None,
-			Side side = Side.Left,
+			CutsceneSide side = CutsceneSide.Left,
 			CutsceneCharacter character = null,
 			CharacterExpression expression = CharacterExpression.Default,
 			string dialogue = "") {

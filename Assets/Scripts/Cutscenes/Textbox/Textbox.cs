@@ -28,17 +28,17 @@ namespace Cutscenes.Textboxes {
 		private IDictionary<TextEffect, MatchCollection> effectSubstrings 
 			= new Dictionary<TextEffect, MatchCollection>();
 
-		public void AddText(Side nameSide, string speaker, string message) {
+		public void AddText(CutsceneSide nameSide, string speaker, string message) {
 			ResetDictionary();
 			foreach (Tween tween in currentEffects) {
 				tween.Kill(true);
 			}
 			currentEffects.Clear();
 
-			if (nameSide == Side.FarLeft || nameSide == Side.Left) {
+			if (nameSide == CutsceneSide.FarLeft || nameSide == CutsceneSide.Left) {
 				leftName.SetText(speaker);
 				rightName.SetText(string.Empty);
-			} else if (nameSide == Side.FarRight || nameSide == Side.Right) {
+			} else if (nameSide == CutsceneSide.FarRight || nameSide == CutsceneSide.Right) {
 				rightName.SetText(speaker);
 				leftName.SetText(string.Empty);
 			}
@@ -95,7 +95,7 @@ namespace Cutscenes.Textboxes {
 		}
 
 		public void AddText(string message) {
-			AddText(Side.None, string.Empty, message);
+			AddText(CutsceneSide.None, string.Empty, message);
 		}
 
 		// Reset state between runs so we don't have random colors from last call everywhere
