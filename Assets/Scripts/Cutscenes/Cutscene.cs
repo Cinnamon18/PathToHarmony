@@ -4,18 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using StoppableCoroutines;
 
 namespace Cutscenes {
 	public class Cutscene : MonoBehaviour {
 
-		private readonly float TRANSITION_DELAY_TIME = 0.35f;
-
 		private static Sprite[] backgrounds;
-		private CutsceneCharacter[] characters;
+		// private CutsceneCharacter[] characters;
 		private CutsceneCharacter leftCharacter;
 		private CutsceneCharacter rightCharacter;
 		private CutsceneScript script;
 		public bool inProgress;
+
+		//Lets us skip a dialogue line
+		public StoppableCoroutine currentScriptLine;
 
 		[SerializeField]
 		public Image currentBackground;
@@ -37,11 +39,11 @@ namespace Cutscenes {
 
 		//Called by the level writer. This is my attempt to both let the user assign refrences in the inspector
 		// (which i'm pretty sure means we can't use a factory) and avoid the "can we beat the first frame"
-		// race condition. I hope. I think. Godddd unity :( 
+		// race condition. I hope. I think. Godddd unity :(
 
-		public void setup(CutsceneCharacter[] characters, CutsceneScript script, Cutscene refrenceDupe = null) {
-			this.characters = characters;
+		public void setup(CutsceneScript script, Cutscene refrenceDupe = null) {
 			this.script = script;
+			dialogueText.text = "";
 
 			if (refrenceDupe != null) {
 				this.currentBackground = refrenceDupe.currentBackground;
@@ -69,13 +71,16 @@ namespace Cutscenes {
 			foreach (CutsceneScriptLine line in script.script) {
 				switch (line.action) {
 					case CutsceneAction.TransitionIn:
-						yield return transitionIn(line.character, line.side);
+						currentScriptLine = this.StartStoppableCoroutine(transitionIn(line.character, line.side));
+						yield return currentScriptLine.WaitFor();
 						break;
 					case CutsceneAction.TransitionOut:
-						yield return transitionOut(line.side);
+						currentScriptLine = this.StartStoppableCoroutine(transitionOut(line.side));
+						yield return currentScriptLine.WaitFor();
 						break;
 					case CutsceneAction.SetCharacter:
-						yield return setCharacter(line.character, line.side);
+						currentScriptLine = this.StartStoppableCoroutine(setCharacter(line.character, line.side));
+						yield return currentScriptLine.WaitFor();
 						break;
 					case CutsceneAction.FocusSide:
 						focusSide(line.side);
@@ -84,14 +89,21 @@ namespace Cutscenes {
 						setBackground(line.background);
 						break;
 					case CutsceneAction.SayDialogue:
-						yield return sayDialogue(line.character, line.dialogue);
+						currentScriptLine = this.StartStoppableCoroutine(sayDialogue(line.character, line.dialogue));
+						yield return currentScriptLine.WaitFor();
 						break;
 					default:
 						Debug.LogError("Unrecognized CutsceneAction type");
 						break;
 				}
 
-				yield return new WaitForSeconds(0.5f);
+				yield return new WaitForSeconds(0.25f);
+			}
+		}
+
+		void Update() {
+			if (Input.GetButtonDown("Select")) {
+				currentScriptLine.Stop();
 			}
 		}
 
@@ -143,16 +155,13 @@ namespace Cutscenes {
 
 		public IEnumerator transitionOut(CutsceneSide side) {
 			Image img;
-			CutsceneCharacter oldCharacter;
 			string animationName;
 			bool isLeft = side == CutsceneSide.Left;
 			if (isLeft) {
 				img = leftImage;
-				oldCharacter = leftCharacter;
 				animationName = "CutsceneLeftCharacterOut";
 			} else {
 				img = rightImage;
-				oldCharacter = rightCharacter;
 				animationName = "CutsceneRightCharacterOut";
 			}
 
@@ -161,25 +170,20 @@ namespace Cutscenes {
 			yield return WaitForAnimation(anim);
 
 			if (isLeft) {
-				// leftImage = null;
 				leftCharacter = null;
 			} else {
-				// rightImage = null;
 				rightCharacter = null;
 			}
 		}
 
 		public IEnumerator transitionIn(CutsceneCharacter character, CutsceneSide side) {
 			Image img;
-			CutsceneCharacter oldCharacter;
 			string animationName;
 			if (side == CutsceneSide.Left) {
 				img = leftImage;
-				oldCharacter = leftCharacter;
 				animationName = "CutsceneLeftCharacterIn";
 			} else {
 				img = rightImage;
-				oldCharacter = rightCharacter;
 				animationName = "CutsceneRightCharacterIn";
 			}
 

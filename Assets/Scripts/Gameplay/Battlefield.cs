@@ -62,6 +62,20 @@ namespace Gameplay {
 			return null;
 		}
 
+		public IBattlefieldItem battlefieldItemAt(int x, int y) {
+			if (x < 0 || y < 0) {
+				return null;
+			}
+
+			if (x < units.GetLength(0) && y < units.GetLength(1) && units[x, y] != null) {
+				return units[x, y];
+			} else if (x < map.GetLength(0) && y < map.GetLength(1) && map[x, y].Peek() != null) {
+				return map[x, y].Peek();
+			}
+
+			return null;
+		}
+
 		public Coord getUnitCoords(Unit unit) {
 			for (int x = 0; x < units.GetLength(0); x++) {
 				for (int y = 0; y < units.GetLength(1); y++) {

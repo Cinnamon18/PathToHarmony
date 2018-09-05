@@ -44,15 +44,17 @@ namespace Gameplay {
 		// Use this for initialization
 		void Start() {
 			//Just for testing because we don't have any way to set the campaign yet:
-			Character[] characters = new[] { new Character("Alice"), new Character("The evil lord zxqv") };
-			Vector2Int[] aliceMoves = new[] { new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(1, 0) };
-			Vector2Int[] evilGuyMoves = new[] { new Vector2Int(3, 7), new Vector2Int(7, 4) };
-			Vector2Int[][] validPickTiles = new[] { aliceMoves, evilGuyMoves };
-			Level level = new Level("DemoMap", characters, new[] { 1000, 1000 }, validPickTiles);
+			Character[] characters = new[] { new Character("Alice", true), new Character("The evil lord zxqv", false) };
+			List<Coord> alicePickTiles = new List<Coord> { new Coord(0, 0), new Coord(0, 1), new Coord(1, 0) };
+			List<Coord> evilGuyPickTiles = new List<Coord> { new Coord(3, 7), new Coord(7, 4) };
+			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
+			validPickTiles[characters[0]] = alicePickTiles;
+			validPickTiles[characters[1]] = evilGuyPickTiles;
+			Level level = new Level("DemoMap", characters, null, validPickTiles);
 			Campaign testCampaign = new Campaign("test", 0, new[] { level });
 			Persistance.campaign = testCampaign;
 
-			//This will be encoded in the campaign
+			//This will be encoded in the campaign. Somewhere.
 			CutsceneCharacter blair = CutsceneCharacter.blair;
 			CutsceneCharacter juniper = CutsceneCharacter.juniper;
 			CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine> {
@@ -67,7 +69,7 @@ namespace Gameplay {
 				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
 				new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
 			});
-			cutscene.setup(new CutsceneCharacter[] { blair, juniper }, script);
+			cutscene.setup(script);
 
 			//Actual constructor code. This should still be here after the demo :p
 			playerCharacter = 0;
@@ -139,8 +141,10 @@ namespace Gameplay {
 								//TODO: Show info about tile if a tile is clicked
 								Tile selectedTile = selectedItem as Tile;
 								highlightSingleObject(selectedTile.gameObject);
+
 							} else if (selectedItem is Unit) {
 								Unit selectedUnit = selectedItem as Unit;
+
 								if (selectedUnit.getCharacter(battlefield) == level.characters[currentCharacter] && !selectedUnit.hasMovedThisTurn) {
 									//Selected friendly unit. show move options.
 									highlightSingleObject(selectedUnit.gameObject, 1);
@@ -161,9 +165,11 @@ namespace Gameplay {
 									//Selected enemy unit. Show unit and its move options.
 									//TODO: highlight enemy's valid move tiles.
 								}
+
 							} else if (selectedItem == null) {
 								//Clicked on empty space! Nbd, don't do anything.
 								Debug.Log("Clicked on empty space");
+
 							} else {
 								Debug.LogWarning("Item of unrecognized type clicked on.");
 							}
@@ -172,7 +178,7 @@ namespace Gameplay {
 
 
 					//If player has selected a move:
-					//Play the animation
+					//TODO play the animation
 					break;
 				case BattleLoopStage.ActionSelection:
 					if (Input.GetButtonDown("Select")) {
@@ -195,16 +201,25 @@ namespace Gameplay {
 										this.battleStage = BattleLoopStage.UnitSelection;
 									}
 								}
-							} else if (highlightedFriendlyUnit == selectedItem || selectedItem == null) {
-								//Decided not to move that unit afterall, deselect it
+
+							} else if (selectedItem == null) {
+								//Clicked on empty space, deselect
 								deselectMoveOptions();
 								battleStage = BattleLoopStage.UnitSelection;
+
 							} else if (selectedItem is Unit) {
 								Unit selectedUnit = selectedItem as Unit;
-								if (selectedUnit.getCharacter(battlefield) == level.characters[currentCharacter]) {
+
+								if (highlightedFriendlyUnit == selectedUnit) {
+									//clicked on the same unit, deselect
+									deselectMoveOptions();
+									battleStage = BattleLoopStage.UnitSelection;
+
+								} else if (selectedUnit.getCharacter(battlefield) == level.characters[currentCharacter]) {
 									//Clicked on a friendly unit. Deselect the current one.
 									deselectMoveOptions();
 									battleStage = BattleLoopStage.UnitSelection;
+
 								} else {
 									//Clicked on a hostile unit! fight!
 									if (highlightedEnemyUnits.Contains(selectedUnit)) {
@@ -220,7 +235,7 @@ namespace Gameplay {
 										} else {
 											//Counterattack
 											Coord unitCoords = battlefield.getUnitCoords(highlightedFriendlyUnit);
-											bool attackerDefeated = selectedUnit.doBattleWith(
+											selectedUnit.doBattleWith(
 												highlightedFriendlyUnit,
 												battlefield.map[unitCoords.x, unitCoords.y].Peek(),
 												battlefield);
@@ -231,6 +246,7 @@ namespace Gameplay {
 										await Task.Delay(TimeSpan.FromMilliseconds(250));
 										deselectMoveOptions();
 
+										//If all of our units have moved advance. Otherwise, go back to unit selection.
 										if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => unit.hasMovedThisTurn)) {
 											advanceBattleStage();
 										} else {
@@ -274,8 +290,7 @@ namespace Gameplay {
 					new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "Oh no! it looks like the evil lord zxqv is getting away. Does this qualify as a plot hook?"),
 				});
 				Cutscene endCutscene = Instantiate(cutscene);
-				endCutscene.setup(new CutsceneCharacter[] { blair }, script, cutscene);
-				endCutscene.dialogueText.text = "";
+				endCutscene.setup(script, cutscene);
 
 			} else if (loseCondition()) {
 				defeatImage.enabled = true;
@@ -352,6 +367,11 @@ namespace Gameplay {
 		}
 
 		private void deselectMoveOptions() {
+			if (moveOptions == null) {
+				//Someone accidentally called this twice in a row
+				return;
+			}
+
 			foreach (Coord moveOption in moveOptions) {
 				unhighlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 			}

@@ -33,12 +33,13 @@ namespace Units {
 			this.unitType = unitType;
 
 			maxHealth = DEFAULT_HEALTH;
-			health = maxHealth;
+			health = DEFAULT_HEALTH;
 			hasMovedThisTurn = false;
 			this.numMoveTiles = unitType.unitMoveDistance();
 		}
 
 		void Start() {
+
 		}
 		void Update() {
 
@@ -63,7 +64,6 @@ namespace Units {
 			//Damage rounds up
 			enemy.health -= (int)(Mathf.Ceil(damage));
 			enemy.healthBar.fillAmount = 1f * enemy.health / enemy.maxHealth;
-			// Debug.Log(this + " attacked " + enemy + " dealing " + damage + " damage, leaving the target with " + enemy.health + " health.");
 
 			if (enemy.health <= 0) {
 				enemy.defeated(battlefield);

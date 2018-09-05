@@ -1,7 +1,7 @@
 namespace Cutscenes {
-	//TODO: Need to cut these down too....
+	//TODO: realistically this is too many for our art budget. Cut it down. (And frankly we just don't need some!)
 	public enum CutsceneBackground {
-		None,
+		None = 0,
 		Academy,
 		Camp,
 		Forrest,
