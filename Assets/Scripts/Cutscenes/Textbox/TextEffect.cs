@@ -13,7 +13,7 @@ namespace Cutscenes.Textboxes {
 
 		private static readonly List<TextEffect> _allEffects = new List<TextEffect>();
 
-		public static readonly TextEffect Rainbow = new TextEffect('r', 
+		public static readonly TextEffect Rainbow = new TextEffect('r',
 			(i, c) => {
 				return DOTween.Sequence()
 				 .Append(c.DOColor(i, Color.magenta, 0.0f)) // ensures there's no white flash at start
