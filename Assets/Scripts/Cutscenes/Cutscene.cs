@@ -103,7 +103,9 @@ namespace Cutscenes {
 
 		void Update() {
 			if (Input.GetButtonDown("Select")) {
-				currentScriptLine.Stop();
+				if (currentScriptLine != null) {
+					currentScriptLine.Stop();
+				}
 			}
 		}
 
