@@ -13,5 +13,13 @@ namespace Gameplay {
 			this.toX = toX;
 			this.toY = toY;
 		}
+
+		public bool fromDefined() {
+			return fromX != -1 && fromY != -1;
+		}
+
+		public bool toDefined() {
+			return toX != -1 && toY != -1;
+		}
 	}
 }
