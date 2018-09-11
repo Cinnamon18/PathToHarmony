@@ -6,11 +6,11 @@ using System;
 using AI;
 using System.Linq;
 using UnityEngine.UI;
+using Buffs;
 
 namespace Units {
 	public abstract class Unit : MonoBehaviour, IBattlefieldItem {
 		private const int DEFAULT_DAMAGE = 10;
-		private const int DEFAULT_MOVE = 4;
 		private const int DEFAULT_HEALTH = 100;
 
 		private readonly ArmorType armor;
@@ -19,6 +19,7 @@ namespace Units {
 		private readonly UnitType unitType;
 		private readonly int maxHealth;
 		private int health;
+		public List<Buff> buffs;
 		public bool hasMovedThisTurn;
 		//How many tiles this unit can move per turn turn
 		private int numMoveTiles { get; set; }
@@ -31,6 +32,7 @@ namespace Units {
 			weapon = weaponType;
 			this.moveType = moveType;
 			this.unitType = unitType;
+			buffs = new List<Buff>();
 
 			maxHealth = DEFAULT_HEALTH;
 			health = DEFAULT_HEALTH;
@@ -60,6 +62,11 @@ namespace Units {
 			float damage = this.weapon.baseDamage * (1f * this.health / this.maxHealth);
 			damage = damage * ((100 - this.weapon.damageType.DamageReduction(enemy.armor)) / 100.0f);
 			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
+
+			List<Buff> damageBuffs = buffs.FindAll( buff => buff.GetType() == typeof(DamageBuff));
+			foreach (Buff buff in damageBuffs) {
+				damage = damage *= (buff as DamageBuff).getDamageBonus();
+			}
 
 			//Damage rounds up
 			enemy.health -= (int)(Mathf.Ceil(damage));
