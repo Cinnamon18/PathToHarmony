@@ -9,6 +9,7 @@ using System.Linq;
 using Cutscenes;
 using System.Threading.Tasks;
 using AI;
+using Buffs;
 
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
@@ -110,6 +111,7 @@ namespace Gameplay {
 					addUnit(UnitType.Knight, level.characters[1], 3, 7);
 					addUnit(UnitType.Knight, level.characters[1], 4, 7);
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[1]]) {
+						unit.buffs.Add(new DamageBuff(1.2f));
 						Renderer rend = unit.gameObject.GetComponent<Renderer>();
 						rend.material.shader = Shader.Find("_Color");
 						rend.material.SetColor("_Color", Color.green);

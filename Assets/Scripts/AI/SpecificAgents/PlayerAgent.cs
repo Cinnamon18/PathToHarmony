@@ -25,11 +25,16 @@ namespace AI {
 
 				//Wait for the mouse down event to un-fire. This avoid an infinite loop in the next condition.
 				while (Input.GetButtonDown("Select")) {
-					await Task.Delay(10);
+					await Task.Delay(100);
 				}
 
 				while (!currentMove.toDefined()) {
 					currentMove = await getMovePhase(currentMove);
+				}
+
+				//Wait for the mouse down event to un-fire. This avoid an infinite loop in the next condition.
+				while (Input.GetButtonDown("Select")) {
+					await Task.Delay(100);
 				}
 
 			}
