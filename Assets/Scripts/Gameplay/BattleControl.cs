@@ -111,7 +111,7 @@ namespace Gameplay {
 					addUnit(UnitType.Knight, level.characters[1], 3, 7);
 					addUnit(UnitType.Knight, level.characters[1], 4, 7);
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[1]]) {
-						unit.buffs.Add(new DamageBuff(1.2f));
+						unit.buffs.Add(new DamageBuff(1.01f));
 						Renderer rend = unit.gameObject.GetComponent<Renderer>();
 						rend.material.shader = Shader.Find("_Color");
 						rend.material.SetColor("_Color", Color.green);
