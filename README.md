@@ -1,4 +1,4 @@
-# CherryHarmony
+# Path to Harmony
 A fantasy turn based tactics game, developed with Georgia Tech's VGDev club.
 
 ## Installation
