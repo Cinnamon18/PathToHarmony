@@ -6,8 +6,8 @@ using Gameplay;
 using UnityEngine;
 
 namespace Units {
-	public class Knight : Unit {
-		public Knight() : base(ArmorType.Medium, WeaponType.KnightWeapon, MoveType.Medium, UnitType.Knight) {
+	public class Knight : MeleeUnit {
+		public Knight() : base(ArmorType.Medium, 100, MoveType.Medium, 4, DamageType.Slash, 50) {
 
 		}
 	}
