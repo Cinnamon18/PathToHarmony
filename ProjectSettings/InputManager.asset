@@ -70,6 +70,22 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
+    m_Name: MiddleSelect
+    descriptiveName: Third selection button; when held, camera will slide.
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: mouse 2
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 1000
+    dead: 0.001
+    sensitivity: 1000
+    snap: 0
+    invert: 0
+    type: 0
+    axis: 0
+    joyNum: 0
+  - serializedVersion: 3
     m_Name: InteractE
     descriptiveName: 
     descriptiveNegativeName: 
@@ -131,6 +147,22 @@ InputManager:
     snap: 0
     invert: 0
     type: 1
+    axis: 2
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: ButtonScroll
+    descriptiveName: Two buttons that can mimic a scroll wheel
+    descriptiveNegativeName: 
+    negativeButton: f
+    positiveButton: r
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 100
+    dead: 0.001
+    sensitivity: 100
+    snap: 0
+    invert: 0
+    type: 0
     axis: 2
     joyNum: 0
   - serializedVersion: 3
@@ -276,4 +308,84 @@ InputManager:
     invert: 0
     type: 0
     axis: 0
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: AltModifier
+    descriptiveName: When held, LMB acts as RMB and WASD acts like IJKL.
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: left shift
+    altNegativeButton: 
+    altPositiveButton: right shift
+    gravity: 1000
+    dead: 0.001
+    sensitivity: 1000
+    snap: 0
+    invert: 0
+    type: 0
+    axis: 0
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: RotateVertical
+    descriptiveName: Moves the camera up and tilts it down.
+    descriptiveNegativeName: Moves the camera down and tilts it up.
+    negativeButton: k
+    positiveButton: i
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 1000
+    dead: 0.001
+    sensitivity: 1000
+    snap: 0
+    invert: 0
+    type: 0
+    axis: 4
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: RotateVertical
+    descriptiveName: Moves the camera up and tilts it down.
+    descriptiveNegativeName: Moves the camera down and tilts it up.
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
+    axis: 4
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: RotateHorizontal
+    descriptiveName: Moves the camera right and tilts it left.
+    descriptiveNegativeName: Moves the camera left and tilts it right.
+    negativeButton: j
+    positiveButton: l
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 1000
+    dead: 0.001
+    sensitivity: 1000
+    snap: 0
+    invert: 0
+    type: 0
+    axis: 0
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: RotateHorizontal
+    descriptiveName: Moves the camera right and tilts it left.
+    descriptiveNegativeName: Moves the camera left and tilts it right.
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
+    axis: 3
     joyNum: 0
