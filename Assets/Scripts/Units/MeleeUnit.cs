@@ -47,13 +47,17 @@ namespace Units {
 		}
 
 		public override List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
-			//TODO: create specific implementation for melee units
-			List<Unit> targets = new List<Unit>();
-			List<Coord> tiles = getValidMoves(myX, myY, battlefield);
-			foreach(Coord tile in tiles) {
-				Unit targetUnit = battlefield.units[tile.x, tile.y];
-				if(targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
-					targets.Add(targetUnit);
+
+			for (int x = myX - 1; x <= myX + 1;x++) {
+				for (int y = myY - 1; y <= myY + 1; y++) {
+					try {
+						Unit targetUnit = battlefield.units[x, y];
+						if(targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
+							targets.Add(targetUnit);
+						}
+					} catch (IndexOutOfRangeException) {
+					//do nothing, we just tried to check for a tile at a location outside the bounds of the map
+					}
 				}
 			}
 			return targets;
