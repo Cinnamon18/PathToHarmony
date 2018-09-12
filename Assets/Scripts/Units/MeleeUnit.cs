@@ -48,6 +48,8 @@ namespace Units {
 
 		public override List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
 
+			List<Unit> targets = new List<Unit>();
+
 			for (int x = myX - 1; x <= myX + 1;x++) {
 				for (int y = myY - 1; y <= myY + 1; y++) {
 					try {
