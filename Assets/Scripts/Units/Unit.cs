@@ -17,7 +17,7 @@ namespace Units {
 		public int health;
 		public List<Buff> buffs;
 		public bool hasMovedThisTurn;
-		
+
 		private int numMoveTiles { get; set; }
 
 		[SerializeField]
@@ -52,21 +52,19 @@ namespace Units {
 		}
 
 		//returns true if the enemy was destroyed by battle
-		//dont use this version; use a derived class that overrides it, since different categories of units will act in different ways
-		public virtual bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			Debug.LogWarning("doBattleWith is not implemented for the generic Unit class. Please use a specific derived class.");
-			return false;
-		}
+		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
+
+		//returns a list of targetable units
+		public abstract List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character);
 
 		public void defeated(Battlefield battlefield) {
 			Destroy(this.gameObject);
 			battlefield.charactersUnits[this.getCharacter(battlefield)].Remove(this);
 		}
 
-		/*
-		For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
-		We can get away with this because there's only one "flow" source point (the unit).
-		 */
+		
+		//For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
+		//We can get away with this because there's only one "flow" source point (the unit).
 		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
 
 			HashSet<Coord> visited = new HashSet<Coord>();
@@ -98,12 +96,6 @@ namespace Units {
 			}
 
 			return visited.ToList();
-		}
-
-		//dont use this version; use a derived class that overrides it, since different categories of units will act in different ways
-		public virtual List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
-			Debug.LogWarning("getTargets is not implemented for the generic Unit class. Please use a specific derived class.");
-			return new List<Unit>();
 		}
 	}
 }
