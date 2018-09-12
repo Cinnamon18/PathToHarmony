@@ -26,9 +26,9 @@ namespace Units {
 			damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
 			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
-			List<Buff> damageBuffs = buffs.FindAll( buff => buff.GetType() == typeof(DamageBuff));
+			List<Buff> damageBuffs = getBuffsOfType(BuffType.Damage);
 			foreach (Buff buff in damageBuffs) {
-				damage = damage *= (buff as DamageBuff).getDamageBonus();
+				damage *= (buff as DamageBuff).getDamageBonus();
 			}
 
 			//Damage rounds up
