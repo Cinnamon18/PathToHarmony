@@ -49,8 +49,6 @@ namespace Constants {
 			return ConstantTables.TileDefense[(int)(tileType)];
 		}
 
-		public static int unitMoveDistance(this UnitType unitType) {
-			return ConstantTables.UnitMoveDistance[(int)(unitType)];
-		}
+		
 	}
 }
