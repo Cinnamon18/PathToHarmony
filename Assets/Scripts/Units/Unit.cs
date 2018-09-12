@@ -64,7 +64,7 @@ namespace Units {
 			battlefield.charactersUnits[this.getCharacter(battlefield)].Remove(this);
 		}
 
-		
+
 		//For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
 		//We can get away with this because there's only one "flow" source point (the unit).
 		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
@@ -108,6 +108,14 @@ namespace Units {
 		public void removeBuff(Buff buff) {
 			buffs.Remove(buff);
 			buffUIManager.removeBuff(buff);
+		}
+
+		//Removes all buffs of given type
+		public void removeBuff(BuffType buffType) {
+			List<Buff> removeBuffs = buffs.FindAll(buff => buff.buffType == buffType);
+			foreach (Buff buff in removeBuffs) {
+				removeBuff(buff);
+			}
 		}
 
 		//Technically these two are different, as different classes could (but should not) have different enum types.

@@ -114,7 +114,6 @@ namespace Gameplay {
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[1]]) {
 						unit.addBuff(new DamageBuff(1.01f));
 						unit.addBuff(new DamageBuff(1.01f));
-						unit.addBuff(new DamageBuff(1.01f));
 						Renderer rend = unit.gameObject.GetComponent<Renderer>();
 						rend.material.shader = Shader.Find("_Color");
 						rend.material.SetColor("_Color", Color.green);
@@ -125,7 +124,6 @@ namespace Gameplay {
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.BattleLoopStart:
-					Debug.Log("b");
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.TurnChange:
