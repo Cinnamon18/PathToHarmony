@@ -16,8 +16,6 @@ namespace Units {
 		private readonly DamageType damageType;
 		private readonly int meleeAttackStrength;
 	
-
-	
 		public MeleeUnit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, DamageType damageType, int meleeAttackStrength) : base(armorType, maxHealth, moveType,moveDistance) {
            this.damageType = damageType;
 		   this.meleeAttackStrength = meleeAttackStrength;
