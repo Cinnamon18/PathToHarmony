@@ -58,8 +58,9 @@ namespace Gameplay {
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] {
 				new Character("Alice", true, new PlayerAgent(battlefield, null, obj => Destroy(obj, 0) )),
-				new Character("The evil lord zxqv", false, new PlayerAgent(battlefield, null, obj => Destroy(obj, 0)))
-				};
+				//new Character("The evil lord zxqv", false, new PlayerAgent(battlefield, null, obj => Destroy(obj, 0)))
+				new Character("The evil lord zxqv", false, new simpleAgent(battlefield, null, obj => Destroy(obj, 0)))
+                };
 			List<Coord> alicePickTiles = new List<Coord> { new Coord(0, 0), new Coord(0, 1), new Coord(1, 0) };
 			List<Coord> evilGuyPickTiles = new List<Coord> { new Coord(3, 7), new Coord(7, 4) };
 			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
@@ -251,8 +252,8 @@ namespace Gameplay {
 
 		private void moveUnit(Unit unit, int targetX, int targetY) {
 			Coord unitCoords = battlefield.getUnitCoords(unit);
-			battlefield.units[targetX, targetY] = unit;
-			battlefield.units[unitCoords.x, unitCoords.y] = null;
+            battlefield.units[unitCoords.x, unitCoords.y] = null;
+            battlefield.units[targetX, targetY] = unit;
 			unit.gameObject.transform.position = Util.GridToWorld(
 				new Vector3Int(targetX, targetY, battlefield.map[targetX, targetY].Count + 1)
 			);
