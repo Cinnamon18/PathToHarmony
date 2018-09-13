@@ -45,13 +45,20 @@ namespace Units {
 		}
 
 		public override List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
-			//TODO: create specific implementation for melee units
+
 			List<Unit> targets = new List<Unit>();
-			List<Coord> tiles = getValidMoves(myX, myY, battlefield);
-			foreach(Coord tile in tiles) {
-				Unit targetUnit = battlefield.units[tile.x, tile.y];
-				if(targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
-					targets.Add(targetUnit);
+			List<Coord> tiles = new List<Coord>();
+			tiles.Add(new Coord(myX+1,myY));
+			tiles.Add(new Coord(myX-1,myY));
+			tiles.Add(new Coord(myX,myY+1));
+			tiles.Add(new Coord(myX,myY-1));
+
+			foreach (Coord tile in tiles) {
+				if(!(tile.x < 0 || tile.y < 0 || tile.x >= battlefield.map.GetLength(0) || tile.y >= battlefield.map.GetLength(1))) {
+					Unit targetUnit = battlefield.units[tile.x, tile.y];
+						if(targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
+							targets.Add(targetUnit);
+						}
 				}
 			}
 			return targets;
