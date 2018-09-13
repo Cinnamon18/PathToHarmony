@@ -150,11 +150,6 @@ namespace AI {
 					Debug.LogWarning("Item of unrecognized type clicked on.");
 				}
 			}
-			//  else {
-			// 	//Rayacst hit nothing
-			// 	deselectMoveOptions();
-			// currentMove.from = null;
-			// }
 
 			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
 			while (!Input.GetButtonUp("Select")) {
