@@ -10,34 +10,30 @@ using Buffs;
 
 namespace Units {
 	public abstract class Unit : MonoBehaviour, IBattlefieldItem {
-		private const int DEFAULT_DAMAGE = 10;
-		private const int DEFAULT_HEALTH = 100;
 
-		private readonly ArmorType armor;
-		private readonly WeaponType weapon;
+		public readonly ArmorType armor;
 		private readonly MoveType moveType;
-		private readonly UnitType unitType;
-		private readonly int maxHealth;
-		private int health;
-		public List<Buff> buffs;
+		public readonly int maxHealth;
+		public int health;
+		private List<Buff> buffs;
 		public bool hasMovedThisTurn;
-		//How many tiles this unit can move per turn turn
+
 		private int numMoveTiles { get; set; }
 
 		[SerializeField]
-		private Image healthBar;
+		public Image healthBar;
+		[SerializeField]
+		public BuffUIManager buffUIManager;
 
-		public Unit(ArmorType armorType, WeaponType weaponType, MoveType moveType, UnitType unitType) {
+		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance) {
 			armor = armorType;
-			weapon = weaponType;
 			this.moveType = moveType;
-			this.unitType = unitType;
 			buffs = new List<Buff>();
 
-			maxHealth = DEFAULT_HEALTH;
-			health = DEFAULT_HEALTH;
+			this.maxHealth = maxHealth;
+			this.health = maxHealth;
 			hasMovedThisTurn = false;
-			this.numMoveTiles = unitType.unitMoveDistance();
+			this.numMoveTiles = moveDistance;
 		}
 
 		void Start() {
@@ -58,38 +54,19 @@ namespace Units {
 		}
 
 		//returns true if the enemy was destroyed by battle
-		public bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			float damage = this.weapon.baseDamage * (1f * this.health / this.maxHealth);
-			damage = damage * ((100 - this.weapon.damageType.DamageReduction(enemy.armor)) / 100.0f);
-			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
+		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
 
-			List<Buff> damageBuffs = buffs.FindAll( buff => buff.GetType() == typeof(DamageBuff));
-			foreach (Buff buff in damageBuffs) {
-				damage = damage *= (buff as DamageBuff).getDamageBonus();
-			}
-
-			//Damage rounds up
-			enemy.health -= (int)(Mathf.Ceil(damage));
-			enemy.healthBar.fillAmount = 1f * enemy.health / enemy.maxHealth;
-
-			if (enemy.health <= 0) {
-				enemy.defeated(battlefield);
-				return true;
-			} else {
-				return false;
-			}
-
-		}
+		//returns a list of targetable units
+		public abstract List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character);
 
 		public void defeated(Battlefield battlefield) {
 			Destroy(this.gameObject);
 			battlefield.charactersUnits[this.getCharacter(battlefield)].Remove(this);
 		}
 
-		/*
-		For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
-		We can get away with this because there's only one "flow" source point (the unit).
-		 */
+
+		//For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
+		//We can get away with this because there's only one "flow" source point (the unit).
 		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
 
 			HashSet<Coord> visited = new HashSet<Coord>();
@@ -110,7 +87,7 @@ namespace Units {
 						Coord targetMove = new Coord(targetX, targetY);
 						AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
 
-						if (movePointsExpended <= unitType.unitMoveDistance()) {
+						if (movePointsExpended <= this.numMoveTiles) {
 							if (!visited.Contains(targetMove)) {
 								visited.Add(targetMove);
 								movePQueue.Enqueue(targetMoveAI);
@@ -123,17 +100,35 @@ namespace Units {
 			return visited.ToList();
 		}
 
-		public List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
-			//TODO: Replace this with an actual implementation taking into account range and junk.
-			List<Unit> targets = new List<Unit>();
-			List<Coord> tiles = getValidMoves(myX, myY, battlefield);
-			foreach(Coord tile in tiles) {
-				Unit targetUnit = battlefield.units[tile.x, tile.y];
-				if(targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
-					targets.Add(targetUnit);
-				}
+		public void addBuff(Buff buff) {
+			buffs.Add(buff);
+			buffUIManager.addBuff(buff);
+		}
+
+		public void removeBuff(Buff buff) {
+			buffs.Remove(buff);
+			buffUIManager.removeBuff(buff);
+		}
+
+		//Removes all buffs of given type
+		public void removeBuff(BuffType buffType) {
+			List<Buff> removeBuffs = buffs.FindAll(buff => buff.buffType == buffType);
+			foreach (Buff buff in removeBuffs) {
+				removeBuff(buff);
 			}
-			return targets;
+		}
+
+		//Technically these two are different, as different classes could (but should not) have different enum types.
+		public List<Buff> getBuffsOfType(BuffType buffType) {
+			return getBuffs(buff => buff.buffType == buffType);
+		}
+
+		public List<Buff> getBuffsOfClass(Buff otherBuff) {
+			return getBuffs(myBuff => myBuff.GetType() == otherBuff.GetType());
+		}
+
+		public List<Buff> getBuffs(Predicate<Buff> predicate) {
+			return buffs.FindAll(predicate);
 		}
 	}
 }
