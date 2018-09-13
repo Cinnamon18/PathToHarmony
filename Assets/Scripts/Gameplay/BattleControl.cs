@@ -9,6 +9,7 @@ using System.Linq;
 using Cutscenes;
 using System.Threading.Tasks;
 using AI;
+using Buffs;
 
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
@@ -110,6 +111,7 @@ namespace Gameplay {
 					addUnit(UnitType.Knight, level.characters[1], 3, 7);
 					addUnit(UnitType.Knight, level.characters[1], 4, 7);
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[1]]) {
+						unit.buffs.Add(new DamageBuff(1.01f));
 						Renderer rend = unit.gameObject.GetComponent<Renderer>();
 						rend.material.shader = Shader.Find("_Color");
 						rend.material.SetColor("_Color", Color.green);
@@ -149,12 +151,12 @@ namespace Gameplay {
 
 					//Character.getMove() is responsible for validation so we assume the move to be legal
 					Move move = await level.characters[currentCharacter].getMove();
-					Unit ourUnit = battlefield.units[move.fromX, move.fromY];
-					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.toX, move.toY);
+					Unit ourUnit = battlefield.units[move.from.x, move.from.y];
+					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.to.x, move.to.y);
 
 					if (selectedItem is Tile) {
 						//We selected a tile! lets move to it
-						moveUnit(ourUnit, move.toX, move.toY);
+						moveUnit(ourUnit, move.to.x, move.to.y);
 
 					} else if (selectedItem is Unit) {
 						//Targeted a hostile unit! fight!
@@ -162,7 +164,7 @@ namespace Gameplay {
 
 						bool defenderDefeated = ourUnit.doBattleWith(
 							selectedUnit,
-							battlefield.map[move.toX, move.toY].Peek(),
+							battlefield.map[move.to.x, move.to.y].Peek(),
 							battlefield);
 
 						await Task.Delay(TimeSpan.FromMilliseconds(250));
@@ -171,7 +173,7 @@ namespace Gameplay {
 							//Counterattack
 							selectedUnit.doBattleWith(
 								ourUnit,
-								battlefield.map[move.fromX, move.fromY].Peek(),
+								battlefield.map[move.from.x, move.from.y].Peek(),
 								battlefield);
 						}
 
