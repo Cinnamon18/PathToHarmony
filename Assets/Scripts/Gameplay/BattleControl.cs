@@ -296,17 +296,5 @@ namespace Gameplay {
 			Unit newUnit = newUnitGO.GetComponent<Unit>();
 			battlefield.addUnit(newUnit, character, x, y);
 		}
-
-		void OnGUI()
-        {
-			if (battleStage == BattleLoopStage.UnitSelection || battleStage == BattleLoopStage.ActionSelection)
-            {
-				if (GUI.Button(new Rect(10, 10, 100, 60), "Advance"))
-                {
-                    battleStage = BattleLoopStage.EndTurn;
-                }
-            }
-        }
-
 	}
 }
