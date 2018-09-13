@@ -49,17 +49,18 @@ namespace Units {
 		public override List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
 
 			List<Unit> targets = new List<Unit>();
+			List<Coord> tiles = new List<Coord>();
+			tiles.Add(new Coord(myX+1,myY));
+			tiles.Add(new Coord(myX-1,myY));
+			tiles.Add(new Coord(myX,myY+1));
+			tiles.Add(new Coord(myX,myY-1));
 
-			for (int x = myX - 1; x <= myX + 1;x++) {
-				for (int y = myY - 1; y <= myY + 1; y++) {
-					try {
-						Unit targetUnit = battlefield.units[x, y];
+			foreach (Coord tile in tiles) {
+				if(!(tile.x < 0 || tile.y < 0 || tile.x >= battlefield.map.GetLength(0) || tile.y >= battlefield.map.GetLength(1))) {
+					Unit targetUnit = battlefield.units[tile.x, tile.y];
 						if(targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
 							targets.Add(targetUnit);
 						}
-					} catch (IndexOutOfRangeException) {
-					//do nothing, we just tried to check for a tile at a location outside the bounds of the map
-					}
 				}
 			}
 			return targets;
