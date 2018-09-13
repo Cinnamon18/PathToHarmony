@@ -1,9 +1,11 @@
+using Constants;
+
 namespace Buffs {
-	public class DamageBuff : Buff{
+	public class DamageBuff : Buff {
 
-		float bonus = 1.0f;
+		private float bonus = 1.0f;
 
-		public DamageBuff(float bonus) {
+		public DamageBuff(float bonus) : base(BuffType.Damage) {
 			this.bonus = bonus;
 		}
 
