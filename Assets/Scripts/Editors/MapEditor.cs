@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Constants;
 using System.Text;
 using System;
 using System.Linq;
 using Gameplay;
 
-public class LevelEditor : MonoBehaviour {
+public class MapEditor : Editor {
 
 	//x, y, height (from the bottom)
 	[SerializeField]
@@ -24,6 +25,9 @@ public class LevelEditor : MonoBehaviour {
 	private int currentTile = 0;
 	private string mapName;
 	private bool overwriteData = false;
+
+    public Text loadFileText;
+    public Text loadDimText;
 
 
 	// Use this for initialization
@@ -58,6 +62,10 @@ public class LevelEditor : MonoBehaviour {
 
 		updateTile(Input.GetAxis("MouseScrollWheel"));
 	}
+
+    public override void serialize() { }
+
+    public override void deserialize() { }
 
 	public void removeTile(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
 		//Remove tile. 
@@ -188,16 +196,23 @@ public class LevelEditor : MonoBehaviour {
 
 	public void deserializeTiles() {
 		eraseTiles();
-		tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName), tilePrefabs);
+        updateMapName(loadFileText.text);
+		tiles = Serialization.DeserializeTiles(Serialization.ReadMapData(mapName), tilePrefabs);
 	}
 
 	private void eraseTiles() {
-		foreach (Tile tile in tiles) {
-			if (tile != null) {
-				Destroy(tile.gameObject);
-			}
-		}
-		tiles = null;
+        if (tiles != null)
+        {
+            foreach (Tile tile in tiles)
+            {
+                if (tile != null)
+                {
+                    Destroy(tile.gameObject);
+                }
+            }
+            tiles = null;
+        }
+		
 	}
 
 	public void drawBorders() {
@@ -251,10 +266,11 @@ public class LevelEditor : MonoBehaviour {
 			}
 		}
 
-		Serialization.WriteData(serialized.ToString(), mapName, overwriteData);
+		Serialization.WriteMapData(serialized.ToString(), mapName, overwriteData);
 	}
 
-	public void updateSizeUI(string newSize) {
+	public void updateSizeUI() {
+        String newSize = loadDimText.text;
 		Debug.Log(newSize);
 		int[] dimensions = newSize.Split(',').Select((dimension) => {
 			//If you're used to java this might look weird. In c# you can explicitly pass by refrence with the keyword "out". Neat, isn't it?
