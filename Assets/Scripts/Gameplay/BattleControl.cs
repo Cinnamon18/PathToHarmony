@@ -105,6 +105,7 @@ namespace Gameplay {
 					}
 					break;
 				case BattleLoopStage.Pick:
+
 					//TODO This is temp just for testing until pick phase gets built. 
 					addUnit(UnitType.Knight, level.characters[0], 0, 0);
 					addUnit(UnitType.Knight, level.characters[0], 1, 0);
@@ -112,7 +113,8 @@ namespace Gameplay {
 					addUnit(UnitType.Knight, level.characters[1], 3, 7);
 					addUnit(UnitType.Knight, level.characters[1], 4, 7);
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[1]]) {
-						unit.buffs.Add(new DamageBuff(1.01f));
+						unit.addBuff(new DamageBuff(1.01f));
+						unit.addBuff(new DamageBuff(1.01f));
 						Renderer rend = unit.gameObject.GetComponent<Renderer>();
 						rend.material.shader = Shader.Find("_Color");
 						rend.material.SetColor("_Color", Color.green);
@@ -126,14 +128,18 @@ namespace Gameplay {
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.TurnChange:
-					//There's probably a less fragile way of doing this. It's just to make sure this call only happens once per turn loop.
-					if (!turnPlayerText.enabled) {
-						currentCharacter = (currentCharacter + 1) % level.characters.Length;
-						turnPlayerText.text = level.characters[currentCharacter].name + "'s turn";
-						turnPlayerText.enabled = true;
-						turnChangeBackground.enabled = true;
-						Util.setTimeout(advanceBattleStage, 1000);
+					//If we've already entered this we're awaiting. Don't call it again this frame.
+					if (!battleStageChanged) {
+						break;
 					}
+					battleStageChanged = false;
+
+					currentCharacter = (currentCharacter + 1) % level.characters.Length;
+					turnPlayerText.text = level.characters[currentCharacter].name + "'s turn";
+					turnPlayerText.enabled = true;
+					turnChangeBackground.enabled = true;
+					Util.setTimeout(advanceBattleStage, 1000);
+
 					break;
 				case BattleLoopStage.TurnChangeEnd:
 					turnPlayerText.enabled = false;
