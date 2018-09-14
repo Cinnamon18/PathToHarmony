@@ -15,13 +15,15 @@ namespace Units {
 		private readonly MoveType moveType;
 		public readonly int maxHealth;
 		public int health;
-		public List<Buff> buffs;
+		private List<Buff> buffs;
 		public bool hasMovedThisTurn;
 
 		private int numMoveTiles { get; set; }
 
 		[SerializeField]
 		public Image healthBar;
+		[SerializeField]
+		public BuffUIManager buffUIManager;
 
 		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance) {
 			armor = armorType;
@@ -62,7 +64,7 @@ namespace Units {
 			battlefield.charactersUnits[this.getCharacter(battlefield)].Remove(this);
 		}
 
-		
+
 		//For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
 		//We can get away with this because there's only one "flow" source point (the unit).
 		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
@@ -96,6 +98,37 @@ namespace Units {
 			}
 
 			return visited.ToList();
+		}
+
+		public void addBuff(Buff buff) {
+			buffs.Add(buff);
+			buffUIManager.addBuff(buff);
+		}
+
+		public void removeBuff(Buff buff) {
+			buffs.Remove(buff);
+			buffUIManager.removeBuff(buff);
+		}
+
+		//Removes all buffs of given type
+		public void removeBuff(BuffType buffType) {
+			List<Buff> removeBuffs = buffs.FindAll(buff => buff.buffType == buffType);
+			foreach (Buff buff in removeBuffs) {
+				removeBuff(buff);
+			}
+		}
+
+		//Technically these two are different, as different classes could (but should not) have different enum types.
+		public List<Buff> getBuffsOfType(BuffType buffType) {
+			return getBuffs(buff => buff.buffType == buffType);
+		}
+
+		public List<Buff> getBuffsOfClass(Buff otherBuff) {
+			return getBuffs(myBuff => myBuff.GetType() == otherBuff.GetType());
+		}
+
+		public List<Buff> getBuffs(Predicate<Buff> predicate) {
+			return buffs.FindAll(predicate);
 		}
 	}
 }

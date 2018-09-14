@@ -26,7 +26,7 @@ public static class Serialization {
 	}
 
 	public static string ReadMapData(string fileName) {
-		string filePath = "Assets/Maps/" + fileName + ".txt";
+		string filePath = "./Assets/Maps/" + fileName + ".txt";
 
 		//Read the text from directly from the test.txt file
 		StreamReader reader = new StreamReader(filePath);

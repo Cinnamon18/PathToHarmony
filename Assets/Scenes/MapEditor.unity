@@ -524,11 +524,11 @@ RectTransform:
   m_Father: {fileID: 1824485494}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -561, y: 30}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 30}
   m_SizeDelta: {x: 160, y: 30}
-  m_Pivot: {x: 1, y: 0}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &230002643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1025,7 +1025,7 @@ Transform:
   - {fileID: 537195022}
   - {fileID: 24631269}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &643444863
 GameObject:
@@ -1345,9 +1345,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Destructive actions:
-
-    These will ERASE the current map. Save first.'
+  m_Text: Creates an EMPTY MAP with specified dimensions
 --- !u!222 &885459087
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1537,48 +1535,6 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 954651022}
   m_CullTransparentMesh: 0
---- !u!1001 &1245498715
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 400000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 5.69
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
-  m_IsPrefabAsset: 0
 --- !u!1 &1276193659
 GameObject:
   m_ObjectHideFlags: 0
@@ -1769,9 +1725,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Destructive actions:
-
-    These will ERASE the current map. Save first.'
+  m_Text: This will ERASE the current map
 --- !u!222 &1340386497
 CanvasRenderer:
   m_ObjectHideFlags: 0
