@@ -60,7 +60,7 @@ namespace Gameplay {
 				new Character("Alice", true, new PlayerAgent(battlefield, null, obj => Destroy(obj, 0) )),
 				//new Character("The evil lord zxqv", false, new PlayerAgent(battlefield, null, obj => Destroy(obj, 0)))
 				new Character("The evil lord zxqv", false, new simpleAgent(battlefield, null, obj => Destroy(obj, 0)))
-                };
+				};
 			List<Coord> alicePickTiles = new List<Coord> { new Coord(0, 0), new Coord(0, 1), new Coord(1, 0) };
 			List<Coord> evilGuyPickTiles = new List<Coord> { new Coord(3, 7), new Coord(7, 4) };
 			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
@@ -128,7 +128,7 @@ namespace Gameplay {
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.TurnChange:
-					//If we've already entered this we're awaiting. Don't call it again this frame.
+					//If we've already entered this we're awaiting. Don't call it again every frame.
 					if (!battleStageChanged) {
 						break;
 					}
@@ -150,7 +150,7 @@ namespace Gameplay {
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.ActionSelection:
-					//If we've already entered this we're awaiting. Don't call it again this frame.
+					//If we've already entered this we're awaiting. Don't call it again every frame.
 					if (!battleStageChanged) {
 						break;
 					}
@@ -201,39 +201,57 @@ namespace Gameplay {
 
 					break;
 				case BattleLoopStage.EndTurn:
+					//If we've already entered this we're awaiting. Don't call it again every frame.
+					if (!battleStageChanged) {
+						break;
+					}
+					battleStageChanged = false;
+
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[currentCharacter]]) {
 						unit.hasMovedThisTurn = false;
 					}
 
-					checkWinAndLose();
-					advanceBattleStage();
+					bool endGame = checkWinAndLose();
+					if (!endGame) {
+						advanceBattleStage();
+					}
+
 					break;
 			}
 		}
 
-		private async void checkWinAndLose() {
+		private bool checkWinAndLose() {
 			if (winCondition()) {
-				//TODO: advance campaign
-				victoryImage.enabled = true;
+				advanceCampaign();
+				return true;
 
-				await Task.Delay(TimeSpan.FromMilliseconds(6000));
+			} else if (loseCondition()) {
+				defeatImage.enabled = true;
+				return true;
+			} else {
+				return false;
+			}
+		}
 
-				victoryImage.enabled = false;
+		private async void advanceCampaign() {
+			victoryImage.enabled = true;
 
-				//This will be encoded in the campaign
-				CutsceneCharacter blair = CutsceneCharacter.blair;
-				CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine> {
+			await Task.Delay(TimeSpan.FromMilliseconds(6000));
+
+			victoryImage.enabled = false;
+
+			//This will be encoded in the campaign
+			CutsceneCharacter blair = CutsceneCharacter.blair;
+			CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine> {
 					new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.None),
 					new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
 					new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "That sure was a intense battle huh?"),
 					new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "Oh no! it looks like the evil lord zxqv is getting away. Does this qualify as a plot hook?"),
 				});
-				Cutscene endCutscene = Instantiate(cutscene);
-				endCutscene.setup(script, cutscene);
+			Cutscene endCutscene = Instantiate(cutscene);
+			endCutscene.setup(script, cutscene);
 
-			} else if (loseCondition()) {
-				defeatImage.enabled = true;
-			}
+			//TODO: actually advance campaign
 		}
 
 		//Returns true if the human player has won, false otherwise
@@ -258,8 +276,8 @@ namespace Gameplay {
 
 		private void moveUnit(Unit unit, int targetX, int targetY) {
 			Coord unitCoords = battlefield.getUnitCoords(unit);
-            battlefield.units[unitCoords.x, unitCoords.y] = null;
-            battlefield.units[targetX, targetY] = unit;
+			battlefield.units[unitCoords.x, unitCoords.y] = null;
+			battlefield.units[targetX, targetY] = unit;
 			unit.gameObject.transform.position = Util.GridToWorld(
 				new Vector3Int(targetX, targetY, battlefield.map[targetX, targetY].Count + 1)
 			);
@@ -278,7 +296,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName), tilePrefabs);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadMapData(level.mapFileName), tilePrefabs);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
