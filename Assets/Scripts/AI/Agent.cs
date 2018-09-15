@@ -149,7 +149,7 @@ namespace AI {
 				Unit unit = coordToUnit(enemy);
 				if (unit != null) {
 					if (unit.getCharacter(battlefield) == character) {
-						//TODO need way to check unit targets on tiles which might not have a unit
+						attackZone = unionCoords(attackZone, unit.getAttackZone(enemy.x, enemy.y, battlefield, unit.getCharacter(battlefield)));
 					}
 				}
 			}
