@@ -44,21 +44,16 @@ namespace Units {
 
 		}
 
-		public override List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+		public override List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
 
 			List<Coord> targets = new List<Coord>();
 			Coord[] tiles = new Coord[] { new Coord(myX + 1, myY), new Coord(myX - 1, myY), new Coord(myX, myY + 1), new Coord(myX, myY - 1) };
-
 			foreach (Coord tile in tiles) {
 				if (!(tile.x < 0 || tile.y < 0 || tile.x >= battlefield.map.GetLength(0) || tile.y >= battlefield.map.GetLength(1))) {
-					Unit targetUnit = battlefield.units[tile.x, tile.y];
-					if (targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
-						targets.Add(tile);
-					}
+					targets.Add(tile);
 				}
 			}
 			return targets;
 		}
-
 	}
 }
