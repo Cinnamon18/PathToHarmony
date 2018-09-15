@@ -17,6 +17,7 @@ namespace Gameplay {
 		//x, y, height (from the bottom)
 		private Battlefield battlefield;
 		private Level level;
+		private GameObjective objective;
 		[SerializeField]
 		private GameObject[] tilePrefabs;
 		[SerializeField]
@@ -67,6 +68,7 @@ namespace Gameplay {
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			Level level = new Level("DemoMap", characters, null, validPickTiles);
+			objective = new EliminationObjective(battlefield, level, characters[playerCharacter]);
 			characters[0].agent.level = level;
 			characters[1].agent.level = level;
 
@@ -221,11 +223,11 @@ namespace Gameplay {
 		}
 
 		private bool checkWinAndLose() {
-			if (winCondition()) {
+			if (objective.isWinCondition()) {
 				advanceCampaign();
 				return true;
 
-			} else if (loseCondition()) {
+			} else if (objective.isLoseCondition()) {
 				defeatImage.enabled = true;
 				return true;
 			} else {
@@ -252,26 +254,6 @@ namespace Gameplay {
 			endCutscene.setup(script, cutscene);
 
 			//TODO: actually advance campaign
-		}
-
-		//Returns true if the human player has won, false otherwise
-		private bool winCondition() {
-			foreach (Character character in battlefield.charactersUnits.Keys) {
-				if (character != level.characters[playerCharacter]) {
-					if (battlefield.charactersUnits[character].Count() != 0) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-
-		//returns true if the human player has lost, false otherwise
-		private bool loseCondition() {
-			if (battlefield.charactersUnits[level.characters[playerCharacter]].Count() == 0) {
-				return true;
-			}
-			return false;
 		}
 
 		private void moveUnit(Unit unit, int targetX, int targetY) {
