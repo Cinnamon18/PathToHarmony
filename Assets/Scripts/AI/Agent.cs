@@ -190,7 +190,7 @@ namespace AI {
 		}
 
 		protected Unit coordToUnit(Coord coord) {
-			IBattlefieldItem item = battlefield.battlefieldItemAt(unitCoord.x, unitCoord.y, 0);
+			IBattlefieldItem item = battlefield.battlefieldItemAt(coord.x, coord.y, 0);
 			if (item is Unit) {
 				return item as Unit;
 			} else {
