@@ -15,25 +15,26 @@ namespace AI {
 			Unit unit = selectUnit();
 			Coord unitCoord = battlefield.getUnitCoords(unit);	
 
-			Coord targetCoord = findNearestEnemy(unitCoord);
+			List<Coord> targetCoords = findNearestEnemies(unitCoord);
 
-			List<Unit> targets = unit.getTargets(unitCoord.x, unitCoord.y, battlefield, character);
-
-			if (targets.Any(t => t == battlefield.units[targetCoord.x, targetCoord.y])) {
-				return new Move(unitCoord.x, unitCoord.y, targetCoord.x, targetCoord.y);
-			}
+			List<Coord> targets = unit.getTargets(unitCoord.x, unitCoord.y, battlefield, character);
 
 			int minDist = Int32.MaxValue;
-			Coord bestCoord = unitCoord;
-			foreach (Coord coord in unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
-				int dist = this.manhattanDistance(coord, targetCoord);
-				IBattlefieldItem item = battlefield.battlefieldItemAt(coord.x, coord.y, 0);
-				if (!(item is Unit) && dist < minDist) {
-					minDist = dist;
-					bestCoord = coord;
+			Coord bestCoord = null;
+			foreach (Coord targetCoord in targetCoords){
+				if (targets.Any(t => t.x == targetCoord.x && t.y == targetCoord.y)) {
+					return new Move(unitCoord.x, unitCoord.y, targetCoord.x, targetCoord.y);
+				}
+				
+				foreach (Coord coord in unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
+					int dist = this.manhattanDistance(coord, targetCoord);
+					if (dist < minDist) {
+						minDist = dist;
+						bestCoord = coord;
+					}
 				}
 			}
-
+			
 			//Just so the player can keep track of what's happening
 			await Task.Delay(300);
 
@@ -136,6 +137,23 @@ namespace AI {
 				}
 			}
 			return enemies;
+		}
+
+		private Coord bestTarget(List<Coord> targets) {
+			//Currently just checks health of all targets
+			int minHealth = Int32.MaxValue;
+			Coord best = null;
+			foreach(Coord target in targets) {
+				IBattlefieldItem item = battlefield.battlefieldItemAt(target.x, target.y, 0);
+				if (item is Unit) {
+					Unit unit = item as Unit;
+					if (unit.health < minHealth) {
+						minHealth = unit.health;
+						best = target;
+					}
+				}
+			}
+			return best;
 		}
 
 		private int manhattanDistance(Coord coord1, Coord coord2) {

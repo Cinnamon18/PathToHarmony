@@ -26,7 +26,7 @@ namespace Units {
 			return false;
 		}
 
-		public override List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+		public override List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
 			//TODO: create specific implementation for status units
 			return null;
 		}

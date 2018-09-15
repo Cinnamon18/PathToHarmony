@@ -11,7 +11,7 @@ namespace AI {
 
 		private GameObject highlightedObject;
 		private List<Coord> moveOptions;
-		private List<Unit> highlightedEnemyUnits;
+		private List<Coord> highlightedEnemyUnits;
 		private Unit highlightedFriendlyUnit;
 
 		public PlayerAgent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) : base(battlefield, level, Destroy) { }
@@ -70,8 +70,8 @@ namespace AI {
 						}
 
 						this.highlightedEnemyUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, this.character);
-						foreach (Unit targetableUnit in highlightedEnemyUnits) {
-							highlightMultipleObjects(targetableUnit.gameObject, 2);
+						foreach (Coord targetableUnit in highlightedEnemyUnits) {
+							highlightMultipleObjects(battlefield.units[targetableUnit.x, targetableUnit.y].gameObject, 2);
 						}
 
 					} else {
@@ -135,10 +135,7 @@ namespace AI {
 
 					} else {
 						//Clicked on a hostile unit! fight!
-						if (highlightedEnemyUnits.Any((unit) => {
-							Coord coord = battlefield.getUnitCoords(unit);
-							return coord.x == tileCoords.x && coord.y == tileCoords.y;
-						})) {
+						if (highlightedEnemyUnits.Any(coord => coord.x == tileCoords.x && coord.y == tileCoords.y)) {
 							currentMove.to = new Coord(tileCoords.x, tileCoords.y);
 						} else {
 							//Clicked on invalid enemy unit, restart.
@@ -195,8 +192,8 @@ namespace AI {
 				unhighlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 			}
 
-			foreach (Unit highlightedEnemyUnit in highlightedEnemyUnits) {
-				unhighlightMultipleObjects(highlightedEnemyUnit.gameObject);
+			foreach (Coord highlightedEnemyUnit in highlightedEnemyUnits) {
+				unhighlightMultipleObjects(battlefield.units[highlightedEnemyUnit.x, highlightedEnemyUnit.y].gameObject);
 			}
 
 			highlightSingleObject(highlightedObject);

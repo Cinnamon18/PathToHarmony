@@ -57,7 +57,7 @@ namespace Units {
 		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
 
 		//returns a list of targetable units
-		public abstract List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character);
+		public abstract List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character);
 
 		public void defeated(Battlefield battlefield) {
 			Destroy(this.gameObject);
