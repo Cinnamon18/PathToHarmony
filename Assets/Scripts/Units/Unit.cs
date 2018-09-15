@@ -87,10 +87,16 @@ namespace Units {
 						Coord targetMove = new Coord(targetX, targetY);
 						AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
 
-						if (movePointsExpended <= this.numMoveTiles) {
-							if (!visited.Contains(targetMove)) {
+						if (movePointsExpended <= this.numMoveTiles && !visited.Contains(targetMove)) {
+							//If it's empty, we can move to it and on it
+							if (battlefield.units[targetX, targetY] == null) {
 								visited.Add(targetMove);
 								movePQueue.Enqueue(targetMoveAI);
+							} else if (battlefield.units[targetX, targetY].getCharacter(battlefield) == this.getCharacter(battlefield)) {
+								//If it's our unit, we can move through it, but not on it
+								movePQueue.Enqueue(targetMoveAI);
+							} else {
+								//If it's a hostile unit, we can't move to or through it.
 							}
 						}
 					}
