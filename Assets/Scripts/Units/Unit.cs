@@ -56,8 +56,23 @@ namespace Units {
 		//returns true if the enemy was destroyed by battle
 		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
 
+		//Added for use by AI
+		public abstract List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character);
+
 		//returns a list of targetable units
-		public abstract List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character);
+		public List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+
+			List<Coord> targets = new List<Coord>();
+			List<Coord> tiles = getAttackZone(myX, myY, battlefield, character);
+
+			foreach (Coord tile in tiles) {
+				Unit targetUnit = battlefield.units[tile.x, tile.y];
+				if (targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
+					targets.Add(tile);
+				}
+			}
+			return targets;
+		}
 
 		public void defeated(Battlefield battlefield) {
 			Destroy(this.gameObject);
