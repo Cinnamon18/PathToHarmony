@@ -8,8 +8,8 @@ using Constants;
 using Gameplay;
 
 public static class Serialization {
-	public static void WriteData(string data, string fileName, bool overwriteFile) {
-		string filePath = "./Assets/Levels/" + fileName + ".txt";
+	public static void WriteMapData(string data, string fileName, bool overwriteFile) {
+		string filePath = "./Assets/Maps/" + fileName + ".txt";
 		if (File.Exists(filePath)) {
 			if (!overwriteFile) {
 				Debug.LogError(filePath + " already exists. Aborting");
@@ -25,8 +25,8 @@ public static class Serialization {
 		Util.Log("Saved file " + filePath + " successfully!");
 	}
 
-	public static string ReadData(string fileName) {
-		string filePath = "Assets/Levels/" + fileName + ".txt";
+	public static string ReadMapData(string fileName) {
+		string filePath = "./Assets/Maps/" + fileName + ".txt";
 
 		//Read the text from directly from the test.txt file
 		StreamReader reader = new StreamReader(filePath);
@@ -37,7 +37,7 @@ public static class Serialization {
 	}
 
 
-	//Basically, give it the data as encoded by LevelEditor.serializeTile
+	//Basically, give it the data as encoded by MapEditor.serializeTile
 	public static Tile[,,] DeserializeTiles(string tileRaw, GameObject[] tilePrefabs) {
 		//Parse the saved data. If there's nothing there, indicate that by -1
 		int[] data = tileRaw.Split(',').Select((datum) => {
@@ -91,7 +91,7 @@ public static class Serialization {
 	//TODO: Decide on semantics for this
 	public static Campaign deserializeCampaign(string fileName) {
 		Campaign campaign = new Campaign();
-		string serializedCampaign = Serialization.ReadData(fileName);
+		string serializedCampaign = Serialization.ReadMapData(fileName);
 		string[] campaignArr = serializedCampaign.Split(',');
 		campaign.name = campaignArr[0];
 

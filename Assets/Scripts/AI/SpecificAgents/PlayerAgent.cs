@@ -11,34 +11,29 @@ namespace AI {
 
 		private GameObject highlightedObject;
 		private List<Coord> moveOptions;
-		private List<Unit> highlightedEnemyUnits;
+		private List<Coord> highlightedEnemyUnits;
 		private Unit highlightedFriendlyUnit;
 
 		public PlayerAgent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) : base(battlefield, level, Destroy) { }
 
 		public override async Task<Move> getMove() {
-			Move currentMove = new Move(-1, -1, -1, -1);
-			while (!currentMove.fromDefined() || !currentMove.toDefined()) {
-				while (!currentMove.fromDefined()) {
-					currentMove = await getSelectionPhase(currentMove);
+			Move currentMove = new Move();
+			while (currentMove.from == null || currentMove.to == null) {
+				currentMove = new Move();
+				while (currentMove.from == null) {
+					await getSelectionPhase(currentMove);
 				}
 
-				//Wait for the mouse down event to un-fire. This avoid an infinite loop in the next condition.
-				while (Input.GetButtonDown("Select")) {
-					await Task.Delay(10);
+				while (currentMove.to == null && currentMove.from != null) {
+					await getMovePhase(currentMove);
 				}
-
-				while (!currentMove.toDefined()) {
-					currentMove = await getMovePhase(currentMove);
-				}
-
 			}
 
 			return currentMove;
 		}
 
 
-		public async Task<Move> getSelectionPhase(Move currentMove) {
+		public async Task getSelectionPhase(Move currentMove) {
 			//Await player input. But. Unity doesn't really support async await.
 			//I'm feeling kinda dumb for not just learning coroutines. Next time!
 			while (!Input.GetButtonDown("Select")) {
@@ -63,8 +58,7 @@ namespace AI {
 
 					if (selectedUnit.getCharacter(battlefield) == this.character && !selectedUnit.hasMovedThisTurn) {
 						//Selected friendly unit. Valid selection, store selection coords.
-						currentMove.fromX = tileCoords.x;
-						currentMove.fromY = tileCoords.y;
+						currentMove.from = new Coord(tileCoords.x, tileCoords.y);
 
 						//show move options
 						highlightSingleObject(selectedUnit.gameObject, 1);
@@ -76,28 +70,32 @@ namespace AI {
 						}
 
 						this.highlightedEnemyUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, this.character);
-						foreach (Unit targetableUnit in highlightedEnemyUnits) {
-							highlightMultipleObjects(targetableUnit.gameObject, 2);
+						foreach (Coord targetableUnit in highlightedEnemyUnits) {
+							highlightMultipleObjects(battlefield.units[targetableUnit.x, targetableUnit.y].gameObject, 2);
+							highlightMultipleObjects(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, 2);
 						}
 
 					} else {
 						//Selected enemy unit. Show unit and its move options.
-						//TODO: highlight enemy's valid move tiles. don't assign currentMove.fromX or fromY, bc not valid advancement criteria
+						//TODO: highlight enemy's valid move tiles. don't assign currentMove.from.x or from.y, bc not valid advancement criteria
 					}
 
 				} else if (selectedItem == null) {
 					//Clicked on empty space! Nbd, don't do anything.
 					Debug.Log("Clicked on empty space");
-
 				} else {
 					Debug.LogWarning("Item of unrecognized type clicked on.");
 				}
 			}
 
-			return currentMove;
+			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
+			while (!Input.GetButtonUp("Select")) {
+				await Task.Delay(1);
+			}
+
 		}
 
-		public async Task<Move> getMovePhase(Move currentMove) {
+		public async Task getMovePhase(Move currentMove) {
 			//Await player input.
 			while (!Input.GetButtonDown("Select")) {
 				await Task.Delay(1);
@@ -111,17 +109,17 @@ namespace AI {
 				if (selectedItem is Tile) {
 					//We selected a tile! lets move to it
 					if (moveOptions.Any(move => (move.x == tileCoords.x && move.y == tileCoords.y))) {
-
-						currentMove.toX = tileCoords.x;
-						currentMove.toY = tileCoords.y;
-
-						deselectMoveOptions();
+						currentMove.to = new Coord(tileCoords.x, tileCoords.y);
+					} else {
+						//Clicked on invalid tile, restart.
+						currentMove.from = null;
 					}
+					deselectMoveOptions();
 
 				} else if (selectedItem == null) {
 					//Clicked on empty space, deselect
 					deselectMoveOptions();
-					currentMove = goBackToSelectionPhase();
+					currentMove.from = null;
 
 				} else if (selectedItem is Unit) {
 					Unit selectedUnit = selectedItem as Unit;
@@ -129,34 +127,33 @@ namespace AI {
 					if (highlightedFriendlyUnit == selectedUnit) {
 						//clicked on the same unit, deselect
 						deselectMoveOptions();
-						currentMove = goBackToSelectionPhase();
+						currentMove.from = null;
 
 					} else if (selectedUnit.getCharacter(battlefield) == this.character) {
 						//Clicked on a friendly unit. Deselect the current one.
 						deselectMoveOptions();
-						currentMove = goBackToSelectionPhase();
+						currentMove.from = null;
 
 					} else {
 						//Clicked on a hostile unit! fight!
+						if (highlightedEnemyUnits.Any(coord => coord.x == tileCoords.x && coord.y == tileCoords.y)) {
+							currentMove.to = new Coord(tileCoords.x, tileCoords.y);
+						} else {
+							//Clicked on invalid enemy unit, restart.
+							currentMove.from = null;
+						}
 						deselectMoveOptions();
-						currentMove.toX = tileCoords.x;
-						currentMove.toY = tileCoords.y;
 					}
 				} else {
 					Debug.LogWarning("Item of unrecognized type clicked on.");
 				}
 			}
 
-			return currentMove;
+			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
+			while (!Input.GetButtonUp("Select")) {
+				await Task.Delay(1);
+			}
 		}
-
-
-		//Bluhhh so ik this is a bad way of doing this, but I don't want to be recursing.
-		//I'm not that afraid of overflows or anything, it just seems like a real smell for something that should be iterative.
-		private Move goBackToSelectionPhase() {
-			return new Move(-1, -1, -1, -1);
-		}
-
 
 		private void highlightSingleObject(GameObject objectToHighlight, int colorIndex = 0) {
 			//Deselect the old object
@@ -196,8 +193,10 @@ namespace AI {
 				unhighlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 			}
 
-			foreach (Unit highlightedEnemyUnit in highlightedEnemyUnits) {
-				unhighlightMultipleObjects(highlightedEnemyUnit.gameObject);
+			foreach (Coord highlightedEnemyUnit in highlightedEnemyUnits) {
+				unhighlightMultipleObjects(battlefield.units[highlightedEnemyUnit.x, highlightedEnemyUnit.y].gameObject);
+				unhighlightMultipleObjects(battlefield.map[highlightedEnemyUnit.x, highlightedEnemyUnit.y].Peek().gameObject);
+
 			}
 
 			highlightSingleObject(highlightedObject);
