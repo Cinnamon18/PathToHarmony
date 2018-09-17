@@ -72,6 +72,7 @@ namespace AI {
 						this.highlightedEnemyUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, this.character);
 						foreach (Coord targetableUnit in highlightedEnemyUnits) {
 							highlightMultipleObjects(battlefield.units[targetableUnit.x, targetableUnit.y].gameObject, 2);
+							highlightMultipleObjects(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, 2);
 						}
 
 					} else {
@@ -194,6 +195,8 @@ namespace AI {
 
 			foreach (Coord highlightedEnemyUnit in highlightedEnemyUnits) {
 				unhighlightMultipleObjects(battlefield.units[highlightedEnemyUnit.x, highlightedEnemyUnit.y].gameObject);
+				unhighlightMultipleObjects(battlefield.map[highlightedEnemyUnit.x, highlightedEnemyUnit.y].Peek().gameObject);
+
 			}
 
 			highlightSingleObject(highlightedObject);
