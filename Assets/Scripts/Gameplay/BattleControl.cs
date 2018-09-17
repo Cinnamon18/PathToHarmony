@@ -29,6 +29,7 @@ namespace Gameplay {
 
 		private int currentCharacter;
 		private int playerCharacter;
+		public int halfTurnsElapsed;
 
 		//Just a refrence to the cutscene prefab
 		[SerializeField]
@@ -49,6 +50,7 @@ namespace Gameplay {
 			battlefield = new Battlefield();
 			currentCharacter = -1;
 			battleStage = BattleLoopStage.Initial;
+			halfTurnsElapsed = 0;
 
 			turnPlayerText.enabled = false;
 			turnChangeBackground.enabled = false;
@@ -68,7 +70,7 @@ namespace Gameplay {
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			Level level = new Level("DemoMap", characters, null, validPickTiles);
-			objective = new EliminationObjective(battlefield, level, characters[playerCharacter]);
+			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 3);
 			characters[0].agent.level = level;
 			characters[1].agent.level = level;
 
@@ -137,7 +139,9 @@ namespace Gameplay {
 					battleStageChanged = false;
 
 					currentCharacter = (currentCharacter + 1) % level.characters.Length;
-					turnPlayerText.text = level.characters[currentCharacter].name + "'s turn";
+					turnPlayerText.text =
+						level.characters[currentCharacter].name + "'s turn\n" +
+						"Turns remaining:  " + (objective.maxHalfTurns - ((halfTurnsElapsed / 2) + 1));
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
 					Util.setTimeout(advanceBattleStage, 1000);
@@ -218,16 +222,18 @@ namespace Gameplay {
 						advanceBattleStage();
 					}
 
+					halfTurnsElapsed++;
+
 					break;
 			}
 		}
 
 		private bool checkWinAndLose() {
-			if (objective.isWinCondition()) {
+			if (objective.isWinCondition(halfTurnsElapsed)) {
 				advanceCampaign();
 				return true;
 
-			} else if (objective.isLoseCondition()) {
+			} else if (objective.isLoseCondition(halfTurnsElapsed)) {
 				defeatImage.enabled = true;
 				return true;
 			} else {

@@ -910,10 +910,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b3d268bb6fdbe64c8f69b352036d710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
-  panSpeed: 10
-  panBorderThickness: 30
-  panLimit: {x: 100, y: 100, z: 100}
+  invertCameraX: 0
+  invertCameraY: 0
+  invertDragPan: 0
 --- !u!114 &114590376727706442
 MonoBehaviour:
   m_ObjectHideFlags: 1
