@@ -9,12 +9,14 @@ using UnityEngine;
 namespace AI {
 	public class PlayerAgent : Agent {
 
-		private GameObject highlightedObject;
 		private List<Coord> moveOptions;
 		private List<Coord> highlightedEnemyUnits;
+		private List<GameObject> otherHighlightedObjects;
 		private Unit highlightedFriendlyUnit;
 
-		public PlayerAgent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) : base(battlefield, level, Destroy) { }
+		public PlayerAgent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) : base(battlefield, level, Destroy) {
+			otherHighlightedObjects = new List<GameObject>();
+		}
 
 		public override async Task<Move> getMove() {
 			Move currentMove = new Move();
@@ -31,7 +33,6 @@ namespace AI {
 
 			return currentMove;
 		}
-
 
 		public async Task getSelectionPhase(Move currentMove) {
 			//Await player input. But. Unity doesn't really support async await.
@@ -50,7 +51,9 @@ namespace AI {
 					//Selected a tile, show info abt that tile
 					//TODO: Show info about tile if a tile is clicked
 					Tile selectedTile = selectedItem as Tile;
-					highlightSingleObject(selectedTile.gameObject);
+					unhighlightAll();
+					highlight(selectedTile.gameObject);
+					otherHighlightedObjects.Add(selectedTile.gameObject);
 
 					//This method will get called again because we didn't find a valid selection
 				} else if (selectedItem is Unit) {
@@ -61,18 +64,20 @@ namespace AI {
 						currentMove.from = new Coord(tileCoords.x, tileCoords.y);
 
 						//show move options
-						highlightSingleObject(selectedUnit.gameObject, 1);
+						unhighlightAll();
+						highlight(selectedUnit, 1);
+
 						this.highlightedFriendlyUnit = selectedUnit;
 
 						moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
 						foreach (Coord moveOption in moveOptions) {
-							highlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
+							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 						}
 
 						this.highlightedEnemyUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, this.character);
 						foreach (Coord targetableUnit in highlightedEnemyUnits) {
-							highlightMultipleObjects(battlefield.units[targetableUnit.x, targetableUnit.y].gameObject, 2);
-							highlightMultipleObjects(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, 2);
+							highlight(battlefield.units[targetableUnit.x, targetableUnit.y], 2);
+							highlight(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, 2);
 						}
 
 					} else {
@@ -114,11 +119,11 @@ namespace AI {
 						//Clicked on invalid tile, restart.
 						currentMove.from = null;
 					}
-					deselectMoveOptions();
+					unhighlightAll();
 
 				} else if (selectedItem == null) {
 					//Clicked on empty space, deselect
-					deselectMoveOptions();
+					unhighlightAll();
 					currentMove.from = null;
 
 				} else if (selectedItem is Unit) {
@@ -126,12 +131,12 @@ namespace AI {
 
 					if (highlightedFriendlyUnit == selectedUnit) {
 						//clicked on the same unit, deselect
-						deselectMoveOptions();
+						unhighlightAll();
 						currentMove.from = null;
 
 					} else if (selectedUnit.getCharacter(battlefield) == this.character) {
 						//Clicked on a friendly unit. Deselect the current one.
-						deselectMoveOptions();
+						unhighlightAll();
 						currentMove.from = null;
 
 					} else {
@@ -142,7 +147,7 @@ namespace AI {
 							//Clicked on invalid enemy unit, restart.
 							currentMove.from = null;
 						}
-						deselectMoveOptions();
+						unhighlightAll();
 					}
 				} else {
 					Debug.LogWarning("Item of unrecognized type clicked on.");
@@ -154,55 +159,52 @@ namespace AI {
 				await Task.Delay(1);
 			}
 		}
-
-		private void highlightSingleObject(GameObject objectToHighlight, int colorIndex = 0) {
-			//Deselect the old object
-			if (highlightedObject != null) {
-				unhighlightMultipleObjects(highlightedObject);
-			}
-
-			//Deselect the currently selected one one if we're clicking on it
-			if (highlightedObject == objectToHighlight) {
-				unhighlightMultipleObjects(highlightedObject);
-				highlightedObject = null;
-			} else {
-				//Select the new one
-				highlightedObject = objectToHighlight;
-				highlightMultipleObjects(highlightedObject, colorIndex);
+		private void highlight(Unit unit, int colorIndex = 0) {
+			foreach (GameObject obj in unit.getModels()) {
+				highlight(obj, colorIndex);
+				otherHighlightedObjects.Add(obj);
 			}
 		}
 
-		private void highlightMultipleObjects(GameObject objectToHighlight, int colorIndex = 0) {
+		private void highlight(List<GameObject> objList, int colorIndex = 0) {
+			foreach (GameObject obj in objList) {
+				highlight(obj, colorIndex);
+			}
+		}
+
+		private void highlight(GameObject objectToHighlight, int colorIndex = 0) {
 			objectToHighlight.AddComponent<cakeslice.Outline>();
 			objectToHighlight.GetComponent<cakeslice.Outline>().color = colorIndex;
 		}
 
-		private void unhighlightMultipleObjects(GameObject objectToHighlight) {
+		private void unhighlight(GameObject objectToHighlight) {
 			if (objectToHighlight != null) {
 				Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
 			}
 		}
 
-		private void deselectMoveOptions() {
+		private void unhighlightAll() {
 			if (moveOptions == null) {
 				//Someone accidentally called this twice in a row
 				return;
 			}
 
 			foreach (Coord moveOption in moveOptions) {
-				unhighlightMultipleObjects(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
+				unhighlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 			}
 
 			foreach (Coord highlightedEnemyUnit in highlightedEnemyUnits) {
-				unhighlightMultipleObjects(battlefield.units[highlightedEnemyUnit.x, highlightedEnemyUnit.y].gameObject);
-				unhighlightMultipleObjects(battlefield.map[highlightedEnemyUnit.x, highlightedEnemyUnit.y].Peek().gameObject);
-
+				unhighlight(battlefield.units[highlightedEnemyUnit.x, highlightedEnemyUnit.y].gameObject);
+				unhighlight(battlefield.map[highlightedEnemyUnit.x, highlightedEnemyUnit.y].Peek().gameObject);
 			}
 
-			highlightSingleObject(highlightedObject);
-			moveOptions = null;
-			highlightedEnemyUnits = null;
-			highlightedObject = null;
+			foreach (GameObject obj in otherHighlightedObjects) {
+				unhighlight(obj);
+			}
+
+			moveOptions.Clear();
+			highlightedEnemyUnits.Clear();
+			otherHighlightedObjects.Clear();
 		}
 
 	}

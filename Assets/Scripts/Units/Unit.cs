@@ -14,33 +14,30 @@ namespace Units {
 		public readonly ArmorType armor;
 		private readonly MoveType moveType;
 		public readonly int maxHealth;
-		public int health;
+		private Faction faction;
+		private int health;
 		private List<Buff> buffs;
 		public bool hasMovedThisTurn;
 
 		private int numMoveTiles { get; set; }
 
 		[SerializeField]
-		public Image healthBar;
+		public Material[] factionMaterials;
 		[SerializeField]
 		public BuffUIManager buffUIManager;
+		[SerializeField]
+		public UnitHealthUIManager healthUIManager;
 
-		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance) {
+		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, Faction faction) {
 			armor = armorType;
 			this.moveType = moveType;
+			this.faction = faction;
 			buffs = new List<Buff>();
 
 			this.maxHealth = maxHealth;
 			this.health = maxHealth;
 			hasMovedThisTurn = false;
 			this.numMoveTiles = moveDistance;
-		}
-
-		void Start() {
-
-		}
-		void Update() {
-
 		}
 
 		public Character getCharacter(Battlefield battlefield) {
@@ -119,6 +116,24 @@ namespace Units {
 			}
 
 			return visited.ToList();
+		}
+
+		public void setFaction(Faction faction) {
+			this.faction = faction;
+			this.healthUIManager.setMaterial(factionMaterials[(int)(this.faction)], health);
+		}
+
+		public void setHealth(int health) {
+			this.health = health;
+			healthUIManager.setHealth(health);
+		}
+
+		public int getHealth() {
+			return this.health;
+		}
+
+		public List<GameObject> getModels() {
+			return this.healthUIManager.getModels();
 		}
 
 		public void addBuff(Buff buff) {
