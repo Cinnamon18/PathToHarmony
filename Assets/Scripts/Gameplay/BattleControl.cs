@@ -217,6 +217,7 @@ namespace Gameplay {
 
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[currentCharacter]]) {
 						unit.hasMovedThisTurn = false;
+						unit.hasAttackedThisTurn = false;
 					}
 
 					bool endGame = checkWinAndLose();
