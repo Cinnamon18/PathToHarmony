@@ -17,6 +17,7 @@ namespace Gameplay {
 		//x, y, height (from the bottom)
 		private Battlefield battlefield;
 		private Level level;
+		private GameObjective objective;
 		[SerializeField]
 		private GameObject[] tilePrefabs;
 		[SerializeField]
@@ -28,6 +29,7 @@ namespace Gameplay {
 
 		private int currentCharacter;
 		private int playerCharacter;
+		public int halfTurnsElapsed;
 
 		private string mapFilePath = "./Assets/Maps/";
 
@@ -50,6 +52,7 @@ namespace Gameplay {
 			battlefield = new Battlefield();
 			currentCharacter = -1;
 			battleStage = BattleLoopStage.Initial;
+			halfTurnsElapsed = 0;
 
 			turnPlayerText.enabled = false;
 			turnChangeBackground.enabled = false;
@@ -69,6 +72,7 @@ namespace Gameplay {
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			Level level = new Level("DemoMap", characters, null, validPickTiles);
+			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
 			characters[0].agent.level = level;
 			characters[1].agent.level = level;
 
@@ -103,27 +107,18 @@ namespace Gameplay {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
 					if (!cutscene.inProgress) {
+
+						//TODO This is temp just for testing until level editor deserialization. 
+						addUnit(UnitType.Knight, level.characters[0], 0, 0, Faction.Xingata);
+						addUnit(UnitType.Knight, level.characters[0], 1, 0, Faction.Xingata);
+						addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
+						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
+						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
+
 						advanceBattleStage();
 					}
 					break;
 				case BattleLoopStage.Pick:
-
-					//TODO This is temp just for testing until pick phase gets built. 
-					addUnit(UnitType.Knight, level.characters[0], 0, 0);
-					addUnit(UnitType.Knight, level.characters[0], 1, 0);
-					addUnit(UnitType.Knight, level.characters[0], 0, 1);
-					addUnit(UnitType.Knight, level.characters[1], 3, 7);
-					addUnit(UnitType.Knight, level.characters[1], 4, 7);
-					foreach (Unit unit in battlefield.charactersUnits[level.characters[1]]) {
-						unit.addBuff(new DamageBuff(1.01f));
-						unit.addBuff(new DamageBuff(1.01f));
-						Renderer rend = unit.gameObject.GetComponent<Renderer>();
-						rend.material.shader = Shader.Find("_Color");
-						rend.material.SetColor("_Color", Color.green);
-						rend.material.shader = Shader.Find("Specular");
-						rend.material.SetColor("_SpecColor", Color.green);
-					}
-
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.BattleLoopStart:
@@ -137,7 +132,9 @@ namespace Gameplay {
 					battleStageChanged = false;
 
 					currentCharacter = (currentCharacter + 1) % level.characters.Length;
-					turnPlayerText.text = level.characters[currentCharacter].name + "'s turn";
+					turnPlayerText.text =
+						level.characters[currentCharacter].name + "'s turn\n" +
+						"Turns remaining:  " + (objective.maxHalfTurns - ((halfTurnsElapsed / 2) + 1));
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
 					Util.setTimeout(advanceBattleStage, 1000);
@@ -218,16 +215,18 @@ namespace Gameplay {
 						advanceBattleStage();
 					}
 
+					halfTurnsElapsed++;
+
 					break;
 			}
 		}
 
 		private bool checkWinAndLose() {
-			if (winCondition()) {
+			if (objective.isWinCondition(halfTurnsElapsed)) {
 				advanceCampaign();
 				return true;
 
-			} else if (loseCondition()) {
+			} else if (objective.isLoseCondition(halfTurnsElapsed)) {
 				defeatImage.enabled = true;
 				return true;
 			} else {
@@ -254,26 +253,6 @@ namespace Gameplay {
 			endCutscene.setup(script, cutscene);
 
 			//TODO: actually advance campaign
-		}
-
-		//Returns true if the human player has won, false otherwise
-		private bool winCondition() {
-			foreach (Character character in battlefield.charactersUnits.Keys) {
-				if (character != level.characters[playerCharacter]) {
-					if (battlefield.charactersUnits[character].Count() != 0) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-
-		//returns true if the human player has lost, false otherwise
-		private bool loseCondition() {
-			if (battlefield.charactersUnits[level.characters[playerCharacter]].Count() == 0) {
-				return true;
-			}
-			return false;
 		}
 
 		private void moveUnit(Unit unit, int targetX, int targetY) {
@@ -306,7 +285,7 @@ namespace Gameplay {
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 		}
 
-		private void addUnit(UnitType unitType, Character character, int x, int y) {
+		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
 			int index = (int)(unitType);
 			GameObject newUnitGO = Instantiate(
 				unitPrefabs[index],
@@ -314,6 +293,7 @@ namespace Gameplay {
 				unitPrefabs[index].gameObject.transform.rotation);
 
 			Unit newUnit = newUnitGO.GetComponent<Unit>();
+			newUnit.setFaction(faction);
 			battlefield.addUnit(newUnit, character, x, y);
 		}
 	}

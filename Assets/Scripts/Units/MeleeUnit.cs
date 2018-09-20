@@ -16,13 +16,22 @@ namespace Units {
 		private readonly DamageType damageType;
 		private readonly int meleeAttackStrength;
 
-		public MeleeUnit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, DamageType damageType, int meleeAttackStrength) : base(armorType, maxHealth, moveType, moveDistance) {
+		public MeleeUnit(
+				ArmorType armorType,
+				int maxHealth,
+				MoveType moveType,
+				int moveDistance,
+				DamageType damageType,
+				int meleeAttackStrength,
+				Faction faction
+			) : base(armorType, maxHealth, moveType, moveDistance, faction) {
+
 			this.damageType = damageType;
 			this.meleeAttackStrength = meleeAttackStrength;
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			float damage = this.meleeAttackStrength * (1f * (this as Unit).health / this.maxHealth);
+			float damage = this.meleeAttackStrength * (1f * (this as Unit).getHealth() / this.maxHealth);
 			damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
 			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
@@ -32,10 +41,9 @@ namespace Units {
 			}
 
 			//Damage rounds up
-			enemy.health -= (int)(Mathf.Ceil(damage));
-			enemy.healthBar.fillAmount = 1f * enemy.health / enemy.maxHealth;
+			enemy.setHealth(enemy.getHealth() - (int)(Mathf.Ceil(damage)));
 
-			if (enemy.health <= 0) {
+			if (enemy.getHealth() <= 0) {
 				enemy.defeated(battlefield);
 				return true;
 			} else {
@@ -44,21 +52,16 @@ namespace Units {
 
 		}
 
-		public override List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+		public override List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
 
-			List<Unit> targets = new List<Unit>();
+			List<Coord> targets = new List<Coord>();
 			Coord[] tiles = new Coord[] { new Coord(myX + 1, myY), new Coord(myX - 1, myY), new Coord(myX, myY + 1), new Coord(myX, myY - 1) };
-
 			foreach (Coord tile in tiles) {
 				if (!(tile.x < 0 || tile.y < 0 || tile.x >= battlefield.map.GetLength(0) || tile.y >= battlefield.map.GetLength(1))) {
-					Unit targetUnit = battlefield.units[tile.x, tile.y];
-					if (targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
-						targets.Add(targetUnit);
-					}
+					targets.Add(tile);
 				}
 			}
 			return targets;
 		}
-
 	}
 }

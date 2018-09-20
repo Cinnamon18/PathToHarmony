@@ -14,33 +14,30 @@ namespace Units {
 		public readonly ArmorType armor;
 		private readonly MoveType moveType;
 		public readonly int maxHealth;
-		public int health;
+		private Faction faction;
+		private int health;
 		private List<Buff> buffs;
 		public bool hasMovedThisTurn;
 
 		private int numMoveTiles { get; set; }
 
 		[SerializeField]
-		public Image healthBar;
+		public Material[] factionMaterials;
 		[SerializeField]
 		public BuffUIManager buffUIManager;
+		[SerializeField]
+		public UnitHealthUIManager healthUIManager;
 
-		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance) {
+		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, Faction faction) {
 			armor = armorType;
 			this.moveType = moveType;
+			this.faction = faction;
 			buffs = new List<Buff>();
 
 			this.maxHealth = maxHealth;
 			this.health = maxHealth;
 			hasMovedThisTurn = false;
 			this.numMoveTiles = moveDistance;
-		}
-
-		void Start() {
-
-		}
-		void Update() {
-
 		}
 
 		public Character getCharacter(Battlefield battlefield) {
@@ -56,8 +53,23 @@ namespace Units {
 		//returns true if the enemy was destroyed by battle
 		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
 
+		//Added for use by AI
+		public abstract List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character);
+
 		//returns a list of targetable units
-		public abstract List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character);
+		public List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+
+			List<Coord> targets = new List<Coord>();
+			List<Coord> tiles = getAttackZone(myX, myY, battlefield, character);
+
+			foreach (Coord tile in tiles) {
+				Unit targetUnit = battlefield.units[tile.x, tile.y];
+				if (targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
+					targets.Add(tile);
+				}
+			}
+			return targets;
+		}
 
 		public void defeated(Battlefield battlefield) {
 			Destroy(this.gameObject);
@@ -87,10 +99,16 @@ namespace Units {
 						Coord targetMove = new Coord(targetX, targetY);
 						AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
 
-						if (movePointsExpended <= this.numMoveTiles) {
-							if (!visited.Contains(targetMove)) {
+						if (movePointsExpended <= this.numMoveTiles && !visited.Contains(targetMove)) {
+							//If it's empty, we can move to it and on it
+							if (battlefield.units[targetX, targetY] == null) {
 								visited.Add(targetMove);
 								movePQueue.Enqueue(targetMoveAI);
+							} else if (battlefield.units[targetX, targetY].getCharacter(battlefield) == this.getCharacter(battlefield)) {
+								//If it's our unit, we can move through it, but not on it
+								movePQueue.Enqueue(targetMoveAI);
+							} else {
+								//If it's a hostile unit, we can't move to or through it.
 							}
 						}
 					}
@@ -98,6 +116,24 @@ namespace Units {
 			}
 
 			return visited.ToList();
+		}
+
+		public void setFaction(Faction faction) {
+			this.faction = faction;
+			this.healthUIManager.setMaterial(factionMaterials[(int)(this.faction)], health);
+		}
+
+		public void setHealth(int health) {
+			this.health = health;
+			healthUIManager.setHealth(health);
+		}
+
+		public int getHealth() {
+			return this.health;
+		}
+
+		public List<GameObject> getModels() {
+			return this.healthUIManager.getModels();
 		}
 
 		public void addBuff(Buff buff) {

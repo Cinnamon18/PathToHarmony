@@ -16,7 +16,16 @@ namespace Units {
 		private readonly DamageType damageType;
 		private readonly int statusAttackStrength;
 
-		public StatusUnit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, DamageType damageType, int statusAttackStrength) : base(armorType, maxHealth, moveType, moveDistance) {
+		public StatusUnit(
+				ArmorType armorType,
+				int maxHealth,
+				MoveType moveType,
+				int moveDistance,
+				DamageType damageType,
+				int statusAttackStrength,
+				Faction faction
+			) : base(armorType, maxHealth, moveType, moveDistance, faction) {
+			
 			this.damageType = damageType;
 			this.statusAttackStrength = statusAttackStrength;
 		}
@@ -26,7 +35,7 @@ namespace Units {
 			return false;
 		}
 
-		public override List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+		public override List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
 			//TODO: create specific implementation for status units
 			return null;
 		}

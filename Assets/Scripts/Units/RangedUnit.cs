@@ -16,7 +16,16 @@ namespace Units {
 		private readonly DamageType damageType;
 		private readonly int rangedAttackStrength;
 
-		public RangedUnit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, DamageType damageType, int rangedAttackStrength) : base(armorType, maxHealth, moveType, moveDistance) {
+		public RangedUnit(
+				ArmorType armorType,
+				int maxHealth,
+				MoveType moveType,
+				int moveDistance,
+				DamageType damageType,
+				int rangedAttackStrength,
+				Faction faction
+			) : base(armorType, maxHealth, moveType, moveDistance, faction) {
+
 			this.damageType = damageType;
 			this.rangedAttackStrength = rangedAttackStrength;
 		}
@@ -27,7 +36,7 @@ namespace Units {
 
 		}
 
-		public override List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+		public override List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
 			//TODO: create specific implementation for ranged units
 			return null;
 		}
