@@ -2396,6 +2396,8 @@ MonoBehaviour:
   defaultMap: DemoMap
   loadMapText: {fileID: 1013092318}
   loadLevelText: {fileID: 1991315973}
+  initialDim: {x: 0, y: 0, z: 0}
+  knight: {fileID: 1157129764585780, guid: f5625fd27e0d89849a34b2098df2523d, type: 2}
   tilePrefabs:
   - {fileID: 1124543106267346, guid: ca5e17eb54878214699b3b6170e2ba91, type: 2}
   - {fileID: 1476900757798324, guid: 358ff3cb144ab784cafc3c6871537556, type: 2}
@@ -2403,6 +2405,8 @@ MonoBehaviour:
   - {fileID: 1089309764938158, guid: 255682cfefb3fa24ba865d9b80df3408, type: 2}
   - {fileID: 1380285279712962, guid: aa6bee92761d02242bf6006b1be187a5, type: 2}
   - {fileID: 1812626124276284, guid: c49fecef21116b3469ff60f627c3bbfd, type: 2}
+  unitPrefabs:
+  - {fileID: 1157129764585780, guid: f5625fd27e0d89849a34b2098df2523d, type: 2}
 --- !u!1 &1684997164
 GameObject:
   m_ObjectHideFlags: 0
@@ -2878,8 +2882,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: serializeTiles
+      - m_Target: {fileID: 1475899753}
+        m_MethodName: serialize
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

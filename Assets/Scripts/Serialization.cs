@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -8,8 +8,9 @@ using Constants;
 using Gameplay;
 
 public static class Serialization {
-	public static void WriteMapData(string data, string fileName, bool overwriteFile) {
-		string filePath = "./Assets/Maps/" + fileName + ".txt";
+	private static string mapFilePath = "./Assets/Maps/";
+	public static void WriteData(string data, string fileName, string path, bool overwriteFile) {
+		string filePath = path + fileName + ".txt";
 		if (File.Exists(filePath)) {
 			if (!overwriteFile) {
 				Debug.LogError(filePath + " already exists. Aborting");
@@ -25,8 +26,8 @@ public static class Serialization {
 		Util.Log("Saved file " + filePath + " successfully!");
 	}
 
-	public static string ReadMapData(string fileName) {
-		string filePath = "./Assets/Maps/" + fileName + ".txt";
+	public static string ReadData(string fileName, string path) {
+		string filePath = path + fileName + ".txt";
 
 		//Read the text from directly from the test.txt file
 		StreamReader reader = new StreamReader(filePath);
@@ -91,7 +92,7 @@ public static class Serialization {
 	//TODO: Decide on semantics for this
 	public static Campaign deserializeCampaign(string fileName) {
 		Campaign campaign = new Campaign();
-		string serializedCampaign = Serialization.ReadMapData(fileName);
+		string serializedCampaign = Serialization.ReadData(fileName, mapFilePath);
 		string[] campaignArr = serializedCampaign.Split(',');
 		campaign.name = campaignArr[0];
 

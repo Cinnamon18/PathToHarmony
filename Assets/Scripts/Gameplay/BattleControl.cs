@@ -29,6 +29,8 @@ namespace Gameplay {
 		private int currentCharacter;
 		private int playerCharacter;
 
+		private string mapFilePath = "./Assets/Maps/";
+
 		//Just a refrence to the cutscene prefab
 		[SerializeField]
 		private Cutscene cutscene;
@@ -296,7 +298,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadMapData(level.mapFileName), tilePrefabs);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +9,7 @@ using System.Linq;
 using Gameplay;
 
 namespace Editors {
-	public class MapEditor : Editor {
+	public class MapEditor : Editor<Tile> {
 
 		//x, y, height (from the bottom)
 		[SerializeField]
@@ -33,36 +33,26 @@ namespace Editors {
 
 		// Use this for initialization
 		void Start() {
-			tiles = new Tile[initialDim.x, initialDim.y, initialDim.z];
-
+			objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
+			tiles = objs; 
 			makeYellowBaseTiles();
 
 			drawBorders();
 		}
 
 		void Update() {
-			//Creation and deletion of tiles
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out hit, 1000.0f)) {
-				Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
-				//Tile tile = hit.collider.gameObject.GetComponent<Tile>();
-				Tile tile = tiles[tileCoords.x, tileCoords.y, tileCoords.z];
-				if (Input.GetButtonDown("Select")) {
-					createTile(tileCoords, tile);
-				} else if (Input.GetButtonDown("AltSelect")) {
-					removeTile(tileCoords, tile, hit);
-				}
-			}
-
-			updateTile(Input.GetAxis("MouseScrollWheel"));
+			updateControl();
 		}
 
-		public override void serialize() { }
+		public override void serialize() {
+			deserializeTiles();
+		}
 
-		public override void deserialize() { }
+		public override void deserialize() {
+			serializeTiles();
+		}
 
-		public void removeTile(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
+		public override void remove(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
 			//Remove tile. 
 			bool removingBottom = tileCoords.z == 0;
 			bool removingTop = tileCoords.z == tiles.GetLength(2) - 1;
@@ -83,7 +73,7 @@ namespace Editors {
 			}
 		}
 
-		public void createTile(Vector3Int tileCoords, Tile tile) {
+		public override void create(Vector3Int tileCoords, Tile tile) {
 			if (tileCoords.z == tiles.GetLength(2) - 1) {
 				Sfx.playSound("Bad noise");
 				tile.vibrateUnhappily();
@@ -95,7 +85,7 @@ namespace Editors {
 			}
 		}
 
-		private void updateTile(float scroll) {
+		public override void updatePreview(float scroll) {
 			if (scroll != 0) {
 				if (scroll < 0) {
 					currentTile--;
@@ -182,11 +172,11 @@ namespace Editors {
 		}
 
 		public void incrementTile() {
-			updateTile(1);
+			updatePreview(1);
 		}
 
 		public void decrementTile() {
-			updateTile(-1);
+			updatePreview(-1);
 		}
 
 		public void updateMapName(String newName) {
@@ -201,7 +191,7 @@ namespace Editors {
 		public void deserializeTiles() {
 			eraseTiles();
 			updateMapName(loadFileText.text);
-			tiles = Serialization.DeserializeTiles(Serialization.ReadMapData(mapName), tilePrefabs);
+			tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName, "./Assets/Maps/"+mapName), tilePrefabs);
 			makeYellowBaseTiles();
 		}
 
@@ -268,7 +258,7 @@ namespace Editors {
 				}
 			}
 
-			Serialization.WriteMapData(serialized.ToString(), mapName, overwriteData);
+			Serialization.WriteData(serialized.ToString(), mapName, "./Assets/Maps/" + mapName + ".txt", overwriteData);
 		}
 
 		public void updateSizeUI() {
