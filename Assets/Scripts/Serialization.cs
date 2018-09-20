@@ -1,14 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 using System.IO;
 using System.Linq;
 using System;
 using Constants;
 using Gameplay;
+using Units;
+using Editors;
 
 public static class Serialization {
-	private static string mapFilePath = "./Assets/Maps/";
+	public static string mapFilePath = "./Assets/Maps/";
+	public static string levelFilePath = "./Assets/Levels/";
+
 	public static void WriteData(string data, string fileName, string path, bool overwriteFile) {
 		string filePath = path + fileName + ".txt";
 		if (File.Exists(filePath)) {
@@ -89,6 +94,60 @@ public static class Serialization {
 		return stackedTiles;
 	}
 
+	public static LevelInfo getLevel(string levelName)
+	{
+		string levelString = ReadData(levelName, levelFilePath);
+		Queue<string> levelData = new Queue<string>();
+		foreach (string str in levelString.Split(';'))
+		{
+			if (!(str.Equals("") | str.Equals(null)))
+			{
+				levelData.Enqueue(str);
+			}
+		}
+		Stack<UnitInfo> units = new Stack<UnitInfo>();
+		String mapname = DeserializeUnits(levelData, units);
+		return new LevelInfo(units, mapname);
+
+	}
+
+	public static string DeserializeUnits(Queue<String> queue, Stack<UnitInfo> units)
+	{
+		string mapName = queue.Dequeue();
+		while (queue.Count != 0)
+		{
+			string unitStr = queue.Dequeue();
+			int[] data = unitStr.Split(',').Select((datum) => {
+				int num = -1;
+				if (!Int32.TryParse(datum, out num))
+				{
+					num = -1;
+				}
+				return num;
+			}).ToArray();
+			if(data.Length == 5)
+			{
+				//get store Unittype
+				UnitType type = (UnitType)data[0];
+				//see if player unit
+				bool isPlayerUnit = false;
+
+				if (data[1] == 1)
+				{
+					isPlayerUnit = true;
+				}
+
+
+
+				units.Push(new UnitInfo(type, isPlayerUnit, new Vector3Int(data[2], data[3], data[4])));
+			}
+			
+			
+		}
+		return mapName;
+		
+	}
+
 	//TODO: Decide on semantics for this
 	public static Campaign deserializeCampaign(string fileName) {
 		Campaign campaign = new Campaign();
@@ -100,4 +159,5 @@ public static class Serialization {
 
 		return campaign;
 	}
+
 }

@@ -31,7 +31,7 @@ namespace Gameplay {
 		private int playerCharacter;
 		public int halfTurnsElapsed;
 
-		private string mapFilePath = "./Assets/Maps/";
+		private string mapFilePath = Serialization.mapFilePath;
 
 		//Just a refrence to the cutscene prefab
 		[SerializeField]

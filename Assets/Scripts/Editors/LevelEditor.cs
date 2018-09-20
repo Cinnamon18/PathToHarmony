@@ -8,23 +8,24 @@ using Constants;
 using AI;
 using System.Collections;
 using System.Text;
+using System.ComponentModel;
 
 namespace Editors {
 	public class LevelEditor : Editor<Unit> {
 		public Unit previewUnit;
-		//public Unit[,,] units;
 		public string defaultMap;
 
 		public Text loadMapText;
 		public Text loadLevelText;
+		public Text saveLevelText;
 
 		[SerializeField]
 		private Vector3Int initialDim;
 
 		public GameObject knight;
 
-		private string mapFilePath = "./Assets/Maps/";
-		private string levelFilePath = "./Assets/Levels/";
+		private string mapFilePath = Serialization.mapFilePath;
+		private string levelFilePath = Serialization.levelFilePath;
 
 		private Stack<Tile>[,] tiles;
 		[SerializeField]
@@ -35,87 +36,93 @@ namespace Editors {
 		[SerializeField]
 		private GameObject[] unitPrefabs;
 
-		private ArrayList unitInfo;
-		private string levelName = "testLevel";
+		private UnitInfo[,,] unitsInfo;
+
+		public string levelName;
+		public string mapName;
+
 		// Use this for initialization
 		void Start() {
-			//tiles = Serialization.DeserializeTilesStack(Serialization.ReadData(defaultMap, mapFilePath), tilePrefabs);
-			unitInfo = new ArrayList();
+			//height doesn't matter for units, battlefield takes care of it
 			battlefield = new Battlefield();
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(defaultMap, mapFilePath), tilePrefabs);
-			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), 5];
-			Character[] characters = new[] {
-				new Character("Alice", true, new PlayerAgent(battlefield, null, obj => Destroy(obj, 0) )),
-				//new Character("The evil lord zxqv", false, new PlayerAgent(battlefield, null, obj => Destroy(obj, 0)))
-				new Character("The evil lord zxqv", false, new simpleAgent(battlefield, null, obj => Destroy(obj, 0)))
-				};
-			List<Coord> alicePickTiles = new List<Coord> { new Coord(0, 0), new Coord(0, 1), new Coord(1, 0) };
-			List<Coord> evilGuyPickTiles = new List<Coord> { new Coord(3, 7), new Coord(7, 4) };
-			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
-			level = new Level(defaultMap, characters, null, validPickTiles);
-			validPickTiles[characters[0]] = alicePickTiles;
-			validPickTiles[characters[1]] = evilGuyPickTiles;
+			mapName = defaultMap;
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs);
+			//objs are unit prefabs
+			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1),5];
+			//unitsinfo is used to store units and whether they are player or enemy units
+			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1), 5];
+			level = new Level(defaultMap, null, null, null);
+		
 		}
 
 		public override void serialize() {
+			levelName = saveLevelText.text;
 			if (levelName == null || levelName == "")
 			{
 				Debug.LogError("Can't save without a file name");
 				return;
 			}
 
-			StringBuilder serialized = new StringBuilder(unitInfo.Count + ",");
+			StringBuilder serialized = new StringBuilder(mapName + ";" );
 
-			foreach (UnitInfo info in unitInfo)
+			foreach (UnitInfo info in unitsInfo)
 			{
 				if (info == null)
 				{
-					serialized.Append(",");
+					serialized.Append(";");
 				}
 				else
 				{
-					serialized.Append(info.serialize() + ",");
+					serialized.Append(info.serialize() + ";" );
 				}
 			}
 
-			Serialization.WriteData(serialized.ToString(), levelName, "./Assets/Levels/" + levelName + ".txt", true);
+			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, true);
 		}
 
-		public override void deserialize() { }
+		public override void deserialize() {
+
+		}
+
 
 		public void loadMap() {
 			string file = loadMapText.text;
-			tiles = Serialization.DeserializeTilesStack(Serialization.ReadData(file, mapFilePath), tilePrefabs);
+			tiles = Serialization.DeserializeTilesStack(Serialization.ReadData(file, defaultMap), tilePrefabs);
 		}
 
 		public override void create(Vector3Int coord, Unit unit) {
-			addUnit(UnitType.Knight, level.characters[0], coord.x, coord.y);
-			//Tile newTile = newKnightObj.GetComponent<Tile>();
-			//newTile.tileType = (TileType)(currentTile);
-			//tiles[coord.x, coord.y, (coord.z + 1)] = newTile;
+			addUnit(UnitType.Knight, coord.x, coord.y);
 		}
 
 		public override void remove(Vector3Int coord, Unit unit, RaycastHit hit) {
-
+			
+			Debug.Log(hit.collider.gameObject.tag);
+			if (hit.collider.gameObject.tag.Equals("Unit"))
+			{
+				unitsInfo[coord.x, coord.y, coord.z] = null;
+				Destroy(hit.collider.gameObject);
+			}
+			
+			
 		}
 
 		public override void updatePreview(float scroll) {
 
 		}
 
-		private void addUnit(UnitType unitType, Character character, int x, int y)
+		private void addUnit(UnitType unitType,int x, int y)
 		{
 			int index = (int)(unitType);
-
+			int z = battlefield.map[x, y].Count + 1;
 			GameObject newUnitGO = Instantiate(
 				unitPrefabs[index],
-				Util.GridToWorld(x, y, battlefield.map[x, y].Count + 1),
+				Util.GridToWorld(x, y, z),
 				unitPrefabs[index].gameObject.transform.rotation);
 
 			Unit newUnit = newUnitGO.GetComponent<Unit>();
-			UnitInfo info = new UnitInfo(unitType, true, new Vector3Int(x, y, battlefield.map[x, y].Count + 1));
-			unitInfo.Add(info);
-			//battlefield.addUnit(newUnit, character, x, y);
+			UnitInfo info = new UnitInfo(unitType, true, new Vector3Int(x,y,z));
+			unitsInfo[x, y, z] = info;
 		}
+
 	}
 }

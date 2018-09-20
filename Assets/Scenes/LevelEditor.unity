@@ -2258,7 +2258,7 @@ GameObject:
   - component: {fileID: 1356961224}
   - component: {fileID: 1356961223}
   m_Layer: 5
-  m_Name: Text
+  m_Name: SaveLevelText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2391,13 +2391,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce353aafccdbc40498f32dc577c92397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  previewUnit: {fileID: 114948985983904668, guid: f5625fd27e0d89849a34b2098df2523d,
-    type: 2}
+  previewUnit: {fileID: 0}
   defaultMap: DemoMap
   loadMapText: {fileID: 1013092318}
   loadLevelText: {fileID: 1991315973}
+  saveLevelText: {fileID: 1356961223}
   initialDim: {x: 0, y: 0, z: 0}
-  knight: {fileID: 1157129764585780, guid: f5625fd27e0d89849a34b2098df2523d, type: 2}
+  knight: {fileID: 1629421154834734, guid: 7993afc9425649441aef57855464ed26, type: 2}
   tilePrefabs:
   - {fileID: 1124543106267346, guid: ca5e17eb54878214699b3b6170e2ba91, type: 2}
   - {fileID: 1476900757798324, guid: 358ff3cb144ab784cafc3c6871537556, type: 2}
@@ -2406,7 +2406,9 @@ MonoBehaviour:
   - {fileID: 1380285279712962, guid: aa6bee92761d02242bf6006b1be187a5, type: 2}
   - {fileID: 1812626124276284, guid: c49fecef21116b3469ff60f627c3bbfd, type: 2}
   unitPrefabs:
-  - {fileID: 1157129764585780, guid: f5625fd27e0d89849a34b2098df2523d, type: 2}
+  - {fileID: 1629421154834734, guid: 7993afc9425649441aef57855464ed26, type: 2}
+  levelName: testLevel
+  mapName: 
 --- !u!1 &1684997164
 GameObject:
   m_ObjectHideFlags: 0
@@ -2465,7 +2467,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1475899753}
-        m_MethodName: deserialize
+        m_MethodName: loadMap
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -31,15 +31,16 @@ namespace Editors {
             if (Physics.Raycast(ray, out hit, 1000.0f))
             {
                 Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
-                //Tile tile = hit.collider.gameObject.GetComponent<Tile>();
-                T obj  = objs[objCoords.x, objCoords.y, objCoords.z];
-                if (Input.GetButtonDown("Select"))
+				//Tile tile = hit.collider.gameObject.GetComponent<Tile>();
+				//T obj  = objs[objCoords.x, objCoords.y, objCoords.z];
+				T obj = objs[objCoords.x, objCoords.y, objCoords.z];
+				if (Input.GetButtonDown("Select"))
                 {
-                    create(objCoords, obj);
+					create(objCoords, obj);
                 }
                 else if (Input.GetButtonDown("AltSelect"))
                 {
-                    remove(objCoords, obj, hit);
+					remove(objCoords, obj, hit);
                 }
             }
 
