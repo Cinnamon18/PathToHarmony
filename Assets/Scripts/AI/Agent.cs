@@ -77,6 +77,42 @@ namespace AI {
 			return enemies;
 		}
 
+		// Return a list of Tiles from which a unit can attack any enemy unit
+		protected List<Coord> getOffenseTiles(Coord unitCoord) {
+			List<Coord> offenseTiles = new List<Coord>();
+			Unit unit = coordToUnit(unitCoord);
+			if (unit == null) {
+				return offenseTiles;
+			}
+
+			List<Coord> moves = unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
+			foreach (Coord move in moves) {
+				List<Coord> targets = unit.getTargets(move.x, move.y, battlefield, character);
+				if (targets.Count != 0) {
+					offenseTiles.Add(move);
+				}
+			}
+			return offenseTiles;
+		}
+
+		// Return a list of Tiles from which a unit can attack a specific unit
+		protected List<Coord> getOffenseTiles(Coord unitCoord, Coord enemy) {
+			List<Coord> offenseTiles = new List<Coord>();
+			Unit unit = coordToUnit(unitCoord);
+			if (unit == null) {
+				return offenseTiles;
+			}
+
+			List<Coord> moves = unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
+			foreach (Coord move in moves) {
+				List<Coord> targets = unit.getTargets(move.x, move.y, battlefield, character);
+				if (!targets.Contains(enemy)) {
+					offenseTiles.Add(move);
+				}
+			}
+			return offenseTiles;
+		}
+
 		protected List<Coord> findEnemiesWithinDistance(Coord start, int minDist) {
 			int[,] moveDirs = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 			HashSet<Coord> visited = new HashSet<Coord>();

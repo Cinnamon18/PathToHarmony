@@ -50,6 +50,9 @@ namespace Units {
 			return myCharacter;
 		}
 
+		//return damage that would result from a battle without inflicting it. Useful for AI
+		public abstract int battleDamage(Unit enemy, Tile enemyTile);
+
 		//returns true if the enemy was destroyed by battle
 		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
 
