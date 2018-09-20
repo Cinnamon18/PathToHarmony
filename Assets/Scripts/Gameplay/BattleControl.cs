@@ -181,6 +181,7 @@ namespace Gameplay {
 								battlefield);
 						}
 
+						ourUnit.hasAttackedThisTurn = true;
 						await Task.Delay(TimeSpan.FromMilliseconds(250));
 					} else {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
@@ -190,7 +191,17 @@ namespace Gameplay {
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					ourUnit.hasMovedThisTurn = true;
-					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => unit.hasMovedThisTurn)) {
+					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => {
+						//I know this looks inelegant but it avoid calling getUnitCoords if necessary
+						if (!unit.hasMovedThisTurn) {
+							return false;
+						} else if (unit.hasAttackedThisTurn) {
+							return true;
+						} else {
+							Coord coord = battlefield.getUnitCoords(unit);
+							return unit.getTargets(coord.x, coord.y, battlefield, level.characters[currentCharacter]).Count == 0;
+						}
+						})) {
 						advanceBattleStage();
 					} else {
 						setBattleLoopStage(BattleLoopStage.UnitSelection);

@@ -18,6 +18,7 @@ namespace Units {
 		private int health;
 		private List<Buff> buffs;
 		public bool hasMovedThisTurn;
+		public bool hasAttackedThisTurn;
 
 		private int numMoveTiles { get; set; }
 
@@ -37,6 +38,7 @@ namespace Units {
 			this.maxHealth = maxHealth;
 			this.health = maxHealth;
 			hasMovedThisTurn = false;
+			hasAttackedThisTurn = false;
 			this.numMoveTiles = moveDistance;
 		}
 
@@ -83,6 +85,9 @@ namespace Units {
 		//For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
 		//We can get away with this because there's only one "flow" source point (the unit).
 		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
+			if (hasMovedThisTurn) {
+				return new List<Coord>();
+			}
 
 			HashSet<Coord> visited = new HashSet<Coord>();
 			PriorityQueue<AIMove> movePQueue = new PriorityQueue<AIMove>();

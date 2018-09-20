@@ -29,6 +29,11 @@ namespace AI {
 			foreach (Unit unit in agentsUnits) {
 				if (!unit.hasMovedThisTurn) {
 					return unit;
+				} else {
+					Coord coord = battlefield.getUnitCoords(unit);
+					if (!unit.hasAttackedThisTurn && unit.getTargets(coord.x, coord.y, battlefield, character).Count != 0) {
+						return unit;
+					}
 				}
 			}
 			return null;
