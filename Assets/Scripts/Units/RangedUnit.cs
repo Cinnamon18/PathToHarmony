@@ -16,9 +16,23 @@ namespace Units {
 		private readonly DamageType damageType;
 		private readonly int rangedAttackStrength;
 
-		public RangedUnit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, DamageType damageType, int rangedAttackStrength) : base(armorType, maxHealth, moveType, moveDistance) {
+		public RangedUnit(
+				ArmorType armorType,
+				int maxHealth,
+				MoveType moveType,
+				int moveDistance,
+				DamageType damageType,
+				int rangedAttackStrength,
+				Faction faction
+			) : base(armorType, maxHealth, moveType, moveDistance, faction) {
+
 			this.damageType = damageType;
 			this.rangedAttackStrength = rangedAttackStrength;
+		}
+
+		public override int battleDamage(Unit enemy, Tile enemyTIle) {
+			//TODO: create specific implementation for ranged units
+			return 0;
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {

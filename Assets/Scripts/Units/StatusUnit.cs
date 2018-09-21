@@ -16,9 +16,23 @@ namespace Units {
 		private readonly DamageType damageType;
 		private readonly int statusAttackStrength;
 
-		public StatusUnit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, DamageType damageType, int statusAttackStrength) : base(armorType, maxHealth, moveType, moveDistance) {
+		public StatusUnit(
+				ArmorType armorType,
+				int maxHealth,
+				MoveType moveType,
+				int moveDistance,
+				DamageType damageType,
+				int statusAttackStrength,
+				Faction faction
+			) : base(armorType, maxHealth, moveType, moveDistance, faction) {
+			
 			this.damageType = damageType;
 			this.statusAttackStrength = statusAttackStrength;
+		}
+
+		public override int battleDamage(Unit enemy, Tile enemyTIle) {
+			//TODO: create specific implementation for status units
+			return 0;
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
