@@ -134,8 +134,8 @@ namespace AI {
 				IBattlefieldItem item = battlefield.battlefieldItemAt(target.x, target.y, 0);
 				if (item is Unit) {
 					Unit unit = item as Unit;
-					if (unit.health < minHealth) {
-						minHealth = unit.health;
+					if (unit.getHealth() < minHealth) {
+						minHealth = unit.getHealth();
 						best = target;
 					}
 				}

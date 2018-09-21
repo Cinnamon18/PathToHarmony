@@ -70,7 +70,7 @@ namespace Gameplay {
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			Level level = new Level("DemoMap", characters, null, validPickTiles);
-			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 3);
+			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
 			characters[0].agent.level = level;
 			characters[1].agent.level = level;
 
@@ -105,27 +105,18 @@ namespace Gameplay {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
 					if (!cutscene.inProgress) {
+
+						//TODO This is temp just for testing until level editor deserialization. 
+						addUnit(UnitType.Knight, level.characters[0], 0, 0, Faction.Xingata);
+						addUnit(UnitType.Knight, level.characters[0], 1, 0, Faction.Xingata);
+						addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
+						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
+						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
+
 						advanceBattleStage();
 					}
 					break;
 				case BattleLoopStage.Pick:
-
-					//TODO This is temp just for testing until pick phase gets built. 
-					addUnit(UnitType.Knight, level.characters[0], 0, 0);
-					addUnit(UnitType.Knight, level.characters[0], 1, 0);
-					addUnit(UnitType.Knight, level.characters[0], 0, 1);
-					addUnit(UnitType.Knight, level.characters[1], 3, 7);
-					addUnit(UnitType.Knight, level.characters[1], 4, 7);
-					foreach (Unit unit in battlefield.charactersUnits[level.characters[1]]) {
-						unit.addBuff(new DamageBuff(1.01f));
-						unit.addBuff(new DamageBuff(1.01f));
-						Renderer rend = unit.gameObject.GetComponent<Renderer>();
-						rend.material.shader = Shader.Find("_Color");
-						rend.material.SetColor("_Color", Color.green);
-						rend.material.shader = Shader.Find("Specular");
-						rend.material.SetColor("_SpecColor", Color.green);
-					}
-
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.BattleLoopStart:
@@ -292,7 +283,7 @@ namespace Gameplay {
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 		}
 
-		private void addUnit(UnitType unitType, Character character, int x, int y) {
+		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
 			int index = (int)(unitType);
 			GameObject newUnitGO = Instantiate(
 				unitPrefabs[index],
@@ -300,6 +291,7 @@ namespace Gameplay {
 				unitPrefabs[index].gameObject.transform.rotation);
 
 			Unit newUnit = newUnitGO.GetComponent<Unit>();
+			newUnit.setFaction(faction);
 			battlefield.addUnit(newUnit, character, x, y);
 		}
 	}
