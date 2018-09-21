@@ -9,6 +9,7 @@ using AI;
 using System.Collections;
 using System.Text;
 using System.ComponentModel;
+using TMPro;
 
 namespace Editors {
 	public class LevelEditor : Editor<Unit> {
@@ -18,6 +19,9 @@ namespace Editors {
 		public Text loadMapText;
 		public Text loadLevelText;
 		public Text saveLevelText;
+		
+		public TMPro.TMP_Dropdown dropdown;
+		private bool isPlayer;
 
 		[SerializeField]
 		private Vector3Int initialDim;
@@ -35,12 +39,13 @@ namespace Editors {
 		private Battlefield battlefield;
 		[SerializeField]
 		private GameObject[] unitPrefabs;
-
 		private UnitInfo[,,] unitsInfo;
 
 		public string levelName;
 		public string mapName;
 
+
+		
 		// Use this for initialization
 		void Start() {
 			//height doesn't matter for units, battlefield takes care of it
@@ -53,6 +58,14 @@ namespace Editors {
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1), 5];
 			level = new Level(defaultMap, null, null, null);
 		
+		}
+
+		private void Update()
+		{
+			dropdown.onValueChanged.AddListener(delegate {
+				//player when 0
+				isPlayer = (dropdown.value == 0);
+			});
 		}
 
 		public override void serialize() {
@@ -120,7 +133,7 @@ namespace Editors {
 				unitPrefabs[index].gameObject.transform.rotation);
 
 			Unit newUnit = newUnitGO.GetComponent<Unit>();
-			UnitInfo info = new UnitInfo(unitType, true, new Vector3Int(x,y,z));
+			UnitInfo info = new UnitInfo(unitType, isPlayer, new Vector3Int(x,y,z));
 			unitsInfo[x, y, z] = info;
 		}
 
