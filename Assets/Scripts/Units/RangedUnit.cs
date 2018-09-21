@@ -30,6 +30,11 @@ namespace Units {
 			this.rangedAttackStrength = rangedAttackStrength;
 		}
 
+		public override int battleDamage(Unit enemy, Tile enemyTIle) {
+			//TODO: create specific implementation for ranged units
+			return 0;
+		}
+
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
 			//TODO: create specific implementation for ranged units
 			return false;
