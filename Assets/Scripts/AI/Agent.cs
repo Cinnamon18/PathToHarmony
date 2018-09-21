@@ -31,7 +31,7 @@ namespace AI {
 					return unit;
 				} else {
 					Coord coord = battlefield.getUnitCoords(unit);
-					if (!unit.hasAttackedThisTurn && unit.getTargets(coord.x, coord.y, battlefield, character).Count != 0) {
+					if (!unit.getHasAttackedThisTurn() && unit.getTargets(coord.x, coord.y, battlefield, character).Count != 0) {
 						return unit;
 					}
 				}
