@@ -12,6 +12,7 @@ using AI;
 using Buffs;
 using Gameplay;
 using Editors;
+using System.IO;
 
 public class TestLevelEditor : MonoBehaviour {
 
@@ -115,23 +116,25 @@ public class TestLevelEditor : MonoBehaviour {
 
 					//Testing Level Deserialization
 					LevelInfo levelInfo = Serialization.getLevel("test1");
-					Stack<UnitInfo> stack = levelInfo.units;
-					while (stack.Count != 0)
+					try
 					{
-						UnitInfo info = stack.Pop();
-						if (info.getIsPlayer())
+						Stack<UnitInfo> stack = levelInfo.units;
+						while (stack.Count != 0)
 						{
-							addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
+							UnitInfo info = stack.Pop();
+							if (info.getIsPlayer())
+							{
+								addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
+							}
+							else
+							{
+								addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, Faction.Corbita);
+							}
+
 						}
-						
+					} catch (FileNotFoundException ex) {
+						Debug.Log("Incorrect file name in TestLevelEditor"+ ex.ToString());
 					}
-					/*
-					addUnit(UnitType.Knight, level.characters[0], 0, 0, Faction.Xingata);
-					addUnit(UnitType.Knight, level.characters[0], 1, 0, Faction.Xingata);
-					addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
-					addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
-					addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
-					*/
 
 					advanceBattleStage();
 				}

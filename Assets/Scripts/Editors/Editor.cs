@@ -12,10 +12,6 @@ namespace Editors {
         public abstract void remove(Vector3Int coord, T obj, RaycastHit hit);
 		public abstract void updatePreview(float scroll);
 
-		private void Start()
-		{
-		
-		}
 
 		// Update is called once per frame
 		void Update()
@@ -25,14 +21,13 @@ namespace Editors {
 
         public void updateControl()
         {
-            //Creation and deletion of tiles
+            //Creation and deletion of GameObjects
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 1000.0f))
             {
                 Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
-				//Tile tile = hit.collider.gameObject.GetComponent<Tile>();
-				//T obj  = objs[objCoords.x, objCoords.y, objCoords.z];
+				
 				T obj = objs[objCoords.x, objCoords.y, objCoords.z];
 				if (Input.GetButtonDown("Select"))
                 {

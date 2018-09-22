@@ -10,6 +10,7 @@ using System.Collections;
 using System.Text;
 using System.ComponentModel;
 using TMPro;
+using System.IO;
 
 namespace Editors {
 	public class LevelEditor : Editor<Unit> {
@@ -26,10 +27,13 @@ namespace Editors {
 		[SerializeField]
 		private Vector3Int initialDim;
 
+		public Transform unitsHolder;
 		public GameObject knight;
 
 		private string mapFilePath = Serialization.mapFilePath;
 		private string levelFilePath = Serialization.levelFilePath;
+		private string mapName;
+		private string levelName;
 
 		private Stack<Tile>[,] tiles;
 		[SerializeField]
@@ -39,33 +43,34 @@ namespace Editors {
 		private Battlefield battlefield;
 		[SerializeField]
 		private GameObject[] unitPrefabs;
-		private UnitInfo[,,] unitsInfo;
+		private UnitInfo[,] unitsInfo;
 
-		public string levelName;
-		public string mapName;
-
-
+		Faction playerFaction = Faction.Xingata;
+		Faction enemyFaction = Faction.Corbita;
 		
 		// Use this for initialization
 		void Start() {
-			//height doesn't matter for units, battlefield takes care of it
+			//use battlefield to help place units
 			battlefield = new Battlefield();
 			mapName = defaultMap;
 			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs);
 			//objs are unit prefabs
-			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1),5];
+			//MIGHT be problem with setting z to 5 in tall maps, might need way to store map max height
+			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), 5];
 			//unitsinfo is used to store units and whether they are player or enemy units
-			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1), 5];
-			level = new Level(defaultMap, null, null, null);
+			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
+			isPlayer = true;
 		
 		}
 
-		private void Update()
+		private void LateUpdate()
 		{
+			
 			dropdown.onValueChanged.AddListener(delegate {
 				//player when 0
 				isPlayer = (dropdown.value == 0);
 			});
+		
 		}
 
 		public override void serialize() {
@@ -99,8 +104,39 @@ namespace Editors {
 
 
 		public void loadMap() {
-			string file = loadMapText.text;
-			tiles = Serialization.DeserializeTilesStack(Serialization.ReadData(file, defaultMap), tilePrefabs);
+			mapName = loadMapText.text;
+			reloadMap();
+			removeAllUnits();
+		}
+		private void reloadMap()
+		{
+			tiles = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs);
+		}
+
+		public void loadLevel()
+		{
+			removeAllUnits();
+
+			LevelInfo levelInfo = Serialization.getLevel(loadLevelText.text);
+			mapName = levelInfo.mapName;
+			reloadMap();
+			//store drop down value to reset after adding new units
+			int startVal = dropdown.value;
+			try
+			{
+				Stack<UnitInfo> stack = levelInfo.units;
+				while (stack.Count != 0)
+				{
+					UnitInfo info = stack.Pop();
+					isPlayer = info.getIsPlayer();
+					addUnit(info.getUnitType(), info.getCoord().x, info.getCoord().y);
+				}
+				dropdown.value = startVal;
+				isPlayer = startVal == 0;
+			} catch (FileNotFoundException ex)
+			{
+				Debug.Log("Incorrect file name at line 188 TestLevelEditor");
+			}
 		}
 
 		public override void create(Vector3Int coord, Unit unit) {
@@ -109,15 +145,14 @@ namespace Editors {
 
 		public override void remove(Vector3Int coord, Unit unit, RaycastHit hit) {
 			
-			Debug.Log(hit.collider.gameObject.tag);
 			if (hit.collider.gameObject.tag.Equals("Unit"))
 			{
-				unitsInfo[coord.x, coord.y, coord.z] = null;
+				unitsInfo[coord.x, coord.y] = null;
 				Destroy(hit.collider.gameObject);
-			}
-			
+			}	
 			
 		}
+
 
 		public override void updatePreview(float scroll) {
 
@@ -131,10 +166,37 @@ namespace Editors {
 				unitPrefabs[index],
 				Util.GridToWorld(x, y, z),
 				unitPrefabs[index].gameObject.transform.rotation);
-
+			newUnitGO.transform.parent = unitsHolder;
 			Unit newUnit = newUnitGO.GetComponent<Unit>();
+			Faction currentFaction;
+			//set material to differentiate between player and enemy
+			//TODO: will change later when user can choose unit of a particular faction
+			if (isPlayer)
+			{
+				currentFaction = playerFaction;
+			} else
+			{
+				currentFaction = enemyFaction;
+			}
+			newUnit.setFaction(currentFaction);
+
 			UnitInfo info = new UnitInfo(unitType, isPlayer, new Vector3Int(x,y,z));
-			unitsInfo[x, y, z] = info;
+			unitsInfo[x, y] = info;
+		}
+
+		private void removeAllUnits()
+		{
+			foreach(UnitInfo info in unitsInfo)
+			{
+				if (info != null)
+				{
+					unitsInfo[info.getCoord().x, info.getCoord().y] = null;
+				}
+			}
+
+			foreach(Transform child in unitsHolder){
+				Destroy(child.gameObject);
+			}
 		}
 
 	}
