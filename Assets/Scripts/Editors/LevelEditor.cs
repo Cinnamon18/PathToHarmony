@@ -95,7 +95,7 @@ namespace Editors {
 				}
 			}
 
-			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, true);
+			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, overwriteData);
 		}
 
 		public override void deserialize() {

@@ -25,18 +25,19 @@ namespace Editors {
 		private GameObject[] tilePrefabs;
 		private int currentTile = 0;
 		private string mapName;
-		private bool overwriteData = false;
+		private string mapFilePath;
 
 		public Text loadFileText;
 		public Text loadDimText;
 
 
+
 		// Use this for initialization
 		void Start() {
 			objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
-			tiles = objs; 
+			tiles = objs;
+			mapFilePath = Serialization.mapFilePath;
 			makeYellowBaseTiles();
-
 			drawBorders();
 		}
 
@@ -183,10 +184,6 @@ namespace Editors {
 			this.mapName = newName;
 		}
 
-		public void updateOverwriteMode(bool state) {
-			this.overwriteData = state;
-		}
-
 
 		public void deserializeTiles() {
 			eraseTiles();
@@ -258,7 +255,7 @@ namespace Editors {
 				}
 			}
 
-			Serialization.WriteData(serialized.ToString(), mapName, "./Assets/Maps/" + mapName + ".txt", overwriteData);
+			Serialization.WriteData(serialized.ToString(), mapName, "./Assets/Maps/" , overwriteData);
 		}
 
 		public void updateSizeUI() {

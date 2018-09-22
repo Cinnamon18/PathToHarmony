@@ -5,7 +5,8 @@ using Units;
 
 namespace Editors {
 	public abstract class Editor<T> : MonoBehaviour {
-        public T[,,] objs;
+        protected T[,,] objs;
+		protected bool overwriteData;
 		public abstract void serialize();
 		public abstract void deserialize();
         public abstract void create(Vector3Int coord, T obj);
@@ -41,5 +42,10 @@ namespace Editors {
 
             updatePreview(Input.GetAxis("MouseScrollWheel"));
         }
+
+		public void updateOverwriteMode(bool state)
+		{
+			this.overwriteData = state;
+		}
 	}
 }
