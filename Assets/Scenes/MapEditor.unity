@@ -412,7 +412,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2063428662}
-        m_MethodName: incrementTile
+        m_MethodName: incrementPreview
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1689,7 +1689,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2063428662}
-        m_MethodName: decrementTile
+        m_MethodName: decrementPreview
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

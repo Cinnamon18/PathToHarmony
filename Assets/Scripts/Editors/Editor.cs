@@ -96,6 +96,16 @@ namespace Editors {
 			}
 		}
 
+		public void incrementPreview()
+		{
+			updatePreview(1);
+		}
+
+		public void decrementPreview()
+		{
+			updatePreview(-1);
+		}
+
 		public void updateOverwriteMode(bool state)
 		{
 			this.overwriteData = state;

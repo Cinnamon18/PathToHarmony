@@ -153,13 +153,7 @@ namespace Editors {
 			}
 		}
 
-		public void incrementTile() {
-			updatePreview(1);
-		}
-
-		public void decrementTile() {
-			updatePreview(-1);
-		}
+		
 
 		public void updateMapName(String newName) {
 			this.mapName = newName;
