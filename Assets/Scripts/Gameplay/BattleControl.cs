@@ -70,9 +70,9 @@ namespace Gameplay {
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			Level level = new Level("DemoMap", characters, null, validPickTiles);
-			// objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
+			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
 			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
-			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4)}), 0);
+			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
 
 			//For these objectives to work, you must also comment out the lines in the initial battle stage below
 			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);

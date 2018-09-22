@@ -25,21 +25,21 @@ namespace Gameplay {
 			}
 			foreach (Coord coord in this.capturePoints) {
 				Unit unit = battlefield.units[coord.x, coord.y];
-				if (unit == null || unit.getCharacter(battlefield) == playerCharacter) {
-					timeHeld = 0;
-					return false;
+				if (unit != null && unit.getCharacter(battlefield) != playerCharacter) {
+					//I know this looks clunky but it's the best I could think of so the timer doesn't tick when you first step on the goal, but does every consecutive turn
+					if (!this.holding) {
+						this.holding = true;
+						lastHalfTurnsElapsed = halfTurnsElapsed;
+					} else if (lastHalfTurnsElapsed < halfTurnsElapsed) {
+						timeHeld++;
+						lastHalfTurnsElapsed = halfTurnsElapsed;
+					}
+
+					return timeHeld >= timeToHold;
 				}
 			}
 
-			//I know this looks clunky but it's the best I could think of so the timer doesn't tick when you first step on the goal, but does every consecutive turn
-			if (!this.holding) {
-				this.holding = true;
-				lastHalfTurnsElapsed = halfTurnsElapsed;
-			} else if (lastHalfTurnsElapsed < halfTurnsElapsed) {
-				timeHeld++;
-				lastHalfTurnsElapsed = halfTurnsElapsed;
-			}
-			return timeHeld >= timeToHold;
+			return false;
 		}
 
 		public override bool isWinCondition(int halfTurnsElapsed) {
