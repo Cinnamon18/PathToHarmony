@@ -2,16 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Units;
+using Gameplay;
 
 namespace Editors {
 	public abstract class Editor<T> : MonoBehaviour {
         protected T[,,] objs;
 		protected bool overwriteData;
+		protected string mapFilePath = Serialization.mapFilePath;
+		protected string levelFilePath = Serialization.levelFilePath;
+
+		//info for preview
+		public GameObject[] previewObj;
+		public GameObject currentPreviewObj;
+		//public GameObject[] unitPrefabs;
+		protected int currentIndex = 0;
+
+		//x, y, height (from the bottom)
+		public Vector3Int initialDim;
+
 		public abstract void serialize();
 		public abstract void deserialize();
         public abstract void create(Vector3Int coord, T obj);
         public abstract void remove(Vector3Int coord, T obj, RaycastHit hit);
-		public abstract void updatePreview(float scroll);
 
 
 		// Update is called once per frame
@@ -42,6 +54,38 @@ namespace Editors {
 
             updatePreview(Input.GetAxis("MouseScrollWheel"));
         }
+
+		protected void updatePreview(float scroll)
+		{
+			GameObject oldPreviewTile = currentPreviewObj;
+			if (scroll != 0)
+			{
+				if (scroll < 0)
+				{
+					currentIndex--;
+				}
+				else if (scroll > 0)
+				{
+					currentIndex++;
+				}
+				//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
+				currentIndex = currentIndex < 0 ? currentIndex + previewObj.Length : currentIndex % previewObj.Length;
+				GameObject previewItem = previewObj[currentIndex];
+
+				previewItem = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation);
+				if (objs.GetType() == typeof(Unit[]))
+				{
+					Debug.Log("unit");
+					previewItem.AddComponent<RotateUnit>();
+				} else if (objs.GetType() == typeof(Tile[]))
+				{
+					Debug.Log("tile");
+					previewItem.AddComponent<RotateGently>();
+				}
+				currentPreviewObj = previewItem;
+				Destroy(oldPreviewTile);
+			}
+		}
 
 		public void updateOverwriteMode(bool state)
 		{

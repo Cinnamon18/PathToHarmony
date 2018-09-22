@@ -14,7 +14,6 @@ using System.IO;
 
 namespace Editors {
 	public class LevelEditor : Editor<Unit> {
-		public Unit previewUnit;
 		public string defaultMap;
 
 		public Text loadMapText;
@@ -24,14 +23,8 @@ namespace Editors {
 		public TMPro.TMP_Dropdown dropdown;
 		private bool isPlayer;
 
-		[SerializeField]
-		private Vector3Int initialDim;
-
 		public Transform unitsHolder;
-		public GameObject knight;
 
-		private string mapFilePath = Serialization.mapFilePath;
-		private string levelFilePath = Serialization.levelFilePath;
 		private string mapName;
 		private string levelName;
 
@@ -39,7 +32,6 @@ namespace Editors {
 		[SerializeField]
 		private GameObject[] tilePrefabs;
 
-		private Level level;
 		private Battlefield battlefield;
 		[SerializeField]
 		private GameObject[] unitPrefabs;
@@ -120,8 +112,7 @@ namespace Editors {
 			LevelInfo levelInfo = Serialization.getLevel(loadLevelText.text);
 			mapName = levelInfo.mapName;
 			reloadMap();
-			//store drop down value to reset after adding new units
-			int startVal = dropdown.value;
+			
 			try
 			{
 				Stack<UnitInfo> stack = levelInfo.units;
@@ -131,8 +122,8 @@ namespace Editors {
 					isPlayer = info.getIsPlayer();
 					addUnit(info.getUnitType(), info.getCoord().x, info.getCoord().y);
 				}
-				dropdown.value = startVal;
-				isPlayer = startVal == 0;
+				//reset bool to match dropdown
+				isPlayer = dropdown.value == 0;
 			} catch (FileNotFoundException ex)
 			{
 				Debug.Log("Incorrect file name at line 188 TestLevelEditor");
@@ -140,7 +131,7 @@ namespace Editors {
 		}
 
 		public override void create(Vector3Int coord, Unit unit) {
-			addUnit(UnitType.Knight, coord.x, coord.y);
+			addUnit((UnitType) currentIndex, coord.x, coord.y);
 		}
 
 		public override void remove(Vector3Int coord, Unit unit, RaycastHit hit) {
@@ -153,35 +144,39 @@ namespace Editors {
 			
 		}
 
-
-		public override void updatePreview(float scroll) {
-
-		}
-
 		private void addUnit(UnitType unitType,int x, int y)
 		{
-			int index = (int)(unitType);
-			int z = battlefield.map[x, y].Count + 1;
-			GameObject newUnitGO = Instantiate(
-				unitPrefabs[index],
-				Util.GridToWorld(x, y, z),
-				unitPrefabs[index].gameObject.transform.rotation);
-			newUnitGO.transform.parent = unitsHolder;
-			Unit newUnit = newUnitGO.GetComponent<Unit>();
-			Faction currentFaction;
-			//set material to differentiate between player and enemy
-			//TODO: will change later when user can choose unit of a particular faction
-			if (isPlayer)
+			if (unitsInfo[x, y] == null)
 			{
-				currentFaction = playerFaction;
-			} else
-			{
-				currentFaction = enemyFaction;
-			}
-			newUnit.setFaction(currentFaction);
+				int index = (int)(unitType);
+				int z = battlefield.map[x, y].Count + 1;
+				GameObject newUnitGO = Instantiate(
+					unitPrefabs[index],
+					Util.GridToWorld(x, y, z),
+					unitPrefabs[index].gameObject.transform.rotation);
+				newUnitGO.transform.parent = unitsHolder;
+				Unit newUnit = newUnitGO.GetComponent<Unit>();
+				Faction currentFaction;
+				//set material to differentiate between player and enemy
+				//TODO: will change later when user can choose unit of a particular faction
+				if (isPlayer)
+				{
+					currentFaction = playerFaction;
+				}
+				else
+				{
+					currentFaction = enemyFaction;
+				}
+				newUnit.setFaction(currentFaction);
 
-			UnitInfo info = new UnitInfo(unitType, isPlayer, new Vector3Int(x,y,z));
-			unitsInfo[x, y] = info;
+				UnitInfo info = new UnitInfo(unitType, isPlayer, new Vector3Int(x, y, z));
+				unitsInfo[x, y] = info;
+			}
+			else
+			{
+				Debug.Log("Cannot place units on top of each other.");
+			}
+			
 		}
 
 		private void removeAllUnits()
