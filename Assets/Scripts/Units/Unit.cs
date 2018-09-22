@@ -10,41 +10,36 @@ using Buffs;
 
 namespace Units {
 	public abstract class Unit : MonoBehaviour, IBattlefieldItem {
-		private const int DEFAULT_DAMAGE = 10;
-		private const int DEFAULT_HEALTH = 100;
 
-		private readonly ArmorType armor;
-		private readonly WeaponType weapon;
+		public readonly ArmorType armor;
 		private readonly MoveType moveType;
-		private readonly UnitType unitType;
-		private readonly int maxHealth;
+		public readonly int maxHealth;
+		private Faction faction;
 		private int health;
-		public List<Buff> buffs;
+		private List<Buff> buffs;
 		public bool hasMovedThisTurn;
-		//How many tiles this unit can move per turn turn
+		private bool hasAttackedThisTurn;
+
 		private int numMoveTiles { get; set; }
 
 		[SerializeField]
-		private Image healthBar;
+		public Material[] factionMaterials;
+		[SerializeField]
+		public BuffUIManager buffUIManager;
+		[SerializeField]
+		public UnitHealthUIManager healthUIManager;
 
-		public Unit(ArmorType armorType, WeaponType weaponType, MoveType moveType, UnitType unitType) {
+		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, Faction faction) {
 			armor = armorType;
-			weapon = weaponType;
 			this.moveType = moveType;
-			this.unitType = unitType;
+			this.faction = faction;
 			buffs = new List<Buff>();
 
-			maxHealth = DEFAULT_HEALTH;
-			health = DEFAULT_HEALTH;
+			this.maxHealth = maxHealth;
+			this.health = maxHealth;
 			hasMovedThisTurn = false;
-			this.numMoveTiles = unitType.unitMoveDistance();
-		}
-
-		void Start() {
-
-		}
-		void Update() {
-
+			hasAttackedThisTurn = false;
+			this.numMoveTiles = moveDistance;
 		}
 
 		public Character getCharacter(Battlefield battlefield) {
@@ -57,28 +52,28 @@ namespace Units {
 			return myCharacter;
 		}
 
+		//return damage that would result from a battle without inflicting it. Useful for AI
+		public abstract int battleDamage(Unit enemy, Tile enemyTile);
+
 		//returns true if the enemy was destroyed by battle
-		public bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			float damage = this.weapon.baseDamage * (1f * this.health / this.maxHealth);
-			damage = damage * ((100 - this.weapon.damageType.DamageReduction(enemy.armor)) / 100.0f);
-			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
+		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
 
-			List<Buff> damageBuffs = buffs.FindAll( buff => buff.GetType() == typeof(DamageBuff));
-			foreach (Buff buff in damageBuffs) {
-				damage = damage *= (buff as DamageBuff).getDamageBonus();
+		//Added for use by AI
+		public abstract List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character);
+
+		//returns a list of targetable units
+		public List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+
+			List<Coord> targets = new List<Coord>();
+			List<Coord> tiles = getAttackZone(myX, myY, battlefield, character);
+
+			foreach (Coord tile in tiles) {
+				Unit targetUnit = battlefield.units[tile.x, tile.y];
+				if (targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
+					targets.Add(tile);
+				}
 			}
-
-			//Damage rounds up
-			enemy.health -= (int)(Mathf.Ceil(damage));
-			enemy.healthBar.fillAmount = 1f * enemy.health / enemy.maxHealth;
-
-			if (enemy.health <= 0) {
-				enemy.defeated(battlefield);
-				return true;
-			} else {
-				return false;
-			}
-
+			return targets;
 		}
 
 		public void defeated(Battlefield battlefield) {
@@ -86,11 +81,13 @@ namespace Units {
 			battlefield.charactersUnits[this.getCharacter(battlefield)].Remove(this);
 		}
 
-		/*
-		For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
-		We can get away with this because there's only one "flow" source point (the unit).
-		 */
+
+		//For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
+		//We can get away with this because there's only one "flow" source point (the unit).
 		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
+			if (hasMovedThisTurn) {
+				return new List<Coord>();
+			}
 
 			HashSet<Coord> visited = new HashSet<Coord>();
 			PriorityQueue<AIMove> movePQueue = new PriorityQueue<AIMove>();
@@ -110,10 +107,16 @@ namespace Units {
 						Coord targetMove = new Coord(targetX, targetY);
 						AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
 
-						if (movePointsExpended <= unitType.unitMoveDistance()) {
-							if (!visited.Contains(targetMove)) {
+						if (movePointsExpended <= this.numMoveTiles && !visited.Contains(targetMove)) {
+							//If it's empty, we can move to it and on it
+							if (battlefield.units[targetX, targetY] == null) {
 								visited.Add(targetMove);
 								movePQueue.Enqueue(targetMoveAI);
+							} else if (battlefield.units[targetX, targetY].getCharacter(battlefield) == this.getCharacter(battlefield)) {
+								//If it's our unit, we can move through it, but not on it
+								movePQueue.Enqueue(targetMoveAI);
+							} else {
+								//If it's a hostile unit, we can't move to or through it.
 							}
 						}
 					}
@@ -123,17 +126,78 @@ namespace Units {
 			return visited.ToList();
 		}
 
-		public List<Unit> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
-			//TODO: Replace this with an actual implementation taking into account range and junk.
-			List<Unit> targets = new List<Unit>();
-			List<Coord> tiles = getValidMoves(myX, myY, battlefield);
-			foreach(Coord tile in tiles) {
-				Unit targetUnit = battlefield.units[tile.x, tile.y];
-				if(targetUnit != null && targetUnit.getCharacter(battlefield) != character) {
-					targets.Add(targetUnit);
-				}
+		public void greyOut() {
+			foreach (GameObject model in this.getModels()) {
+				model.GetComponent<Renderer>().material.shader = Shader.Find("Grayscale");
 			}
-			return targets;
+		}
+
+		public void unGreyOut() {
+			foreach (GameObject model in this.getModels()) {
+				model.GetComponent<Renderer>().material.shader = Shader.Find("Standard");
+			}
+		}
+
+		public void setFaction(Faction faction) {
+			this.faction = faction;
+			this.healthUIManager.setMaterial(factionMaterials[(int)(this.faction)], health);
+		}
+
+		public void setHealth(int health) {
+			this.health = health;
+			healthUIManager.setHealth(health);
+		}
+
+		public int getHealth() {
+			return this.health;
+		}
+
+		public void setHasAttackedThisTurn(bool hasAttackedThisTurn) {
+			this.hasAttackedThisTurn = hasAttackedThisTurn;
+			if (hasAttackedThisTurn) {
+				greyOut();
+			} else {
+				unGreyOut();
+			}
+		}
+
+		public bool getHasAttackedThisTurn() {
+			return hasAttackedThisTurn;
+		}
+
+		public List<GameObject> getModels() {
+			return this.healthUIManager.getModels();
+		}
+
+		public void addBuff(Buff buff) {
+			buffs.Add(buff);
+			buffUIManager.addBuff(buff);
+		}
+
+		public void removeBuff(Buff buff) {
+			buffs.Remove(buff);
+			buffUIManager.removeBuff(buff);
+		}
+
+		//Removes all buffs of given type
+		public void removeBuff(BuffType buffType) {
+			List<Buff> removeBuffs = buffs.FindAll(buff => buff.buffType == buffType);
+			foreach (Buff buff in removeBuffs) {
+				removeBuff(buff);
+			}
+		}
+
+		//Technically these two are different, as different classes could (but should not) have different enum types.
+		public List<Buff> getBuffsOfType(BuffType buffType) {
+			return getBuffs(buff => buff.buffType == buffType);
+		}
+
+		public List<Buff> getBuffsOfClass(Buff otherBuff) {
+			return getBuffs(myBuff => myBuff.GetType() == otherBuff.GetType());
+		}
+
+		public List<Buff> getBuffs(Predicate<Buff> predicate) {
+			return buffs.FindAll(predicate);
 		}
 	}
 }
