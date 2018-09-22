@@ -44,6 +44,8 @@ namespace Gameplay {
 		private Image victoryImage;
 		[SerializeField]
 		private Image defeatImage;
+		[SerializeField]
+		private Transform tilesHolder;
 
 		// Use this for initialization
 		void Start() {
@@ -293,7 +295,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs, tilesHolder);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 

@@ -23,12 +23,14 @@ namespace Editors {
 		public TMPro.TMP_Dropdown dropdown;
 		private bool isPlayer;
 
-		public Transform unitsHolder;
+		[SerializeField]
+		private Transform unitsHolder;
+		[SerializeField]
+		private Transform tilesHolder;
 
 		private string mapName;
 		private string levelName;
-
-		private Stack<Tile>[,] tiles;
+		
 		[SerializeField]
 		private GameObject[] tilePrefabs;
 
@@ -39,14 +41,15 @@ namespace Editors {
 
 		Faction playerFaction = Faction.Xingata;
 		Faction enemyFaction = Faction.Corbita;
-		
+
+		Stack<Tile>[,] tiles { get; set; }
 		// Use this for initialization
 		protected void Start() {
 			
 			//use battlefield to help place units
 			battlefield = new Battlefield();
 			mapName = defaultMap;
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs, tilesHolder);
 			//Hacky but Serialization holds how tall the last map loaded is
 			//use to know how tall Unit array should be
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
@@ -59,24 +62,17 @@ namespace Editors {
 			}
 			//Tell Editor type
 			setEditorType();
-
-		}
-
-		private void LateUpdate()
-		{
-			
 			dropdown.onValueChanged.AddListener(delegate {
 				//player when 0
 				isPlayer = (dropdown.value == 0);
 			});
-		
-		}
 
+		}
 		public override void serialize() {
 			levelName = saveLevelText.text;
 			if (levelName == null || levelName == "")
 			{
-				Debug.LogError("Can't save without a file name");
+				Debug.LogError("Can't save without a file name.");
 				return;
 			}
 
@@ -95,28 +91,34 @@ namespace Editors {
 			}
 
 			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, overwriteData);
+			resetTextBoxes();
 		}
 
 		public override void deserialize() {
 			loadLevel();
+			resetTextBoxes();
 		}
 
 
 		public void loadMap() {
+			removeAllUnits();
+			eraseTiles();
 			mapName = loadMapText.text;
 			reloadMap();
-			removeAllUnits();
+			resetTextBoxes();
 		}
+
 		private void reloadMap()
 		{
-			tiles = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs, tilesHolder);
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
+			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
 		public void loadLevel()
 		{
 			removeAllUnits();
-
+			eraseTiles();
 			LevelInfo levelInfo = Serialization.getLevel(loadLevelText.text);
 			mapName = levelInfo.mapName;
 			reloadMap();
@@ -134,11 +136,12 @@ namespace Editors {
 				isPlayer = dropdown.value == 0;
 			} catch (FileNotFoundException ex)
 			{
-				Debug.Log("Incorrect file name at line 188 TestLevelEditor");
+				Debug.LogError("Level does not exist.");
 			}
 		}
 
 		public override void create(Vector3Int coord, Unit unit) {
+			//prefab array needs to match unittype enum
 			addUnit((UnitType) currentIndex, coord.x, coord.y);
 		}
 
@@ -148,7 +151,10 @@ namespace Editors {
 			{
 				unitsInfo[coord.x, coord.y] = null;
 				Destroy(hit.collider.gameObject);
-			}	
+			} else
+			{
+				Debug.Log("Cannot delete non-Units.");
+			}
 			
 		}
 
@@ -201,6 +207,22 @@ namespace Editors {
 				Destroy(child.gameObject);
 			}
 		}
+
+		private void eraseTiles()
+		{
+			foreach (Transform child in tilesHolder)
+			{
+				Destroy(child.gameObject);
+			}
+
+		}
+
+		private void resetTextBoxes()
+		{
+			loadMapText.text = "";
+			loadLevelText.text = "";
+			saveLevelText.text = "";
+	}
 
 	}
 }

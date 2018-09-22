@@ -47,6 +47,8 @@ public class TestLevelEditor : MonoBehaviour {
 	[SerializeField]
 	private Image defeatImage;
 
+	public Transform tilesHolder;
+
 	// Use this for initialization
 	void Start()
 	{
@@ -323,7 +325,7 @@ public class TestLevelEditor : MonoBehaviour {
 
 	private void deserializeMap()
 	{
-		battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs);
+		battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs, tilesHolder);
 		battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 	}
 

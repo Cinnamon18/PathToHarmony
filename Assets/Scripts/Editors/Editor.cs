@@ -16,6 +16,8 @@ namespace Editors {
 		public GameObject currentPreviewObj;
 		//public GameObject[] unitPrefabs;
 		protected int currentIndex = 0;
+		//where to display preview objects
+		public Transform previewHolder;
 
 		//x, y, height (from the bottom)
 		public Vector3Int initialDim;
@@ -33,12 +35,12 @@ namespace Editors {
 		private EditorType type;
 		protected void setEditorType()
 		{
-			if (objs.GetType() == typeof(Unit[]))
+			if (objs.GetType() == typeof(Unit[,,]))
 			{
 				Debug.Log("unit");
 				type = EditorType.Tile;
 			}
-			else if (objs.GetType() == typeof(Tile[]))
+			else if (objs.GetType() == typeof(Tile[,,]))
 			{
 				Debug.Log("tile");
 				type = EditorType.Unit;
@@ -58,9 +60,6 @@ namespace Editors {
             if (Physics.Raycast(ray, out hit, 1000.0f))
             {
                 Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
-
-				//bit weird becuase of the polymorphism
-				//Don't need z value for units since battlefield takes care of it
 				T obj = objs[objCoords.x, objCoords.y, objCoords.z];
 
 				if (Input.GetButtonDown("Select"))
@@ -79,7 +78,7 @@ namespace Editors {
 
 		protected void updatePreview(float scroll)
 		{
-			GameObject oldPreviewTile = currentPreviewObj;
+			GameObject oldPreviewTile = previewHolder.GetChild(0).gameObject;
 			if (scroll != 0)
 			{
 				if (scroll < 0)
@@ -92,19 +91,7 @@ namespace Editors {
 				}
 				//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
 				currentIndex = currentIndex < 0 ? currentIndex + previewObj.Length : currentIndex % previewObj.Length;
-				GameObject previewItem = previewObj[currentIndex];
-
-				if (type == EditorType.Tile)
-				{
-					previewItem.AddComponent<RotateGently>();
-				}
-				else if (type == EditorType.Tile)
-				{
-					previewItem.AddComponent<RotateUnit>();
-				}
-				previewItem = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation);
-				
-				currentPreviewObj = previewItem;
+				currentPreviewObj = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation, previewHolder);
 				Destroy(oldPreviewTile);
 			}
 		}
