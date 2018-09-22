@@ -13,7 +13,7 @@ namespace Gameplay {
 		public EscortObjective(Battlefield battlefield, Level level, Character playerCharacter, int maxHalfTurns, List<Unit> vips) :
 			base(battlefield, level, playerCharacter, maxHalfTurns) {
 				this.vips = vips;
-			 }
+			}
 
 		public override bool isLoseCondition(int halfTurnsElapsed) {
 			if (battlefield.charactersUnits[playerCharacter].Count == 0) {
