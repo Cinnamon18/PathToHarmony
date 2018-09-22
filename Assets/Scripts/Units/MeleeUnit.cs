@@ -30,7 +30,7 @@ namespace Units {
 			this.meleeAttackStrength = meleeAttackStrength;
 		}
 
-		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
+		public override int battleDamage(Unit enemy, Tile enemyTile) {
 			float damage = this.meleeAttackStrength * (1f * (this as Unit).getHealth() / this.maxHealth);
 			damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
 			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
@@ -40,8 +40,14 @@ namespace Units {
 				damage *= (buff as DamageBuff).getDamageBonus();
 			}
 
+			return (int)(Mathf.Ceil(damage));
+		}
+
+		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
+			int damage = this.battleDamage(enemy, enemyTile);
+
 			//Damage rounds up
-			enemy.setHealth(enemy.getHealth() - (int)(Mathf.Ceil(damage)));
+			enemy.setHealth(enemy.getHealth() - damage);
 
 			if (enemy.getHealth() <= 0) {
 				enemy.defeated(battlefield);

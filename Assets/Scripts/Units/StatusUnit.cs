@@ -30,6 +30,11 @@ namespace Units {
 			this.statusAttackStrength = statusAttackStrength;
 		}
 
+		public override int battleDamage(Unit enemy, Tile enemyTIle) {
+			//TODO: create specific implementation for status units
+			return 0;
+		}
+
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
 			//TODO: create specific implementation for status units
 			return false;

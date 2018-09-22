@@ -164,6 +164,10 @@ namespace Gameplay {
 						//We selected a tile! lets move to it
 						moveUnit(ourUnit, move.to.x, move.to.y);
 
+						if (ourUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+							ourUnit.greyOut();
+						}
+
 					} else if (selectedItem is Unit) {
 						//Targeted a hostile unit! fight!
 						Unit selectedUnit = selectedItem as Unit;
@@ -183,6 +187,7 @@ namespace Gameplay {
 								battlefield);
 						}
 
+						ourUnit.setHasAttackedThisTurn(true);
 						await Task.Delay(TimeSpan.FromMilliseconds(250));
 					} else {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
@@ -192,7 +197,17 @@ namespace Gameplay {
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					ourUnit.hasMovedThisTurn = true;
-					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => unit.hasMovedThisTurn)) {
+					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => {
+						//I know this looks inelegant but it avoid calling getUnitCoords if necessary
+						if (!unit.hasMovedThisTurn) {
+							return false;
+						} else if (unit.getHasAttackedThisTurn()) {
+							return true;
+						} else {
+							Coord coord = battlefield.getUnitCoords(unit);
+							return unit.getTargets(coord.x, coord.y, battlefield, level.characters[currentCharacter]).Count == 0;
+						}
+					})) {
 						advanceBattleStage();
 					} else {
 						setBattleLoopStage(BattleLoopStage.UnitSelection);
@@ -208,6 +223,7 @@ namespace Gameplay {
 
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[currentCharacter]]) {
 						unit.hasMovedThisTurn = false;
+						unit.setHasAttackedThisTurn(false);
 					}
 
 					bool endGame = checkWinAndLose();

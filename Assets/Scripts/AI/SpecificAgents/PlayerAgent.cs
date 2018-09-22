@@ -59,7 +59,10 @@ namespace AI {
 				} else if (selectedItem is Unit) {
 					Unit selectedUnit = selectedItem as Unit;
 
-					if (selectedUnit.getCharacter(battlefield) == this.character && !selectedUnit.hasMovedThisTurn) {
+					if (selectedUnit.getCharacter(battlefield) == this.character &&
+						(!selectedUnit.hasMovedThisTurn || (!selectedUnit.getHasAttackedThisTurn() &&
+						selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, character).Count != 0))) {
+
 						//Selected friendly unit. Valid selection, store selection coords.
 						currentMove.from = new Coord(tileCoords.x, tileCoords.y);
 
