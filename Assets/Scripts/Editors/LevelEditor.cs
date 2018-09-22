@@ -52,6 +52,10 @@ namespace Editors {
 			//unitsinfo is used to store units and whether they are player or enemy units
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 			isPlayer = true;
+			if (previewObj.Length != unitPrefabs.Length)
+			{
+				Debug.LogError("Must have equal number of prefab and preview objects.");
+			}
 		
 		}
 
