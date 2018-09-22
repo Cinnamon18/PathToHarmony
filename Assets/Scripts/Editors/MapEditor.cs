@@ -23,11 +23,13 @@ namespace Editors {
 		public Text loadDimText;
 
 		// Use this for initialization
-		void Start() {
+		protected void Start() {
 			objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
 			tiles = objs;
 			makeYellowBaseTiles();
 			drawBorders();
+			//Tell editor type
+			setEditorType();
 		}
 
 		void Update() {
@@ -161,7 +163,7 @@ namespace Editors {
 		public void deserializeTiles() {
 			eraseTiles();
 			updateMapName(loadFileText.text);
-			tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName, "./Assets/Maps/"+mapName), previewObj);
+			tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName, mapFilePath), previewObj);
 			makeYellowBaseTiles();
 		}
 
@@ -228,7 +230,7 @@ namespace Editors {
 				}
 			}
 
-			Serialization.WriteData(serialized.ToString(), mapName, "./Assets/Maps/" , overwriteData);
+			Serialization.WriteData(serialized.ToString(), mapName, mapFilePath , overwriteData);
 		}
 
 		public void updateSizeUI() {

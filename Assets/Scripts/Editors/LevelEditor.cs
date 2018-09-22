@@ -41,14 +41,15 @@ namespace Editors {
 		Faction enemyFaction = Faction.Corbita;
 		
 		// Use this for initialization
-		void Start() {
+		protected void Start() {
+			
 			//use battlefield to help place units
 			battlefield = new Battlefield();
 			mapName = defaultMap;
 			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs);
-			//objs are unit prefabs
-			//MIGHT be problem with setting z to 5 in tall maps, might need way to store map max height
-			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), 5];
+			//Hacky but Serialization holds how tall the last map loaded is
+			//use to know how tall Unit array should be
+			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
 			//unitsinfo is used to store units and whether they are player or enemy units
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 			isPlayer = true;
@@ -56,7 +57,9 @@ namespace Editors {
 			{
 				Debug.LogError("Must have equal number of prefab and preview objects.");
 			}
-		
+			//Tell Editor type
+			setEditorType();
+
 		}
 
 		private void LateUpdate()
@@ -95,7 +98,7 @@ namespace Editors {
 		}
 
 		public override void deserialize() {
-
+			loadLevel();
 		}
 
 
@@ -107,6 +110,7 @@ namespace Editors {
 		private void reloadMap()
 		{
 			tiles = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs);
+			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
 		}
 
 		public void loadLevel()

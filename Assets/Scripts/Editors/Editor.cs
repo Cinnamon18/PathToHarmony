@@ -25,7 +25,25 @@ namespace Editors {
         public abstract void create(Vector3Int coord, T obj);
         public abstract void remove(Vector3Int coord, T obj, RaycastHit hit);
 
-
+		private enum EditorType
+		{
+			Unit,
+			Tile,
+		}
+		private EditorType type;
+		protected void setEditorType()
+		{
+			if (objs.GetType() == typeof(Unit[]))
+			{
+				Debug.Log("unit");
+				type = EditorType.Tile;
+			}
+			else if (objs.GetType() == typeof(Tile[]))
+			{
+				Debug.Log("tile");
+				type = EditorType.Unit;
+			}
+		}
 		// Update is called once per frame
 		void Update()
         {
@@ -40,8 +58,11 @@ namespace Editors {
             if (Physics.Raycast(ray, out hit, 1000.0f))
             {
                 Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
-				
+
+				//bit weird becuase of the polymorphism
+				//Don't need z value for units since battlefield takes care of it
 				T obj = objs[objCoords.x, objCoords.y, objCoords.z];
+
 				if (Input.GetButtonDown("Select"))
                 {
 					create(objCoords, obj);
@@ -54,6 +75,7 @@ namespace Editors {
 
             updatePreview(Input.GetAxis("MouseScrollWheel"));
         }
+
 
 		protected void updatePreview(float scroll)
 		{
@@ -72,16 +94,16 @@ namespace Editors {
 				currentIndex = currentIndex < 0 ? currentIndex + previewObj.Length : currentIndex % previewObj.Length;
 				GameObject previewItem = previewObj[currentIndex];
 
-				previewItem = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation);
-				if (objs.GetType() == typeof(Unit[]))
+				if (type == EditorType.Tile)
 				{
-					Debug.Log("unit");
-					previewItem.AddComponent<RotateUnit>();
-				} else if (objs.GetType() == typeof(Tile[]))
-				{
-					Debug.Log("tile");
 					previewItem.AddComponent<RotateGently>();
 				}
+				else if (type == EditorType.Tile)
+				{
+					previewItem.AddComponent<RotateUnit>();
+				}
+				previewItem = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation);
+				
 				currentPreviewObj = previewItem;
 				Destroy(oldPreviewTile);
 			}
