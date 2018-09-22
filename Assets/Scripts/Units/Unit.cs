@@ -18,7 +18,7 @@ namespace Units {
 		private int health;
 		private List<Buff> buffs;
 		public bool hasMovedThisTurn;
-		public bool hasAttackedThisTurn;
+		private bool hasAttackedThisTurn;
 
 		private int numMoveTiles { get; set; }
 
@@ -126,6 +126,18 @@ namespace Units {
 			return visited.ToList();
 		}
 
+		public void greyOut() {
+			foreach (GameObject model in this.getModels()) {
+				model.GetComponent<Renderer>().material.shader = Shader.Find("Grayscale");
+			}
+		}
+
+		public void unGreyOut() {
+			foreach (GameObject model in this.getModels()) {
+				model.GetComponent<Renderer>().material.shader = Shader.Find("Standard");
+			}
+		}
+
 		public void setFaction(Faction faction) {
 			this.faction = faction;
 			this.healthUIManager.setMaterial(factionMaterials[(int)(this.faction)], health);
@@ -138,6 +150,19 @@ namespace Units {
 
 		public int getHealth() {
 			return this.health;
+		}
+
+		public void setHasAttackedThisTurn(bool hasAttackedThisTurn) {
+			this.hasAttackedThisTurn = hasAttackedThisTurn;
+			if (hasAttackedThisTurn) {
+				greyOut();
+			} else {
+				unGreyOut();
+			}
+		}
+
+		public bool getHasAttackedThisTurn() {
+			return hasAttackedThisTurn;
 		}
 
 		public List<GameObject> getModels() {
