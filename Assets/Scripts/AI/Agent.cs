@@ -39,6 +39,18 @@ namespace AI {
 			return null;
 		}
 
+		protected List<Coord> findInjured() {
+			List<Coord> units = filterAllies(findAllUnits());
+			List<Coord> injured = new List<Coord>();
+			foreach (Coord coord in units) {
+				Unit unit = battlefield.units[coord.x, coord.y];
+				if (unit.maxHealth / unit.health >= 4) {
+					injured.Add(coord);
+				}
+			}
+			return injured;
+		}
+
 		protected List<Coord> findNearestEnemies(Coord start) {
 			int[,] moveDirs = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 			HashSet<Coord> visited = new HashSet<Coord>();
