@@ -70,7 +70,14 @@ namespace Gameplay {
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			Level level = new Level("DemoMap", characters, null, validPickTiles);
-			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
+			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4)}), 0);
+
+			//For these objectives to work, you must also comment out the lines in the initial battle stage below
+			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new InterceptObjective(battlefield, level, characters[playerCharacter], 20);
+
 			characters[0].agent.level = level;
 			characters[1].agent.level = level;
 
@@ -112,6 +119,14 @@ namespace Gameplay {
 						addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
 						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
+
+						// Uncomment these for the escort objective
+						// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
+						// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
+						// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
+
+						// Uncomment these for the intercept objective
+						// (objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
 
 						advanceBattleStage();
 					}

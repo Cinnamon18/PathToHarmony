@@ -2,15 +2,15 @@
 using Units;
 
 namespace Gameplay {
-	public class EscortObjective : GameObjective {
+	public class InterceptObjective : GameObjective {
 
 		public List<Unit> vips = new List<Unit>();
 		private int lastHalfTurnsElapsed = 0;
 
-		public EscortObjective(Battlefield battlefield, Level level, Character playerCharacter, int maxHalfTurns) :
+		public InterceptObjective(Battlefield battlefield, Level level, Character playerCharacter, int maxHalfTurns) :
 			base(battlefield, level, playerCharacter, maxHalfTurns) { }
 
-		public EscortObjective(Battlefield battlefield, Level level, Character playerCharacter, int maxHalfTurns, List<Unit> vips) :
+		public InterceptObjective(Battlefield battlefield, Level level, Character playerCharacter, int maxHalfTurns, List<Unit> vips) :
 			base(battlefield, level, playerCharacter, maxHalfTurns) {
 				this.vips = vips;
 			}

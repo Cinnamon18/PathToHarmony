@@ -30,7 +30,7 @@ namespace Gameplay {
 					return false;
 				}
 			}
-			
+
 			//I know this looks clunky but it's the best I could think of so the timer doesn't tick when you first step on the goal, but does every consecutive turn
 			if (!this.holding) {
 				this.holding = true;
