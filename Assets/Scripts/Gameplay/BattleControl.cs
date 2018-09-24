@@ -10,6 +10,8 @@ using Cutscenes;
 using System.Threading.Tasks;
 using AI;
 using Buffs;
+using System.IO;
+using Editors;
 
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
@@ -31,6 +33,8 @@ namespace Gameplay {
 		private int playerCharacter;
 		public int halfTurnsElapsed;
 
+		private string mapFilePath = Serialization.mapFilePath;
+
 		//Just a refrence to the cutscene prefab
 		[SerializeField]
 		private Cutscene cutscene;
@@ -42,6 +46,8 @@ namespace Gameplay {
 		private Image victoryImage;
 		[SerializeField]
 		private Image defeatImage;
+		[SerializeField]
+		private Transform tilesHolder;
 
 		// Use this for initialization
 		void Start() {
@@ -71,6 +77,13 @@ namespace Gameplay {
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			Level level = new Level("DemoMap", characters, null, validPickTiles);
 			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
+			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
+
+			//For these objectives to work, you must also comment out the lines in the initial battle stage below
+			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new InterceptObjective(battlefield, level, characters[playerCharacter], 20);
+
 			characters[0].agent.level = level;
 			characters[1].agent.level = level;
 
@@ -105,13 +118,46 @@ namespace Gameplay {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
 					if (!cutscene.inProgress) {
+						//Testing Level Deserialization
+						LevelInfo levelInfo = Serialization.getLevel("testdemo");
+						try
+						{
+							Stack<UnitInfo> stack = levelInfo.units;
+							while (stack.Count != 0)
+							{
+								UnitInfo info = stack.Pop();
+								if (info.getIsPlayer())
+								{
+									addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
+								}
+								else
+								{
+									addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, Faction.Tsubin);
+								}
 
+							}
+						}
+						catch (FileNotFoundException ex)
+						{
+							Debug.Log("Incorrect level name" + ex.ToString());
+						}
+						
+						/*
 						//TODO This is temp just for testing until level editor deserialization. 
 						addUnit(UnitType.Knight, level.characters[0], 0, 0, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[0], 1, 0, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
 						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
+						*/
+
+						// Uncomment these for the escort objective
+						// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
+						// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
+						// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
+
+						// Uncomment these for the intercept objective
+						// (objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
 
 						advanceBattleStage();
 					}
@@ -291,7 +337,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadMapData(level.mapFileName), tilePrefabs);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs, tilesHolder);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
