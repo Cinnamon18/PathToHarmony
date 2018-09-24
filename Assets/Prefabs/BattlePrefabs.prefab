@@ -1111,7 +1111,8 @@ MonoBehaviour:
   - {fileID: 1380285279712962, guid: aa6bee92761d02242bf6006b1be187a5, type: 2}
   - {fileID: 1812626124276284, guid: c49fecef21116b3469ff60f627c3bbfd, type: 2}
   unitPrefabs:
-  - {fileID: 1157129764585780, guid: f5625fd27e0d89849a34b2098df2523d, type: 2}
+  - {fileID: 1629421154834734, guid: 7993afc9425649441aef57855464ed26, type: 2}
+  halfTurnsElapsed: 0
   cutscene: {fileID: 114828112544786242}
   turnPlayerText: {fileID: 114077355169017558}
   turnChangeBackground: {fileID: 114073804194313002}

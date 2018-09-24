@@ -70,7 +70,18 @@ namespace Gameplay {
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			Level level = new Level("DemoMap", characters, null, validPickTiles);
+<<<<<<< HEAD
 			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 10);
+=======
+			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
+			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
+
+			//For these objectives to work, you must also comment out the lines in the initial battle stage below
+			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new InterceptObjective(battlefield, level, characters[playerCharacter], 20);
+
+>>>>>>> c552099cbb59c804d516c9090bd8b15e8af7c9b8
 			characters[0].agent.level = level;
 			characters[1].agent.level = level;
 
@@ -105,27 +116,26 @@ namespace Gameplay {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
 					if (!cutscene.inProgress) {
+
+						//TODO This is temp just for testing until level editor deserialization. 
+						addUnit(UnitType.Knight, level.characters[0], 0, 0, Faction.Xingata);
+						addUnit(UnitType.Knight, level.characters[0], 1, 0, Faction.Xingata);
+						addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
+						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
+						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
+
+						// Uncomment these for the escort objective
+						// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
+						// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
+						// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
+
+						// Uncomment these for the intercept objective
+						// (objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
+
 						advanceBattleStage();
 					}
 					break;
 				case BattleLoopStage.Pick:
-
-					//TODO This is temp just for testing until pick phase gets built. 
-					addUnit(UnitType.Knight, level.characters[0], 0, 0);
-					addUnit(UnitType.Knight, level.characters[0], 1, 0);
-					addUnit(UnitType.Knight, level.characters[0], 0, 1);
-					addUnit(UnitType.Knight, level.characters[1], 3, 7);
-					addUnit(UnitType.Knight, level.characters[1], 4, 7);
-					foreach (Unit unit in battlefield.charactersUnits[level.characters[1]]) {
-						unit.addBuff(new DamageBuff(1.01f));
-						unit.addBuff(new DamageBuff(1.01f));
-						Renderer rend = unit.gameObject.GetComponent<Renderer>();
-						rend.material.shader = Shader.Find("_Color");
-						rend.material.SetColor("_Color", Color.green);
-						rend.material.shader = Shader.Find("Specular");
-						rend.material.SetColor("_SpecColor", Color.green);
-					}
-
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.BattleLoopStart:
@@ -171,6 +181,10 @@ namespace Gameplay {
 						//We selected a tile! lets move to it
 						moveUnit(ourUnit, move.to.x, move.to.y);
 
+						if (ourUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+							ourUnit.greyOut();
+						}
+
 					} else if (selectedItem is Unit) {
 						//Targeted a hostile unit! fight!
 						Unit selectedUnit = selectedItem as Unit;
@@ -190,6 +204,7 @@ namespace Gameplay {
 								battlefield);
 						}
 
+						ourUnit.setHasAttackedThisTurn(true);
 						await Task.Delay(TimeSpan.FromMilliseconds(250));
 					} else {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
@@ -199,7 +214,17 @@ namespace Gameplay {
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					ourUnit.hasMovedThisTurn = true;
-					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => unit.hasMovedThisTurn)) {
+					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => {
+						//I know this looks inelegant but it avoid calling getUnitCoords if necessary
+						if (!unit.hasMovedThisTurn) {
+							return false;
+						} else if (unit.getHasAttackedThisTurn()) {
+							return true;
+						} else {
+							Coord coord = battlefield.getUnitCoords(unit);
+							return unit.getTargets(coord.x, coord.y, battlefield, level.characters[currentCharacter]).Count == 0;
+						}
+					})) {
 						advanceBattleStage();
 					} else {
 						setBattleLoopStage(BattleLoopStage.UnitSelection);
@@ -215,6 +240,7 @@ namespace Gameplay {
 
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[currentCharacter]]) {
 						unit.hasMovedThisTurn = false;
+						unit.setHasAttackedThisTurn(false);
 					}
 
 					bool endGame = checkWinAndLose();
@@ -292,7 +318,7 @@ namespace Gameplay {
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 		}
 
-		private void addUnit(UnitType unitType, Character character, int x, int y) {
+		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
 			int index = (int)(unitType);
 			GameObject newUnitGO = Instantiate(
 				unitPrefabs[index],
@@ -300,6 +326,7 @@ namespace Gameplay {
 				unitPrefabs[index].gameObject.transform.rotation);
 
 			Unit newUnit = newUnitGO.GetComponent<Unit>();
+			newUnit.setFaction(faction);
 			battlefield.addUnit(newUnit, character, x, y);
 		}
 	}

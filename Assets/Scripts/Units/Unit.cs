@@ -14,33 +14,32 @@ namespace Units {
 		public readonly ArmorType armor;
 		private readonly MoveType moveType;
 		public readonly int maxHealth;
-		public int health;
+		private Faction faction;
+		private int health;
 		private List<Buff> buffs;
 		public bool hasMovedThisTurn;
+		private bool hasAttackedThisTurn;
 
 		private int numMoveTiles { get; set; }
 
 		[SerializeField]
-		public Image healthBar;
+		public Material[] factionMaterials;
 		[SerializeField]
 		public BuffUIManager buffUIManager;
+		[SerializeField]
+		public UnitHealthUIManager healthUIManager;
 
-		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance) {
+		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, Faction faction) {
 			armor = armorType;
 			this.moveType = moveType;
+			this.faction = faction;
 			buffs = new List<Buff>();
 
 			this.maxHealth = maxHealth;
 			this.health = maxHealth;
 			hasMovedThisTurn = false;
+			hasAttackedThisTurn = false;
 			this.numMoveTiles = moveDistance;
-		}
-
-		void Start() {
-
-		}
-		void Update() {
-
 		}
 
 		public Character getCharacter(Battlefield battlefield) {
@@ -52,6 +51,9 @@ namespace Units {
 			}
 			return myCharacter;
 		}
+
+		//return damage that would result from a battle without inflicting it. Useful for AI
+		public abstract int battleDamage(Unit enemy, Tile enemyTile);
 
 		//returns true if the enemy was destroyed by battle
 		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
@@ -83,6 +85,9 @@ namespace Units {
 		//For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
 		//We can get away with this because there's only one "flow" source point (the unit).
 		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
+			if (hasMovedThisTurn) {
+				return new List<Coord>();
+			}
 
 			HashSet<Coord> visited = new HashSet<Coord>();
 			PriorityQueue<AIMove> movePQueue = new PriorityQueue<AIMove>();
@@ -119,6 +124,49 @@ namespace Units {
 			}
 
 			return visited.ToList();
+		}
+
+		public void greyOut() {
+			foreach (GameObject model in this.getModels()) {
+				model.GetComponent<Renderer>().material.shader = Shader.Find("Grayscale");
+			}
+		}
+
+		public void unGreyOut() {
+			foreach (GameObject model in this.getModels()) {
+				model.GetComponent<Renderer>().material.shader = Shader.Find("Standard");
+			}
+		}
+
+		public void setFaction(Faction faction) {
+			this.faction = faction;
+			this.healthUIManager.setMaterial(factionMaterials[(int)(this.faction)], health);
+		}
+
+		public void setHealth(int health) {
+			this.health = health;
+			healthUIManager.setHealth(health);
+		}
+
+		public int getHealth() {
+			return this.health;
+		}
+
+		public void setHasAttackedThisTurn(bool hasAttackedThisTurn) {
+			this.hasAttackedThisTurn = hasAttackedThisTurn;
+			if (hasAttackedThisTurn) {
+				greyOut();
+			} else {
+				unGreyOut();
+			}
+		}
+
+		public bool getHasAttackedThisTurn() {
+			return hasAttackedThisTurn;
+		}
+
+		public List<GameObject> getModels() {
+			return this.healthUIManager.getModels();
 		}
 
 		public void addBuff(Buff buff) {
