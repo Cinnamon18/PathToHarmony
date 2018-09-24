@@ -76,9 +76,6 @@ namespace Gameplay {
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			Level level = new Level("DemoMap", characters, null, validPickTiles);
-<<<<<<< HEAD
-			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 10);
-=======
 			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
 			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
 			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
@@ -87,7 +84,6 @@ namespace Gameplay {
 			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);
 			// objective = new InterceptObjective(battlefield, level, characters[playerCharacter], 20);
 
->>>>>>> c552099cbb59c804d516c9090bd8b15e8af7c9b8
 			characters[0].agent.level = level;
 			characters[1].agent.level = level;
 
