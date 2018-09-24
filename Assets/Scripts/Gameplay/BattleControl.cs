@@ -120,28 +120,21 @@ namespace Gameplay {
 					if (!cutscene.inProgress) {
 						//Testing Level Deserialization
 						LevelInfo levelInfo = Serialization.getLevel("testdemo");
-						try
-						{
+						try {
 							Stack<UnitInfo> stack = levelInfo.units;
-							while (stack.Count != 0)
-							{
+							while (stack.Count != 0) {
 								UnitInfo info = stack.Pop();
-								if (info.getIsPlayer())
-								{
+								if (info.getIsPlayer()) {
 									addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
-								}
-								else
-								{
+								} else {
 									addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, Faction.Tsubin);
 								}
 
 							}
-						}
-						catch (FileNotFoundException ex)
-						{
+						} catch (FileNotFoundException ex) {
 							Debug.Log("Incorrect level name" + ex.ToString());
 						}
-						
+
 						/*
 						//TODO This is temp just for testing until level editor deserialization. 
 						addUnit(UnitType.Knight, level.characters[0], 0, 0, Faction.Xingata);
