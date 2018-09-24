@@ -13,6 +13,10 @@ using Editors;
 public static class Serialization {
 	public static string mapFilePath = "./Assets/Maps/";
 	public static string levelFilePath = "./Assets/Levels/";
+	//This is used for LevelEditor so the obj[,,,] array know how tall it should be
+	//And can place units now matter how tall the map is.
+	//Gotta be better way but works for now.
+	public static int mapHeight;
 
 	public static void WriteData(string data, string fileName, string path, bool overwriteFile) {
 		string filePath = path + fileName + ".txt";
@@ -44,7 +48,7 @@ public static class Serialization {
 
 
 	//Basically, give it the data as encoded by MapEditor.serializeTile
-	public static Tile[,,] DeserializeTiles(string tileRaw, GameObject[] tilePrefabs) {
+	public static Tile[,,] DeserializeTiles(string tileRaw, GameObject[] tilePrefabs, Transform tileHolder) {
 		//Parse the saved data. If there's nothing there, indicate that by -1
 		int[] data = tileRaw.Split(',').Select((datum) => {
 			int num = -1;
@@ -67,6 +71,8 @@ public static class Serialization {
 							Util.GridToWorld(x, y, z),
 							tilePrefabs[data[flatIndex]].transform.rotation)
 							.GetComponent<Tile>();
+						//make child of singe transform for easier deletion
+						tileObject.transform.parent = tileHolder;
 						tileObject.tileType = (TileType)(data[flatIndex]);
 						parsedTiles[x, y, z] = tileObject;
 					}
@@ -78,8 +84,9 @@ public static class Serialization {
 	}
 
 	//I know this is a hacky way of doing this, but it'll work.... for now....  #TODO
-	public static Stack<Tile>[,] DeserializeTilesStack(string tileRaw, GameObject[] tilePrefabs) {
-		Tile[,,] parsedTiles = DeserializeTiles(tileRaw, tilePrefabs);
+	public static Stack<Tile>[,] DeserializeTilesStack(string tileRaw, GameObject[] tilePrefabs, Transform tilesHolder) {
+		Tile[,,] parsedTiles = DeserializeTiles(tileRaw, tilePrefabs, tilesHolder);
+		mapHeight = parsedTiles.GetLength(2);
 		Stack<Tile>[,] stackedTiles = new Stack<Tile>[parsedTiles.GetLength(0), parsedTiles.GetLength(1)];
 		for (int x = 0; x < parsedTiles.GetLength(0); x++) {
 			for (int y = 0; y < parsedTiles.GetLength(1); y++) {
@@ -136,9 +143,6 @@ public static class Serialization {
 				{
 					isPlayerUnit = true;
 				}
-
-
-
 				units.Push(new UnitInfo(type, isPlayerUnit, new Vector3Int(data[2], data[3], data[4])));
 			}
 			

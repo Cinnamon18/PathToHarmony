@@ -17,17 +17,21 @@ namespace Editors {
 		private Tile[,,] tiles;
 		[SerializeField]
 		private LineRenderer lineRenderer;
+		[SerializeField]
+		private Transform tilesHolder;
 		private string mapName;
 
 		public Text loadFileText;
 		public Text loadDimText;
 
 		// Use this for initialization
-		void Start() {
+		protected void Start() {
 			objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
 			tiles = objs;
 			makeYellowBaseTiles();
 			drawBorders();
+			//Tell editor type
+			setEditorType();
 		}
 
 		void Update() {
@@ -64,14 +68,17 @@ namespace Editors {
 		}
 
 		public override void create(Vector3Int tileCoords, Tile tile) {
+			
 			if (tileCoords.z == tiles.GetLength(2) - 1) {
 				Sfx.playSound("Bad noise");
 				tile.vibrateUnhappily();
 			} else {
 				GameObject newTileObj = Instantiate(previewObj[currentIndex], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
+				newTileObj.transform.parent = tilesHolder;
 				Tile newTile = newTileObj.GetComponent<Tile>();
 				newTile.tileType = (TileType)(currentIndex);
 				tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile;
+				
 			}
 		}
 
@@ -140,18 +147,13 @@ namespace Editors {
 			for (int x = 0; x < tiles.GetLength(0); x++) {
 				for (int y = 0; y < tiles.GetLength(1); y++) {
 					GameObject newTile = Instantiate(previewObj[(int)(TileType.None)], Util.GridToWorld(x, y, 0), previewObj[currentIndex].transform.rotation);
+					newTile.transform.parent = tilesHolder;
 					tiles[x, y, 0] = newTile.GetComponent<Tile>();
 				}
 			}
 		}
 
-		public void incrementTile() {
-			updatePreview(1);
-		}
-
-		public void decrementTile() {
-			updatePreview(-1);
-		}
+		
 
 		public void updateMapName(String newName) {
 			this.mapName = newName;
@@ -161,7 +163,7 @@ namespace Editors {
 		public void deserializeTiles() {
 			eraseTiles();
 			updateMapName(loadFileText.text);
-			tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName, "./Assets/Maps/"+mapName), previewObj);
+			tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName, mapFilePath), previewObj, tilesHolder);
 			makeYellowBaseTiles();
 		}
 
@@ -228,7 +230,7 @@ namespace Editors {
 				}
 			}
 
-			Serialization.WriteData(serialized.ToString(), mapName, "./Assets/Maps/" , overwriteData);
+			Serialization.WriteData(serialized.ToString(), mapName, mapFilePath , overwriteData);
 		}
 
 		public void updateSizeUI() {

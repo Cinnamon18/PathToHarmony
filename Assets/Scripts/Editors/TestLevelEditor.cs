@@ -47,6 +47,10 @@ public class TestLevelEditor : MonoBehaviour {
 	[SerializeField]
 	private Image defeatImage;
 
+	public Transform tilesHolder;
+	[SerializeField]
+	private string levelName;
+
 	// Use this for initialization
 	void Start()
 	{
@@ -74,7 +78,8 @@ public class TestLevelEditor : MonoBehaviour {
 		Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
 		validPickTiles[characters[0]] = alicePickTiles;
 		validPickTiles[characters[1]] = evilGuyPickTiles;
-		Level level = new Level("DemoMap", characters, null, validPickTiles);
+		
+		Level level = new Level(getLevelMap(), characters, null, validPickTiles);
 		objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
 		characters[0].agent.level = level;
 		characters[1].agent.level = level;
@@ -115,7 +120,7 @@ public class TestLevelEditor : MonoBehaviour {
 				{
 
 					//Testing Level Deserialization
-					LevelInfo levelInfo = Serialization.getLevel("test1");
+					LevelInfo levelInfo = Serialization.getLevel("testlevel");
 					try
 					{
 						Stack<UnitInfo> stack = levelInfo.units;
@@ -255,6 +260,12 @@ public class TestLevelEditor : MonoBehaviour {
 				break;
 		}
 	}
+	//want something better so no callign Serialization twice
+	//but works for testing
+	private string getLevelMap()
+	{
+		return Serialization.getLevel(levelName).mapName;
+	}
 
 	private bool checkWinAndLose()
 	{
@@ -323,7 +334,7 @@ public class TestLevelEditor : MonoBehaviour {
 
 	private void deserializeMap()
 	{
-		battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs);
+		battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs, tilesHolder);
 		battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 	}
 

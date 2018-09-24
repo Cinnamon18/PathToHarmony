@@ -16,6 +16,8 @@ namespace Editors {
 		public GameObject currentPreviewObj;
 		//public GameObject[] unitPrefabs;
 		protected int currentIndex = 0;
+		//where to display preview objects
+		public Transform previewHolder;
 
 		//x, y, height (from the bottom)
 		public Vector3Int initialDim;
@@ -25,7 +27,25 @@ namespace Editors {
         public abstract void create(Vector3Int coord, T obj);
         public abstract void remove(Vector3Int coord, T obj, RaycastHit hit);
 
-
+		private enum EditorType
+		{
+			Unit,
+			Tile,
+		}
+		private EditorType type;
+		protected void setEditorType()
+		{
+			if (objs.GetType() == typeof(Unit[,,]))
+			{
+				Debug.Log("unit");
+				type = EditorType.Tile;
+			}
+			else if (objs.GetType() == typeof(Tile[,,]))
+			{
+				Debug.Log("tile");
+				type = EditorType.Unit;
+			}
+		}
 		// Update is called once per frame
 		void Update()
         {
@@ -40,8 +60,8 @@ namespace Editors {
             if (Physics.Raycast(ray, out hit, 1000.0f))
             {
                 Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
-				
 				T obj = objs[objCoords.x, objCoords.y, objCoords.z];
+
 				if (Input.GetButtonDown("Select"))
                 {
 					create(objCoords, obj);
@@ -55,9 +75,10 @@ namespace Editors {
             updatePreview(Input.GetAxis("MouseScrollWheel"));
         }
 
+
 		protected void updatePreview(float scroll)
 		{
-			GameObject oldPreviewTile = currentPreviewObj;
+			GameObject oldPreviewTile = previewHolder.GetChild(0).gameObject;
 			if (scroll != 0)
 			{
 				if (scroll < 0)
@@ -70,21 +91,19 @@ namespace Editors {
 				}
 				//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
 				currentIndex = currentIndex < 0 ? currentIndex + previewObj.Length : currentIndex % previewObj.Length;
-				GameObject previewItem = previewObj[currentIndex];
-
-				previewItem = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation);
-				if (objs.GetType() == typeof(Unit[]))
-				{
-					Debug.Log("unit");
-					previewItem.AddComponent<RotateUnit>();
-				} else if (objs.GetType() == typeof(Tile[]))
-				{
-					Debug.Log("tile");
-					previewItem.AddComponent<RotateGently>();
-				}
-				currentPreviewObj = previewItem;
+				currentPreviewObj = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation, previewHolder);
 				Destroy(oldPreviewTile);
 			}
+		}
+
+		public void incrementPreview()
+		{
+			updatePreview(1);
+		}
+
+		public void decrementPreview()
+		{
+			updatePreview(-1);
 		}
 
 		public void updateOverwriteMode(bool state)
