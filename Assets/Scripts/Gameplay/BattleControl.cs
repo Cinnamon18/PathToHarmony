@@ -70,7 +70,7 @@ namespace Gameplay {
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			Level level = new Level("DemoMap", characters, null, validPickTiles);
-			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 3);
+			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 10);
 			characters[0].agent.level = level;
 			characters[1].agent.level = level;
 
