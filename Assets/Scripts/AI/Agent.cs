@@ -25,15 +25,18 @@ namespace AI {
 		protected Unit selectUnit() {
 
 			List<Unit> agentsUnits = battlefield.charactersUnits[character];
-			Unit unit = null;
 
-			foreach (Unit u in agentsUnits) {
-				if (!u.hasMovedThisTurn) {
-					unit = u;
-					break;
+			foreach (Unit unit in agentsUnits) {
+				if (!unit.hasMovedThisTurn) {
+					return unit;
+				} else {
+					Coord coord = battlefield.getUnitCoords(unit);
+					if (!unit.getHasAttackedThisTurn() && unit.getTargets(coord.x, coord.y, battlefield, character).Count != 0) {
+						return unit;
+					}
 				}
 			}
-			return unit;
+			return null;
 		}
 
 		protected List<Coord> findNearestEnemies(Coord start) {
@@ -126,21 +129,54 @@ namespace AI {
 			return enemies;
 		}
 
-		protected Coord bestTarget(List<Coord> targets) {
-			//Currently just checks health of all targets
-			int minHealth = Int32.MaxValue;
-			Coord best = null;
-			foreach(Coord target in targets) {
-				IBattlefieldItem item = battlefield.battlefieldItemAt(target.x, target.y, 0);
-				if (item is Unit) {
-					Unit unit = item as Unit;
-					if (unit.getHealth() < minHealth) {
-						minHealth = unit.getHealth();
-						best = target;
-					}
+		// Return a list of Tiles from which a unit can attack any enemy unit
+		protected List<Coord> getOffenseTiles(Coord unitCoord) {
+			List<Coord> offenseTiles = new List<Coord>();
+			Unit unit = coordToUnit(unitCoord);
+			if (unit == null) {
+				return offenseTiles;
+			}
+
+			List<Coord> moves = unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
+			foreach (Coord move in moves) {
+				List<Coord> targets = unit.getTargets(move.x, move.y, battlefield, character);
+				if (targets.Count != 0) {
+					offenseTiles.Add(move);
 				}
 			}
-			return best;
+			return offenseTiles;
+		}
+
+		// Return a list of Tiles from which a unit can attack a specific unit
+		protected List<Coord> getOffenseTiles(Coord unitCoord, Coord enemy) {
+			List<Coord> offenseTiles = new List<Coord>();
+			Unit unit = coordToUnit(unitCoord);
+			if (unit == null) {
+				return offenseTiles;
+			}
+
+			List<Coord> moves = unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
+			foreach (Coord move in moves) {
+				List<Coord> targets = unit.getTargets(move.x, move.y, battlefield, character);
+				if (!targets.Contains(enemy)) {
+					offenseTiles.Add(move);
+				}
+			}
+			return offenseTiles;
+		}
+
+		protected Coord compareTargets(Unit unit, List<Coord> targets) {
+			//Currently just checks health of all targets
+			int minHealth = Int32.MaxValue;
+			PriorityQueue<AIBattle> targetPQueue = new PriorityQueue<AIBattle>();
+			foreach(Coord target in targets) {
+				Unit enemy = coordToUnit(target);
+				if (enemy != null) {
+					Tile enemyTile = battlefield.map[target.x, target.y].Peek();
+					targetPQueue.Enqueue(new AIBattle(unit, enemy, enemyTile, target));
+				}
+			}
+			return targetPQueue.Dequeue().coord;
 		}
 
 		protected List<Coord> enemyAttackZone(List<Coord> enemies) {
