@@ -19,7 +19,7 @@ namespace Editors {
 		public Text loadMapText;
 		public Text loadLevelText;
 		public Text saveLevelText;
-
+		
 		public TMPro.TMP_Dropdown dropdown;
 		private bool isPlayer;
 
@@ -30,7 +30,7 @@ namespace Editors {
 
 		private string mapName;
 		private string levelName;
-
+		
 		[SerializeField]
 		private GameObject[] tilePrefabs;
 
@@ -45,7 +45,7 @@ namespace Editors {
 		Stack<Tile>[,] tiles { get; set; }
 		// Use this for initialization
 		protected void Start() {
-
+			
 			//use battlefield to help place units
 			battlefield = new Battlefield();
 			mapName = defaultMap;
@@ -56,7 +56,8 @@ namespace Editors {
 			//unitsinfo is used to store units and whether they are player or enemy units
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 			isPlayer = true;
-			if (previewObj.Length != unitPrefabs.Length) {
+			if (previewObj.Length != unitPrefabs.Length)
+			{
 				Debug.LogError("Must have equal number of prefab and preview objects.");
 			}
 			//Tell Editor type
@@ -69,18 +70,23 @@ namespace Editors {
 		}
 		public override void serialize() {
 			levelName = saveLevelText.text;
-			if (levelName == null || levelName == "") {
+			if (levelName == null || levelName == "")
+			{
 				Debug.LogError("Can't save without a file name.");
 				return;
 			}
 
-			StringBuilder serialized = new StringBuilder(mapName + ";");
+			StringBuilder serialized = new StringBuilder(mapName + ";" );
 
-			foreach (UnitInfo info in unitsInfo) {
-				if (info == null) {
+			foreach (UnitInfo info in unitsInfo)
+			{
+				if (info == null)
+				{
 					serialized.Append(";");
-				} else {
-					serialized.Append(info.serialize() + ";");
+				}
+				else
+				{
+					serialized.Append(info.serialize() + ";" );
 				}
 			}
 
@@ -102,51 +108,60 @@ namespace Editors {
 			resetTextBoxes();
 		}
 
-		private void reloadMap() {
+		private void reloadMap()
+		{
 			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs, tilesHolder);
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
-		public void loadLevel() {
+		public void loadLevel()
+		{
 			removeAllUnits();
 			eraseTiles();
 			LevelInfo levelInfo = Serialization.getLevel(loadLevelText.text);
 			mapName = levelInfo.mapName;
 			reloadMap();
-
-			try {
+			
+			try
+			{
 				Stack<UnitInfo> stack = levelInfo.units;
-				while (stack.Count != 0) {
+				while (stack.Count != 0)
+				{
 					UnitInfo info = stack.Pop();
 					isPlayer = info.getIsPlayer();
 					addUnit(info.getUnitType(), info.getCoord().x, info.getCoord().y);
 				}
 				//reset bool to match dropdown
 				isPlayer = dropdown.value == 0;
-			} catch (FileNotFoundException ex) {
+			} catch (FileNotFoundException ex)
+			{
 				Debug.LogError("Level does not exist.");
 			}
 		}
 
 		public override void create(Vector3Int coord, Unit unit) {
 			//prefab array needs to match unittype enum
-			addUnit((UnitType)currentIndex, coord.x, coord.y);
+			addUnit((UnitType) currentIndex, coord.x, coord.y);
 		}
 
 		public override void remove(Vector3Int coord, Unit unit, RaycastHit hit) {
-
-			if (hit.collider.gameObject.tag.Equals("Unit")) {
+			
+			if (hit.collider.gameObject.tag.Equals("Unit"))
+			{
 				unitsInfo[coord.x, coord.y] = null;
 				Destroy(hit.collider.gameObject);
-			} else {
+			} else
+			{
 				Debug.Log("Cannot delete non-Units.");
 			}
-
+			
 		}
 
-		private void addUnit(UnitType unitType, int x, int y) {
-			if (unitsInfo[x, y] == null) {
+		private void addUnit(UnitType unitType,int x, int y)
+		{
+			if (unitsInfo[x, y] == null)
+			{
 				int index = (int)(unitType);
 				int z = battlefield.map[x, y].Count + 1;
 				GameObject newUnitGO = Instantiate(
@@ -158,45 +173,56 @@ namespace Editors {
 				Faction currentFaction;
 				//set material to differentiate between player and enemy
 				//TODO: will change later when user can choose unit of a particular faction
-				if (isPlayer) {
+				if (isPlayer)
+				{
 					currentFaction = playerFaction;
-				} else {
+				}
+				else
+				{
 					currentFaction = enemyFaction;
 				}
 				newUnit.setFaction(currentFaction);
 
 				UnitInfo info = new UnitInfo(unitType, isPlayer, new Vector3Int(x, y, z));
 				unitsInfo[x, y] = info;
-			} else {
+			}
+			else
+			{
 				Debug.Log("Cannot place units on top of each other.");
 			}
-
+			
 		}
 
-		private void removeAllUnits() {
-			foreach (UnitInfo info in unitsInfo) {
-				if (info != null) {
+		private void removeAllUnits()
+		{
+			foreach(UnitInfo info in unitsInfo)
+			{
+				if (info != null)
+				{
 					unitsInfo[info.getCoord().x, info.getCoord().y] = null;
 				}
 			}
 
-			foreach (Transform child in unitsHolder) {
+			foreach(Transform child in unitsHolder){
 				Destroy(child.gameObject);
 			}
 		}
 
-		private void eraseTiles() {
-			foreach (Transform child in tilesHolder) {
+		private void eraseTiles()
+		{
+			foreach (Transform child in tilesHolder)
+			{
 				Destroy(child.gameObject);
 			}
 
 		}
 
-		private void resetTextBoxes() {
+		private void resetTextBoxes()
+		{
 			loadMapText.text = "";
 			loadLevelText.text = "";
 			saveLevelText.text = "";
-		}
+	}
 
 	}
 }

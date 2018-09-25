@@ -6,7 +6,7 @@ using Gameplay;
 
 namespace Editors {
 	public abstract class Editor<T> : MonoBehaviour {
-		protected T[,,] objs;
+        protected T[,,] objs;
 		protected bool overwriteData;
 		protected string mapFilePath = Serialization.mapFilePath;
 		protected string levelFilePath = Serialization.levelFilePath;
@@ -24,53 +24,69 @@ namespace Editors {
 
 		public abstract void serialize();
 		public abstract void deserialize();
-		public abstract void create(Vector3Int coord, T obj);
-		public abstract void remove(Vector3Int coord, T obj, RaycastHit hit);
+        public abstract void create(Vector3Int coord, T obj);
+        public abstract void remove(Vector3Int coord, T obj, RaycastHit hit);
 
-		private enum EditorType {
+		private enum EditorType
+		{
 			Unit,
 			Tile,
 		}
 		private EditorType type;
-		protected void setEditorType() {
-			if (objs.GetType() == typeof(Unit[,,])) {
+		protected void setEditorType()
+		{
+			if (objs.GetType() == typeof(Unit[,,]))
+			{
 				Debug.Log("unit");
 				type = EditorType.Tile;
-			} else if (objs.GetType() == typeof(Tile[,,])) {
+			}
+			else if (objs.GetType() == typeof(Tile[,,]))
+			{
 				Debug.Log("tile");
 				type = EditorType.Unit;
 			}
 		}
 		// Update is called once per frame
-		void Update() {
-			updateControl();
-		}
+		void Update()
+        {
+            updateControl();
+        }
 
-		public void updateControl() {
-			//Creation and deletion of GameObjects
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out hit, 1000.0f)) {
-				Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
+        public void updateControl()
+        {
+            //Creation and deletion of GameObjects
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, 1000.0f))
+            {
+                Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
 				T obj = objs[objCoords.x, objCoords.y, objCoords.z];
 
-				if (Input.GetButtonDown("Select")) {
+				if (Input.GetButtonDown("Select"))
+                {
 					create(objCoords, obj);
-				} else if (Input.GetButtonDown("AltSelect")) {
+                }
+                else if (Input.GetButtonDown("AltSelect"))
+                {
 					remove(objCoords, obj, hit);
-				}
-			}
+                }
+            }
 
-			updatePreview(Input.GetAxis("MouseScrollWheel"));
-		}
+            updatePreview(Input.GetAxis("MouseScrollWheel"));
+        }
 
 
-		protected void updatePreview(float scroll) {
+		protected void updatePreview(float scroll)
+		{
 			GameObject oldPreviewTile = previewHolder.GetChild(0).gameObject;
-			if (scroll != 0) {
-				if (scroll < 0) {
+			if (scroll != 0)
+			{
+				if (scroll < 0)
+				{
 					currentIndex--;
-				} else if (scroll > 0) {
+				}
+				else if (scroll > 0)
+				{
 					currentIndex++;
 				}
 				//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
@@ -80,15 +96,18 @@ namespace Editors {
 			}
 		}
 
-		public void incrementPreview() {
+		public void incrementPreview()
+		{
 			updatePreview(1);
 		}
 
-		public void decrementPreview() {
+		public void decrementPreview()
+		{
 			updatePreview(-1);
 		}
 
-		public void updateOverwriteMode(bool state) {
+		public void updateOverwriteMode(bool state)
+		{
 			this.overwriteData = state;
 		}
 	}
