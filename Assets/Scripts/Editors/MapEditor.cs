@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,44 +9,60 @@ using System.Linq;
 using Gameplay;
 
 namespace Editors {
-	public class MapEditor : Editor<Tile> {
+	public class MapEditor : Editor {
 
-		
+		//x, y, height (from the bottom)
+		[SerializeField]
+		private Vector3Int initialDim;
 		//Oof so I realized after the fact that a 2D stack would be a better way to do this. However, it's abstracted by the serialization
 		//layer, so this is perfectly funcitonal atm.... #TODO
 		private Tile[,,] tiles;
 		[SerializeField]
 		private LineRenderer lineRenderer;
 		[SerializeField]
-		private Transform tilesHolder;
+		private GameObject previewTile;
+		[SerializeField]
+		private GameObject[] tilePrefabs;
+		private int currentTile = 0;
 		private string mapName;
+		private bool overwriteData = false;
 
 		public Text loadFileText;
 		public Text loadDimText;
 
+
 		// Use this for initialization
-		protected void Start() {
-			objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
-			tiles = objs;
+		void Start() {
+			tiles = new Tile[initialDim.x, initialDim.y, initialDim.z];
+
 			makeYellowBaseTiles();
+
 			drawBorders();
-			//Tell editor type
-			setEditorType();
 		}
 
 		void Update() {
-			updateControl();
+			//Creation and deletion of tiles
+			RaycastHit hit;
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			if (Physics.Raycast(ray, out hit, 1000.0f)) {
+				Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
+				//Tile tile = hit.collider.gameObject.GetComponent<Tile>();
+				Tile tile = tiles[tileCoords.x, tileCoords.y, tileCoords.z];
+				if (Input.GetButtonDown("Select")) {
+					createTile(tileCoords, tile);
+				} else if (Input.GetButtonDown("AltSelect")) {
+					removeTile(tileCoords, tile, hit);
+				}
+			}
+
+			updateTile(Input.GetAxis("MouseScrollWheel"));
 		}
 
-		public override void serialize() {
-			deserializeTiles();
-		}
+		public override void serialize() { }
 
-		public override void deserialize() {
-			serializeTiles();
-		}
+		public override void deserialize() { }
 
-		public override void remove(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
+		public void removeTile(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
 			//Remove tile. 
 			bool removingBottom = tileCoords.z == 0;
 			bool removingTop = tileCoords.z == tiles.GetLength(2) - 1;
@@ -67,22 +83,35 @@ namespace Editors {
 			}
 		}
 
-		public override void create(Vector3Int tileCoords, Tile tile) {
-			
+		public void createTile(Vector3Int tileCoords, Tile tile) {
 			if (tileCoords.z == tiles.GetLength(2) - 1) {
 				Sfx.playSound("Bad noise");
 				tile.vibrateUnhappily();
 			} else {
-				GameObject newTileObj = Instantiate(previewObj[currentIndex], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
-				newTileObj.transform.parent = tilesHolder;
+				GameObject newTileObj = Instantiate(tilePrefabs[currentTile], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
 				Tile newTile = newTileObj.GetComponent<Tile>();
-				newTile.tileType = (TileType)(currentIndex);
+				newTile.tileType = (TileType)(currentTile);
 				tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile;
-				
 			}
 		}
 
-		
+		private void updateTile(float scroll) {
+			if (scroll != 0) {
+				if (scroll < 0) {
+					currentTile--;
+				} else if (scroll > 0) {
+					currentTile++;
+				}
+
+				//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
+				currentTile = currentTile < 0 ? currentTile + tilePrefabs.Length : currentTile % tilePrefabs.Length;
+
+				GameObject oldPreviewTile = previewTile;
+				previewTile = Instantiate(tilePrefabs[currentTile], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation);
+				previewTile.AddComponent<RotateGently>();
+				Destroy(oldPreviewTile);
+			}
+		}
 
 		public void updateSize(int x, int y, int z) {
 			initialDim = new Vector3Int(x, y, z);
@@ -146,24 +175,33 @@ namespace Editors {
 		public void makeYellowBaseTiles() {
 			for (int x = 0; x < tiles.GetLength(0); x++) {
 				for (int y = 0; y < tiles.GetLength(1); y++) {
-					GameObject newTile = Instantiate(previewObj[(int)(TileType.None)], Util.GridToWorld(x, y, 0), previewObj[currentIndex].transform.rotation);
-					newTile.transform.parent = tilesHolder;
+					GameObject newTile = Instantiate(tilePrefabs[(int)(TileType.None)], Util.GridToWorld(x, y, 0), tilePrefabs[currentTile].transform.rotation);
 					tiles[x, y, 0] = newTile.GetComponent<Tile>();
 				}
 			}
 		}
 
-		
+		public void incrementTile() {
+			updateTile(1);
+		}
+
+		public void decrementTile() {
+			updateTile(-1);
+		}
 
 		public void updateMapName(String newName) {
 			this.mapName = newName;
+		}
+
+		public void updateOverwriteMode(bool state) {
+			this.overwriteData = state;
 		}
 
 
 		public void deserializeTiles() {
 			eraseTiles();
 			updateMapName(loadFileText.text);
-			tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName, mapFilePath), previewObj, tilesHolder);
+			tiles = Serialization.DeserializeTiles(Serialization.ReadMapData(mapName), tilePrefabs);
 			makeYellowBaseTiles();
 		}
 
@@ -230,7 +268,7 @@ namespace Editors {
 				}
 			}
 
-			Serialization.WriteData(serialized.ToString(), mapName, mapFilePath , overwriteData);
+			Serialization.WriteMapData(serialized.ToString(), mapName, overwriteData);
 		}
 
 		public void updateSizeUI() {
