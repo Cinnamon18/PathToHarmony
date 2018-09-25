@@ -10,8 +10,6 @@ using Cutscenes;
 using System.Threading.Tasks;
 using AI;
 using Buffs;
-using System.IO;
-using Editors;
 
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
@@ -33,8 +31,6 @@ namespace Gameplay {
 		private int playerCharacter;
 		public int halfTurnsElapsed;
 
-		private string mapFilePath = Serialization.mapFilePath;
-
 		//Just a refrence to the cutscene prefab
 		[SerializeField]
 		private Cutscene cutscene;
@@ -46,8 +42,6 @@ namespace Gameplay {
 		private Image victoryImage;
 		[SerializeField]
 		private Image defeatImage;
-		[SerializeField]
-		private Transform tilesHolder;
 
 		// Use this for initialization
 		void Start() {
@@ -118,38 +112,13 @@ namespace Gameplay {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
 					if (!cutscene.inProgress) {
-						//Testing Level Deserialization
-						LevelInfo levelInfo = Serialization.getLevel("testdemo");
-						try
-						{
-							Stack<UnitInfo> stack = levelInfo.units;
-							while (stack.Count != 0)
-							{
-								UnitInfo info = stack.Pop();
-								if (info.getIsPlayer())
-								{
-									addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
-								}
-								else
-								{
-									addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, Faction.Tsubin);
-								}
 
-							}
-						}
-						catch (FileNotFoundException ex)
-						{
-							Debug.Log("Incorrect level name" + ex.ToString());
-						}
-						
-						/*
 						//TODO This is temp just for testing until level editor deserialization. 
 						addUnit(UnitType.Knight, level.characters[0], 0, 0, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[0], 1, 0, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
 						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
-						*/
 
 						// Uncomment these for the escort objective
 						// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
@@ -337,7 +306,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadMapData(level.mapFileName), tilePrefabs);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
