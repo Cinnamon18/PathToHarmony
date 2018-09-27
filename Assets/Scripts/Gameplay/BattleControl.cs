@@ -117,8 +117,10 @@ namespace Gameplay {
 						addUnit(UnitType.Knight, level.characters[0], 0, 0, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[0], 1, 0, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
+						addUnit(UnitType.Cleric, level.characters[0], 2, 1, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
 						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
+
 
 						// Uncomment these for the escort objective
 						// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
@@ -192,7 +194,7 @@ namespace Gameplay {
 
 						await Task.Delay(TimeSpan.FromMilliseconds(250));
 
-						if (!defenderDefeated) {
+						if (!defenderDefeated && !(ourUnit is HealerUnit)) {
 							//Counterattack
 							selectedUnit.doBattleWith(
 								ourUnit,

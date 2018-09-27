@@ -137,7 +137,7 @@ namespace AI {
 						unhighlightAll();
 						currentMove.from = null;
 
-					} else if (selectedUnit.getCharacter(battlefield) == this.character) {
+					} else if (selectedUnit.getCharacter(battlefield) == this.character && !(highlightedFriendlyUnit is HealerUnit)) {
 						//Clicked on a friendly unit. Deselect the current one.
 						unhighlightAll();
 						currentMove.from = null;

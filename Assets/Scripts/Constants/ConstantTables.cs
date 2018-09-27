@@ -16,7 +16,8 @@ namespace Constants {
 		public static int[,] DamageReduction = new int[,] {{10,10,10,10},
 														   {10,10,10,10},
 														   {10,10,10,10},
-														   {10,10,10,10} };
+														   {10,10,10,10},
+														   {200,200,200,200} };
 
 		//First dimension is TileType. Holds the % defense a Tile piece grants
 		public static int[] TileDefense = new int[] { 10, 10, 10, 10, 10, 10 };

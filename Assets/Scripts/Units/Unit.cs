@@ -62,7 +62,7 @@ namespace Units {
 		public abstract List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character);
 
 		//returns a list of targetable units
-		public List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+		public virtual List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
 
 			List<Coord> targets = new List<Coord>();
 			List<Coord> tiles = getAttackZone(myX, myY, battlefield, character);

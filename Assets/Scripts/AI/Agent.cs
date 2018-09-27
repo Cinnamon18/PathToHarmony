@@ -44,7 +44,7 @@ namespace AI {
 			List<Coord> injured = new List<Coord>();
 			foreach (Coord coord in units) {
 				Unit unit = battlefield.units[coord.x, coord.y];
-				if (unit.maxHealth / unit.health >= 4) {
+				if (unit.maxHealth / unit.getHealth() >= 4) {
 					injured.Add(coord);
 				}
 			}
