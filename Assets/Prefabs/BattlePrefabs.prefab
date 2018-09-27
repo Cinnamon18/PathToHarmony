@@ -1112,6 +1112,7 @@ MonoBehaviour:
   - {fileID: 1812626124276284, guid: c49fecef21116b3469ff60f627c3bbfd, type: 2}
   unitPrefabs:
   - {fileID: 1629421154834734, guid: 7993afc9425649441aef57855464ed26, type: 2}
+  - {fileID: 1488143649172512, guid: e1360b7388da1f24d8c7b0ca79b0d929, type: 2}
   halfTurnsElapsed: 0
   cutscene: {fileID: 114828112544786242}
   turnPlayerText: {fileID: 114077355169017558}
