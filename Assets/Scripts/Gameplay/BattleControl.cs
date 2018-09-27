@@ -194,8 +194,8 @@ namespace Gameplay {
 
 						await Task.Delay(TimeSpan.FromMilliseconds(250));
 
-						if (!defenderDefeated) {
-							//Counterattack
+						if (!defenderDefeated && (selectedItem is MeleeUnit) && (ourUnit is MeleeUnit)) {
+							//Counterattack applied only when both units are Melee
 							selectedUnit.doBattleWith(
 								ourUnit,
 								battlefield.map[move.from.x, move.from.y].Peek(),
