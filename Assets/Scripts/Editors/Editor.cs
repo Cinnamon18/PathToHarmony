@@ -62,15 +62,7 @@ namespace Editors {
 			
 					if (Input.GetButtonDown("Select"))
 					{
-						if (obj.Equals(null))
-						{
-							create(objCoords, obj);
-						}
-						else
-						{
-							Debug.Log("Object is null at this index");
-						}
-
+						create(objCoords, obj);
 					}
 					else if (Input.GetButtonDown("AltSelect"))
 					{
