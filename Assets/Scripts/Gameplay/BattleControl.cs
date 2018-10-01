@@ -99,6 +99,13 @@ namespace Gameplay {
 				// new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
 				// new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
 			});
+			if (script == null)
+			{
+				Debug.Log("null");
+			} else
+			{
+				Debug.Log("not null");
+			}
 			cutscene.setup(script);
 
 
@@ -112,7 +119,7 @@ namespace Gameplay {
 				case BattleLoopStage.Initial:
 					if (!cutscene.inProgress) {
 						//Testing Level Deserialization
-						LevelInfo levelInfo = Serialization.getLevel("testdemo");
+						LevelInfo levelInfo = Serialization.getLevel("DemoLevel");
 						try
 						{
 							Stack<UnitInfo> stack = levelInfo.units;

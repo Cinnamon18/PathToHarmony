@@ -37,7 +37,6 @@ namespace Editors {
 		{
 			if (objs.GetType() == typeof(Unit[,,]))
 			{
-				Debug.Log("unit");
 				type = EditorType.Tile;
 			}
 			else if (objs.GetType() == typeof(Tile[,,]))
