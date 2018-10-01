@@ -14,7 +14,7 @@ namespace Editors {
 		
 		//Oof so I realized after the fact that a 2D stack would be a better way to do this. However, it's abstracted by the serialization
 		//layer, so this is perfectly funcitonal atm.... #TODO
-		private Tile[,,] tiles;
+		private Tile[,,] objs;
 		[SerializeField]
 		private LineRenderer lineRenderer;
 		[SerializeField]
@@ -26,8 +26,8 @@ namespace Editors {
 
 		// Use this for initialization
 		protected void Start() {
-			objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
-			tiles = objs;
+			base.objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
+			objs = base.objs;
 			makeYellowBaseTiles();
 			drawBorders();
 			//Tell editor type
@@ -49,16 +49,16 @@ namespace Editors {
 		public override void remove(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
 			//Remove tile. 
 			bool removingBottom = tileCoords.z == 0;
-			bool removingTop = tileCoords.z == tiles.GetLength(2) - 1;
+			bool removingTop = tileCoords.z == objs.GetLength(2) - 1;
 			bool isTileAbove = false;
 			if (!removingTop) {
-				isTileAbove = tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] != null;
+				isTileAbove = objs[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] != null;
 			}
 
 			//You can't remove the bottom one, or if there's a tile above you
 			if (!removingBottom && (removingTop || !isTileAbove)) {
 				//refactor idea: 2d array of stacks
-				tiles[tileCoords.x, tileCoords.y, (tileCoords.z)] = null;
+				objs[tileCoords.x, tileCoords.y, (tileCoords.z)] = null;
 				Destroy(hit.collider.gameObject);
 			} else {
 				//give the user some feedback that this is a badness
@@ -69,7 +69,7 @@ namespace Editors {
 
 		public override void create(Vector3Int tileCoords, Tile tile) {
 			
-			if (tileCoords.z == tiles.GetLength(2) - 1) {
+			if (tileCoords.z == objs.GetLength(2) - 1) {
 				Sfx.playSound("Bad noise");
 				tile.vibrateUnhappily();
 			} else {
@@ -77,7 +77,7 @@ namespace Editors {
 				newTileObj.transform.parent = tilesHolder;
 				Tile newTile = newTileObj.GetComponent<Tile>();
 				newTile.tileType = (TileType)(currentIndex);
-				tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile;
+				objs[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile;
 				
 			}
 		}
@@ -144,11 +144,11 @@ namespace Editors {
 		}
 
 		public void makeYellowBaseTiles() {
-			for (int x = 0; x < tiles.GetLength(0); x++) {
-				for (int y = 0; y < tiles.GetLength(1); y++) {
+			for (int x = 0; x < objs.GetLength(0); x++) {
+				for (int y = 0; y < objs.GetLength(1); y++) {
 					GameObject newTile = Instantiate(previewObj[(int)(TileType.None)], Util.GridToWorld(x, y, 0), previewObj[currentIndex].transform.rotation);
 					newTile.transform.parent = tilesHolder;
-					tiles[x, y, 0] = newTile.GetComponent<Tile>();
+					objs[x, y, 0] = newTile.GetComponent<Tile>();
 				}
 			}
 		}
@@ -163,27 +163,27 @@ namespace Editors {
 		public void deserializeTiles() {
 			eraseTiles();
 			updateMapName(loadFileText.text);
-			tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName, mapFilePath), previewObj, tilesHolder);
+			objs = Serialization.DeserializeTiles(Serialization.ReadData(mapName, mapFilePath), previewObj, tilesHolder);
 			makeYellowBaseTiles();
 		}
 
 		private void eraseTiles() {
-			if (tiles != null) {
-				foreach (Tile tile in tiles) {
+			if (objs != null) {
+				foreach (Tile tile in objs) {
 					if (tile != null) {
 						Destroy(tile.gameObject);
 					}
 				}
-				tiles = null;
+				objs = null;
 			}
 
 		}
 
 		public void drawBorders() {
 			//Just a pinch more readable
-			int w = tiles.GetLength(0);
-			int l = tiles.GetLength(1);
-			int h = tiles.GetLength(2);
+			int w = objs.GetLength(0);
+			int l = objs.GetLength(1);
+			int h = objs.GetLength(2);
 
 			Vector3 offset = Util.GridToWorld(-0.5f, -0.5f, -0.8f);
 
@@ -219,8 +219,8 @@ namespace Editors {
 				return;
 			}
 
-			StringBuilder serialized = new StringBuilder(tiles.GetLength(0) + "," + tiles.GetLength(1) + "," + tiles.GetLength(2) + ",");
-			Tile[] flattenedTile = Util.Flatten3DArray(tiles);
+			StringBuilder serialized = new StringBuilder(objs.GetLength(0) + "," + objs.GetLength(1) + "," + objs.GetLength(2) + ",");
+			Tile[] flattenedTile = Util.Flatten3DArray(objs);
 
 			foreach (Tile tile in flattenedTile) {
 				if (tile == null) {

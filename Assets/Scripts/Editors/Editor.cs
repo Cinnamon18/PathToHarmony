@@ -77,7 +77,7 @@ namespace Editors {
 		protected void updatePreview(float scroll)
 		{
 			GameObject oldPreviewTile;
-			if (previewHolder.GetChildCount() != 0)
+			if (previewHolder.childCount != 0)
 			{
 				oldPreviewTile = previewHolder.GetChild(0).gameObject;
 				if (scroll != 0)
