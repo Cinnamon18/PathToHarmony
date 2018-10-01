@@ -13,7 +13,7 @@ namespace Editors {
 
 		//info for preview
 		public GameObject[] previewObj;
-		public GameObject currentPreviewObj;
+		private GameObject currentPreviewObj;
 		//public GameObject[] unitPrefabs;
 		protected int currentIndex = 0;
 		//where to display preview objects
