@@ -59,24 +59,15 @@ namespace Editors {
             {
                 Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
 				T obj = objs[objCoords.x, objCoords.y, objCoords.z];
-			
-					if (Input.GetButtonDown("Select"))
-					{
-						if (obj.Equals(null))
-						{
-							create(objCoords, obj);
-						}
-						else
-						{
-							Debug.Log("Object is null at this index");
-						}
 
-					}
-					else if (Input.GetButtonDown("AltSelect"))
-					{
-						remove(objCoords, obj, hit);
-					}
-					
+				if (Input.GetButtonDown("Select"))
+                {
+					create(objCoords, obj);
+                }
+                else if (Input.GetButtonDown("AltSelect"))
+                {
+					remove(objCoords, obj, hit);
+                }
             }
 
             updatePreview(Input.GetAxis("MouseScrollWheel"));
@@ -86,7 +77,7 @@ namespace Editors {
 		protected void updatePreview(float scroll)
 		{
 			GameObject oldPreviewTile;
-			if (previewHolder.transform.childCount != 0)
+			if (previewHolder.GetChildCount() != 0)
 			{
 				oldPreviewTile = previewHolder.GetChild(0).gameObject;
 				if (scroll != 0)

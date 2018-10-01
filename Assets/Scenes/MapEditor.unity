@@ -2212,7 +2212,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1623906864}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1200, y: 79.00001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2898,7 +2898,7 @@ Prefab:
     - target: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: previewObj.Array.size
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4968038942280118, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
       propertyPath: m_LocalPosition.x
@@ -2971,37 +2971,31 @@ Prefab:
         type: 2}
       propertyPath: previewObj.Array.data[1]
       value: 
-      objectReference: {fileID: 1476900757798324, guid: 358ff3cb144ab784cafc3c6871537556,
+      objectReference: {fileID: 1631768313649640, guid: a1e87bd7999691841a5076af4115546d,
         type: 2}
     - target: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: previewObj.Array.data[2]
       value: 
-      objectReference: {fileID: 1631768313649640, guid: a1e87bd7999691841a5076af4115546d,
+      objectReference: {fileID: 1380285279712962, guid: aa6bee92761d02242bf6006b1be187a5,
         type: 2}
     - target: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: previewObj.Array.data[3]
       value: 
-      objectReference: {fileID: 1089309764938158, guid: 255682cfefb3fa24ba865d9b80df3408,
+      objectReference: {fileID: 1476900757798324, guid: 358ff3cb144ab784cafc3c6871537556,
         type: 2}
     - target: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: previewObj.Array.data[4]
       value: 
-      objectReference: {fileID: 1380285279712962, guid: aa6bee92761d02242bf6006b1be187a5,
+      objectReference: {fileID: 1812626124276284, guid: c49fecef21116b3469ff60f627c3bbfd,
         type: 2}
     - target: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: currentPreviewObj
       value: 
       objectReference: {fileID: 1089309764938158, guid: 255682cfefb3fa24ba865d9b80df3408,
-        type: 2}
-    - target: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: previewObj.Array.data[5]
-      value: 
-      objectReference: {fileID: 1812626124276284, guid: c49fecef21116b3469ff60f627c3bbfd,
         type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d132d16b270344648a0f790fe57a7b21, type: 2}

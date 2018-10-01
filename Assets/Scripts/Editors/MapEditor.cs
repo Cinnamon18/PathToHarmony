@@ -68,29 +68,18 @@ namespace Editors {
 		}
 
 		public override void create(Vector3Int tileCoords, Tile tile) {
-			Debug.Log("Current index " + currentIndex);
-	
-			if (tile == null)
-			{
-				if (tileCoords.z == tiles.GetLength(2) - 1)
-				{
-					Sfx.playSound("Bad noise");
-					tile.vibrateUnhappily();
-				}
-				else
-				{
-					GameObject newTileObj = Instantiate(previewObj[currentIndex], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
-					newTileObj.transform.parent = tilesHolder;
-					Tile newTile = newTileObj.GetComponent<Tile>();
-					newTile.tileType = (TileType)(currentIndex);
-					tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile;
-
-				}
-			} else
-			{
-				Debug.Log("Cannot create from null tile");
+			
+			if (tileCoords.z == tiles.GetLength(2) - 1) {
+				Sfx.playSound("Bad noise");
+				tile.vibrateUnhappily();
+			} else {
+				GameObject newTileObj = Instantiate(previewObj[currentIndex], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
+				newTileObj.transform.parent = tilesHolder;
+				Tile newTile = newTileObj.GetComponent<Tile>();
+				newTile.tileType = (TileType)(currentIndex);
+				tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile;
+				
 			}
-		
 		}
 
 		
@@ -175,7 +164,7 @@ namespace Editors {
 			eraseTiles();
 			updateMapName(loadFileText.text);
 			tiles = Serialization.DeserializeTiles(Serialization.ReadData(mapName, mapFilePath), previewObj, tilesHolder);
-			objs = new Tile[tiles.GetLength(0), tiles.GetLength(1), tiles.GetLength(2)];
+			makeYellowBaseTiles();
 		}
 
 		private void eraseTiles() {
