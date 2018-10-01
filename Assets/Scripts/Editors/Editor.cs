@@ -41,7 +41,6 @@ namespace Editors {
 			}
 			else if (objs.GetType() == typeof(Tile[,,]))
 			{
-				Debug.Log("tile");
 				type = EditorType.Unit;
 			}
 		}
@@ -77,7 +76,14 @@ namespace Editors {
 
 		protected void updatePreview(float scroll)
 		{
-			GameObject oldPreviewTile = previewHolder.GetChild(0).gameObject;
+			if (previewHolder.GetChildCount() != 0)
+			{
+				GameObject oldPreviewTile = previewHolder.GetChild(0).gameObject;
+			} else
+			{
+				Debug.Log("Must have single preview object in preview holder object.");
+			}
+			
 			if (scroll != 0)
 			{
 				if (scroll < 0)
