@@ -25,6 +25,8 @@ namespace Gameplay {
 		[SerializeField]
 		private GameObject[] unitPrefabs;
 
+		private LevelInfo levelInfo;
+
 		private BattleLoopStage battleStage;
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
@@ -63,6 +65,8 @@ namespace Gameplay {
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
 
+			//Changed to generate different levels
+			levelInfo = Serialization.getLevel("DemoLevel2");
 
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] {
@@ -75,7 +79,8 @@ namespace Gameplay {
 			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
-			Level level = new Level("DemoMap", characters, null, validPickTiles);
+			//gets mapname from levelinfo
+			Level level = new Level(levelInfo.mapName, characters, null, validPickTiles);
 			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
 			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
 			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
@@ -95,26 +100,20 @@ namespace Gameplay {
 			CutsceneCharacter juniper = CutsceneCharacter.juniper;
 			CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine>
 			{
-				// new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.Academy),
-				// new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
-				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is Blair!"),
-				// new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
-				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm Juniper."),
+				//new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.Academy),
+				//new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
+				//new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is Blair!"),
+				//new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
+				//new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm Juniper."),
 				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "There's a third major character, Bruno. He would've been here, but he got tied up with paperwork"),
 				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Which is to say we ran out of budget"),
 				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Anyways, I hope you enjoy this slick as h*ck demo"),
 				// new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
-				// new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
+				//new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
 			});
-			if (script == null)
-			{
-				Debug.Log("null");
-			} else
-			{
-				Debug.Log("not null");
-			}
+		
 			cutscene.setup(script);
-
+			cutscene.playScene();
 
 			getLevel();
 			deserializeMap();

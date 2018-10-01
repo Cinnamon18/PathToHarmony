@@ -86,11 +86,8 @@ namespace Editors {
 		protected void updatePreview(float scroll)
 		{
 			GameObject oldPreviewTile;
-<<<<<<< HEAD
-			if (previewHolder.childCount != 0)
-=======
+
 			if (previewHolder.transform.childCount != 0)
->>>>>>> parent of c459848... Revert "Changed version number and checked for nulls in Mapeditor"
 			{
 				oldPreviewTile = previewHolder.GetChild(0).gameObject;
 				if (scroll != 0)
