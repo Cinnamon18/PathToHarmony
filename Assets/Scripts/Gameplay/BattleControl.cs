@@ -66,7 +66,7 @@ namespace Gameplay {
 			defeatImage.enabled = false;
 
 			//Changed to generate different levels
-			levelInfo = Serialization.getLevel("DemoLevel2");
+			levelInfo = Serialization.getLevel("DemoLevel");
 
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] {
@@ -125,7 +125,6 @@ namespace Gameplay {
 				case BattleLoopStage.Initial:
 					if (!cutscene.inProgress) {
 						//Testing Level Deserialization
-						LevelInfo levelInfo = Serialization.getLevel("DemoLevel");
 						try
 						{
 							Stack<UnitInfo> stack = levelInfo.units;
