@@ -14,7 +14,6 @@ namespace Editors {
 		
 		//Oof so I realized after the fact that a 2D stack would be a better way to do this. However, it's abstracted by the serialization
 		//layer, so this is perfectly funcitonal atm.... #TODO
-		private Tile[,,] objs;
 		[SerializeField]
 		private LineRenderer lineRenderer;
 		[SerializeField]
@@ -26,9 +25,8 @@ namespace Editors {
 
 		// Use this for initialization
 		protected void Start() {
-			base.objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
-			objs = base.objs;
-			makeYellowBaseTiles();
+			objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
+			makeYellowBaseTiles();	
 			drawBorders();
 			//Tell editor type
 			setEditorType();
@@ -164,7 +162,6 @@ namespace Editors {
 			eraseTiles();
 			updateMapName(loadFileText.text);
 			objs = Serialization.DeserializeTiles(Serialization.ReadData(mapName, mapFilePath), previewObj, tilesHolder);
-			makeYellowBaseTiles();
 		}
 
 		private void eraseTiles() {
