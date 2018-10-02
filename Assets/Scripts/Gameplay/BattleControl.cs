@@ -16,14 +16,20 @@ using System.IO;
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
 
+	
 		//x, y, height (from the bottom)
 		private Battlefield battlefield;
 		private Level level;
 		private GameObjective objective;
 		[SerializeField]
 		private GameObject[] tilePrefabs;
+
 		[SerializeField]
 		private GameObject[] unitPrefabs;
+		[SerializeField]
+		private Transform tilesHolder;
+
+		private string mapFilePath = Serialization.mapFilePath;
 
 		private LevelInfo levelInfo;
 
@@ -337,7 +343,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadMapData(level.mapFileName), tilePrefabs);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs, tilesHolder);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
