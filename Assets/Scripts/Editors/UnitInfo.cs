@@ -21,12 +21,13 @@ namespace Editors
 		{
 			if (isPlayerUnit)
 			{
-				return ((int)(this.unitType))+","+1 + "," + unitPos.x + "," + unitPos.y + "," + unitPos.z; ;
-			} else
-			{
-				return ((int)(this.unitType)) + "," +0+","+unitPos.x+","+unitPos.y+","+unitPos.z;
+				return ((int)(this.unitType)) + "," + 1 + "," + unitPos.x + "," + unitPos.y + "," + unitPos.z; ;
 			}
-			
+			else
+			{
+				return ((int)(this.unitType)) + "," + 0 + "," + unitPos.x + "," + unitPos.y + "," + unitPos.z;
+			}
+
 		}
 
 		public UnitType getUnitType()

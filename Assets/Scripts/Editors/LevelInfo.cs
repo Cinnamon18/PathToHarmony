@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using Units;
 using UnityEngine;
 
-public class LevelInfo{
+public class LevelInfo
+{
 	public Stack<UnitInfo> units;
 	public string mapName;
 	//public Stack<Tile>[,] tiles;
