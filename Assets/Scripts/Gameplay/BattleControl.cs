@@ -25,6 +25,8 @@ namespace Gameplay {
 		[SerializeField]
 		private GameObject[] unitPrefabs;
 
+		private LevelInfo levelInfo;
+
 		private BattleLoopStage battleStage;
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
@@ -63,6 +65,8 @@ namespace Gameplay {
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
 
+			//Changed to generate different levels
+			levelInfo = Serialization.getLevel("DemoLevel");
 
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] {
@@ -75,8 +79,16 @@ namespace Gameplay {
 			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
-			Level level = new Level("DemoMap", characters, null, validPickTiles);
+			//gets mapname from levelinfo
+			Level level = new Level(levelInfo.mapName, characters, null, validPickTiles);
 			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
+			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
+
+			//For these objectives to work, you must also comment out the lines in the initial battle stage below
+			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new InterceptObjective(battlefield, level, characters[playerCharacter], 20);
+
 			characters[0].agent.level = level;
 			characters[1].agent.level = level;
 
@@ -88,19 +100,20 @@ namespace Gameplay {
 			CutsceneCharacter juniper = CutsceneCharacter.juniper;
 			CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine>
 			{
-				// new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.Academy),
-				// new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
-				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is Blair!"),
-				// new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
-				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm Juniper."),
+				//new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.Academy),
+				//new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
+				//new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is Blair!"),
+				//new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
+				//new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm Juniper."),
 				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "There's a third major character, Bruno. He would've been here, but he got tied up with paperwork"),
 				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Which is to say we ran out of budget"),
 				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Anyways, I hope you enjoy this slick as h*ck demo"),
 				// new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
-				// new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
+				//new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
 			});
+		
 			cutscene.setup(script);
-
+			cutscene.playScene();
 
 			getLevel();
 			deserializeMap();
@@ -112,7 +125,6 @@ namespace Gameplay {
 				case BattleLoopStage.Initial:
 					if (!cutscene.inProgress) {
 						//Testing Level Deserialization
-						LevelInfo levelInfo = Serialization.getLevel("testdemo");
 						try
 						{
 							Stack<UnitInfo> stack = levelInfo.units;
@@ -143,6 +155,15 @@ namespace Gameplay {
 						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
 						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
 						*/
+
+						// Uncomment these for the escort objective
+						// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
+						// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
+						// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
+
+						// Uncomment these for the intercept objective
+						// (objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
+
 						advanceBattleStage();
 					}
 					break;

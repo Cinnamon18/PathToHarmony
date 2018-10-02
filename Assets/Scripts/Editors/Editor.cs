@@ -13,7 +13,7 @@ namespace Editors {
 
 		//info for preview
 		public GameObject[] previewObj;
-		public GameObject currentPreviewObj;
+		private GameObject currentPreviewObj;
 		//public GameObject[] unitPrefabs;
 		protected int currentIndex = 0;
 		//where to display preview objects
@@ -37,12 +37,10 @@ namespace Editors {
 		{
 			if (objs.GetType() == typeof(Unit[,,]))
 			{
-				Debug.Log("unit");
 				type = EditorType.Tile;
 			}
 			else if (objs.GetType() == typeof(Tile[,,]))
 			{
-				Debug.Log("tile");
 				type = EditorType.Unit;
 			}
 		}
@@ -61,15 +59,16 @@ namespace Editors {
             {
                 Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
 				T obj = objs[objCoords.x, objCoords.y, objCoords.z];
-
-				if (Input.GetButtonDown("Select"))
-                {
-					create(objCoords, obj);
-                }
-                else if (Input.GetButtonDown("AltSelect"))
-                {
-					remove(objCoords, obj, hit);
-                }
+			
+					if (Input.GetButtonDown("Select"))
+					{
+						create(objCoords, obj);
+					}
+					else if (Input.GetButtonDown("AltSelect"))
+					{
+						remove(objCoords, obj, hit);
+					}
+					
             }
 
             updatePreview(Input.GetAxis("MouseScrollWheel"));
@@ -78,21 +77,29 @@ namespace Editors {
 
 		protected void updatePreview(float scroll)
 		{
-			GameObject oldPreviewTile = previewHolder.GetChild(0).gameObject;
-			if (scroll != 0)
+			GameObject oldPreviewTile;
+
+			if (previewHolder.transform.childCount != 0)
 			{
-				if (scroll < 0)
+				oldPreviewTile = previewHolder.GetChild(0).gameObject;
+				if (scroll != 0)
 				{
-					currentIndex--;
+					if (scroll < 0)
+					{
+						currentIndex--;
+					}
+					else if (scroll > 0)
+					{
+						currentIndex++;
+					}
+					//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
+					currentIndex = currentIndex < 0 ? currentIndex + previewObj.Length : currentIndex % previewObj.Length;
+					currentPreviewObj = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation, previewHolder);
+					Destroy(oldPreviewTile);
 				}
-				else if (scroll > 0)
-				{
-					currentIndex++;
-				}
-				//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
-				currentIndex = currentIndex < 0 ? currentIndex + previewObj.Length : currentIndex % previewObj.Length;
-				currentPreviewObj = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation, previewHolder);
-				Destroy(oldPreviewTile);
+			} else
+			{
+				Debug.Log("Must have single preview object in preview holder object.");
 			}
 		}
 
