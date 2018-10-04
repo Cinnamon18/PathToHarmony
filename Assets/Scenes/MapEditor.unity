@@ -369,7 +369,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2063428662}
+      - m_Target: {fileID: 1561695306}
         m_MethodName: incrementTile
         m_Mode: 1
         m_Arguments:
@@ -578,7 +578,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2063428662}
+      - m_Target: {fileID: 0}
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -1488,7 +1488,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2063428662}
+      - m_Target: {fileID: 0}
         m_MethodName: serializeTiles
         m_Mode: 1
         m_Arguments:
@@ -1611,7 +1611,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2063428662}
+      - m_Target: {fileID: 1561695306}
         m_MethodName: decrementTile
         m_Mode: 1
         m_Arguments:
@@ -1942,7 +1942,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2063428662}
+      - m_Target: {fileID: 0}
         m_MethodName: updateOverwriteMode
         m_Mode: 0
         m_Arguments:
@@ -2032,7 +2032,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2063428662}
+      - m_Target: {fileID: 0}
         m_MethodName: deserializeTiles
         m_Mode: 1
         m_Arguments:
@@ -2079,6 +2079,12 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1467197224}
   m_CullTransparentMesh: 0
+--- !u!114 &1561695306 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114573901254484572, guid: d132d16b270344648a0f790fe57a7b21,
+    type: 2}
+  m_PrefabInternal: {fileID: 2063428661}
+  m_Script: {fileID: 11500000, guid: 429f75a9fba671e4c85be9fd9db068f3, type: 3}
 --- !u!1 &1578918967
 GameObject:
   m_ObjectHideFlags: 0
@@ -2241,7 +2247,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2063428662}
+      - m_Target: {fileID: 0}
         m_MethodName: updateMapName
         m_Mode: 0
         m_Arguments:
@@ -2451,7 +2457,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2063428662}
+      - m_Target: {fileID: 0}
         m_MethodName: updateSizeUI
         m_Mode: 1
         m_Arguments:
@@ -2765,7 +2771,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2063428662}
+      - m_Target: {fileID: 0}
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -2863,34 +2869,28 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
+    - target: {fileID: 114573901254484572, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: previewTile
       value: 
       objectReference: {fileID: 537195021}
-    - target: {fileID: 1983972024403430, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
-      propertyPath: m_Name
-      value: MapEditorControl
-      objectReference: {fileID: 0}
-    - target: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
+    - target: {fileID: 114573901254484572, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: loadFileText
       value: 
       objectReference: {fileID: 183176396}
-    - target: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
+    - target: {fileID: 114573901254484572, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: loadDimText
       value: 
       objectReference: {fileID: 2115042090}
+    - target: {fileID: 1983972024403430, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
+      propertyPath: m_Name
+      value: MapEditorControl
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
   m_IsPrefabAsset: 0
---- !u!114 &2063428662 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
-    type: 2}
-  m_PrefabInternal: {fileID: 2063428661}
-  m_Script: {fileID: 11500000, guid: 429f75a9fba671e4c85be9fd9db068f3, type: 3}
 --- !u!4 &2063428663 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4968038942280118, guid: d132d16b270344648a0f790fe57a7b21,
