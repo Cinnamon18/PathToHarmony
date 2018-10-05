@@ -69,7 +69,7 @@ namespace Gameplay {
 			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
-			Level level = new Level("DemoMap", characters, null, validPickTiles);
+			Level level = new Level("DemoMap2", characters, null, validPickTiles);
 			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
 			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
 			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
