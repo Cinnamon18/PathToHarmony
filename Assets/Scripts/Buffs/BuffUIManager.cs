@@ -10,14 +10,21 @@ namespace Buffs {
 		private const float ICON_WIDTH = 1.3f;//I just tuned this value by hand...
 		private List<Image> buffIcons = new List<Image>();
 		private List<Buff> buffs = new List<Buff>();
-
+		
 		//Hmm this doesn't seem necessary but it's less fragile than saying parent.parent in code...
 		[SerializeField]
 		Unit unit;
 		[SerializeField]
 		Image buffIconPrefab;
-		[SerializeField]
-		Sprite[] buffIconSprites;
+		
+		private Sprite[] buffIconSprites;
+
+		void Start() {
+			Sprite[] icons = {
+				Resources.Load<Sprite>("Buffs/DamageBuff")
+			};
+			buffIconSprites = icons;
+		}
 
 		public void addBuff(Buff buff) {
 			buffs.Add(buff);
