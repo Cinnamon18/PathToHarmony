@@ -2286,7 +2286,11 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'LMB: Place unit RMB: Delete unit Scroll: Change unit'
+  m_Text: 'LMB: Place unit
+
+    RMB: Delete unit
+
+    Scroll: Change unit'
 --- !u!222 &903942286
 CanvasRenderer:
   m_ObjectHideFlags: 0
