@@ -3130,13 +3130,17 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21,
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
-      propertyPath: previewTile
+      propertyPath: loadMapText
       value: 
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 114926093766367342, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
+      objectReference: {fileID: 1013092318}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: loadLevelText
+      value: 
+      objectReference: {fileID: 1991315973}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
   m_IsPrefabAsset: 0
 --- !u!4 &1475899751 stripped
@@ -3144,19 +3148,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4968038942280118, guid: d132d16b270344648a0f790fe57a7b21,
     type: 2}
   m_PrefabInternal: {fileID: 1475899750}
---- !u!1 &1475899752 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1983972024403430, guid: d132d16b270344648a0f790fe57a7b21,
+--- !u!114 &1475899753 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
     type: 2}
   m_PrefabInternal: {fileID: 1475899750}
---- !u!114 &1475899753
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1475899752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce353aafccdbc40498f32dc577c92397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
