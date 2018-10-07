@@ -10,18 +10,28 @@ using Cutscenes;
 using System.Threading.Tasks;
 using AI;
 using Buffs;
+using Editors;
+using System.IO;
 
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
 
+	
 		//x, y, height (from the bottom)
 		private Battlefield battlefield;
 		private Level level;
 		private GameObjective objective;
 		[SerializeField]
 		private GameObject[] tilePrefabs;
+
 		[SerializeField]
 		private GameObject[] unitPrefabs;
+		[SerializeField]
+		private Transform tilesHolder;
+
+		private string mapFilePath = Serialization.mapFilePath;
+
+		private LevelInfo levelInfo;
 
 		private BattleLoopStage battleStage;
 		//Use this to keep one of the Update switch blocks from being called multiple times.
@@ -57,6 +67,8 @@ namespace Gameplay {
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
 
+			//Changed to generate different levels
+			levelInfo = Serialization.getLevel("DemoLevel");
 
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] {
@@ -69,7 +81,8 @@ namespace Gameplay {
 			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
-			Level level = new Level("DemoMap", characters, null, validPickTiles);
+			//gets mapname from levelinfo
+			Level level = new Level(levelInfo.mapName, characters, null, validPickTiles);
 			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
 			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
 			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
@@ -89,19 +102,20 @@ namespace Gameplay {
 			CutsceneCharacter juniper = CutsceneCharacter.juniper;
 			CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine>
 			{
-				// new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.Academy),
-				// new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
-				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is Blair!"),
-				// new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
-				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm Juniper."),
+				//new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.Academy),
+				//new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
+				//new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is Blair!"),
+				//new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
+				//new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm Juniper."),
 				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "There's a third major character, Bruno. He would've been here, but he got tied up with paperwork"),
 				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Which is to say we ran out of budget"),
 				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Anyways, I hope you enjoy this slick as h*ck demo"),
 				// new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
-				// new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
+				//new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
 			});
+		
 			cutscene.setup(script);
-
+			cutscene.playScene();
 
 			getLevel();
 			deserializeMap();
@@ -113,12 +127,37 @@ namespace Gameplay {
 				case BattleLoopStage.Initial:
 					if (!cutscene.inProgress) {
 
+						//Testing Level Deserialization
+						try
+						{
+							Stack<UnitInfo> stack = levelInfo.units;
+							while (stack.Count != 0)
+							{
+								UnitInfo info = stack.Pop();
+								if (info.getIsPlayer())
+								{
+									addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
+								}
+								else
+								{
+									addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, Faction.Tsubin);
+								}
+
+							}
+						}
+						catch (FileNotFoundException ex)
+						{
+							Debug.Log("Incorrect level name" + ex.ToString());
+						}
+						
 						//TODO This is temp just for testing until level editor deserialization. 
 						addUnit(UnitType.Knight, level.characters[0], 0, 0, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[0], 1, 0, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
 						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
+
+						addUnit(UnitType.Mage, level.characters[0], 1, 1, Faction.Xingata);
 
 						// Uncomment these for the escort objective
 						// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
@@ -192,8 +231,8 @@ namespace Gameplay {
 
 						await Task.Delay(TimeSpan.FromMilliseconds(250));
 
-						if (!defenderDefeated) {
-							//Counterattack
+						if (!defenderDefeated && (selectedItem is MeleeUnit) && (ourUnit is MeleeUnit)) {
+							//Counterattack applied only when both units are Melee
 							selectedUnit.doBattleWith(
 								ourUnit,
 								battlefield.map[move.from.x, move.from.y].Peek(),
@@ -306,7 +345,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadMapData(level.mapFileName), tilePrefabs);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs, tilesHolder);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 

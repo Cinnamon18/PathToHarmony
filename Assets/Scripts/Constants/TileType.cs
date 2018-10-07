@@ -4,7 +4,18 @@
 		Underground,
 		Grass,
 		Woods,
-		Road,
-		Water
+		RoadVertical,
+		Water,
+		RoadHorizontal,
+		RoadLowerRight,
+		RoadUpperRight,
+		RoadUpperLeft,
+		RoadLowerLeft,
+		Sand,
+		Scrub,
+		Plains,
+		CastleVertical,
+		CastleHorizontal,
+		CastleCorner
 	}
 }
