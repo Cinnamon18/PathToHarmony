@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1676,8 +1676,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Save level
-'
+  m_Text: 'Save level '
 --- !u!222 &724474070
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2115,8 +2114,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Destructive actions:
-    These will ERASE the current level. Save first.'
+  m_Text: 'Destructive actions: These will ERASE the current level. Save first.'
 --- !u!222 &803496570
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2288,9 +2286,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'LMB: Place unit
-    RMB: Delete unit
-    Scroll: Change unit'
+  m_Text: 'LMB: Place unit RMB: Delete unit Scroll: Change unit'
 --- !u!222 &903942286
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3098,6 +3094,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 29417752}
     m_Modifications:
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: previewObj.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4968038942280118, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
       propertyPath: m_LocalPosition.x
       value: 5.2838826
@@ -3132,6 +3133,16 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
+      propertyPath: previewObj.Array.data[0]
+      value: 
+      objectReference: {fileID: 983116297}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: previewHolder
+      value: 
+      objectReference: {fileID: 827422780}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
       propertyPath: loadMapText
       value: 
       objectReference: {fileID: 1013092318}
@@ -3140,6 +3151,26 @@ Prefab:
       propertyPath: loadLevelText
       value: 
       objectReference: {fileID: 1991315973}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: saveLevelText
+      value: 
+      objectReference: {fileID: 1356961223}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: unitsHolder
+      value: 
+      objectReference: {fileID: 498710353}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: tilesHolder
+      value: 
+      objectReference: {fileID: 1472701162}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: previewObj.Array.data[1]
+      value: 
+      objectReference: {fileID: 983116297}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
   m_IsPrefabAsset: 0
@@ -3154,30 +3185,6 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 1475899750}
   m_Script: {fileID: 11500000, guid: ce353aafccdbc40498f32dc577c92397, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  previewObj:
-  - {fileID: 1629421154834734, guid: 7993afc9425649441aef57855464ed26, type: 2}
-  currentPreviewObj: {fileID: 1684996820131912, guid: 86c34fbdc1ce6b5499c5bf0faa97efd0,
-    type: 2}
-  previewHolder: {fileID: 827422780}
-  initialDim: {x: 0, y: 0, z: 0}
-  defaultMap: DemoMap
-  loadMapText: {fileID: 1013092318}
-  loadLevelText: {fileID: 1991315973}
-  saveLevelText: {fileID: 1356961223}
-  dropdown: {fileID: 1675859254}
-  unitsHolder: {fileID: 498710353}
-  tilesHolder: {fileID: 1472701162}
-  tilePrefabs:
-  - {fileID: 1124543106267346, guid: ca5e17eb54878214699b3b6170e2ba91, type: 2}
-  - {fileID: 1476900757798324, guid: 358ff3cb144ab784cafc3c6871537556, type: 2}
-  - {fileID: 1631768313649640, guid: a1e87bd7999691841a5076af4115546d, type: 2}
-  - {fileID: 1089309764938158, guid: 255682cfefb3fa24ba865d9b80df3408, type: 2}
-  - {fileID: 1380285279712962, guid: aa6bee92761d02242bf6006b1be187a5, type: 2}
-  - {fileID: 1812626124276284, guid: c49fecef21116b3469ff60f627c3bbfd, type: 2}
-  unitPrefabs:
-  - {fileID: 1629421154834734, guid: 7993afc9425649441aef57855464ed26, type: 2}
 --- !u!1 &1543294717
 GameObject:
   m_ObjectHideFlags: 0

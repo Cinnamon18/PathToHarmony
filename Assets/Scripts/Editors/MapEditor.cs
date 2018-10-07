@@ -8,10 +8,8 @@ using System;
 using System.Linq;
 using Gameplay;
 
-namespace Editors
-{
-	public class MapEditor : Editor<Tile>
-	{
+namespace Editors {
+	public class MapEditor : Editor<Tile> {
 
 
 		//Oof so I realized after the fact that a 2D stack would be a better way to do this. However, it's abstracted by the serialization
@@ -26,8 +24,7 @@ namespace Editors
 		public Text loadDimText;
 
 		// Use this for initialization
-		protected void Start()
-		{
+		protected void Start() {
 			base.objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
 			makeYellowBaseTiles();
 			drawBorders();
@@ -35,57 +32,45 @@ namespace Editors
 			setEditorType();
 		}
 
-		void Update()
-		{
+		void Update() {
 			updateControl();
 		}
 
-		public override void serialize()
-		{
+		public override void serialize() {
 			deserializeTiles();
 		}
 
-		public override void deserialize()
-		{
+		public override void deserialize() {
 			serializeTiles();
 		}
 
-		public override void remove(Vector3Int tileCoords, Tile tile, RaycastHit hit)
-		{
+		public override void remove(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
 			//Remove tile. 
 			bool removingBottom = tileCoords.z == 0;
 			bool removingTop = tileCoords.z == base.objs.GetLength(2) - 1;
 			bool isTileAbove = false;
-			if (!removingTop)
-			{
+			if (!removingTop) {
 				isTileAbove = base.objs[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] != null;
 			}
 
 			//You can't remove the bottom one, or if there's a tile above you
-			if (!removingBottom && (removingTop || !isTileAbove))
-			{
+			if (!removingBottom && (removingTop || !isTileAbove)) {
 				//refactor idea: 2d array of stacks
 				base.objs[tileCoords.x, tileCoords.y, (tileCoords.z)] = null;
 				Destroy(hit.collider.gameObject);
-			}
-			else
-			{
+			} else {
 				//give the user some feedback that this is a badness
 				Sfx.playSound("Bad noise");
 				tile.vibrateUnhappily();
 			}
 		}
 
-		public override void create(Vector3Int tileCoords, Tile tile)
-		{
+		public override void create(Vector3Int tileCoords, Tile tile) {
 
-			if (tileCoords.z == base.objs.GetLength(2) - 1)
-			{
+			if (tileCoords.z == base.objs.GetLength(2) - 1) {
 				Sfx.playSound("Bad noise");
 				tile.vibrateUnhappily();
-			}
-			else
-			{
+			} else {
 				GameObject newTileObj = Instantiate(previewObj[currentIndex], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
 				newTileObj.transform.parent = tilesHolder;
 				Tile newTile = newTileObj.GetComponent<Tile>();
@@ -97,8 +82,7 @@ namespace Editors
 
 
 
-		public void updateSize(int x, int y, int z)
-		{
+		public void updateSize(int x, int y, int z) {
 			initialDim = new Vector3Int(x, y, z);
 			eraseTiles();
 			Start();
@@ -157,12 +141,9 @@ namespace Editors
 			// drawBorders();
 		}
 
-		public void makeYellowBaseTiles()
-		{
-			for (int x = 0; x < base.objs.GetLength(0); x++)
-			{
-				for (int y = 0; y < base.objs.GetLength(1); y++)
-				{
+		public void makeYellowBaseTiles() {
+			for (int x = 0; x < base.objs.GetLength(0); x++) {
+				for (int y = 0; y < base.objs.GetLength(1); y++) {
 					GameObject newTile = Instantiate(previewObj[(int)(TileType.None)], Util.GridToWorld(x, y, 0), previewObj[currentIndex].transform.rotation);
 					newTile.transform.parent = tilesHolder;
 					base.objs[x, y, 0] = newTile.GetComponent<Tile>();
@@ -172,14 +153,12 @@ namespace Editors
 
 
 
-		public void updateMapName(String newName)
-		{
+		public void updateMapName(String newName) {
 			this.mapName = newName;
 		}
 
 
-		public void deserializeTiles()
-		{
+		public void deserializeTiles() {
 			eraseTiles();
 			updateMapName(loadFileText.text);
 
@@ -188,14 +167,10 @@ namespace Editors
 
 		}
 
-		private void eraseTiles()
-		{
-			if (base.objs != null)
-			{
-				foreach (Tile tile in base.objs)
-				{
-					if (tile != null)
-					{
+		private void eraseTiles() {
+			if (base.objs != null) {
+				foreach (Tile tile in base.objs) {
+					if (tile != null) {
 						Destroy(tile.gameObject);
 					}
 				}
@@ -204,8 +179,7 @@ namespace Editors
 
 		}
 
-		public void drawBorders()
-		{
+		public void drawBorders() {
 			//Just a pinch more readable
 			int w = base.objs.GetLength(0);
 			int l = base.objs.GetLength(1);
@@ -239,10 +213,8 @@ namespace Editors
 			lineRenderer.SetPositions(positions);
 		}
 
-		public void serializeTiles()
-		{
-			if (mapName == null || mapName == "")
-			{
+		public void serializeTiles() {
+			if (mapName == null || mapName == "") {
 				Debug.LogError("Can't save without a file name");
 				return;
 			}
@@ -250,14 +222,10 @@ namespace Editors
 			StringBuilder serialized = new StringBuilder(base.objs.GetLength(0) + "," + base.objs.GetLength(1) + "," + base.objs.GetLength(2) + ",");
 			Tile[] flattenedTile = Util.Flatten3DArray(base.objs);
 
-			foreach (Tile tile in flattenedTile)
-			{
-				if (tile == null)
-				{
+			foreach (Tile tile in flattenedTile) {
+				if (tile == null) {
 					serialized.Append(",");
-				}
-				else
-				{
+				} else {
 					serialized.Append(tile.serialize() + ",");
 				}
 			}
@@ -265,14 +233,12 @@ namespace Editors
 			Serialization.WriteData(serialized.ToString(), mapName, mapFilePath, overwriteData);
 		}
 
-		public void updateSizeUI()
-		{
+		public void updateSizeUI() {
 			String newSize = loadDimText.text;
 			int[] dimensions = newSize.Split(',').Select((dimension) => {
 				//If you're used to java this might look weird. In c# you can explicitly pass by refrence with the keyword "out". Neat, isn't it?
 				int num = 1;
-				if (!Int32.TryParse(dimension, out num))
-				{
+				if (!Int32.TryParse(dimension, out num)) {
 					Debug.LogError("Cannot parse provided dimension. Using default of 1");
 				}
 				return num;
