@@ -69,7 +69,7 @@ namespace Gameplay {
 			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
 			validPickTiles[characters[0]] = alicePickTiles;
 			validPickTiles[characters[1]] = evilGuyPickTiles;
-			Level level = new Level("DemoMap", characters, null, validPickTiles);
+			Level level = new Level("DemoMap2", characters, null, validPickTiles);
 			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
 			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
 			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
@@ -119,6 +119,8 @@ namespace Gameplay {
 						addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
 						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
 						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
+
+						addUnit(UnitType.Mage, level.characters[0], 1, 1, Faction.Xingata);
 
 						// Uncomment these for the escort objective
 						// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
@@ -192,8 +194,8 @@ namespace Gameplay {
 
 						await Task.Delay(TimeSpan.FromMilliseconds(250));
 
-						if (!defenderDefeated) {
-							//Counterattack
+						if (!defenderDefeated && (selectedItem is MeleeUnit) && (ourUnit is MeleeUnit)) {
+							//Counterattack applied only when both units are Melee
 							selectedUnit.doBattleWith(
 								ourUnit,
 								battlefield.map[move.from.x, move.from.y].Peek(),
