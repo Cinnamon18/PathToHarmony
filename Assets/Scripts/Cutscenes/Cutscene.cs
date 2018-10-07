@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -68,36 +68,38 @@ namespace Cutscenes {
 		// the ugly ugly PlayScene and the CutsceneAction type I'll love you forever. Maybe smth like:
 		// https://answers.unity.com/questions/542115/is-there-any-way-to-use-coroutines-with-anonymous.html
 		IEnumerator PlayScene() {
-			foreach (CutsceneScriptLine line in script.script) {
-				switch (line.action) {
-					case CutsceneAction.TransitionIn:
-						currentScriptLine = this.StartStoppableCoroutine(transitionIn(line.character, line.side));
-						yield return currentScriptLine.WaitFor();
-						break;
-					case CutsceneAction.TransitionOut:
-						currentScriptLine = this.StartStoppableCoroutine(transitionOut(line.side));
-						yield return currentScriptLine.WaitFor();
-						break;
-					case CutsceneAction.SetCharacter:
-						currentScriptLine = this.StartStoppableCoroutine(setCharacter(line.character, line.side));
-						yield return currentScriptLine.WaitFor();
-						break;
-					case CutsceneAction.FocusSide:
-						focusSide(line.side);
-						break;
-					case CutsceneAction.SetBackground:
-						setBackground(line.background);
-						break;
-					case CutsceneAction.SayDialogue:
-						currentScriptLine = this.StartStoppableCoroutine(sayDialogue(line.character, line.dialogue));
-						yield return currentScriptLine.WaitFor();
-						break;
-					default:
-						Debug.LogError("Unrecognized CutsceneAction type");
-						break;
-				}
+			if (script != null) {
+				foreach (CutsceneScriptLine line in script.script) {
+					switch (line.action) {
+						case CutsceneAction.TransitionIn:
+							currentScriptLine = this.StartStoppableCoroutine(transitionIn(line.character, line.side));
+							yield return currentScriptLine.WaitFor();
+							break;
+						case CutsceneAction.TransitionOut:
+							currentScriptLine = this.StartStoppableCoroutine(transitionOut(line.side));
+							yield return currentScriptLine.WaitFor();
+							break;
+						case CutsceneAction.SetCharacter:
+							currentScriptLine = this.StartStoppableCoroutine(setCharacter(line.character, line.side));
+							yield return currentScriptLine.WaitFor();
+							break;
+						case CutsceneAction.FocusSide:
+							focusSide(line.side);
+							break;
+						case CutsceneAction.SetBackground:
+							setBackground(line.background);
+							break;
+						case CutsceneAction.SayDialogue:
+							currentScriptLine = this.StartStoppableCoroutine(sayDialogue(line.character, line.dialogue));
+							yield return currentScriptLine.WaitFor();
+							break;
+						default:
+							Debug.LogError("Unrecognized CutsceneAction type");
+							break;
+					}
 
-				yield return new WaitForSeconds(0.25f);
+					yield return new WaitForSeconds(0.25f);
+				}
 			}
 		}
 

@@ -24,11 +24,26 @@ namespace Gameplay {
 		private GameObject[] unitPrefabs;
 
 		private BattleLoopStage battleStage;
+		public BattleLoopStage BattleStage{
+			get {
+				return battleStage;
+			}
+		}
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
 
 		private int currentCharacter;
+		public int CurrentCharacter {
+			get {
+				return currentCharacter;
+			}
+		}
 		private int playerCharacter;
+		public int PlayerCharacter {
+			get {
+				return playerCharacter;
+			}
+		}
 		public int halfTurnsElapsed;
 
 		//Just a refrence to the cutscene prefab
@@ -324,6 +339,17 @@ namespace Gameplay {
 			Unit newUnit = newUnitGO.GetComponent<Unit>();
 			newUnit.setFaction(faction);
 			battlefield.addUnit(newUnit, character, x, y);
+		}
+
+		public void skipTurn() {
+			/*
+			Agent agent = level.characters[currentCharacter].agent;
+			if(agent is PlayerAgent) {
+				((PlayerAgent)agent).unhighlightAll();
+			}
+			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection)
+				advanceBattleStage();
+			*/
 		}
 	}
 }
