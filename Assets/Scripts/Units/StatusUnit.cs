@@ -15,7 +15,7 @@ namespace Units {
 		//attributes specific to Melee
 		private readonly Buff buffType;
 		private readonly int range;
-		
+
 
 		public StatusUnit(
 				ArmorType armorType,
@@ -26,7 +26,7 @@ namespace Units {
 				int range,
 				Faction faction
 			) : base(armorType, maxHealth, moveType, moveDistance, faction) {
-			
+
 			this.buffType = buffType;
 			this.range = range;
 		}
@@ -45,14 +45,14 @@ namespace Units {
 
 		public override List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
 			List<Coord> validTargets = new List<Coord>();
-			
+
 			//	Create a diamond field around myX and myY.
 			for (int y = -range; y <= range; y++) {             // For all valid y...
 				int XAxis = range - Math.Abs(y);
-				for (int x= -XAxis; x <= XAxis; x++) {         // and valid x...
-					bool onTheMap = !(x+myX < 0 || y+myY < 0 || x+myX >= battlefield.map.GetLength(0) || y+myY >= battlefield.map.GetLength(1));
+				for (int x = -XAxis; x <= XAxis; x++) {         // and valid x...
+					bool onTheMap = !(x + myX < 0 || y + myY < 0 || x + myX >= battlefield.map.GetLength(0) || y + myY >= battlefield.map.GetLength(1));
 					if (onTheMap) {
-						Coord inRange = new Coord(x+myX, y+myY);
+						Coord inRange = new Coord(x + myX, y + myY);
 						validTargets.Add(inRange);
 					}
 				}

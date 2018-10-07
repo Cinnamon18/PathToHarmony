@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 223984612365781342}
   - component: {fileID: 114236907707441652}
   - component: {fileID: 114750076288171090}
+  - component: {fileID: 114776122825187538}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -254,8 +255,17 @@ MonoBehaviour:
   unit: {fileID: 0}
   buffIconPrefab: {fileID: 114708540217932716, guid: 669f709c7589f4c4591c7384479983b7,
     type: 2}
-  buffIconSprites:
-  - {fileID: 21300000, guid: 696958353d3bbe9448b5e253cd686bfd, type: 3}
+--- !u!114 &114776122825187538
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1523664331866894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3846fc1807b1b8e409a1572e47874a0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114873663971810214
 MonoBehaviour:
   m_ObjectHideFlags: 1

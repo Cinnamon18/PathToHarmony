@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,112 +8,97 @@ using System;
 using System.Linq;
 using Gameplay;
 
-namespace Editors {
-	public class MapEditor : Editor {
+namespace Editors
+{
+	public class MapEditor : Editor<Tile>
+	{
 
-		//x, y, height (from the bottom)
-		[SerializeField]
-		private Vector3Int initialDim;
+
 		//Oof so I realized after the fact that a 2D stack would be a better way to do this. However, it's abstracted by the serialization
 		//layer, so this is perfectly funcitonal atm.... #TODO
-		private Tile[,,] tiles;
 		[SerializeField]
 		private LineRenderer lineRenderer;
 		[SerializeField]
-		private GameObject previewTile;
-		[SerializeField]
-		private GameObject[] tilePrefabs;
-		private int currentTile = 0;
+		private Transform tilesHolder;
 		private string mapName;
-		private bool overwriteData = false;
 
 		public Text loadFileText;
 		public Text loadDimText;
 
-
 		// Use this for initialization
-		void Start() {
-			tiles = new Tile[initialDim.x, initialDim.y, initialDim.z];
-
+		protected void Start()
+		{
+			base.objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
 			makeYellowBaseTiles();
-
 			drawBorders();
+			//Tell editor type
+			setEditorType();
 		}
 
-		void Update() {
-			//Creation and deletion of tiles
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out hit, 1000.0f)) {
-				Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
-				//Tile tile = hit.collider.gameObject.GetComponent<Tile>();
-				Tile tile = tiles[tileCoords.x, tileCoords.y, tileCoords.z];
-				if (Input.GetButtonDown("Select")) {
-					createTile(tileCoords, tile);
-				} else if (Input.GetButtonDown("AltSelect")) {
-					removeTile(tileCoords, tile, hit);
-				}
-			}
-
-			updateTile(Input.GetAxis("MouseScrollWheel"));
+		void Update()
+		{
+			updateControl();
 		}
 
-		public override void serialize() { }
+		public override void serialize()
+		{
+			deserializeTiles();
+		}
 
-		public override void deserialize() { }
+		public override void deserialize()
+		{
+			serializeTiles();
+		}
 
-		public void removeTile(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
+		public override void remove(Vector3Int tileCoords, Tile tile, RaycastHit hit)
+		{
 			//Remove tile. 
 			bool removingBottom = tileCoords.z == 0;
-			bool removingTop = tileCoords.z == tiles.GetLength(2) - 1;
+			bool removingTop = tileCoords.z == base.objs.GetLength(2) - 1;
 			bool isTileAbove = false;
-			if (!removingTop) {
-				isTileAbove = tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] != null;
+			if (!removingTop)
+			{
+				isTileAbove = base.objs[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] != null;
 			}
 
 			//You can't remove the bottom one, or if there's a tile above you
-			if (!removingBottom && (removingTop || !isTileAbove)) {
+			if (!removingBottom && (removingTop || !isTileAbove))
+			{
 				//refactor idea: 2d array of stacks
-				tiles[tileCoords.x, tileCoords.y, (tileCoords.z)] = null;
+				base.objs[tileCoords.x, tileCoords.y, (tileCoords.z)] = null;
 				Destroy(hit.collider.gameObject);
-			} else {
+			}
+			else
+			{
 				//give the user some feedback that this is a badness
 				Sfx.playSound("Bad noise");
 				tile.vibrateUnhappily();
 			}
 		}
 
-		public void createTile(Vector3Int tileCoords, Tile tile) {
-			if (tileCoords.z == tiles.GetLength(2) - 1) {
+		public override void create(Vector3Int tileCoords, Tile tile)
+		{
+
+			if (tileCoords.z == base.objs.GetLength(2) - 1)
+			{
 				Sfx.playSound("Bad noise");
 				tile.vibrateUnhappily();
-			} else {
-				GameObject newTileObj = Instantiate(tilePrefabs[currentTile], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
+			}
+			else
+			{
+				GameObject newTileObj = Instantiate(previewObj[currentIndex], tile.gameObject.transform.position + new Vector3(0, Util.GridHeight, 0), tile.gameObject.transform.rotation);
+				newTileObj.transform.parent = tilesHolder;
 				Tile newTile = newTileObj.GetComponent<Tile>();
-				newTile.tileType = (TileType)(currentTile);
-				tiles[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile;
+				newTile.tileType = (TileType)(currentIndex);
+				base.objs[tileCoords.x, tileCoords.y, (tileCoords.z + 1)] = newTile;
 			}
+
 		}
 
-		private void updateTile(float scroll) {
-			if (scroll != 0) {
-				if (scroll < 0) {
-					currentTile--;
-				} else if (scroll > 0) {
-					currentTile++;
-				}
 
-				//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
-				currentTile = currentTile < 0 ? currentTile + tilePrefabs.Length : currentTile % tilePrefabs.Length;
 
-				GameObject oldPreviewTile = previewTile;
-				previewTile = Instantiate(tilePrefabs[currentTile], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation);
-				previewTile.AddComponent<RotateGently>();
-				Destroy(oldPreviewTile);
-			}
-		}
-
-		public void updateSize(int x, int y, int z) {
+		public void updateSize(int x, int y, int z)
+		{
 			initialDim = new Vector3Int(x, y, z);
 			eraseTiles();
 			Start();
@@ -172,56 +157,59 @@ namespace Editors {
 			// drawBorders();
 		}
 
-		public void makeYellowBaseTiles() {
-			for (int x = 0; x < tiles.GetLength(0); x++) {
-				for (int y = 0; y < tiles.GetLength(1); y++) {
-					GameObject newTile = Instantiate(tilePrefabs[(int)(TileType.None)], Util.GridToWorld(x, y, 0), tilePrefabs[currentTile].transform.rotation);
-					tiles[x, y, 0] = newTile.GetComponent<Tile>();
+		public void makeYellowBaseTiles()
+		{
+			for (int x = 0; x < base.objs.GetLength(0); x++)
+			{
+				for (int y = 0; y < base.objs.GetLength(1); y++)
+				{
+					GameObject newTile = Instantiate(previewObj[(int)(TileType.None)], Util.GridToWorld(x, y, 0), previewObj[currentIndex].transform.rotation);
+					newTile.transform.parent = tilesHolder;
+					base.objs[x, y, 0] = newTile.GetComponent<Tile>();
 				}
 			}
 		}
 
-		public void incrementTile() {
-			updateTile(1);
-		}
 
-		public void decrementTile() {
-			updateTile(-1);
-		}
 
-		public void updateMapName(String newName) {
+		public void updateMapName(String newName)
+		{
 			this.mapName = newName;
 		}
 
-		public void updateOverwriteMode(bool state) {
-			this.overwriteData = state;
-		}
 
-
-		public void deserializeTiles() {
+		public void deserializeTiles()
+		{
 			eraseTiles();
 			updateMapName(loadFileText.text);
-			tiles = Serialization.DeserializeTiles(Serialization.ReadMapData(mapName), tilePrefabs);
-			makeYellowBaseTiles();
+
+			objs = Serialization.DeserializeTiles(Serialization.ReadData(mapName, mapFilePath), previewObj, tilesHolder);
+			base.objs = new Tile[objs.GetLength(0), objs.GetLength(1), objs.GetLength(2)];
+
 		}
 
-		private void eraseTiles() {
-			if (tiles != null) {
-				foreach (Tile tile in tiles) {
-					if (tile != null) {
+		private void eraseTiles()
+		{
+			if (base.objs != null)
+			{
+				foreach (Tile tile in base.objs)
+				{
+					if (tile != null)
+					{
 						Destroy(tile.gameObject);
 					}
 				}
-				tiles = null;
+				base.objs = null;
 			}
 
 		}
 
-		public void drawBorders() {
+		public void drawBorders()
+		{
 			//Just a pinch more readable
-			int w = tiles.GetLength(0);
-			int l = tiles.GetLength(1);
-			int h = tiles.GetLength(2);
+			int w = base.objs.GetLength(0);
+			int l = base.objs.GetLength(1);
+			int h = base.objs.GetLength(2);
 
 			Vector3 offset = Util.GridToWorld(-0.5f, -0.5f, -0.8f);
 
@@ -251,32 +239,40 @@ namespace Editors {
 			lineRenderer.SetPositions(positions);
 		}
 
-		public void serializeTiles() {
-			if (mapName == null || mapName == "") {
+		public void serializeTiles()
+		{
+			if (mapName == null || mapName == "")
+			{
 				Debug.LogError("Can't save without a file name");
 				return;
 			}
 
-			StringBuilder serialized = new StringBuilder(tiles.GetLength(0) + "," + tiles.GetLength(1) + "," + tiles.GetLength(2) + ",");
-			Tile[] flattenedTile = Util.Flatten3DArray(tiles);
+			StringBuilder serialized = new StringBuilder(base.objs.GetLength(0) + "," + base.objs.GetLength(1) + "," + base.objs.GetLength(2) + ",");
+			Tile[] flattenedTile = Util.Flatten3DArray(base.objs);
 
-			foreach (Tile tile in flattenedTile) {
-				if (tile == null) {
+			foreach (Tile tile in flattenedTile)
+			{
+				if (tile == null)
+				{
 					serialized.Append(",");
-				} else {
+				}
+				else
+				{
 					serialized.Append(tile.serialize() + ",");
 				}
 			}
 
-			Serialization.WriteMapData(serialized.ToString(), mapName, overwriteData);
+			Serialization.WriteData(serialized.ToString(), mapName, mapFilePath, overwriteData);
 		}
 
-		public void updateSizeUI() {
+		public void updateSizeUI()
+		{
 			String newSize = loadDimText.text;
 			int[] dimensions = newSize.Split(',').Select((dimension) => {
 				//If you're used to java this might look weird. In c# you can explicitly pass by refrence with the keyword "out". Neat, isn't it?
 				int num = 1;
-				if (!Int32.TryParse(dimension, out num)) {
+				if (!Int32.TryParse(dimension, out num))
+				{
 					Debug.LogError("Cannot parse provided dimension. Using default of 1");
 				}
 				return num;
