@@ -1,15 +1,17 @@
 fileFormatVersion: 2
 guid: 6c1daf1d1db24f64d9f1d49e434c77b4
 ModelImporter:
-  serializedVersion: 22
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
     2100000: Dirt
     2100002: na
+    2100004: Empty
     2300000: //RootNode
     3300000: //RootNode
     4300000: Cube
+    4300002: Empty
     7400000: Default Take
     9500000: //RootNode
   externalObjects:
@@ -19,7 +21,7 @@ ModelImporter:
       name: na
     second: {fileID: 2100000, guid: 806d43384c2fb154a9253def96a1193c, type: 2}
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -68,12 +70,14 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
-  importAnimation: 1
+  importAnimation: 0
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2
@@ -92,7 +96,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

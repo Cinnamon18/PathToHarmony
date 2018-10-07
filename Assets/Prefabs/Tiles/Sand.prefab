@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4448107721236938}
   - component: {fileID: 33772051121168298}
   - component: {fileID: 23791605521469960}
-  - component: {fileID: 95329189090568852}
   - component: {fileID: 114048058919542522}
   - component: {fileID: 65912234006103176}
   m_Layer: 0
@@ -37,13 +36,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1354812519269930}
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 40, y: 0, z: 30}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!23 &23791605521469960
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -86,7 +85,7 @@ MeshFilter:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1354812519269930}
-  m_Mesh: {fileID: 4300000, guid: 2fe35842e8a712b44a93d37707211956, type: 3}
+  m_Mesh: {fileID: 4300002, guid: 2fe35842e8a712b44a93d37707211956, type: 3}
 --- !u!65 &65912234006103176
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -97,26 +96,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 2.0000005, z: 4.361928}
-  m_Center: {x: 0, y: 0, z: -0.81903666}
---- !u!95 &95329189090568852
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1354812519269930}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 2fe35842e8a712b44a93d37707211956, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_Size: {x: 10, y: 10, z: 4}
+  m_Center: {x: 0, y: 0, z: -1}
 --- !u!114 &114048058919542522
 MonoBehaviour:
   m_ObjectHideFlags: 1
