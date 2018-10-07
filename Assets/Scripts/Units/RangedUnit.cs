@@ -46,5 +46,9 @@ namespace Units {
 			return null;
 		}
 
+		public override HashSet<Coord> getTotalAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
+			return new HashSet<Coord>(getAttackZone(myX, myY, battlefield, character));
+		}
+
 	}
 }

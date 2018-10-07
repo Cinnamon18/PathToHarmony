@@ -163,6 +163,16 @@ namespace AI {
 			return allies;
 		}
 
+		protected List<Coord> filterThreats(List<Coord> units, Coord myUnit, float score) {
+			List<Coord> lowThreat = new List<Coord>();
+			foreach (Unit enemy in units) {
+				AIBattle battle = new AIBattle(battlefield.units[enemy.x, enemy.y], battlefield.units[myUnit.x, myUnit.y], battlefield.map[myUnit.x, myUnit.y], myUnit);
+				if (battle.score >= score) {
+					lowThreat.Add(enemy);
+				}
+			}
+		}
+
 		// Return a list of Tiles from which a unit can attack any enemy unit
 		protected List<Coord> getOffenseTiles(Coord unitCoord) {
 			List<Coord> offenseTiles = new List<Coord>();
