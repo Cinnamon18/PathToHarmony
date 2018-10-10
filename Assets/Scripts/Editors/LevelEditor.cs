@@ -6,7 +6,6 @@ using Gameplay;
 using UnityEngine.UI;
 using Constants;
 using AI;
-using System.Collections;
 using System.Text;
 using System.ComponentModel;
 using TMPro;
@@ -126,6 +125,7 @@ namespace Editors {
 				isPlayer = dropdown.value == 0;
 			} catch (FileNotFoundException ex) {
 				Debug.LogError("Level does not exist.");
+				Debug.LogError(ex);
 			}
 		}
 

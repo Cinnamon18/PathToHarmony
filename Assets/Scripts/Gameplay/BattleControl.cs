@@ -23,7 +23,6 @@ namespace Gameplay {
 		private GameObjective objective;
 		[SerializeField]
 		private GameObject[] tilePrefabs;
-
 		[SerializeField]
 		private GameObject[] unitPrefabs;
 		[SerializeField]

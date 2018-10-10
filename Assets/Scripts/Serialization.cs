@@ -9,6 +9,7 @@ using Constants;
 using Gameplay;
 using Units;
 using Editors;
+using Random = UnityEngine.Random;
 
 public static class Serialization {
 	public static string mapFilePath = "./Assets/Maps/";
@@ -65,16 +66,22 @@ public static class Serialization {
 			for (int y = 0; y < parsedTiles.GetLength(1); y++) {
 				for (int z = 0; z < parsedTiles.GetLength(2); z++) {
 					int flatIndex = x + parsedTiles.GetLength(1) * (y + parsedTiles.GetLength(0) * z);
-					//If its an actual gameplay tile
+					//If its an actual gameplay tile, deserialize it
 					if (data[flatIndex] != -1 && data[flatIndex] != 0) {
-						Tile tileObject = GameObject.Instantiate(tilePrefabs[data[flatIndex]],
+
+						int tileTypeInt = data[flatIndex];
+						Tile tile = GameObject.Instantiate(tilePrefabs[tileTypeInt],
 							Util.GridToWorld(x, y, z),
-							tilePrefabs[data[flatIndex]].transform.rotation)
+							tilePrefabs[tileTypeInt].transform.rotation)
 							.GetComponent<Tile>();
+
 						//make child of singe transform for easier deletion
-						tileObject.transform.parent = tileHolder;
-						tileObject.tileType = (TileType)(data[flatIndex]);
-						parsedTiles[x, y, z] = tileObject;
+						tile.transform.parent = tileHolder;
+						tile.tileType = (TileType)(tileTypeInt);
+						parsedTiles[x, y, z] = tile;
+
+						//Make it taste better
+						addFlavor(new Vector3Int(x, y, z), tile);
 					}
 				}
 			}
@@ -99,6 +106,25 @@ public static class Serialization {
 			}
 		}
 		return stackedTiles;
+	}
+
+	public static void addFlavor(Vector3Int tileCoords, Tile tile) {
+
+		float flavorChance = 0.2f;
+		float bound = 4.0f;
+
+		if (Random.Range(0.0f, 1.0f) < flavorChance) {
+			Vector3 flavorPos = Util.GridToWorld(tileCoords) + new Vector3(
+				Random.Range(-bound, bound),
+				Util.GridHeight / 2.1f,
+				Random.Range(-bound, bound));
+			GameObject[] flavorOptions = tile.getFlavorPrefabs();
+
+			if (flavorOptions.Length > 0) {
+				GameObject flavorObject = flavorOptions[Random.Range(0, flavorOptions.Length)];
+				GameObject.Instantiate(flavorObject, flavorPos, flavorObject.transform.rotation);
+			}
+		}
 	}
 
 	public static LevelInfo getLevel(string levelName) {
