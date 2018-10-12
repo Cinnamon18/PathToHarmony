@@ -21,7 +21,10 @@ namespace Cutscenes.Stages {
 			return this;
 		}
 
-		public StageBuilder AddActor(CutsceneSide side, Actor newcomer, string name) {
+		public StageBuilder AddActor(CutsceneSide side, string actorName, string name) {
+			Actor newcomer = Resources.Load<Actor>("Actors/" + actorName);
+			newcomer = GameObject.Instantiate(newcomer);
+
 			newcomer.name = name;
 			this.newcomer = newcomer;
 			this.newcomer.side = side;

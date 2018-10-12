@@ -42,8 +42,6 @@ namespace Cutscenes.Stages {
 		[SerializeField]
 		private Transform farRight;
 
-		[SerializeField]
-		private Actor actorPrefab;
 
 		[SerializeField]
 		private Transform textboxBackground;
@@ -57,25 +55,8 @@ namespace Cutscenes.Stages {
 		/// Don't forget to close those tags! The text gets very glitchy if you don't close them.
 		/// <w>This is how you close a tag</w>
 		/// </summary>
-		public void Start() {
-			StartCoroutine(Invoke(
-				S().AddActor(CutsceneSide.FarLeft, Instantiate(actorPrefab), "J*n"),
-				S().AddActor(CutsceneSide.FarRight, Instantiate(actorPrefab), "L*za"),
-				S().SetMessage("I wanna show you something.")
-					.SetSpeaker("L*za"),
-				S().SetMessage("It's a little...<s><r>unconventional</r></s>.")
-					.SetSpeaker("L*za"),
-				S().SetMessage("Is it...<s>illegal</s>?")
-					.SetSpeaker("J*n"),
-				S().AddLeaver("L*za"),
-				S().AddActor(CutsceneSide.Left, Instantiate(actorPrefab), "H*race"),
-				S().AddActor(CutsceneSide.Right, Instantiate(actorPrefab), "C*risse"),
-				S().SetMessage("Would you believe I'm actually from <w><r>Earth</r></w>?")
-					.SetSpeaker("J*n"),
-				S().AddLeaver("H*race"),
-				S().AddLeaver("J*n"),
-				S().AddLeaver("C*risse")
-				));
+		public virtual void Start() {
+			StartCoroutine(Invoke(Stages.intro));
 		}
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
@@ -220,10 +201,7 @@ namespace Cutscenes.Stages {
 			return parent;
 		}
 
-		// shorthand for easier setup
-		private StageBuilder S() {
-			return new StageBuilder();
-		}
+
 
 	}
 }
