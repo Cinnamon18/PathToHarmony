@@ -7,6 +7,7 @@ namespace Constants {
         None = 0,
         Slash,
         Stab,
-        Blunt
+        Blunt,
+		Pierce
     }
 }
