@@ -25,8 +25,8 @@ namespace Gameplay {
 				GameObject[][] _tileFlavor = new GameObject[][] {
 					new GameObject[] {},
 					new GameObject[] {},
-					new GameObject[] {Resources.Load<GameObject>("TileFlavor/" + "SmallRock")},
-					new GameObject[] {},
+					new GameObject[] {Resources.Load<GameObject>("TileFlavor/" + "SmallRock"), Resources.Load<GameObject>("TileFlavor/" + "SmallTree")},
+					new GameObject[] {Resources.Load<GameObject>("TileFlavor/" + "SmallTree")},
 					new GameObject[] {},
 					new GameObject[] {},
 					new GameObject[] {},

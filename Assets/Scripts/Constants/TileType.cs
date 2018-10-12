@@ -16,6 +16,9 @@
 		Plains,
 		CastleVertical,
 		CastleHorizontal,
-		CastleCorner
+		CastleCorner,
+		PalisadeVertical,
+		PalisadeHorizontal,
+		PalisadeCorner
 	}
 }

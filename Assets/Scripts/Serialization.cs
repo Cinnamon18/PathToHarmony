@@ -116,7 +116,7 @@ public static class Serialization {
 		if (Random.Range(0.0f, 1.0f) < flavorChance) {
 			Vector3 flavorPos = Util.GridToWorld(tileCoords) + new Vector3(
 				Random.Range(-bound, bound),
-				Util.GridHeight / 2.1f,
+				1,//Honestly I'm not sure why it needs to be elevated by 1, but it does
 				Random.Range(-bound, bound));
 			GameObject[] flavorOptions = tile.getFlavorPrefabs();
 

@@ -3098,11 +3098,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 29417752}
     m_Modifications:
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: previewObj.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 4968038942280118, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
       propertyPath: m_LocalPosition.x
       value: 5.2838826
@@ -3142,6 +3137,11 @@ Prefab:
       objectReference: {fileID: 983116297}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
+      propertyPath: previewObj.Array.data[1]
+      value: 
+      objectReference: {fileID: 983116297}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
       propertyPath: previewHolder
       value: 
       objectReference: {fileID: 827422780}
@@ -3170,11 +3170,6 @@ Prefab:
       propertyPath: tilesHolder
       value: 
       objectReference: {fileID: 1472701162}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: previewObj.Array.data[1]
-      value: 
-      objectReference: {fileID: 983116297}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
   m_IsPrefabAsset: 0

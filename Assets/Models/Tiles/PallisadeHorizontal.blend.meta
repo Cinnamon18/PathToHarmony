@@ -1,24 +1,19 @@
 fileFormatVersion: 2
-guid: 962c59814f7c82f4bb5d33dba4f65822
+guid: 49ba29a46047fb6448388e3a2f46b142
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
-    2100000: Dirt
-    2100002: Sand
-    2100004: Rock
+    2100000: Dirt_001
+    2100002: Wood
+    2100004: GrassBlades_001
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Sand
+    4300000: CastleHorizontal
     7400000: Default Take
     9500000: //RootNode
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Rock
-    second: {fileID: 2100000, guid: 9a85b9618284db04b95e6dccf359118e, type: 2}
+  externalObjects: {}
   materials:
     importMaterials: 0
     materialName: 0
