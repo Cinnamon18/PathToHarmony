@@ -15,6 +15,7 @@ namespace Units {
 		//attributes specific to Melee
 		private readonly DamageType damageType;
 		private readonly int rangedAttackStrength;
+		private readonly int range;
 
 		public RangedUnit(
 				ArmorType armorType,
@@ -30,20 +31,59 @@ namespace Units {
 			this.rangedAttackStrength = rangedAttackStrength;
 		}
 
-		public override int battleDamage(Unit enemy, Tile enemyTIle) {
+		public override int battleDamage(Unit enemy, Tile enemyTile) {
 			//TODO: create specific implementation for ranged units
-			return 0;
+			float damage = this.rangedAttackStrength * (1f * (this as Unit).getHealth() / this.maxHealth);
+			damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
+			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
+
+			List<Buff> damageBuffs = getBuffsOfType(BuffType.Damage);
+			foreach (Buff buff in damageBuffs)
+			{
+				damage *= (buff as DamageBuff).getDamageBonus();
+			}
+
+			return (int)(Mathf.Ceil(damage));
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
 			//TODO: create specific implementation for ranged units
-			return false;
+			int damage = this.battleDamage(enemy, enemyTile);
+
+			//Damage rounds up
+			enemy.setHealth(enemy.getHealth() - damage);
+
+			if (enemy.getHealth() <= 0)
+			{
+				enemy.defeated(battlefield);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 
 		}
 
 		public override List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
 			//TODO: create specific implementation for ranged units
-			return null;
+			List<Coord> validTargets = new List<Coord>();
+
+			//	Create a diamond field around myX and myY.
+			for (int y = -range; y <= range; y++)
+			{             // For all valid y...
+				int XAxis = range - Math.Abs(y);
+				for (int x = -XAxis; x <= XAxis; x++)
+				{         // and valid x...
+					bool onTheMap = !(x + myX < 0 || y + myY < 0 || x + myX >= battlefield.map.GetLength(0) || y + myY >= battlefield.map.GetLength(1));
+					if (onTheMap)
+					{
+						Coord inRange = new Coord(x + myX, y + myY);
+						validTargets.Add(inRange);
+					}
+				}
+			}
+			return validTargets;
 		}
 
 	}
