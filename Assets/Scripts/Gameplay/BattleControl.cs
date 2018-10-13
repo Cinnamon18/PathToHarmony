@@ -16,21 +16,19 @@ using System.IO;
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
 
-	
+
 		//x, y, height (from the bottom)
 		private Battlefield battlefield;
 		private Level level;
 		private GameObjective objective;
 		[SerializeField]
 		private GameObject[] tilePrefabs;
-
 		[SerializeField]
 		private GameObject[] unitPrefabs;
 		[SerializeField]
 		private Transform tilesHolder;
 
 		private string mapFilePath = Serialization.mapFilePath;
-
 		private LevelInfo levelInfo;
 
 		private BattleLoopStage battleStage;
@@ -113,12 +111,23 @@ namespace Gameplay {
 				// new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
 				//new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
 			});
-		
+
 			cutscene.setup(script);
 			cutscene.playScene();
 
 			getLevel();
 			deserializeMap();
+			deserializeUnits();
+			//testing
+			addUnit(UnitType.Mage, level.characters[0], 1, 1, Faction.Xingata);
+
+			// Uncomment these for the escort objective
+			// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
+			// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
+			// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
+
+			// Uncomment these for the intercept objective
+			// (objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
 		}
 
 		// Update is called once per frame
@@ -126,47 +135,6 @@ namespace Gameplay {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
 					if (!cutscene.inProgress) {
-
-						//Testing Level Deserialization
-						try
-						{
-							Stack<UnitInfo> stack = levelInfo.units;
-							while (stack.Count != 0)
-							{
-								UnitInfo info = stack.Pop();
-								if (info.getIsPlayer())
-								{
-									addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
-								}
-								else
-								{
-									addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, Faction.Tsubin);
-								}
-
-							}
-						}
-						catch (FileNotFoundException ex)
-						{
-							Debug.Log("Incorrect level name" + ex.ToString());
-						}
-						
-						//TODO This is temp just for testing until level editor deserialization. 
-						addUnit(UnitType.Knight, level.characters[0], 0, 0, Faction.Xingata);
-						addUnit(UnitType.Knight, level.characters[0], 1, 0, Faction.Xingata);
-						addUnit(UnitType.Knight, level.characters[0], 0, 1, Faction.Xingata);
-						addUnit(UnitType.Knight, level.characters[1], 3, 7, Faction.Tsubin);
-						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
-
-						addUnit(UnitType.Mage, level.characters[0], 1, 1, Faction.Xingata);
-
-						// Uncomment these for the escort objective
-						// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
-						// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
-						// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
-
-						// Uncomment these for the intercept objective
-						// (objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
-
 						advanceBattleStage();
 					}
 					break;
@@ -323,6 +291,18 @@ namespace Gameplay {
 			//TODO: actually advance campaign
 		}
 
+		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
+			int index = (int)(unitType);
+			GameObject newUnitGO = Instantiate(
+				unitPrefabs[index],
+				Util.GridToWorld(x, y, battlefield.map[x, y].Count + 1),
+				unitPrefabs[index].gameObject.transform.rotation);
+
+			Unit newUnit = newUnitGO.GetComponent<Unit>();
+			newUnit.setFaction(faction);
+			battlefield.addUnit(newUnit, character, x, y);
+		}
+
 		private void moveUnit(Unit unit, int targetX, int targetY) {
 			Coord unitCoords = battlefield.getUnitCoords(unit);
 			battlefield.units[unitCoords.x, unitCoords.y] = null;
@@ -349,20 +329,25 @@ namespace Gameplay {
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
-		private void getLevel() {
-			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
+		private void deserializeUnits() {
+			//Testing Level Deserialization
+			try {
+				Stack<UnitInfo> stack = levelInfo.units;
+				while (stack.Count != 0) {
+					UnitInfo info = stack.Pop();
+					if (info.getIsPlayer()) {
+						addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
+					} else {
+						addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, Faction.Tsubin);
+					}
+				}
+			} catch (FileNotFoundException ex) {
+				Debug.Log("Incorrect level name" + ex.ToString());
+			}
 		}
 
-		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
-			int index = (int)(unitType);
-			GameObject newUnitGO = Instantiate(
-				unitPrefabs[index],
-				Util.GridToWorld(x, y, battlefield.map[x, y].Count + 1),
-				unitPrefabs[index].gameObject.transform.rotation);
-
-			Unit newUnit = newUnitGO.GetComponent<Unit>();
-			newUnit.setFaction(faction);
-			battlefield.addUnit(newUnit, character, x, y);
+		private void getLevel() {
+			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 		}
 	}
 }
