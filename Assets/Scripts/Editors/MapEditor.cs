@@ -1,4 +1,10 @@
-using System.Collections;
+
+
+
+
+
+
+.using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +13,7 @@ using System.Text;
 using System;
 using System.Linq;
 using Gameplay;
+using System.Text.RegularExpressions;
 
 namespace Editors {
 	public class MapEditor : Editor<Tile> {
@@ -234,6 +241,7 @@ namespace Editors {
 		}
 
 		public void updateSizeUI() {
+
 			String newSize = loadDimText.text;
 			int[] dimensions = newSize.Split(',').Select((dimension) => {
 				//If you're used to java this might look weird. In c# you can explicitly pass by refrence with the keyword "out". Neat, isn't it?
@@ -243,7 +251,16 @@ namespace Editors {
 				}
 				return num;
 			}).ToArray();
-			updateSize(dimensions[0], dimensions[1], dimensions[2]);
+			
+			//Make sure dimension text is in correct format
+			if (dimensions.Length != 3)
+			{
+				Debug.LogError("Dimension text is in incorrect format.");
+			} else
+			{
+				updateSize(dimensions[0], dimensions[1], dimensions[2]);
+			}
+			
 		}
 	}
 }
