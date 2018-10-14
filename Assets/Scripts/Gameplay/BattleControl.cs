@@ -66,7 +66,7 @@ namespace Gameplay {
 			defeatImage.enabled = false;
 
 			//Changed to generate different levels
-			levelInfo = Serialization.getLevel("DemoLevel");
+			levelInfo = Serialization.getLevel("TestLevel");
 
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] {
