@@ -45,7 +45,7 @@ namespace Cutscenes.Stages {
 
 		[SerializeField]
 		private Transform textboxBackground;
-		
+
 		private List<Actor> actors = new List<Actor>();
 
 		/// <summary>
@@ -56,7 +56,8 @@ namespace Cutscenes.Stages {
 		/// <w>This is how you close a tag</w>
 		/// </summary>
 		public virtual void Start() {
-			StartCoroutine(Invoke(Stages.intro));
+			Stages.setupCutscenes();
+			StartCoroutine(Invoke(Stages.getStage("tutorialEnd")));
 		}
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
@@ -93,11 +94,24 @@ namespace Cutscenes.Stages {
 				yield return AddActor(stageBuilder.newcomer, stageBuilder.newcomer.side);
 			}
 
+			if (stageBuilder.expression != null) {
+				Actor foundActor = FindActor(stageBuilder.speaker);
+
+				if (foundActor == null) {
+					throw new UnityException(
+						"There exists no actor in the scene with name: "
+						+ stageBuilder.speaker
+						);
+				}
+
+				foundActor.image.sprite = stageBuilder.expression;
+			}
+
 			if (stageBuilder.message != null) {
 				CutsceneSide side = CutsceneSide.None;
 
 				if (!string.IsNullOrEmpty(stageBuilder.speaker)) {
-					side = FindActor(stageBuilder.speaker).side;	
+					side = FindActor(stageBuilder.speaker).side;
 
 					foreach (Actor actor in actors) {
 						if (actor.side != side) {
@@ -142,10 +156,15 @@ namespace Cutscenes.Stages {
 			Vector2 endPos = new Vector2(holderToUse.transform.position.x, 0);
 
 			Vector2 startPos = new Vector2(
-				((side == CutsceneSide.Left || side == CutsceneSide.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300), 
+				((side == CutsceneSide.Left || side == CutsceneSide.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300),
 				actor.transform.position.y);
-			
-			Debug.Log(startPos);
+
+			// Debug.Log(startPos);
+
+			if (side == CutsceneSide.Left || side == CutsceneSide.FarLeft) {
+				actor.transform.localScale = new Vector3(-1, 1, 1);
+			}
+
 
 			actor.transform.SetParent(background.transform);
 			actor.transform.position = startPos;
@@ -192,7 +211,7 @@ namespace Cutscenes.Stages {
 					parent = left;
 					break;
 				case CutsceneSide.Right:
-					parent = right; 
+					parent = right;
 					break;
 				case CutsceneSide.FarRight:
 					parent = farRight;

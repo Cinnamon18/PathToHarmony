@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Cutscenes.Stages;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +15,7 @@ public class MainMenu : MonoBehaviour {
 	void Start() {
 		optionsCanvas.enabled = false;
 		creditsCanvas.enabled = false;
+		Stages.setupCutscenes();
 	}
 
 	public void playGame() {
