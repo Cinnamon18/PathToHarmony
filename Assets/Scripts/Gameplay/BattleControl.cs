@@ -211,7 +211,7 @@ namespace Gameplay {
 				return true;
 
 			} else if (objective.isLoseCondition(halfTurnsElapsed)) {
-				defeatImage.enabled = true;
+				restartLevelDefeat();
 				return true;
 			} else {
 				return false;
@@ -225,6 +225,16 @@ namespace Gameplay {
 
 			Persistance.campaign.levelIndex++;
 			//Oh Boy i hope this works.
+			SceneManager.LoadScene("DemoBattle");
+		}
+
+		private async void restartLevelDefeat() {
+			defeatImage.enabled = true;
+			await Task.Delay(TimeSpan.FromMilliseconds(6000));
+			victoryImage.enabled = false;
+			//TODO show ui to quit or retry
+
+			//Restart the level, don't increment
 			SceneManager.LoadScene("DemoBattle");
 		}
 

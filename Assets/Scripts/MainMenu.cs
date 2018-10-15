@@ -67,21 +67,21 @@ public class MainMenu : MonoBehaviour {
 				new Character("Alice", true, new playerAgent()),
 				new Character("The evil lord zxqv", false, new simpleAgent())
 				};
-		Level level1 = new Level("DemoMap2", "TestLevel", characters1, new string[] { "tutorialEnd" });
+		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new string[] { "tutorialEnd" });
 
 		//LEVEL 2
 		Character[] characters2 = new[] {
 				new Character("Alice", true, new playerAgent()),
 				new Character("The evil lord zxqv", false, new simpleAgent())
 				};
-		Level level2 = new Level("DemoMap1", "TestLevel", characters2, new string[] { "andysDemo" });
+		Level level2 = new Level("DemoMap", "TestLevel", characters2, new string[] { "andysDemo" });
 
 		//LEVEL 3
 		Character[] characters3 = new[] {
 				new Character("Alice", true, new playerAgent()),
 				new Character("The evil lord zxqv", false, new simpleAgent())
 				};
-		Level level3 = new Level("DemoMap2", "DemoLevel", characters2, new string[] { "andysDemo" });
+		Level level3 = new Level("DemoMap", "DemoLevel", characters2, new string[] { "andysDemo" });
 
 
 		//Just to show off my vision of campaign branching. which now looks like it's not gonna happen, but oh well :p
@@ -91,8 +91,8 @@ public class MainMenu : MonoBehaviour {
 		});
 
 		Campaign testCampaign2 = new Campaign("test2", 0, new[] {
-			level3,
-			level1
+			level1,
+			level3
 		});
 
 		Persistance.campaign = testCampaign1;
