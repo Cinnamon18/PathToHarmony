@@ -82,7 +82,7 @@ namespace Units {
 		}
 
 
-		//For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
+		//For now this will use a simple approach using a visited set instead of a disjoint set approach
 		//We can get away with this because there's only one "flow" source point (the unit).
 		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
 			if (hasMovedThisTurn) {

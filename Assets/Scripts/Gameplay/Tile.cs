@@ -12,6 +12,7 @@ namespace Gameplay {
 		[SerializeField]
 		private TileType initialType;
 		public TileType tileType { get; set; }
+		public static GameObject[][] tileFlavor;
 
 		public Tile() : this(TileType.None) { }
 
@@ -19,12 +20,34 @@ namespace Gameplay {
 			this.tileType = tileType;
 		}
 
-		void Start() {
-			animate();
+		void Awake() {
+			if (Tile.tileFlavor == null) {
+				GameObject[][] _tileFlavor = new GameObject[][] {
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {Resources.Load<GameObject>("TileFlavor/" + "SmallRock"), Resources.Load<GameObject>("TileFlavor/" + "SmallTree")},
+					new GameObject[] {Resources.Load<GameObject>("TileFlavor/" + "SmallTree")},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {}
+				};
+
+				Tile.tileFlavor = _tileFlavor;
+			}
 		}
 
-		private void animate() {
-			//TODO use blender animations for flowing water and whatnot.
+		public GameObject[] getFlavorPrefabs() {
+			return Tile.tileFlavor[(int)(tileType)];
 		}
 
 		public void vibrateUnhappily() {

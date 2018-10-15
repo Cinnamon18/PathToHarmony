@@ -9,7 +9,7 @@ using UnityEngine;
 namespace AI {
 	public class simpleAgent : Agent {
 
-		public simpleAgent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) : base(battlefield, level, Destroy) { }
+		public simpleAgent() : base() { }
 
 		public override async Task<Move> getMove() {
 			Unit unit = selectUnit();
