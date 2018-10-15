@@ -1596,6 +1596,16 @@ Prefab:
       propertyPath: tilesGenerator
       value: 
       objectReference: {fileID: 249689884}
+    - target: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
+        type: 2}
+      propertyPath: allowOverWrite
+      value: 
+      objectReference: {fileID: 1449281785}
+    - target: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
+        type: 2}
+      propertyPath: overWriteToggle
+      value: 
+      objectReference: {fileID: 1449281785}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b0d77d4d3f15d974ba491bbc9aa2149a, type: 2}
   m_IsPrefabAsset: 0
@@ -2182,9 +2192,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: updateOverwriteMode
-        m_Mode: 0
+      - m_Target: {fileID: 1118884008}
+        m_MethodName: resetOverWritePerm
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

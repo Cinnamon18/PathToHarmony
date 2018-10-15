@@ -18,6 +18,7 @@ namespace Editors {
 		public Text loadMapText;
 		public Text loadLevelText;
 		public Text saveLevelText;
+		
 
 		public TMP_Dropdown playerDropdown;
 		public TMP_Dropdown factionDropdown;
@@ -95,9 +96,10 @@ namespace Editors {
 			StringBuilder serialized = new StringBuilder(mapName + ";");
 
 			foreach (UnitInfo info in unitsInfo) {
-
-				serialized.Append(info.serialize() + ";");
-			
+				if (info != null)
+				{
+					serialized.Append(info.serialize() + ";");
+				}
 			}
 
 			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, overwriteData);

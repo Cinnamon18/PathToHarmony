@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Units;
 using Gameplay;
+using UnityEngine.UI;
 
 namespace Editors {
 	public abstract class Editor<T> : MonoBehaviour {
 		protected T[,,] objs;
+		public Toggle overWriteToggle;
 		protected bool overwriteData;
 		protected string mapFilePath = Serialization.mapFilePath;
 		protected string levelFilePath = Serialization.levelFilePath;
+
+		
 
 		//info for preview
 		public GameObject[] previewObj;
@@ -89,10 +93,6 @@ namespace Editors {
 					//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
 					currentIndex = currentIndex < 0 ? currentIndex + previewObj.Length : currentIndex % previewObj.Length;
 
-					Debug.Log("currenIndex " + currentIndex);
-					Debug.Log(previewObj[0].ToString());
-					Debug.Log(previewObj[1].ToString());
-
 					currentPreviewObj = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation, previewHolder);
 					Destroy(oldPreviewTile);
 				}
@@ -111,8 +111,10 @@ namespace Editors {
 			updatePreview(-1);
 		}
 
-		public void updateOverwriteMode(bool state) {
-			this.overwriteData = state;
+
+		public void resetOverWritePerm()
+		{
+			overwriteData = overWriteToggle.isOn;
 		}
 	}
 }

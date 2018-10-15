@@ -3034,9 +3034,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: updateOverwriteMode
-        m_Mode: 0
+      - m_Target: {fileID: 1475899753}
+        m_MethodName: resetOverWritePerm
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4050,6 +4050,11 @@ Prefab:
       propertyPath: factionDropdown
       value: 
       objectReference: {fileID: 1832452344}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: overWriteToggle
+      value: 
+      objectReference: {fileID: 979497548}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
   m_IsPrefabAsset: 0
