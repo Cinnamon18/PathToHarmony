@@ -26,8 +26,8 @@ namespace Gameplay {
 		private GameObject[] tilePrefabs;
 		[SerializeField]
 		private GameObject[] unitPrefabs;
-		[SerializeField]
-		private Transform tilesHolder;
+		public Camera mainCamera;
+		public Camera cutsceneCamera;
 
 		private BattleLoopStage battleStage;
 		//Use this to keep one of the Update switch blocks from being called multiple times.
@@ -68,7 +68,11 @@ namespace Gameplay {
 
 			//TODO replace this with predicate based execution
 			CameraController.inputEnabled = false;
-			cutscene.startCutscene(level.cutsceneIDs[0]);
+			mainCamera.enabled = false;
+			cutsceneCamera.enabled = true;
+			if (level.cutsceneIDs.Length != 0) {
+				cutscene.startCutscene(level.cutsceneIDs[0]);
+			}
 		}
 
 		// Update is called once per frame
@@ -77,6 +81,8 @@ namespace Gameplay {
 				case BattleLoopStage.Initial:
 					if (!cutscene.isRunning) {
 						CameraController.inputEnabled = true;
+						cutsceneCamera.enabled = false;
+						mainCamera.enabled = true;
 						advanceBattleStage();
 					}
 					break;
@@ -256,7 +262,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, "Assets\\Maps\\"), tilePrefabs, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, "Assets\\Maps\\"), tilePrefabs, null);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
@@ -303,14 +309,15 @@ namespace Gameplay {
 
 		private void getLevel() {
 			//This indicates the scene has been played from the editor, without first running MainMenu. This is a debug mode.
-			if (Persistance.campaign == null) {
-				Stages.setupCutscenes();
+			if (Persistance.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new playerAgent()),
 					new Character("The evil lord zxqv", false, new simpleAgent())
 				};
-				level = new Level("DemoMap2", "TestLevel", characters, new string[] { "tutorialEnd" });
+				level = new Level("DemoMap2", "TestLevel", characters, new string[] { });
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
+				cutscene.startCutscene("tutorialEnd");
+				// cutscene.hideVisualElements();
 			}
 
 

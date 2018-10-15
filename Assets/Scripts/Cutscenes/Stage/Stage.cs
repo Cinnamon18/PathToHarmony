@@ -2,6 +2,7 @@ using Cutscenes.Textboxes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -57,8 +58,11 @@ namespace Cutscenes.Stages {
 		/// <w>This is how you close a tag</w>
 		/// </summary>
 		public void Start() {
+			if (SceneManager.GetActiveScene().name == "Story Test") {
+				startCutscene("andysDemo");
+			}
 		}
-		
+
 
 		public void startCutscene(string cutsceneID) {
 			StartCoroutine(Invoke(Stages.getStage(cutsceneID)));
@@ -66,13 +70,13 @@ namespace Cutscenes.Stages {
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
 			isRunning = true;
-			// textbox.box.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, textbox.box.GetComponent<RectTransform>().anchoredPosition.y);
 			yield return RaiseUpTextbox();
 
 			foreach (StageBuilder stageBuilder in stageBuilders) {
 				yield return Invoke(stageBuilder);
 			}
 			isRunning = false;
+			hideVisualElements();
 		}
 
 		private IEnumerator RaiseUpTextbox() {
@@ -85,6 +89,8 @@ namespace Cutscenes.Stages {
 					new Vector2(0, targetY),
 					Mathf.Sqrt(t)
 					);
+					//manual correction factor (:
+					textboxBackground.position += new Vector3(0, 0, -20);
 			});
 		}
 
@@ -117,7 +123,16 @@ namespace Cutscenes.Stages {
 				CutsceneSide side = CutsceneSide.None;
 
 				if (!string.IsNullOrEmpty(stageBuilder.speaker)) {
-					side = FindActor(stageBuilder.speaker).side;
+					Actor foundActor = FindActor(stageBuilder.speaker);
+
+					if (foundActor == null) {
+						throw new UnityException(
+							"There exists no actor in the scene with name: "
+							+ stageBuilder.speaker
+							);
+					}
+
+					side = foundActor.side;
 
 					foreach (Actor actor in actors) {
 						if (actor.side != side) {
@@ -226,7 +241,9 @@ namespace Cutscenes.Stages {
 			return parent;
 		}
 
-
+		public void hideVisualElements() {
+			this.gameObject.SetActive(false);
+		}
 
 	}
 }

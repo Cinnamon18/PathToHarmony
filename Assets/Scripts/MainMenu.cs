@@ -17,11 +17,8 @@ public class MainMenu : MonoBehaviour {
 	void Start() {
 		optionsCanvas.enabled = false;
 		creditsCanvas.enabled = false;
-		Stages.setupCutscenes();
 
 		setupDefaultCampaign();
-
-		Stages.setupCutscenes();
 	}
 
 	public void playGame() {
@@ -79,11 +76,11 @@ public class MainMenu : MonoBehaviour {
 		});
 
 		Campaign testCampaign2 = new Campaign("test2", 0, new[] {
-			level1,
-			level3
+			level3,
+			level1
 		});
 
-		Persistance.campaign = testCampaign;
+		Persistance.campaign = testCampaign1;
 
 
 	}
