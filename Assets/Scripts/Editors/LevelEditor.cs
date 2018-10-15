@@ -19,8 +19,10 @@ namespace Editors {
 		public Text loadLevelText;
 		public Text saveLevelText;
 
-		public TMPro.TMP_Dropdown dropdown;
+		public TMP_Dropdown playerDropdown;
+		public TMP_Dropdown factionDropdown;
 		private bool isPlayer;
+		private Faction currentFaction;
 
 		[SerializeField]
 		private Transform unitsHolder;
@@ -62,16 +64,27 @@ namespace Editors {
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
 			//unitsinfo is used to store units and whether they are player or enemy units
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
+
+			//what type of unit is being placed
 			isPlayer = true;
+			currentFaction = Faction.Xingata;
+
+
 			if (previewObj.Length != unitPrefabs.Length) {
 				Debug.LogError("Must have equal number of prefab and preview objects.");
 			}
 			//Tell Editor type
 			setEditorType();
-			dropdown.onValueChanged.AddListener(delegate {
+			playerDropdown.onValueChanged.AddListener(delegate {
 				//player when 0
-				isPlayer = (dropdown.value == 0);
+				isPlayer = (playerDropdown.value == 0);
 			});
+
+			factionDropdown.onValueChanged.AddListener(delegate {
+				//set current faction
+				currentFaction = (Faction)factionDropdown.value;
+			});
+		
 
 		}
 		public override void serialize() {
@@ -130,7 +143,7 @@ namespace Editors {
 					addUnit(info.getUnitType(), info.getCoord().x, info.getCoord().y);
 				}
 				//reset bool to match dropdown
-				isPlayer = dropdown.value == 0;
+				isPlayer = playerDropdown.value == 0;
 			} catch (FileNotFoundException ex) {
 				Debug.LogError("Level does not exist.");
 				Debug.LogError(ex);
@@ -163,14 +176,7 @@ namespace Editors {
 					unitPrefabs[index].gameObject.transform.rotation);
 				newUnitGO.transform.parent = unitsHolder;
 				Unit newUnit = newUnitGO.GetComponent<Unit>();
-				Faction currentFaction;
-				//set material to differentiate between player and enemy
-				//TODO: will change later when user can choose unit of a particular faction
-				if (isPlayer) {
-					currentFaction = playerFaction;
-				} else {
-					currentFaction = enemyFaction;
-				}
+			
 				newUnit.setFaction(currentFaction);
 
 				UnitInfo info = new UnitInfo(unitType, isPlayer, new Vector3Int(x, y, z));
