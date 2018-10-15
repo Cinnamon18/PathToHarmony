@@ -73,7 +73,7 @@ namespace Gameplay {
 			defeatImage.enabled = false;
 
 			//Changed to generate different levels
-			levelInfo = Serialization.getLevel("DemoLevel");
+			levelInfo = Serialization.getLevel("TestLevel");
 
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] {
@@ -342,10 +342,11 @@ namespace Gameplay {
 				Stack<UnitInfo> stack = levelInfo.units;
 				while (stack.Count != 0) {
 					UnitInfo info = stack.Pop();
-					if (info.getIsPlayer()) {
+					
+					if (info.getFaction() == Faction.Xingata) {
 						addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
 					} else {
-						addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, Faction.Tsubin);
+						addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, info.getFaction());
 					}
 				}
 			} catch (FileNotFoundException ex) {

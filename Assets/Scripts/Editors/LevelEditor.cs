@@ -139,11 +139,11 @@ namespace Editors {
 				Stack<UnitInfo> stack = levelInfo.units;
 				while (stack.Count != 0) {
 					UnitInfo info = stack.Pop();
-					isPlayer = info.getIsPlayer();
+					currentFaction = info.getFaction();
 					addUnit(info.getUnitType(), info.getCoord().x, info.getCoord().y);
 				}
-				//reset bool to match dropdown
-				isPlayer = playerDropdown.value == 0;
+				//reset faction to match dropdown
+				currentFaction = (Faction)factionDropdown.value;
 			} catch (FileNotFoundException ex) {
 				Debug.LogError("Level does not exist.");
 				Debug.LogError(ex);
@@ -179,7 +179,7 @@ namespace Editors {
 			
 				newUnit.setFaction(currentFaction);
 
-				UnitInfo info = new UnitInfo(unitType, isPlayer, new Vector3Int(x, y, z));
+				UnitInfo info = new UnitInfo(unitType, currentFaction, new Vector3Int(x, y, z));
 				unitsInfo[x, y] = info;
 			} else {
 				Debug.Log("Cannot place units on top of each other.");

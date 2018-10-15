@@ -176,13 +176,10 @@ public static class Serialization {
 			if (data.Length == 5) {
 				//get store Unittype
 				UnitType type = (UnitType)data[0];
-				//see if player unit
-				bool isPlayerUnit = false;
-
-				if (data[1] == 1) {
-					isPlayerUnit = true;
-				}
-				units.Push(new UnitInfo(type, isPlayerUnit, new Vector3Int(data[2], data[3], data[4])));
+				//get stored Faction
+				Faction faction = (Faction)data[1];
+				
+				units.Push(new UnitInfo(type, faction, new Vector3Int(data[2], data[3], data[4])));
 			}
 
 		}
