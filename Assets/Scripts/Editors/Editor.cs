@@ -52,11 +52,16 @@ namespace Editors {
 				Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
 				T obj = objs[objCoords.x, objCoords.y, objCoords.z];
 
-				if (Input.GetButtonDown("Select")) {
+				if (Input.GetButtonDown("Select"))
+				{
 					create(objCoords, obj);
-				} else if (Input.GetButtonDown("AltSelect")) {
+				}
+				else if (Input.GetButtonDown("AltSelect"))
+				{
 					remove(objCoords, obj, hit);
 				}
+				
+				
 
 			}
 

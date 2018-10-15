@@ -4,7 +4,7 @@
 
 
 
-.using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,13 +25,21 @@ namespace Editors {
 		private LineRenderer lineRenderer;
 		[SerializeField]
 		private Transform tilesHolder;
+		[SerializeField]
+		private TileGenerator tilesGenerator;
+
 		private string mapName;
+		private TileType[] tileTypes;
 
 		public Text loadFileText;
 		public Text loadDimText;
+		public Text saveFileText;
 
 		// Use this for initialization
 		protected void Start() {
+			//fills in tileTypes array to match that in prefab array so proper tiles are created, no matter the order
+			getPossibleTileTypes();
+
 			base.objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
 			makeYellowBaseTiles();
 			drawBorders();
@@ -166,23 +174,26 @@ namespace Editors {
 
 
 		public void deserializeTiles() {
-			eraseTiles();
-			updateMapName(loadFileText.text);
-
-			objs = Serialization.DeserializeTiles(Serialization.ReadData(mapName, mapFilePath), previewObj, tilesHolder);
-			base.objs = new Tile[objs.GetLength(0), objs.GetLength(1), objs.GetLength(2)];
+		
+			string mapData = Serialization.ReadData(loadFileText.text, mapFilePath);
+			if (mapData != null)
+			{
+				updateMapName(loadFileText.text);
+				eraseTiles();
+				base.objs = Serialization.DeserializeTiles(mapData, tileTypes, tilesGenerator, tilesHolder);
+			}
+			
 
 		}
 
 		private void eraseTiles() {
-			if (base.objs != null) {
-				foreach (Tile tile in base.objs) {
-					if (tile != null) {
-						Destroy(tile.gameObject);
-					}
-				}
-				base.objs = null;
+
+			foreach(Transform child in tilesHolder)
+			{
+				Destroy(child.gameObject);
 			}
+
+			base.objs = null;
 
 		}
 
@@ -221,6 +232,8 @@ namespace Editors {
 		}
 
 		public void serializeTiles() {
+
+			updateMapName(saveFileText.text);
 			if (mapName == null || mapName == "") {
 				Debug.LogError("Can't save without a file name");
 				return;
@@ -261,6 +274,16 @@ namespace Editors {
 				updateSize(dimensions[0], dimensions[1], dimensions[2]);
 			}
 			
+		}
+
+		private void getPossibleTileTypes()
+		{
+			tileTypes = new TileType[previewObj.Length];
+
+			for (int i = 0; i < previewObj.Length; i++)
+			{
+				tileTypes[i] = previewObj[i].GetComponent<Tile>().tileType;
+			}
 		}
 	}
 }

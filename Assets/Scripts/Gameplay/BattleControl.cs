@@ -27,6 +27,10 @@ namespace Gameplay {
 		private GameObject[] unitPrefabs;
 		[SerializeField]
 		private Transform tilesHolder;
+		[SerializeField]
+		private TileGenerator generator;
+
+		private TileType[] tileTypes;
 
 		private string mapFilePath = Serialization.mapFilePath;
 		private LevelInfo levelInfo;
@@ -60,13 +64,16 @@ namespace Gameplay {
 			battleStage = BattleLoopStage.Initial;
 			halfTurnsElapsed = 0;
 
+			//fills in tileTypes array to match that in prefab array so proper tiles are created, no matter the order
+			getPossibleTileTypes();
+
 			turnPlayerText.enabled = false;
 			turnChangeBackground.enabled = false;
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
 
 			//Changed to generate different levels
-			levelInfo = Serialization.getLevel("TestLevel");
+			levelInfo = Serialization.getLevel("DemoLevel");
 
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] {
@@ -325,7 +332,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tileTypes, generator, tilesHolder);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
@@ -348,6 +355,17 @@ namespace Gameplay {
 
 		private void getLevel() {
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
+		}
+
+
+		private void getPossibleTileTypes()
+		{
+			tileTypes = new TileType[tilePrefabs.Length];
+
+			for (int i = 0; i < tilePrefabs.Length; i++)
+			{
+				tileTypes[i] = tilePrefabs[i].GetComponent<Tile>().tileType;
+			}
 		}
 	}
 }
