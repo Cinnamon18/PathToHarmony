@@ -3994,7 +3994,7 @@ Prefab:
         type: 2}
       propertyPath: previewObj.Array.data[0]
       value: 
-      objectReference: {fileID: 983116297}
+      objectReference: {fileID: 100000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: previewHolder
@@ -4029,7 +4029,7 @@ Prefab:
         type: 2}
       propertyPath: previewObj.Array.data[1]
       value: 
-      objectReference: {fileID: 983116297}
+      objectReference: {fileID: 100004, guid: 2c86103a7b5b4a441a4776ca223e098b, type: 3}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: dropdown

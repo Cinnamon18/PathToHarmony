@@ -71,20 +71,33 @@ namespace Editors {
 
 		protected void updatePreview(float scroll) {
 			GameObject oldPreviewTile;
-
+			int previousIndex = currentIndex;
 			if (previewHolder.transform.childCount != 0) {
 				oldPreviewTile = previewHolder.GetChild(0).gameObject;
-				if (scroll != 0) {
-					if (scroll < 0) {
+			
+				if (scroll != 0)
+				{
+					if (scroll < 0)
+					{
 						currentIndex--;
-					} else if (scroll > 0) {
+					}
+					else if (scroll > 0)
+					{
 						currentIndex++;
 					}
+
 					//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
 					currentIndex = currentIndex < 0 ? currentIndex + previewObj.Length : currentIndex % previewObj.Length;
+
+					Debug.Log("currenIndex " + currentIndex);
+					Debug.Log(previewObj[0].ToString());
+					Debug.Log(previewObj[1].ToString());
+
 					currentPreviewObj = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation, previewHolder);
 					Destroy(oldPreviewTile);
 				}
+				
+			
 			} else {
 				Debug.Log("Must have single preview object in preview holder object.");
 			}
