@@ -42,11 +42,12 @@ namespace Cutscenes.Stages {
 		[SerializeField]
 		private Transform farRight;
 
-
 		[SerializeField]
 		private Transform textboxBackground;
 
 		private List<Actor> actors = new List<Actor>();
+
+		public bool isRunning = false;
 
 		/// <summary>
 		/// Built in rich text tags won't work now, will need to implement custom
@@ -55,18 +56,23 @@ namespace Cutscenes.Stages {
 		/// Don't forget to close those tags! The text gets very glitchy if you don't close them.
 		/// <w>This is how you close a tag</w>
 		/// </summary>
-		public virtual void Start() {
-			Stages.setupCutscenes();
-			StartCoroutine(Invoke(Stages.getStage("tutorialEnd")));
+		public void Start() {
+		}
+		
+
+		public void startCutscene(string cutsceneID) {
+			StartCoroutine(Invoke(Stages.getStage(cutsceneID)));
 		}
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
-
+			isRunning = true;
+			// textbox.box.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, textbox.box.GetComponent<RectTransform>().anchoredPosition.y);
 			yield return RaiseUpTextbox();
 
 			foreach (StageBuilder stageBuilder in stageBuilders) {
 				yield return Invoke(stageBuilder);
 			}
+			isRunning = false;
 		}
 
 		private IEnumerator RaiseUpTextbox() {

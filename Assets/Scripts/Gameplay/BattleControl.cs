@@ -12,10 +12,11 @@ using AI;
 using Buffs;
 using Editors;
 using System.IO;
+using Cutscenes.Stages;
+using UnityEngine.SceneManagement;
 
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
-
 
 		//x, y, height (from the bottom)
 		private Battlefield battlefield;
@@ -28,9 +29,6 @@ namespace Gameplay {
 		[SerializeField]
 		private Transform tilesHolder;
 
-		private string mapFilePath = Serialization.mapFilePath;
-		private LevelInfo levelInfo;
-
 		private BattleLoopStage battleStage;
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
@@ -39,9 +37,6 @@ namespace Gameplay {
 		private int playerCharacter;
 		public int halfTurnsElapsed;
 
-		//Just a refrence to the cutscene prefab
-		[SerializeField]
-		private Cutscene cutscene;
 		[SerializeField]
 		private Text turnPlayerText;
 		[SerializeField]
@@ -50,6 +45,8 @@ namespace Gameplay {
 		private Image victoryImage;
 		[SerializeField]
 		private Image defeatImage;
+		[SerializeField]
+		private Stage cutscene;
 
 		// Use this for initialization
 		void Start() {
@@ -65,76 +62,21 @@ namespace Gameplay {
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
 
-			//Changed to generate different levels
-			levelInfo = Serialization.getLevel("TestLevel");
-
-			//Just for testing because we don't have any way to set the campaign yet:
-			Character[] characters = new[] {
-				new Character("Alice", true, new PlayerAgent(battlefield, null, obj => Destroy(obj, 0) )),
-				//new Character("The evil lord zxqv", false, new PlayerAgent(battlefield, null, obj => Destroy(obj, 0)))
-				new Character("The evil lord zxqv", false, new simpleAgent(battlefield, null, obj => Destroy(obj, 0)))
-				};
-			List<Coord> alicePickTiles = new List<Coord> { new Coord(0, 0), new Coord(0, 1), new Coord(1, 0) };
-			List<Coord> evilGuyPickTiles = new List<Coord> { new Coord(3, 7), new Coord(7, 4) };
-			Dictionary<Character, List<Coord>> validPickTiles = new Dictionary<Character, List<Coord>>();
-			validPickTiles[characters[0]] = alicePickTiles;
-			validPickTiles[characters[1]] = evilGuyPickTiles;
-			//gets mapname from levelinfo
-			Level level = new Level(levelInfo.mapName, characters, null, validPickTiles);
-			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
-			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
-			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
-
-			//For these objectives to work, you must also comment out the lines in the initial battle stage below
-			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);
-			// objective = new InterceptObjective(battlefield, level, characters[playerCharacter], 20);
-
-			characters[0].agent.level = level;
-			characters[1].agent.level = level;
-
-			Campaign testCampaign = new Campaign("test", 0, new[] { level });
-			Persistance.campaign = testCampaign;
-
-			//This will be encoded in the campaign. Somewhere.
-			CutsceneCharacter blair = CutsceneCharacter.blair;
-			CutsceneCharacter juniper = CutsceneCharacter.juniper;
-			CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine>
-			{
-				//new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.Academy),
-				//new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
-				//new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "My name is Blair!"),
-				//new CutsceneScriptLine(CutsceneAction.SetCharacter, character: juniper, side: CutsceneSide.Right),
-				//new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "and I'm Juniper."),
-				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "There's a third major character, Bruno. He would've been here, but he got tied up with paperwork"),
-				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Which is to say we ran out of budget"),
-				// new CutsceneScriptLine(CutsceneAction.SayDialogue, character: juniper, dialogue: "Anyways, I hope you enjoy this slick as h*ck demo"),
-				// new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Right),
-				//new CutsceneScriptLine(CutsceneAction.TransitionOut, side: CutsceneSide.Left)
-			});
-
-			cutscene.setup(script);
-			cutscene.playScene();
-
 			getLevel();
 			deserializeMap();
-			deserializeUnits();
-			//testing
-			addUnit(UnitType.Mage, level.characters[0], 1, 1, Faction.Xingata);
+			deserializeLevel();
 
-			// Uncomment these for the escort objective
-			// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
-			// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
-			// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
-
-			// Uncomment these for the intercept objective
-			// (objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
+			//TODO replace this with predicate based execution
+			CameraController.inputEnabled = false;
+			cutscene.startCutscene(level.cutsceneIDs[0]);
 		}
 
 		// Update is called once per frame
 		async void Update() {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
-					if (!cutscene.inProgress) {
+					if (!cutscene.isRunning) {
+						CameraController.inputEnabled = true;
 						advanceBattleStage();
 					}
 					break;
@@ -272,23 +214,12 @@ namespace Gameplay {
 
 		private async void advanceCampaign() {
 			victoryImage.enabled = true;
-
 			await Task.Delay(TimeSpan.FromMilliseconds(6000));
-
 			victoryImage.enabled = false;
 
-			//This will be encoded in the campaign
-			CutsceneCharacter blair = CutsceneCharacter.blair;
-			CutsceneScript script = new CutsceneScript(new List<CutsceneScriptLine> {
-					new CutsceneScriptLine(CutsceneAction.SetBackground, background: CutsceneBackground.None),
-					new CutsceneScriptLine(CutsceneAction.SetCharacter, character: blair, side: CutsceneSide.Left),
-					new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "That sure was a intense battle huh?"),
-					new CutsceneScriptLine(CutsceneAction.SayDialogue, character: blair, dialogue: "Oh no! it looks like the evil lord zxqv is getting away. Does this qualify as a plot hook?"),
-				});
-			Cutscene endCutscene = Instantiate(cutscene);
-			endCutscene.setup(script, cutscene);
-
-			//TODO: actually advance campaign
+			Persistance.campaign.levelIndex++;
+			//Oh Boy i hope this works.
+			SceneManager.LoadScene("DemoBattle");
 		}
 
 		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
@@ -325,12 +256,36 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tilePrefabs, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, "Assets\\Maps\\"), tilePrefabs, tilesHolder);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
-		private void deserializeUnits() {
+		private void deserializeLevel() {
 			//Testing Level Deserialization
+			LevelInfo levelInfo = Serialization.getLevel(level.levelFileName);
+
+
+
+			//TODO: game objective will be serialized in the level editor data. assign it here, and do any other necessary reference assignment
+			objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
+
+			// Uncomment these for the escort objective
+			// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
+			// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
+			// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
+
+			// Uncomment these for the intercept objective
+			// (objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
+
+			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
+			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
+
+			//For these objectives to work, you must also comment out the lines in the initial battle stage below
+			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new InterceptObjective(battlefield, level, characters[playerCharacter], 20);
+
+
+
 			try {
 				Stack<UnitInfo> stack = levelInfo.units;
 				while (stack.Count != 0) {
@@ -347,7 +302,22 @@ namespace Gameplay {
 		}
 
 		private void getLevel() {
+			//This indicates the scene has been played from the editor, without first running MainMenu. This is a debug mode.
+			if (Persistance.campaign == null) {
+				Stages.setupCutscenes();
+				Character[] characters = new[] {
+					new Character("Alice", true, new playerAgent()),
+					new Character("The evil lord zxqv", false, new simpleAgent())
+				};
+				level = new Level("DemoMap2", "TestLevel", characters, new string[] { "tutorialEnd" });
+				Persistance.campaign = new Campaign("test", 0, new[] { level });
+			}
+
+
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
+			foreach (Character character in level.characters) {
+				character.agent.battlefield = this.battlefield;
+			}
 		}
 	}
 }

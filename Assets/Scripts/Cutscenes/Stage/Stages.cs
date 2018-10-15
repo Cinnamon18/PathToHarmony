@@ -10,7 +10,7 @@ namespace Cutscenes.Stages {
 			try {
 				return stages[stageID];
 			} catch (KeyNotFoundException e) {
-				Debug.LogError("Invalid cutscene key ID. Check that the scene is present in Stages.cs");
+				Debug.LogError("Invalid cutscene key ID \""+ stageID + "\". Check that the scene is present in Stages.cs");
 				return null;
 			}
 		}
