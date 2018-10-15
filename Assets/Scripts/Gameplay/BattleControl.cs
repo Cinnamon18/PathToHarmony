@@ -316,8 +316,8 @@ namespace Gameplay {
 				};
 				level = new Level("DemoMap2", "TestLevel", characters, new string[] { });
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
-				cutscene.startCutscene("tutorialEnd");
-				// cutscene.hideVisualElements();
+				// cutscene.startCutscene("tutorialEnd");
+				cutscene.hideVisualElements();
 			}
 
 

@@ -4,14 +4,17 @@ using AI;
 using Cutscenes.Stages;
 using Gameplay;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour {
 
 	[SerializeField]
-	Canvas optionsCanvas;
+	private Canvas optionsCanvas;
 	[SerializeField]
-	Canvas creditsCanvas;
+	private Canvas creditsCanvas;
+	[SerializeField]
+	private AudioMixer masterMixer;
 
 	// Use this for initialization
 	void Start() {
@@ -19,6 +22,18 @@ public class MainMenu : MonoBehaviour {
 		creditsCanvas.enabled = false;
 
 		setupDefaultCampaign();
+	}
+
+	public void setMasterVolume(float vol) {
+		masterMixer.SetFloat("MasterVolume", vol);
+	}
+
+	public void setMusicVolume(float vol) {
+		masterMixer.SetFloat("MusicVolume", vol);
+	}
+
+	public void setSfxVolume(float vol) {
+		masterMixer.SetFloat("SfxVolume", vol);
 	}
 
 	public void playGame() {
