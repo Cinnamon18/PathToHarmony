@@ -25,6 +25,11 @@ namespace Editors
 			return null;
 		}
 
+		public GameObject[] getPrefabs()
+		{
+			return prefabs;
+		}
+
 
 	}
 }

@@ -73,7 +73,7 @@ namespace Gameplay {
 			defeatImage.enabled = false;
 
 			//Changed to generate different levels
-			levelInfo = Serialization.getLevel("TestLevel");
+			levelInfo = Serialization.getLevel("DemoLevel");
 
 			//Just for testing because we don't have any way to set the campaign yet:
 			Character[] characters = new[] {
@@ -332,7 +332,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), tileTypes, generator, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), generator, tilesHolder);
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 

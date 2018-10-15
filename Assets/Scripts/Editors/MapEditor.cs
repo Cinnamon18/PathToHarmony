@@ -27,9 +27,9 @@ namespace Editors {
 		private Transform tilesHolder;
 		[SerializeField]
 		private TileGenerator tilesGenerator;
+	
 
 		private string mapName;
-		private TileType[] tileTypes;
 
 		public Text loadFileText;
 		public Text loadDimText;
@@ -37,14 +37,15 @@ namespace Editors {
 
 		// Use this for initialization
 		protected void Start() {
-			//fills in tileTypes array to match that in prefab array so proper tiles are created, no matter the order
-			getPossibleTileTypes();
+			//set preview objs to match tilegenerator
+			previewObj = tilesGenerator.getPrefabs();
 
 			base.objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
 			makeYellowBaseTiles();
 			drawBorders();
 			//Tell editor type
 			setEditorType();
+
 		}
 
 		void Update() {
@@ -159,7 +160,8 @@ namespace Editors {
 		public void makeYellowBaseTiles() {
 			for (int x = 0; x < base.objs.GetLength(0); x++) {
 				for (int y = 0; y < base.objs.GetLength(1); y++) {
-					GameObject newTile = Instantiate(previewObj[(int)(TileType.None)], Util.GridToWorld(x, y, 0), previewObj[currentIndex].transform.rotation);
+					GameObject empty = tilesGenerator.getTileByType(TileType.None);
+					GameObject newTile = Instantiate(empty, Util.GridToWorld(x, y, 0), previewObj[currentIndex].transform.rotation);
 					newTile.transform.parent = tilesHolder;
 					base.objs[x, y, 0] = newTile.GetComponent<Tile>();
 				}
@@ -180,7 +182,7 @@ namespace Editors {
 			{
 				updateMapName(loadFileText.text);
 				eraseTiles();
-				base.objs = Serialization.DeserializeTiles(mapData, tileTypes, tilesGenerator, tilesHolder);
+				base.objs = Serialization.DeserializeTiles(mapData, tilesGenerator, tilesHolder);
 			}
 			
 
@@ -276,14 +278,5 @@ namespace Editors {
 			
 		}
 
-		private void getPossibleTileTypes()
-		{
-			tileTypes = new TileType[previewObj.Length];
-
-			for (int i = 0; i < previewObj.Length; i++)
-			{
-				tileTypes[i] = previewObj[i].GetComponent<Tile>().tileType;
-			}
-		}
 	}
 }

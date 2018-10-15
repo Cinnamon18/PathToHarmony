@@ -1430,7 +1430,7 @@ Prefab:
     - target: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
         type: 2}
       propertyPath: previewObj.Array.size
-      value: 17
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4968038942280118, guid: b0d77d4d3f15d974ba491bbc9aa2149a, type: 2}
       propertyPath: m_LocalPosition.x

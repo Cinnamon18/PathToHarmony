@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Constants;
 using Gameplay;
@@ -128,7 +128,14 @@ namespace Units {
 
 		public void greyOut() {
 			foreach (GameObject model in this.getModels()) {
-				model.GetComponent<Renderer>().material.shader = Shader.Find("Grayscale");
+				if (model != null)
+				{
+					model.GetComponent<Renderer>().material.shader = Shader.Find("Grayscale");
+				} else
+				{
+					Debug.Log("Unit destroyed.  Cannot apply shader");
+				}
+				
 			}
 		}
 

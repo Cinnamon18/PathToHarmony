@@ -33,7 +33,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1949691876029140}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -52,10 +52,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabs:
-  - {fileID: 1857477746707380, guid: 07f138132f2c24b4185602717a5da46d, type: 2}
+  - {fileID: 1654218752215216, guid: 3e43d47fbdb93b047876d2c233a1d367, type: 2}
   - {fileID: 1711498971475420, guid: f961fb5d95101c64dbf0ed0caeadb7eb, type: 2}
   - {fileID: 1539513446898924, guid: 69ab60ce4e163224f80b9d198c1a6590, type: 2}
-  - {fileID: 1654218752215216, guid: 3e43d47fbdb93b047876d2c233a1d367, type: 2}
+  - {fileID: 1857477746707380, guid: 07f138132f2c24b4185602717a5da46d, type: 2}
   - {fileID: 1363949497597668, guid: 0e3f41b0cdb44af4496eda4b9bf5add6, type: 2}
   - {fileID: 1718270613929620, guid: cf168c95e2cb7534d95234c8762550c8, type: 2}
   - {fileID: 1607988058265716, guid: 3498483600a41ab4c949fd481ae16351, type: 2}

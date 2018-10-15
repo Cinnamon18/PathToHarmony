@@ -32,9 +32,7 @@ namespace Editors {
 		private string mapName;
 		private string levelName;
 
-		[SerializeField]
 		private GameObject[] tilePrefabs;
-		private TileType[] tileTypes;
 		//to create tile no matter order
 		[SerializeField]
 		private TileGenerator generator;
@@ -55,10 +53,10 @@ namespace Editors {
 			battlefield = new Battlefield();
 			mapName = defaultMap;
 
-			//fills in tileTypes array to match that in prefab array so proper tiles are created, no matter the order
-			getPossibleTileTypes();
+			//get tile gamobjects from generator
+			tilePrefabs = generator.getPrefabs();
 
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tileTypes, generator, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), generator, tilesHolder);
 			//Hacky but Serialization holds how tall the last map loaded is
 			//use to know how tall Unit array should be
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
@@ -97,11 +95,9 @@ namespace Editors {
 			StringBuilder serialized = new StringBuilder(mapName + ";");
 
 			foreach (UnitInfo info in unitsInfo) {
-				if (info == null) {
-					serialized.Append(";");
-				} else {
-					serialized.Append(info.serialize() + ";");
-				}
+
+				serialized.Append(info.serialize() + ";");
+			
 			}
 
 			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, overwriteData);
@@ -123,7 +119,7 @@ namespace Editors {
 		}
 
 		private void reloadMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tileTypes, generator, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), generator, tilesHolder);
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
@@ -210,16 +206,6 @@ namespace Editors {
 			loadMapText.text = "";
 			loadLevelText.text = "";
 			saveLevelText.text = "";
-		}
-
-		private void getPossibleTileTypes()
-		{
-			tileTypes = new TileType[tilePrefabs.Length];
-
-			for (int i = 0; i < tilePrefabs.Length; i++)
-			{
-				tileTypes[i] = tilePrefabs[i].GetComponent<Tile>().tileType;
-			}
 		}
 
 	}

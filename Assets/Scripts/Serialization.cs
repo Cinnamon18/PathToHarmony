@@ -57,7 +57,7 @@ public static class Serialization {
 
 
 	//Basically, give it the data as encoded by MapEditor.serializeTile
-	public static Tile[,,] DeserializeTiles(string tileRaw, TileType[] tileTypes, TileGenerator generator, Transform tileHolder) {
+	public static Tile[,,] DeserializeTiles(string tileRaw, TileGenerator generator, Transform tileHolder) {
 		//Parse the saved data. If there's nothing there, indicate that by -1
 		int[] data = tileRaw.Split(',').Select((datum) => {
 			int num = -1;
@@ -112,8 +112,8 @@ public static class Serialization {
 	}
 
 	//I know this is a hacky way of doing this, but it'll work.... for now....  #TODO
-	public static Stack<Tile>[,] DeserializeTilesStack(string tileRaw, TileType[] tileTypes, TileGenerator generator, Transform tilesHolder) {
-		Tile[,,] parsedTiles = DeserializeTiles(tileRaw, tileTypes, generator, tilesHolder);
+	public static Stack<Tile>[,] DeserializeTilesStack(string tileRaw, TileGenerator generator, Transform tilesHolder) {
+		Tile[,,] parsedTiles = DeserializeTiles(tileRaw, generator, tilesHolder);
 		mapHeight = parsedTiles.GetLength(2);
 		Stack<Tile>[,] stackedTiles = new Stack<Tile>[parsedTiles.GetLength(0), parsedTiles.GetLength(1)];
 		for (int x = 0; x < parsedTiles.GetLength(0); x++) {
