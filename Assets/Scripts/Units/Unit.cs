@@ -61,6 +61,8 @@ namespace Units {
 		//Added for use by AI
 		public abstract List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character);
 
+		public abstract List<Coord> getTotalAttackZone(int myX, int myY, Battlefield battlefield, Character character);
+
 		//returns a list of targetable units
 		public List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
 

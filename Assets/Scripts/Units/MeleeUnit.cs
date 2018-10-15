@@ -69,5 +69,9 @@ namespace Units {
 			}
 			return targets;
 		}
+
+		public override List<Coord> getTotalAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
+			
+		}
 	}
 }
