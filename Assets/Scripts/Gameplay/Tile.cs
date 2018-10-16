@@ -4,6 +4,7 @@ using UnityEngine;
 using Constants;
 using System;
 using Gameplay;
+using Units;
 
 namespace Gameplay {
 	public class Tile : MonoBehaviour, IBattlefieldItem {
@@ -11,6 +12,8 @@ namespace Gameplay {
 
 		[SerializeField]
 		private TileType initialType;
+        [SerializeField]
+        private TileEffects Effect;
 		public TileType tileType { get; set; }
 		public static GameObject[][] tileFlavor;
 
@@ -61,5 +64,29 @@ namespace Gameplay {
 		public override string ToString() {
 			return tileType.ToString();
 		}
+
+        public void OnCollisionEnter(Collision col)
+        {
+            Unit unit = col.gameObject.GetComponent<Unit>();
+            Debug.Log(ToString());
+            switch (Effect)
+            {
+                case TileEffects.Normal:
+                    return;
+                    break;
+                case TileEffects.DOT:
+                    if (col.gameObject is Unit && unit != null)
+                    {
+                        unit.setHealth(unit.getHealth() - 30);
+                    }
+                    break;
+                case TileEffects.Heal:
+                    if (col.gameObject is Unit && unit != null)
+                    {
+                        unit.setHealth(unit.getHealth() + 5);
+                    }
+                    break;
+            }
+        }
 	}
 }
