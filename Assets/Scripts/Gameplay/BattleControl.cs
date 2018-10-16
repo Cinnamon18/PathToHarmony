@@ -30,11 +30,26 @@ namespace Gameplay {
 		public Camera cutsceneCamera;
 
 		private BattleLoopStage battleStage;
+		public BattleLoopStage BattleStage{
+			get {
+				return battleStage;
+			}
+		}
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
 
 		private int currentCharacter;
+		public int CurrentCharacter {
+			get {
+				return currentCharacter;
+			}
+		}
 		private int playerCharacter;
+		public int PlayerCharacter {
+			get {
+				return playerCharacter;
+			}
+		}
 		public int halfTurnsElapsed;
 
 		[SerializeField]
@@ -325,6 +340,17 @@ namespace Gameplay {
 			foreach (Character character in level.characters) {
 				character.agent.battlefield = this.battlefield;
 			}
+		}
+
+		public void skipTurn() {
+			/*
+			Agent agent = level.characters[currentCharacter].agent;
+			if(agent is PlayerAgent) {
+				((PlayerAgent)agent).unhighlightAll();
+			}
+			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection)
+				advanceBattleStage();
+			*/
 		}
 	}
 }
