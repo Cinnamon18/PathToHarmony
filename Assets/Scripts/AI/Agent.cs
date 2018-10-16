@@ -8,15 +8,16 @@ using UnityEngine;
 
 namespace AI {
 	public abstract class Agent {
-		protected Battlefield battlefield;
-		public Level level;
+		public Battlefield battlefield;
 		public Character character;
-		public Action<UnityEngine.Object> Destroy;
-		
-		public Agent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) {
-			this.battlefield = battlefield;
-			this.level = level;
-			this.Destroy = Destroy;
+
+		public Agent() {
+			//The refrence to battlefield is assigned in BattleControl on load from persistance
+
+			//the refrence to character is assigned in the character constructor
+			//(because a character and agent are gaurenteed to have refrences to eachother)
+
+			//I'm sorry I didn't mean to make these so tightly coupled but. stuff happens.
 		}
 
 		//Returns the agent's move, based on the state of the battlefield
@@ -58,7 +59,7 @@ namespace AI {
 			moveQueue.Enqueue(start);
 			visited.Add(start);
 
-			List<Coord> enemies = new List<Coord> ();
+			List<Coord> enemies = new List<Coord>();
 			int minDist = Int32.MaxValue;
 
 			while (moveQueue.Count() > 0) {
@@ -225,7 +226,7 @@ namespace AI {
 			//Currently just checks health of all targets
 			int minHealth = Int32.MaxValue;
 			PriorityQueue<AIBattle> targetPQueue = new PriorityQueue<AIBattle>();
-			foreach(Coord target in targets) {
+			foreach (Coord target in targets) {
 				Unit enemy = coordToUnit(target);
 				if (enemy != null) {
 					Tile enemyTile = battlefield.map[target.x, target.y].Peek();
@@ -252,7 +253,7 @@ namespace AI {
 			Unit unit = coordToUnit(unitCoord);
 			if (unit != null) {
 				List<Coord> moves = unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
-			return exceptCoords(moves, dangerZone);
+				return exceptCoords(moves, dangerZone);
 			}
 			return new List<Coord>();
 		}

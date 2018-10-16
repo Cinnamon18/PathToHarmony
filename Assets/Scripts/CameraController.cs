@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour {
-	
+
 	/**
 	 * The camera controls are as follows:
 	 * Arrows/WASD/Shift+IJKL: Pan Camera
@@ -18,29 +18,31 @@ public class CameraController : MonoBehaviour {
 	//These are just private so they do not clutter the component box, but these can be made public and adjusted if desired.
 	private float translateSpeedKeys = 15;  //The rate at which holding down the movement keys adjusts the linear momentum.
 	private float rotateSpeedKeys = 15;  //The rate at which holding down the movement keys (while also holding the shift key) adjusts the linear momentum.
-	private float zoomSpeedExp = 2.5f;	//The rate at which the camera exponentially zooms to achieve the desired distance.
-	private float zoomSpeedLin = 1;		//The rate at which the camera linearally zooms to achieve the desired distance.
+	private float zoomSpeedExp = 2.5f;  //The rate at which the camera exponentially zooms to achieve the desired distance.
+	private float zoomSpeedLin = 1;     //The rate at which the camera linearally zooms to achieve the desired distance.
 	private float zoomControlMultiplier = 40;   //The rate at which scrolling the mouse changes the zoom level of the camera.
 	private float zoomControlMultiplierKeys = 1;
-	private float minZoomDistance = -100;	//The maximum distance allowed for the camera zoom.
-	private float maxZoomDistance = -20;	//The minimum distance allowed for the camera zoom.
-	private float rotMomentumDecayExp = 3;		//The rate at which the camera exponentially slows down its rotation.
+	private float minZoomDistance = -100;   //The maximum distance allowed for the camera zoom.
+	private float maxZoomDistance = -20;    //The minimum distance allowed for the camera zoom.
+	private float rotMomentumDecayExp = 3;      //The rate at which the camera exponentially slows down its rotation.
 	private float rotMomentumDecayLin = 0.5f;   //The rate at which the camera linerally slows down its rotation.
-	private float linMomentumDecayExp = 2;		//The rate at which the camera exponentially slows down its translation.
-	private float linMomentumDecayLin = 1;		//The rate at which the camera linearally slows down its translation.
+	private float linMomentumDecayExp = 2;      //The rate at which the camera exponentially slows down its translation.
+	private float linMomentumDecayLin = 1;      //The rate at which the camera linearally slows down its translation.
 	private float rotateSpeed = 0.05f;      //The rate at which dragging the mouse while holding RMB adjusts the camera's rotational momentum.
-	private float translateSpeed = 0.01f;		//The rate at which dragging the mouse while holding MMB adjusts the camera's translational momentum.
-	public bool invertCameraX = false;	//Whether to invert the x axis when rotating the camera.
+	private float translateSpeed = 0.01f;       //The rate at which dragging the mouse while holding MMB adjusts the camera's translational momentum.
+	public bool invertCameraX = false;  //Whether to invert the x axis when rotating the camera.
 	public bool invertCameraY = false;  //Whether to invert the y axis when rotating the camera.
 	public bool invertDragPan = false;  //Whether to invert the mouse dragging controls when sliding the camera around.
-	private float translateSpeedBorder = 4f;			//The rate at which the camera slides due to positioning the mouse around the edges of the screen.
-	private float panBorderThickness = 10f;	//The size of the border where the mouse will scroll.
+	private float translateSpeedBorder = 4f;            //The rate at which the camera slides due to positioning the mouse around the edges of the screen.
+	private float panBorderThickness = 10f; //The size of the border where the mouse will scroll.
 
-	private Vector3 lastMousePos = Vector3.zero;	//The previous position of the mouse, used to calculate dragging.
+	private Vector3 lastMousePos = Vector3.zero;    //The previous position of the mouse, used to calculate dragging.
 	private Vector2 rotationMomentum = Vector2.zero;    //The rotational momentum of the camera, used to fluidly rotate the camera.
-	private Vector2 linearMomentum = Vector2.zero;		//The translational momentum of the camera, used to fluidly move the camera.
-	private float maintainedDistance = 1;	//The distance intended to be maintained between the camera and the terrain, adjusted via mouse wheel.
-	private float lastPlaneViewed = 0;		//The y-coordinate of the tile being looked at. This is used to prevent things like trees and players from messing with the zoom.
+	private Vector2 linearMomentum = Vector2.zero;      //The translational momentum of the camera, used to fluidly move the camera.
+	private float maintainedDistance = 1;   //The distance intended to be maintained between the camera and the terrain, adjusted via mouse wheel.
+	private float lastPlaneViewed = 0;      //The y-coordinate of the tile being looked at. This is used to prevent things like trees and players from messing with the zoom.
+
+	public static bool inputEnabled = true;
 
 	// Use this for initialization
 	void Start() {
@@ -50,6 +52,9 @@ public class CameraController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
+		if (!inputEnabled) {
+			return;
+		}
 
 		//Reset everything by pressing the E button
 		if (Input.GetAxis("InteractE") > 0) {
@@ -65,7 +70,7 @@ public class CameraController : MonoBehaviour {
 		if (Physics.Raycast(ray, out hit, 1000.0f)) {
 			lastPlaneViewed = Util.WorldToGrid(hit.transform.position).z * 4;
 		}
-		float distance = Mathf.Abs(lastPlaneViewed - gameObject.transform.position.y) / (gameObject.transform.rotation * Vector3.forward).y;	//The distance between the camera and focus.
+		float distance = Mathf.Abs(lastPlaneViewed - gameObject.transform.position.y) / (gameObject.transform.rotation * Vector3.forward).y;    //The distance between the camera and focus.
 		Vector3 focus = gameObject.transform.position - (gameObject.transform.rotation * Vector3.forward) * distance; //The exact point being looked at.
 
 		//END OF SETUP SECTION, BEGINNING OF INPUT SECTION
@@ -170,7 +175,7 @@ public class CameraController : MonoBehaviour {
 		//END OF INPUT SECTION, BEGINNING OF MOVEMENT SECTION
 
 		//First, the focus is moved according to any translation inputs.
-		focus += Quaternion.Euler(0,gameObject.transform.rotation.eulerAngles.y,0) * new Vector3(linearMomentum.x, 0, linearMomentum.y);
+		focus += Quaternion.Euler(0, gameObject.transform.rotation.eulerAngles.y, 0) * new Vector3(linearMomentum.x, 0, linearMomentum.y);
 		var unclampedFocus = focus;
 		focus = new Vector3(Mathf.Clamp(focus.x, -5, 10 * (Util.GridWidth) - 15), focus.y, Mathf.Clamp(focus.z, -5, 10 * (Util.GridWidth) - 15));
 		if (!focus.Equals(unclampedFocus)) {
@@ -188,10 +193,10 @@ public class CameraController : MonoBehaviour {
 
 		//Lastly, the camera is rotated, and the camera's position is reestablished using the new focus, distance, and direction.
 		Quaternion newDir = gameObject.transform.rotation;
-		newDir.eulerAngles += new Vector3(-rotationMomentum.y * (invertCameraY ? -1 : 1 ), rotationMomentum.x * (invertCameraX ? -1 : 1), 0);
+		newDir.eulerAngles += new Vector3(-rotationMomentum.y * (invertCameraY ? -1 : 1), rotationMomentum.x * (invertCameraX ? -1 : 1), 0);
 		float prevX = newDir.eulerAngles.x;
 		newDir.eulerAngles = new Vector3(Mathf.Clamp(newDir.eulerAngles.x, 15, 75), newDir.eulerAngles.y, newDir.eulerAngles.z);
-		if(prevX != newDir.eulerAngles.x) {
+		if (prevX != newDir.eulerAngles.x) {
 			rotationMomentum.y = 0;
 		}
 		gameObject.transform.position = focus + ((newDir) * Vector3.forward) * distance;

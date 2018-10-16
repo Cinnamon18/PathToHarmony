@@ -7,14 +7,14 @@ using Units;
 using UnityEngine;
 
 namespace AI {
-	public class PlayerAgent : Agent {
+	public class playerAgent : Agent {
 
 		private List<Coord> moveOptions;
 		private List<Coord> highlightedEnemyUnits;
 		private List<GameObject> otherHighlightedObjects;
 		private Unit highlightedFriendlyUnit;
 
-		public PlayerAgent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) : base(battlefield, level, Destroy) {
+		public playerAgent() : base() {
 			otherHighlightedObjects = new List<GameObject>();
 		}
 
@@ -182,7 +182,7 @@ namespace AI {
 
 		private void unhighlight(GameObject objectToHighlight) {
 			if (objectToHighlight != null) {
-				Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
+				GameObject.Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
 			}
 		}
 

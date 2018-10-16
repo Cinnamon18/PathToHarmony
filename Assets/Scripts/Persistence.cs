@@ -12,6 +12,7 @@ public static class Persistance {
 
 	public static void savePlayerCharacterInfo() {
 		PlayerPrefs.SetString(PLAYER_NAME_PREF, playerCharacter.name);
+		save();
 	}
 
 	public static Character getPlayerCharacter() {
