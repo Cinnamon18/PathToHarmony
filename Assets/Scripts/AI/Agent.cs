@@ -174,6 +174,16 @@ namespace AI {
 			return lowThreat;
 		}
 
+		protected List<ConsoleModifiers> filterHasMove(List<ConsoleModifiers> units) {
+			List<Coord> hasMove = new List<Coord>();
+			foreach (Coord coord in units) {
+				Unit unit = battlefield.units[coord.x, coord.y];
+				if (unit != null && (!unit.hasMovedThisTurn || (!unit.getHasAttackedThisTurn() && unit.getTargets(coord.x, coord.y, battlefield, character).Count != 0))) {
+					allies.Add(coord);
+				}
+			}
+		}
+
 		// Return a list of Tiles from which a unit can attack any enemy unit
 		protected List<Coord> getOffenseTiles(Coord unitCoord) {
 			List<Coord> offenseTiles = new List<Coord>();

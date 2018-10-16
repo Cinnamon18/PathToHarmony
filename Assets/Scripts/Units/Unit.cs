@@ -105,7 +105,7 @@ namespace Units {
 					if (targetX < battlefield.map.GetLength(0) && targetY < battlefield.map.GetLength(1) && targetX >= 0 && targetY >= 0) {
 						Stack<Tile> targetTile = battlefield.map[targetX, targetY];
 
-						int movePointsExpended = currentMove.weight + targetTile.Peek().tileType.Cost(this.moveType);
+						float movePointsExpended = currentMove.weight + targetTile.Peek().tileType.Cost(this.moveType);
 						Coord targetMove = new Coord(targetX, targetY);
 						AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
 

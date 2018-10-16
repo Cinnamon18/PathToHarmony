@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Units {
 	public class Cleric : HealerUnit {
-		public Cleric() : base(ArmorType.Light, 100, MoveType.Light, 4, DamageType.Heal, 50, Faction.Xingata) {
+		public Cleric() : base(ArmorType.Light, 100, MoveType.Unarmored, 4, DamageType.Heal, 50, Faction.Xingata) {
 
 		}
 	}
