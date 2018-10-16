@@ -158,6 +158,7 @@ namespace Gameplay {
 						addUnit(UnitType.Knight, level.characters[1], 4, 7, Faction.Tsubin);
 
 						addUnit(UnitType.Mage, level.characters[0], 1, 1, Faction.Xingata);
+						addUnit(UnitType.Cleric, level.characters[0], 1, 2, Faction.Xingata);
 
 						// Uncomment these for the escort objective
 						// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
