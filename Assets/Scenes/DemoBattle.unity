@@ -3819,6 +3819,7 @@ Transform:
   m_Father: {fileID: 1675018037}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+<<<<<<< HEAD
 --- !u!1001 &1831882098
 Prefab:
   m_ObjectHideFlags: 0
@@ -3896,6 +3897,8 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29f405fae43f5b8428d77ebb969f4098, type: 2}
   m_IsPrefabAsset: 0
+=======
+>>>>>>> 25645c22360f6cf253fbd85ebc029c3c6b9b0aa2
 --- !u!1001 &1845605022
 Prefab:
   m_ObjectHideFlags: 0
@@ -4112,6 +4115,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 1711244349}
   m_GameObject: {fileID: 1861357297}
   m_Mesh: {fileID: 4300000, guid: d707b3ef92e77a24a928b4096d7c958e, type: 3}
+<<<<<<< HEAD
 --- !u!84 &1861943246
 RenderTexture:
   m_ObjectHideFlags: 0
@@ -4174,6 +4178,8 @@ RenderTexture:
     m_WrapW: 1
   m_Dimension: 2
   m_VolumeDepth: 1
+=======
+>>>>>>> 25645c22360f6cf253fbd85ebc029c3c6b9b0aa2
 --- !u!1001 &1913992896
 Prefab:
   m_ObjectHideFlags: 0

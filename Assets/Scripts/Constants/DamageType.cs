@@ -8,6 +8,9 @@ namespace Constants {
         Slash,
         Pierce,
         Blunt,
+<<<<<<< HEAD
         Heal
+=======
+>>>>>>> 25645c22360f6cf253fbd85ebc029c3c6b9b0aa2
     }
 }
