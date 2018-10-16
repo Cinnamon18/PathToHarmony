@@ -8,15 +8,16 @@ using UnityEngine;
 
 namespace AI {
 	public abstract class Agent {
-		protected Battlefield battlefield;
-		public Level level;
+		public Battlefield battlefield;
 		public Character character;
-		public Action<UnityEngine.Object> Destroy;
-		
-		public Agent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) {
-			this.battlefield = battlefield;
-			this.level = level;
-			this.Destroy = Destroy;
+
+		public Agent() {
+			//The refrence to battlefield is assigned in BattleControl on load from persistance
+
+			//the refrence to character is assigned in the character constructor
+			//(because a character and agent are gaurenteed to have refrences to eachother)
+
+			//I'm sorry I didn't mean to make these so tightly coupled but. stuff happens.
 		}
 
 		//Returns the agent's move, based on the state of the battlefield
@@ -40,13 +41,14 @@ namespace AI {
 		}
 
 		protected List<Coord> findNearestEnemies(Coord start) {
+			Debug.Log("Bug here when tiles do not take up entire battlefield dimensions");
 			int[,] moveDirs = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 			HashSet<Coord> visited = new HashSet<Coord>();
 			Queue<Coord> moveQueue = new Queue<Coord>();
 			moveQueue.Enqueue(start);
 			visited.Add(start);
 
-			List<Coord> enemies = new List<Coord> ();
+			List<Coord> enemies = new List<Coord>();
 			int minDist = Int32.MaxValue;
 
 			while (moveQueue.Count() > 0) {
@@ -66,6 +68,7 @@ namespace AI {
 						}
 					}
 				}
+				
 
 				for (int x = 0; x < moveDirs.GetLength(0); x++) {
 					Coord nextCoord = new Coord(curCoord.x + moveDirs[x, 0], curCoord.y + moveDirs[x, 1]);
@@ -76,7 +79,9 @@ namespace AI {
 						}
 					}
 				}
+				
 			}
+			
 			return enemies;
 		}
 
@@ -87,7 +92,7 @@ namespace AI {
 			moveQueue.Enqueue(start);
 			visited.Add(start);
 
-			List<Coord> enemies = new List<Coord> ();
+			List<Coord> enemies = new List<Coord>();
 
 			while (moveQueue.Count() > 0) {
 				Coord curCoord = moveQueue.Dequeue();
@@ -121,8 +126,8 @@ namespace AI {
 			List<Coord> enemies = new List<Coord>();
 			for (int x = 0; x < battlefield.units.GetLength(0); x++) {
 				for (int y = 0; y < battlefield.units.GetLength(1); y++) {
-					if (battlefield.units[x,y] != null && battlefield.units[x,y].getCharacter(battlefield) != character) {
-						enemies.Add(new Coord(x,y));
+					if (battlefield.units[x, y] != null && battlefield.units[x, y].getCharacter(battlefield) != character) {
+						enemies.Add(new Coord(x, y));
 					}
 				}
 			}
@@ -169,7 +174,7 @@ namespace AI {
 			//Currently just checks health of all targets
 			int minHealth = Int32.MaxValue;
 			PriorityQueue<AIBattle> targetPQueue = new PriorityQueue<AIBattle>();
-			foreach(Coord target in targets) {
+			foreach (Coord target in targets) {
 				Unit enemy = coordToUnit(target);
 				if (enemy != null) {
 					Tile enemyTile = battlefield.map[target.x, target.y].Peek();
@@ -196,7 +201,7 @@ namespace AI {
 			Unit unit = coordToUnit(unitCoord);
 			if (unit != null) {
 				List<Coord> moves = unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
-			return exceptCoords(moves, dangerZone);
+				return exceptCoords(moves, dangerZone);
 			}
 			return new List<Coord>();
 		}

@@ -6,10 +6,10 @@ namespace Constants {
 
 		//First dimension is MoveType, second is TileType. Unnecessary decimmal points are to make collumns line up
 		public static double[,] MovementCost = new double[,]
-			{ {1,1,1.00,1.5,0.75,100, 0.75, 0.75, 0.75, 0.75, 0.75, 1, 1, 1, 4, 4, 4}, //Unarmored
-			  {1,1,1.00,1.5,0.75,100, 0.75, 0.75, 0.75, 0.75, 0.75, 1, 1, 1, 4, 4, 4}, //Light Infantry
-			  {1,1,1.00,2.0,0.75,100, 0.75, 0.75, 0.75, 0.75, 0.75, 1, 1, 1, 4, 4, 4}, //Armored Infantry
-			  {1,1,0.75,4.0,0.50,100, 0.50, 0.50, 0.50, 0.50, 0.50, 1, 1, 1, 4, 4, 4} }; //Mounted
+			{ {1,1,1.00,1.5,0.75,100, 0.75, 0.75, 0.75, 0.75, 0.75, 1, 1, 1, 4, 4, 4, 4, 4, 4}, //Unarmored
+			  {1,1,1.00,1.5,0.75,100, 0.75, 0.75, 0.75, 0.75, 0.75, 1, 1, 1, 4, 4, 4, 4, 4, 4}, //Light Infantry
+			  {1,1,1.00,2.0,0.75,100, 0.75, 0.75, 0.75, 0.75, 0.75, 1, 1, 1, 4, 4, 4, 4, 4, 4}, //Armored Infantry
+			  {1,1,0.75,4.0,0.50,100, 0.50, 0.50, 0.50, 0.50, 0.50, 1, 1, 1, 6, 6, 6, 6, 6, 6} }; //Mounted
 
 		//First dimension is DamageType, second is ArmorType
 		//This ones a little tricky, it's the % reduction to the base damage, so a reduction of
@@ -22,7 +22,7 @@ namespace Constants {
 
 		//First dimension is TileType. Holds the % defense a Tile piece grants
 		public static int[] TileDefense = new int[]
-			{ 0, 0, 10, 20, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 40, 40, 40 };
+			{ 0, 0, 10, 20, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 40, 40, 40, 30, 30, 30 };
 
 	}
 

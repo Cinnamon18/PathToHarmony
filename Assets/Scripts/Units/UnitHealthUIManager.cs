@@ -52,7 +52,7 @@ public class UnitHealthUIManager : MonoBehaviour {
 				break;
 			case 3:
 				unitModels = new List<GameObject> {
-					InstantiateRelative(0, 0, -COL_WIDTH / 2),
+					InstantiateRelative(0, 0, COL_WIDTH / 2),
 					InstantiateRelative(0, 0, -COL_WIDTH / 2),
 					InstantiateRelative(-ROW_HEIGHT / 2, 0, 0)
 				};
@@ -71,7 +71,7 @@ public class UnitHealthUIManager : MonoBehaviour {
 					InstantiateRelative(ROW_HEIGHT / 2, 0, 0),
 					InstantiateRelative(ROW_HEIGHT / 2, 0, COL_WIDTH),
 					InstantiateRelative(-ROW_HEIGHT / 2, 0, COL_WIDTH / 2),
-					InstantiateRelative(-ROW_HEIGHT / 2, 0, COL_WIDTH / 2)
+					InstantiateRelative(-ROW_HEIGHT / 2, 0, -COL_WIDTH / 2)
 				};
 				break;
 			case 6:
@@ -89,10 +89,10 @@ public class UnitHealthUIManager : MonoBehaviour {
 					InstantiateRelative(0, 0, COL_WIDTH),
 					InstantiateRelative(0, 0, 0),
 					InstantiateRelative(0, 0, -COL_WIDTH),
-					InstantiateRelative(-ROW_HEIGHT, 0, 1),
-					InstantiateRelative(-ROW_HEIGHT, 0, -1),
-					InstantiateRelative(ROW_HEIGHT, 0, 1),
-					InstantiateRelative(ROW_HEIGHT, 0, -1)
+					InstantiateRelative(-ROW_HEIGHT, 0, COL_WIDTH / 2),
+					InstantiateRelative(-ROW_HEIGHT, 0, -COL_WIDTH / 2),
+					InstantiateRelative(ROW_HEIGHT, 0, COL_WIDTH / 2),
+					InstantiateRelative(ROW_HEIGHT, 0, -COL_WIDTH / 2)
 				};
 				break;
 			case 8:

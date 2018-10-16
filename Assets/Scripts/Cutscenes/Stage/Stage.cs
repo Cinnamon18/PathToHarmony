@@ -2,6 +2,7 @@ using Cutscenes.Textboxes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -43,12 +44,11 @@ namespace Cutscenes.Stages {
 		private Transform farRight;
 
 		[SerializeField]
-		private Actor actorPrefab;
-
-		[SerializeField]
 		private Transform textboxBackground;
-		
+
 		private List<Actor> actors = new List<Actor>();
+
+		public bool isRunning = false;
 
 		/// <summary>
 		/// Built in rich text tags won't work now, will need to implement custom
@@ -58,33 +58,25 @@ namespace Cutscenes.Stages {
 		/// <w>This is how you close a tag</w>
 		/// </summary>
 		public void Start() {
-			StartCoroutine(Invoke(
-				S().AddActor(CutsceneSide.FarLeft, Instantiate(actorPrefab), "J*n"),
-				S().AddActor(CutsceneSide.FarRight, Instantiate(actorPrefab), "L*za"),
-				S().SetMessage("I wanna show you something.")
-					.SetSpeaker("L*za"),
-				S().SetMessage("It's a little...<s><r>unconventional</r></s>.")
-					.SetSpeaker("L*za"),
-				S().SetMessage("Is it...<s>illegal</s>?")
-					.SetSpeaker("J*n"),
-				S().AddLeaver("L*za"),
-				S().AddActor(CutsceneSide.Left, Instantiate(actorPrefab), "H*race"),
-				S().AddActor(CutsceneSide.Right, Instantiate(actorPrefab), "C*risse"),
-				S().SetMessage("Would you believe I'm actually from <w><r>Earth</r></w>?")
-					.SetSpeaker("J*n"),
-				S().AddLeaver("H*race"),
-				S().AddLeaver("J*n"),
-				S().AddLeaver("C*risse")
-				));
+			if (SceneManager.GetActiveScene().name == "Story Test") {
+				startCutscene("andysDemo");
+			}
+		}
+
+
+		public void startCutscene(string cutsceneID) {
+			StartCoroutine(Invoke(Stages.getStage(cutsceneID)));
 		}
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
-
+			isRunning = true;
 			yield return RaiseUpTextbox();
 
 			foreach (StageBuilder stageBuilder in stageBuilders) {
 				yield return Invoke(stageBuilder);
 			}
+			isRunning = false;
+			hideVisualElements();
 		}
 
 		private IEnumerator RaiseUpTextbox() {
@@ -97,6 +89,8 @@ namespace Cutscenes.Stages {
 					new Vector2(0, targetY),
 					Mathf.Sqrt(t)
 					);
+					//manual correction factor (:
+					textboxBackground.position += new Vector3(0, 0, -20);
 			});
 		}
 
@@ -112,11 +106,33 @@ namespace Cutscenes.Stages {
 				yield return AddActor(stageBuilder.newcomer, stageBuilder.newcomer.side);
 			}
 
+			if (stageBuilder.expression != null) {
+				Actor foundActor = FindActor(stageBuilder.speaker);
+
+				if (foundActor == null) {
+					throw new UnityException(
+						"There exists no actor in the scene with name: "
+						+ stageBuilder.speaker
+						);
+				}
+
+				foundActor.image.sprite = stageBuilder.expression;
+			}
+
 			if (stageBuilder.message != null) {
 				CutsceneSide side = CutsceneSide.None;
 
 				if (!string.IsNullOrEmpty(stageBuilder.speaker)) {
-					side = FindActor(stageBuilder.speaker).side;	
+					Actor foundActor = FindActor(stageBuilder.speaker);
+
+					if (foundActor == null) {
+						throw new UnityException(
+							"There exists no actor in the scene with name: "
+							+ stageBuilder.speaker
+							);
+					}
+
+					side = foundActor.side;
 
 					foreach (Actor actor in actors) {
 						if (actor.side != side) {
@@ -161,10 +177,15 @@ namespace Cutscenes.Stages {
 			Vector2 endPos = new Vector2(holderToUse.transform.position.x, 0);
 
 			Vector2 startPos = new Vector2(
-				((side == CutsceneSide.Left || side == CutsceneSide.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300), 
+				((side == CutsceneSide.Left || side == CutsceneSide.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300),
 				actor.transform.position.y);
-			
-			Debug.Log(startPos);
+
+			// Debug.Log(startPos);
+
+			if (side == CutsceneSide.Left || side == CutsceneSide.FarLeft) {
+				actor.transform.localScale = new Vector3(-1, 1, 1);
+			}
+
 
 			actor.transform.SetParent(background.transform);
 			actor.transform.position = startPos;
@@ -211,7 +232,7 @@ namespace Cutscenes.Stages {
 					parent = left;
 					break;
 				case CutsceneSide.Right:
-					parent = right; 
+					parent = right;
 					break;
 				case CutsceneSide.FarRight:
 					parent = farRight;
@@ -220,9 +241,8 @@ namespace Cutscenes.Stages {
 			return parent;
 		}
 
-		// shorthand for easier setup
-		private StageBuilder S() {
-			return new StageBuilder();
+		public void hideVisualElements() {
+			this.gameObject.SetActive(false);
 		}
 
 	}

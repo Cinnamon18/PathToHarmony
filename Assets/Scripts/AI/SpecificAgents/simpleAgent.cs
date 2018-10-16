@@ -9,18 +9,19 @@ using UnityEngine;
 namespace AI {
 	public class simpleAgent : Agent {
 
-		public simpleAgent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) : base(battlefield, level, Destroy) { }
+		public simpleAgent() : base() { }
 
 		public override async Task<Move> getMove() {
+			
 			Unit unit = selectUnit();
-			Coord unitCoord = battlefield.getUnitCoords(unit);	
+			Coord unitCoord = battlefield.getUnitCoords(unit);
 
 			List<Coord> targetCoords = findNearestEnemies(unitCoord);
-
 			List<Coord> targets = unit.getTargets(unitCoord.x, unitCoord.y, battlefield, character);
 
 			int minDist = Int32.MaxValue;
 			Coord bestCoord = null;
+			
 			foreach (Coord targetCoord in targetCoords){
 				if (targets.Any(t => t.x == targetCoord.x && t.y == targetCoord.y)) {
 					return new Move(unitCoord.x, unitCoord.y, targetCoord.x, targetCoord.y);

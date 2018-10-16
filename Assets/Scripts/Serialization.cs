@@ -80,9 +80,8 @@ public static class Serialization {
 						int tileTypeInt = data[flatIndex];
 
 						TileType type = (TileType)tileTypeInt;
-
 						GameObject newTile = generator.getTileByType((TileType)tileTypeInt);
-
+					
 						if (newTile != null)
 						{
 							//typePrefabs was old way of doing this
@@ -137,7 +136,7 @@ public static class Serialization {
 		if (Random.Range(0.0f, 1.0f) < flavorChance) {
 			Vector3 flavorPos = Util.GridToWorld(tileCoords) + new Vector3(
 				Random.Range(-bound, bound),
-				Util.GridHeight / 2.1f,
+				1,//Honestly I'm not sure why it needs to be elevated by 1, but it does
 				Random.Range(-bound, bound));
 			GameObject[] flavorOptions = tile.getFlavorPrefabs();
 
@@ -150,15 +149,21 @@ public static class Serialization {
 
 	public static LevelInfo getLevel(string levelName) {
 		string levelString = ReadData(levelName, levelFilePath);
-		Queue<string> levelData = new Queue<string>();
-		foreach (string str in levelString.Split(';')) {
-			if (!(str.Equals("") | str.Equals(null))) {
-				levelData.Enqueue(str);
+		if (levelString != null)
+		{
+			Queue<string> levelData = new Queue<string>();
+			foreach (string str in levelString.Split(';'))
+			{
+				if (!(str.Equals("") | str.Equals(null)))
+				{
+					levelData.Enqueue(str);
+				}
 			}
+			Stack<UnitInfo> units = new Stack<UnitInfo>();
+			String mapname = DeserializeUnits(levelData, units);
+			return new LevelInfo(units, mapname);
 		}
-		Stack<UnitInfo> units = new Stack<UnitInfo>();
-		String mapname = DeserializeUnits(levelData, units);
-		return new LevelInfo(units, mapname);
+		return null;
 
 	}
 

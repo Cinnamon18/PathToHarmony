@@ -6,8 +6,7 @@ namespace Constants {
     public enum DamageType {
         None = 0,
         Slash,
-        Stab,
+        Pierce,
         Blunt,
-		Pierce
     }
 }

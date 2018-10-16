@@ -22,7 +22,6 @@ namespace Editors {
 
 		public TMP_Dropdown playerDropdown;
 		public TMP_Dropdown factionDropdown;
-		private bool isPlayer;
 		private Faction currentFaction;
 
 		[SerializeField]
@@ -65,7 +64,6 @@ namespace Editors {
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 
 			//what type of unit is being placed
-			isPlayer = true;
 			currentFaction = Faction.Xingata;
 
 
@@ -74,11 +72,7 @@ namespace Editors {
 			}
 			//Tell Editor type
 			setEditorType();
-			playerDropdown.onValueChanged.AddListener(delegate {
-				//player when 0
-				isPlayer = (playerDropdown.value == 0);
-			});
-
+	
 			factionDropdown.onValueChanged.AddListener(delegate {
 				//set current faction
 				currentFaction = (Faction)factionDropdown.value;
@@ -99,6 +93,9 @@ namespace Editors {
 				if (info != null)
 				{
 					serialized.Append(info.serialize() + ";");
+				} else
+				{
+					serialized.Append(";");
 				}
 			}
 
@@ -113,17 +110,26 @@ namespace Editors {
 
 
 		public void loadMap() {
-			removeAllUnits();
-			eraseTiles();
-			mapName = loadMapText.text;
-			reloadMap();
-			resetTextBoxes();
+			if (Serialization.ReadData(mapName, mapFilePath) != null)
+			{
+				removeAllUnits();
+				eraseTiles();
+				mapName = loadMapText.text;
+				reloadMap();
+				resetTextBoxes();
+			} else
+			{
+				Debug.Log("Map filename does not exist");
+			}
+		
 		}
 
 		private void reloadMap() {
+
 			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), generator, tilesHolder);
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
+			
 		}
 
 		public void loadLevel() {

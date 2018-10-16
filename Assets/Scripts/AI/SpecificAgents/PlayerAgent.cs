@@ -7,14 +7,14 @@ using Units;
 using UnityEngine;
 
 namespace AI {
-	public class PlayerAgent : Agent {
+	public class playerAgent : Agent {
 
 		private List<Coord> moveOptions;
 		private List<Coord> highlightedEnemyUnits;
 		private List<GameObject> otherHighlightedObjects;
 		private Unit highlightedFriendlyUnit;
 
-		public PlayerAgent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) : base(battlefield, level, Destroy) {
+		public playerAgent() : base() {
 			otherHighlightedObjects = new List<GameObject>();
 		}
 
@@ -46,7 +46,7 @@ namespace AI {
 			if (Physics.Raycast(ray, out hit, 1000.0f)) {
 				Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
 				IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(tileCoords.x, tileCoords.y, tileCoords.z);
-
+				
 				if (selectedItem is Tile) {
 					//Selected a tile, show info abt that tile
 					//TODO: Show info about tile if a tile is clicked
@@ -58,7 +58,7 @@ namespace AI {
 					//This method will get called again because we didn't find a valid selection
 				} else if (selectedItem is Unit) {
 					Unit selectedUnit = selectedItem as Unit;
-
+					
 					if (selectedUnit.getCharacter(battlefield) == this.character &&
 						(!selectedUnit.hasMovedThisTurn || (!selectedUnit.getHasAttackedThisTurn() &&
 						selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, character).Count != 0))) {
@@ -73,6 +73,7 @@ namespace AI {
 						this.highlightedFriendlyUnit = selectedUnit;
 
 						moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
+				
 						foreach (Coord moveOption in moveOptions) {
 							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 						}
@@ -182,7 +183,7 @@ namespace AI {
 
 		private void unhighlight(GameObject objectToHighlight) {
 			if (objectToHighlight != null) {
-				Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
+				GameObject.Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
 			}
 		}
 

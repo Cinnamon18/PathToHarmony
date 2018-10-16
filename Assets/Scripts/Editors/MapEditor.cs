@@ -53,11 +53,11 @@ namespace Editors {
 		}
 
 		public override void serialize() {
-			deserializeTiles();
+			serializeTiles();
 		}
 
 		public override void deserialize() {
-			serializeTiles();
+			deserializeTiles();
 		}
 
 		public override void remove(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
@@ -183,6 +183,7 @@ namespace Editors {
 				updateMapName(loadFileText.text);
 				eraseTiles();
 				base.objs = Serialization.DeserializeTiles(mapData, tilesGenerator, tilesHolder);
+				makeYellowBaseTiles();
 			}
 			
 
@@ -245,9 +246,14 @@ namespace Editors {
 			Tile[] flattenedTile = Util.Flatten3DArray(base.objs);
 
 			foreach (Tile tile in flattenedTile) {
+				
 				if (tile == null) {
 					serialized.Append(",");
 				} else {
+					if (tile.initialType == TileType.None)
+					{
+						Debug.Log("Empty is here");
+					}
 					serialized.Append(tile.serialize() + ",");
 				}
 			}
