@@ -6,9 +6,9 @@ namespace Gameplay {
 
 		public List<Coord> capturePoints = new List<Coord>();
 		public int timeToHold = 0;
-		private int timeHeld = 0;
-		private int lastHalfTurnsElapsed = 0;
-		private bool holding = false;
+		private int[] timeHeld;
+		private int[] lastHalfTurnsElapsed;
+		private bool[] holding;
 
 		public DefendObjective(Battlefield battlefield, Level level, Character playerCharacter, int maxHalfTurns) :
 			base(battlefield, level, playerCharacter, maxHalfTurns) { }
@@ -17,28 +17,29 @@ namespace Gameplay {
 			base(battlefield, level, playerCharacter, maxHalfTurns) {
 				this.capturePoints = capturePoints;
 				this.timeToHold = timeToHold;
+				this.timeHeld = new int[capturePoints.Count];
+				this.lastHalfTurnsElapsed = new int[capturePoints.Count];
+				this.holding = new bool[capturePoints.Count];
 			}
 
 		public override bool isLoseCondition(int halfTurnsElapsed) {
 			if (battlefield.charactersUnits[playerCharacter].Count == 0) {
 				return true;
 			}
-			foreach (Coord coord in this.capturePoints) {
+			for (int i = 0; i < capturePoints.Count; i++) {
+				Coord coord = capturePoints[i];
 				Unit unit = battlefield.units[coord.x, coord.y];
 				if (unit != null && unit.getCharacter(battlefield) != playerCharacter) {
-					//I know this looks clunky but it's the best I could think of so the timer doesn't tick when you first step on the goal, but does every consecutive turn
-					if (!this.holding) {
-						this.holding = true;
-						lastHalfTurnsElapsed = halfTurnsElapsed;
-					} else if (lastHalfTurnsElapsed < halfTurnsElapsed) {
-						timeHeld++;
-						lastHalfTurnsElapsed = halfTurnsElapsed;
+					if (!holding[i]) {
+						holding[i] = true;
+						lastHalfTurnsElapsed[i] = halfTurnsElapsed;
+					} else if (lastHalfTurnsElapsed[i] < halfTurnsElapsed) {
+						timeHeld[i]++;
+						lastHalfTurnsElapsed[i] = halfTurnsElapsed;
 					}
-
-					return timeHeld >= timeToHold;
+					return timeHeld[i] >= timeToHold;
 				}
 			}
-
 			return false;
 		}
 
