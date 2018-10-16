@@ -85,7 +85,7 @@ public class MainMenu : MonoBehaviour {
 
 
 		//Just to show off my vision of campaign branching. which now looks like it's not gonna happen, but oh well :p
-		Campaign testCampaign1 = new Campaign("test", 0, new[] {
+		Campaign testCampaign1 = new Campaign("test1", 0, new[] {
 			level1,
 			level2
 		});
