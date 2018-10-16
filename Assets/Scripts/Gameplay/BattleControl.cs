@@ -83,9 +83,9 @@ namespace Gameplay {
 			validPickTiles[characters[1]] = evilGuyPickTiles;
 			//gets mapname from levelinfo
 			Level level = new Level(levelInfo.mapName, characters, null, validPickTiles);
-			objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
-			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
-			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
+			// objective = new EliminationObjective(battlefield, level, characters[playerCharacter], 20);
+			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(2,1)}), 2);
+			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,5), new Coord(1,1)}), 1);
 
 			//For these objectives to work, you must also comment out the lines in the initial battle stage below
 			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);

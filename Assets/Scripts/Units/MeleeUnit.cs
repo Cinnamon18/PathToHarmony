@@ -70,17 +70,13 @@ namespace Units {
 			return targets;
 		}
 
-<<<<<<< HEAD
-		public override List<Coord> getTotalAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
-			return new List<Coord> ();
-=======
+
 		public override HashSet<Coord> getTotalAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
 			HashSet<Coord> attackZone = new HashSet<Coord>();
 			foreach (Coord coord in getValidMoves(myX, myY, battlefield)) {
 				attackZone.UnionWith(getAttackZone(coord.x, coord.y, battlefield, character));
 			}
 			return attackZone;
->>>>>>> 66d47a8719d56ca0d5c870de96e8bba933837d13
 		}
 	}
 }

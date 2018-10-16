@@ -20,6 +20,10 @@ namespace Gameplay {
 				this.timeHeld = new int[capturePoints.Count];
 				this.lastHalfTurnsElapsed = new int[capturePoints.Count];
 				this.holding = new bool[capturePoints.Count];
+
+				// foreach (Coord coord in capturePoints) {
+				// 	battlefield.map[coord.x, coord.y].Peek().gameObject.AddComponent<cakeslice.Outline>().color = 3;
+				// }
 			}
 
 		public override bool isLoseCondition(int halfTurnsElapsed) {
