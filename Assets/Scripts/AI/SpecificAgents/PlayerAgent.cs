@@ -29,6 +29,9 @@ namespace AI {
 				while (currentMove.to == null && currentMove.from != null) {
 					await getMovePhase(currentMove);
 				}
+
+
+				// await Task.Delay(1);
 			}
 
 			return currentMove;
@@ -97,7 +100,7 @@ namespace AI {
 			}
 
 			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
-			while (!Input.GetButtonUp("Select")) {
+			while (Input.GetButtonDown("Select")) {
 				await Task.Delay(1);
 			}
 
@@ -158,7 +161,7 @@ namespace AI {
 			}
 
 			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
-			while (!Input.GetButtonUp("Select")) {
+			while (Input.GetButtonDown("Select")) {
 				await Task.Delay(1);
 			}
 		}
