@@ -101,11 +101,7 @@ namespace AI {
 			moveQueue.Enqueue(start);
 			visited.Add(start);
 
-<<<<<<< HEAD
 			List<Coord> units = new List<Coord> ();
-=======
-			List<Coord> enemies = new List<Coord>();
->>>>>>> 25645c22360f6cf253fbd85ebc029c3c6b9b0aa2
 
 			while (moveQueue.Count() > 0) {
 				Coord curCoord = moveQueue.Dequeue();
@@ -138,13 +134,8 @@ namespace AI {
 			List<Coord> units = new List<Coord>();
 			for (int x = 0; x < battlefield.units.GetLength(0); x++) {
 				for (int y = 0; y < battlefield.units.GetLength(1); y++) {
-<<<<<<< HEAD
 					if (battlefield.units[x,y] != null) {
 						units.Add(new Coord(x,y));
-=======
-					if (battlefield.units[x, y] != null && battlefield.units[x, y].getCharacter(battlefield) != character) {
-						enemies.Add(new Coord(x, y));
->>>>>>> 25645c22360f6cf253fbd85ebc029c3c6b9b0aa2
 					}
 				}
 			}
