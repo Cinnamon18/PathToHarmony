@@ -46,9 +46,13 @@ namespace Cutscenes.Stages {
 		[SerializeField]
 		private Transform textboxBackground;
 
+		[SerializeField]
+		private GameObject skipButton;
+
 		private List<Actor> actors = new List<Actor>();
 
 		public bool isRunning = false;
+		private bool skipCutFlag = false;
 
 		/// <summary>
 		/// Built in rich text tags won't work now, will need to implement custom
@@ -63,8 +67,12 @@ namespace Cutscenes.Stages {
 			}
 		}
 
+		public void skipCutscene() {
+			skipCutFlag = true;
+		}
 
 		public void startCutscene(string cutsceneID) {
+			showVisualElements();
 			StartCoroutine(Invoke(Stages.getStage(cutsceneID)));
 		}
 
@@ -73,8 +81,13 @@ namespace Cutscenes.Stages {
 			yield return RaiseUpTextbox();
 
 			foreach (StageBuilder stageBuilder in stageBuilders) {
+				if (skipCutFlag) {
+					break;
+				}
+
 				yield return Invoke(stageBuilder);
 			}
+			skipCutFlag = false;
 			isRunning = false;
 			hideVisualElements();
 		}
@@ -89,8 +102,8 @@ namespace Cutscenes.Stages {
 					new Vector2(0, targetY),
 					Mathf.Sqrt(t)
 					);
-					//manual correction factor (:
-					textboxBackground.position += new Vector3(0, 0, -20);
+				//manual correction factor (:
+				textboxBackground.position += new Vector3(0, 0, -20);
 			});
 		}
 
@@ -243,6 +256,12 @@ namespace Cutscenes.Stages {
 
 		public void hideVisualElements() {
 			this.gameObject.SetActive(false);
+			skipButton.SetActive(false);
+		}
+
+		public void showVisualElements() {
+			this.gameObject.SetActive(true);
+			skipButton.SetActive(true);
 		}
 
 	}
