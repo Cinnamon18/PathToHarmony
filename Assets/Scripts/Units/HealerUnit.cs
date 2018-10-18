@@ -10,13 +10,13 @@ using UnityEngine.UI;
 using Buffs;
 
 namespace Units {
-	public class MeleeUnit : Unit {
+	public class HealerUnit : Unit {
 
 		//attributes specific to Melee
 		private readonly DamageType damageType;
 		private readonly int meleeAttackStrength;
 
-		public MeleeUnit(
+		public HealerUnit(
 				ArmorType armorType,
 				int maxHealth,
 				MoveType moveType,
@@ -44,19 +44,33 @@ namespace Units {
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			Audio.playSfx("DemoClip");
 			int damage = this.battleDamage(enemy, enemyTile);
 
 			//Damage rounds up
 			enemy.setHealth(enemy.getHealth() - damage);
 
-			if (enemy.getHealth() <= 0) {
-				enemy.defeated(battlefield);
+			if (enemy.getHealth() >= enemy.maxHealth) {
+				enemy.setHealth(enemy.maxHealth);
 				return true;
 			} else {
 				return false;
 			}
 
+		}
+
+		//returns a list of targetable allies
+		public override List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+
+			List<Coord> targets = new List<Coord>();
+			List<Coord> tiles = getAttackZone(myX, myY, battlefield, character);
+
+			foreach (Coord tile in tiles) {
+				Unit targetUnit = battlefield.units[tile.x, tile.y];
+				if (targetUnit != null && targetUnit.getCharacter(battlefield) == character) {
+					targets.Add(tile);
+				}
+			}
+			return targets;
 		}
 
 		public override List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
@@ -71,13 +85,8 @@ namespace Units {
 			return targets;
 		}
 
-
 		public override HashSet<Coord> getTotalAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
-			HashSet<Coord> attackZone = new HashSet<Coord>();
-			foreach (Coord coord in getValidMoves(myX, myY, battlefield)) {
-				attackZone.UnionWith(getAttackZone(coord.x, coord.y, battlefield, character));
-			}
-			return attackZone;
+			return new HashSet<Coord>(getAttackZone(myX, myY, battlefield, character));
 		}
 	}
 }
