@@ -14,13 +14,11 @@ namespace Constants {
 		//First dimension is DamageType, second is ArmorType
 		//This ones a little tricky, it's the % reduction to the base damage, so a reduction of
 		// 20 means 20%, and final damage would be baseDamage * 0.8
-
 		public static int[,] DamageReduction = new int[,]
 			{ {0,30,50,70}, //No weapon
 			  {0,20,30,40}, //Slash
 			  {0,10,40,50}, //Stab
-			  {0,10,20,30}, //Blunt
-			  {200,200,200,200}}; //Heal
+			  {0,10,20,30} }; //Blunt
 
 		//First dimension is TileType. Holds the % defense a Tile piece grants
 		public static int[] TileDefense = new int[]
