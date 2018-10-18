@@ -31,31 +31,31 @@ namespace Cutscenes.Stages {
 					return new StageBuilder[] {
 						S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 						S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
-						S().SetMessage("If anyone saw us, they’d think I’m the victor and you are the loser.")
+						S().SetMessage("If anyone saw us, they’d think I’m the victor and you were the loser.")
 							.SetSpeaker("Juniper"),
-						S().SetMessage("I’ve dreamt of this day since I was a child. Of the day I finally meet his majesty.")
+						S().SetMessage("I’ve dreamt of this day since I was a child. Of the day I finally get to meet his majesty.")
 							.SetSpeaker("Blair").SetExpression("Smile"),
-						S().SetMessage("You know he is leading an army on the field.")
+						S().SetMessage("You know he's leading an army on the field, right?")
 							.SetSpeaker("Juniper"),
-						S().SetMessage("I know, but I still can’t shake off my disappointment.")
-							.SetSpeaker("Blair"),
-						S().SetMessage("You never explained to me why you admire the King so much.")
-							.SetSpeaker("Juniper"),
-						S().SetMessage("What is there to explain?")
-							.SetSpeaker("Blair"),
-						S().SetMessage("You’ve never met him. You’ve never worked under him. You don’t know what he is really like.")
-							.SetSpeaker("Juniper"),
-						S().SetMessage("I know exactly what he is like. He is the King by divine right. He is the embodiment of dignity. Of always putting his kingdom before himself.")
-							.SetSpeaker("Blair"),
-						S().SetMessage("You just described what a king is supposed to be. You don’t know if he is the king you believe him to be.")
-							.SetSpeaker("Juniper"),
-						S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
-						S().SetMessage("He IS the King, and that is all we, the officers of his retinue, have to know.")
-							.SetSpeaker("Bruno"),
-						S().SetMessage("Congratulations, both of you.")
-							.SetSpeaker("Bruno"),
-						S().SetMessage("Where have you been? You at least watched our battle, right?")
-							.SetSpeaker("Juniper")
+						// S().SetMessage("I know, but I still can’t shake off my disappointment.")
+						// 	.SetSpeaker("Blair"),
+						// S().SetMessage("You never explained to me why you admire the King so much.")
+						// 	.SetSpeaker("Juniper"),
+						// S().SetMessage("What is there to explain?")
+						// 	.SetSpeaker("Blair"),
+						// S().SetMessage("You’ve never met him. You’ve never worked under him. You don’t know what he is really like.")
+						// 	.SetSpeaker("Juniper"),
+						// S().SetMessage("I know exactly what he is like. He is the King by divine right. He is the embodiment of dignity. Of always putting his kingdom before himself.")
+						// 	.SetSpeaker("Blair"),
+						// S().SetMessage("You just described what a king is supposed to be. You don’t know if he is the king you believe him to be.")
+						// 	.SetSpeaker("Juniper"),
+						// S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
+						// S().SetMessage("He IS the King, and that is all we, the officers of his retinue, have to know.")
+						// 	.SetSpeaker("Bruno"),
+						// S().SetMessage("Congratulations, both of you.")
+						// 	.SetSpeaker("Bruno"),
+						// S().SetMessage("Where have you been? You at least watched our battle, right?")
+						// 	.SetSpeaker("Juniper")
 					};
 					break;
 				default:
