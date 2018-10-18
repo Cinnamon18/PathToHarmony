@@ -65,7 +65,7 @@ namespace Cutscenes.Stages {
 						S().SetMessage("You know he's leading an army on the field, right?")
 							.SetSpeaker("Juniper"),
 						S().SetMessage("I know, but I still can’t shake off my disappointment.")
-							.SetSpeaker("Blair"),
+							.SetSpeaker("Blair").SetAudio("DemoClip"),
 						S().SetMessage("You never explained to me why you admire the King so much.")
 							.SetSpeaker("Juniper"),
 						S().SetMessage("What is there to explain?")

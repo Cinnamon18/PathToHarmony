@@ -136,6 +136,10 @@ namespace Cutscenes.Stages {
 				foundActor.image.sprite = stageBuilder.expression;
 			}
 
+			if (stageBuilder.sfx != null) {
+				Audio.playSfx(stageBuilder.sfx);
+			}
+
 			if (stageBuilder.message != null) {
 				CutsceneSide side = CutsceneSide.None;
 
@@ -282,6 +286,7 @@ namespace Cutscenes.Stages {
 			if (currentDialogLine != null) {
 				currentDialogLine.Stop();
 			}
+			Audio.stopAudio(false);
 		}
 
 		private IEnumerator waitForSeconds(float seconds) {
