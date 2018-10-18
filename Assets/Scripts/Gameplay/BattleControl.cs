@@ -48,9 +48,7 @@ namespace Gameplay {
 		[SerializeField]
 		private Stage cutscene;
 
-		// Use this for initialization
 		void Start() {
-			//Actual constructor code. This should still be here after the demo :p
 			playerCharacter = 0;
 			battlefield = new Battlefield();
 			currentCharacter = -1;
@@ -61,35 +59,31 @@ namespace Gameplay {
 			turnChangeBackground.enabled = false;
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
+			cutscene.hideVisualElements();
+			useNormalCamera();
 
 			getLevel();
 			deserializeMap();
 			deserializeLevel();
-
-			//TODO replace this with predicate based execution
-			CameraController.inputEnabled = false;
-			mainCamera.enabled = false;
-			cutsceneCamera.enabled = true;
-			if (level.cutsceneIDs.Length != 0) {
-				cutscene.startCutscene(level.cutsceneIDs[0]);
-			}
 		}
 
-		// Update is called once per frame
+		// Poor man's state machine. in retrospect i have no idea why i didn't use a proper one. oh well, next game.
 		async void Update() {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
-					if (!cutscene.isRunning) {
-						CameraController.inputEnabled = true;
-						cutsceneCamera.enabled = false;
-						mainCamera.enabled = true;
-						advanceBattleStage();
-					}
+					advanceBattleStage();
 					break;
 				case BattleLoopStage.Pick:
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.BattleLoopStart:
+					if (!battleStageChanged) {
+						break;
+					}
+					battleStageChanged = false;
+					//Check for cutscenes every start phase
+					await runAppropriateCutscenes();
+
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.TurnChange:
@@ -161,6 +155,8 @@ namespace Gameplay {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
 					}
 
+					//Check cutscenes after a unit was eliminated. Could be important for plot relevant characters or smth.
+					await runAppropriateCutscenes();
 					checkWinAndLose();
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
@@ -188,6 +184,9 @@ namespace Gameplay {
 						break;
 					}
 					battleStageChanged = false;
+
+					//Check cutscenes every end phase
+					await runAppropriateCutscenes();
 
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[currentCharacter]]) {
 						unit.hasMovedThisTurn = false;
@@ -259,7 +258,42 @@ namespace Gameplay {
 			);
 		}
 
-		//Convenience
+		private async Task runAppropriateCutscenes() {
+			foreach (String cutsceneID in level.cutsceneIDs) {
+				if (Stages.testExecutionCondition(cutsceneID, battlefield, objective, halfTurnsElapsed)) {
+					await runCutscene(cutsceneID);
+					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
+					break;
+				}
+			}
+		}
+
+		private async Task runCutscene(string cutsceneID) {
+			cutscene.startCutscene(cutsceneID);
+			useCutsceneCamera();
+
+			//Wait for cutscene to finish.
+			while (cutscene.isRunning) {
+				//Unity, forgive me for not using coroutines. I am repentant. I understand my crimes and will not recommimt.
+				await Task.Delay(100);
+			}
+
+			useNormalCamera();
+		}
+
+		private void useCutsceneCamera() {
+			CameraController.inputEnabled = false;
+			mainCamera.enabled = false;
+			cutsceneCamera.enabled = true;
+		}
+
+		private void useNormalCamera() {
+			CameraController.inputEnabled = true;
+			cutsceneCamera.enabled = false;
+			mainCamera.enabled = true;
+		}
+
+
 		private void advanceBattleStage() {
 			battleStage = battleStage.NextPhase();
 			battleStageChanged = true;
