@@ -18,13 +18,13 @@ namespace Cutscenes.Stages {
 				//Execute on victory condition
 				hasExecuted.Add(andysDemo);
 				return objective.isWinCondition(halfTurnsElapsed);
-			} else if (stageID == tutorialEnd && !hasExecuted.Contains(andysDemo)) {
+			} else if (stageID == tutorialEnd && !hasExecuted.Contains(tutorialEnd)) {
 				//Execute on turn one
-				hasExecuted.Add(andysDemo);
+				hasExecuted.Add(tutorialEnd);
 				return halfTurnsElapsed == 0;
-			} else if (stageID == genericDefeat && !hasExecuted.Contains(andysDemo)) {
+			} else if (stageID == genericDefeat && !hasExecuted.Contains(genericDefeat)) {
 				//Execute on defeat condition
-				hasExecuted.Add(andysDemo);
+				hasExecuted.Add(genericDefeat);
 				return objective.isLoseCondition(halfTurnsElapsed);
 			}
 			// throw new UnityException("Invalid stageID \"" + stageID + "\" tested for");

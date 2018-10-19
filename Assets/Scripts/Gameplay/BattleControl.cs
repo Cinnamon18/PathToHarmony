@@ -228,10 +228,10 @@ namespace Gameplay {
 				case TileEffects.Normal:
 					break;
 				case TileEffects.DOT:
-					unit.setHealth(unit.getHealth() - 30);
+					unit.setHealth(unit.getHealth() - 20);
 					break;
 				case TileEffects.Heal:
-					unit.setHealth(unit.getHealth() + 30);
+					unit.setHealth(unit.getHealth() + 20);
 					break;
 			}
 		}
