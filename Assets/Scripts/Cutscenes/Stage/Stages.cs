@@ -5,9 +5,9 @@ using UnityEngine;
 namespace Cutscenes.Stages {
 	public class Stages {
 
-		private const string andysDemo = "andysDemo";
-		private const string tutorialEnd = "tutorialEnd";
-		private const string genericDefeat = "genericDefeat";
+		public const string andysDemo = "andysDemo";
+		public const string tutorialEnd = "tutorialEnd";
+		public const string genericDefeat = "genericDefeat";
 		private static List<string> hasExecuted = new List<string>();
 
 		//hhh sorry we're throwing type safety out the window but. The execution on these coroutines is already a little weird
