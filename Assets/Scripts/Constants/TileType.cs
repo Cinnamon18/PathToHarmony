@@ -21,4 +21,10 @@
 		PalisadeHorizontal,
 		PalisadeCorner
 	}
+    public enum TileEffects
+    {
+        Normal,
+        DOT,
+        Heal
+    };
 }

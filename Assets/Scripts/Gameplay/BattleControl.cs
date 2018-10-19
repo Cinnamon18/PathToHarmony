@@ -190,6 +190,9 @@ namespace Gameplay {
 					battleStageChanged = false;
 
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[currentCharacter]]) {
+						Coord coord = battlefield.getUnitCoords(unit);
+						Tile tile = battlefield.map[coord.x, coord.y].Peek();
+						checkTile(tile, unit);
 						unit.hasMovedThisTurn = false;
 						unit.setHasAttackedThisTurn(false);
 					}
@@ -215,6 +218,22 @@ namespace Gameplay {
 				return true;
 			} else {
 				return false;
+			}
+		}
+
+		private void checkTile(Tile tile, Unit unit)
+		{
+			TileEffects effects = tile.tileEffects;
+			switch (effects)
+			{
+				case TileEffects.Normal:
+					break;
+				case TileEffects.DOT:
+					unit.setHealth(unit.getHealth() - 30);
+					break;
+				case TileEffects.Heal:
+					unit.setHealth(unit.getHealth() + 30);
+					break;
 			}
 		}
 
