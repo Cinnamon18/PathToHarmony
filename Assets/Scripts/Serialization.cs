@@ -49,7 +49,7 @@ public static class Serialization {
 			return data;
 		} catch (FileNotFoundException ex)
 		{
-			Debug.LogError("File name entered does not exist.");
+			Debug.LogError("File name "+ path + fileName + ".txt" + " entered does not exist.");
 			return null;
 		}
 		

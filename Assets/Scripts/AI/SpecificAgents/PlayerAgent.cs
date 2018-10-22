@@ -14,6 +14,8 @@ namespace AI {
 		private List<GameObject> otherHighlightedObjects;
 		private Unit highlightedFriendlyUnit;
 
+		private const int INPUT_LOOP_DELAY = 10;
+
 		public playerAgent() : base() {
 			otherHighlightedObjects = new List<GameObject>();
 		}
@@ -29,6 +31,9 @@ namespace AI {
 				while (currentMove.to == null && currentMove.from != null) {
 					await getMovePhase(currentMove);
 				}
+
+
+				// await Task.Delay(1);
 			}
 
 			return currentMove;
@@ -38,7 +43,7 @@ namespace AI {
 			//Await player input. But. Unity doesn't really support async await.
 			//I'm feeling kinda dumb for not just learning coroutines. Next time!
 			while (!Input.GetButtonDown("Select")) {
-				await Task.Delay(1);
+				await Task.Delay(INPUT_LOOP_DELAY);
 			}
 
 			RaycastHit hit;
@@ -98,8 +103,8 @@ namespace AI {
 			}
 
 			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
-			while (!Input.GetButtonUp("Select")) {
-				await Task.Delay(1);
+			while (Input.GetButtonDown("Select")) {
+				await Task.Delay(INPUT_LOOP_DELAY);
 			}
 
 		}
@@ -107,7 +112,7 @@ namespace AI {
 		public async Task getMovePhase(Move currentMove) {
 			//Await player input.
 			while (!Input.GetButtonDown("Select")) {
-				await Task.Delay(1);
+				await Task.Delay(INPUT_LOOP_DELAY);
 			}
 
 			RaycastHit hit;
@@ -159,8 +164,8 @@ namespace AI {
 			}
 
 			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
-			while (!Input.GetButtonUp("Select")) {
-				await Task.Delay(1);
+			while (Input.GetButtonDown("Select")) {
+				await Task.Delay(INPUT_LOOP_DELAY);
 			}
 		}
 		private void highlight(Unit unit, int colorIndex = 0) {
