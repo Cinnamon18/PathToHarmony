@@ -191,7 +191,7 @@ namespace AI {
 			}
 		}
 
-		private void unhighlightAll() {
+		public void unhighlightAll() {
 			if (moveOptions == null) {
 				//Someone accidentally called this twice in a row
 				return;
