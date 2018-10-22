@@ -407,14 +407,14 @@ namespace Gameplay {
 		}
 
 		public void skipTurn() {
-			/*
+			
 			Agent agent = level.characters[currentCharacter].agent;
-			if(agent is PlayerAgent) {
-				((PlayerAgent)agent).unhighlightAll();
+			if(agent is playerAgent) {
+				((playerAgent)agent).unhighlightAll();
 			}
 			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection)
 				advanceBattleStage();
-			*/
+			
 		}
 	}
 }
