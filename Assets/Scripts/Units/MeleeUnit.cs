@@ -44,7 +44,6 @@ namespace Units {
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			Audio.playSfx("DemoClip");
 			int damage = this.battleDamage(enemy, enemyTile);
 
 			//Damage rounds up
@@ -70,7 +69,6 @@ namespace Units {
 			}
 			return targets;
 		}
-
 
 		public override HashSet<Coord> getTotalAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
 			HashSet<Coord> attackZone = new HashSet<Coord>();
