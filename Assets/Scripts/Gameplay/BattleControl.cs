@@ -65,6 +65,9 @@ namespace Gameplay {
 			getLevel();
 			deserializeMap();
 			deserializeLevel();
+
+			addUnit(UnitType.Cleric, level.characters[0], 5, 5, Faction.Xingata);
+			addUnit(UnitType.Archer, level.characters[0], 4, 4, Faction.Xingata);
 		}
 
 		// Poor man's state machine. in retrospect i have no idea why i didn't use a proper one. oh well, next game.
@@ -220,11 +223,9 @@ namespace Gameplay {
 			}
 		}
 
-		private void checkTile(Tile tile, Unit unit)
-		{
+		private void checkTile(Tile tile, Unit unit) {
 			TileEffects effects = tile.tileEffects;
-			switch (effects)
-			{
+			switch (effects) {
 				case TileEffects.Normal:
 					break;
 				case TileEffects.DOT:

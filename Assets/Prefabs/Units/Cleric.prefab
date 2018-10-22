@@ -72,7 +72,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4970945173330864}
   - component: {fileID: 114498037091705390}
-  - component: {fileID: 114888452754732414}
+  - component: {fileID: 114064902006437736}
   m_Layer: 0
   m_Name: Cleric
   m_TagString: Untagged
@@ -113,6 +113,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114064902006437736
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1629421154834734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25cfc8ed9e795444cbf91112421e416e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasMovedThisTurn: 0
+  factionMaterials:
+  - {fileID: 2100000, guid: 20370b9f95d7f344c9231b49341c796a, type: 2}
+  - {fileID: 2100000, guid: bc76b035f66e4654cb7cd55b3725e0f6, type: 2}
+  - {fileID: 2100000, guid: 09bc9d9c67dafe1488bd908246fc34ef, type: 2}
+  - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
+  buffUIManager: {fileID: 114823220750792148}
+  healthUIManager: {fileID: 114498037091705390}
 --- !u!114 &114082730755437250
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -189,9 +208,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114738306655082024}
-  unitModelPrefab: {fileID: 1424679532820604, guid: f5625fd27e0d89849a34b2098df2523d,
+  unitModelPrefab: {fileID: 1758190060128154, guid: 84ac064d145b78c478eb72ab0e4c029c,
     type: 2}
-  unit: {fileID: 114888452754732414}
+  unit: {fileID: 114064902006437736}
 --- !u!114 &114609432408875802
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -249,8 +268,6 @@ MonoBehaviour:
   unit: {fileID: 0}
   buffIconPrefab: {fileID: 114708540217932716, guid: 669f709c7589f4c4591c7384479983b7,
     type: 2}
-  buffIconSprites:
-  - {fileID: 21300000, guid: 696958353d3bbe9448b5e253cd686bfd, type: 3}
 --- !u!114 &114833226706664378
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -272,25 +289,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &114888452754732414
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1629421154834734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecd08cf5fb600534e80e01bc54dd55bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hasMovedThisTurn: 0
-  factionMaterials:
-  - {fileID: 2100000, guid: 20370b9f95d7f344c9231b49341c796a, type: 2}
-  - {fileID: 2100000, guid: bc76b035f66e4654cb7cd55b3725e0f6, type: 2}
-  - {fileID: 2100000, guid: 09bc9d9c67dafe1488bd908246fc34ef, type: 2}
-  - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
-  buffUIManager: {fileID: 114823220750792148}
-  healthUIManager: {fileID: 114498037091705390}
 --- !u!222 &222509604232229978
 CanvasRenderer:
   m_ObjectHideFlags: 1

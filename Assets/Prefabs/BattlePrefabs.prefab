@@ -2662,6 +2662,8 @@ MonoBehaviour:
   unitPrefabs:
   - {fileID: 1629421154834734, guid: 7993afc9425649441aef57855464ed26, type: 2}
   - {fileID: 1488143649172512, guid: e1360b7388da1f24d8c7b0ca79b0d929, type: 2}
+  - {fileID: 1629421154834734, guid: 225de50b0ce81b747a6c3f2f1c1ffbac, type: 2}
+  - {fileID: 1434694798503106, guid: e6af2e076be38264f9620648a2a888a9, type: 2}
   mainCamera: {fileID: 20312723109998728}
   cutsceneCamera: {fileID: 20177197615643530}
   halfTurnsElapsed: 0
@@ -2923,6 +2925,7 @@ MonoBehaviour:
   lineColor0: {r: 1, g: 1, b: 0, a: 1}
   lineColor1: {r: 1, g: 1, b: 0, a: 1}
   lineColor2: {r: 1, g: 0, b: 0, a: 1}
+  lineColor3: {r: 0, g: 0, b: 1, a: 1}
   additiveRendering: 0
   backfaceCulling: 1
   cornerOutlines: 0

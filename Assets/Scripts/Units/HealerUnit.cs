@@ -66,7 +66,11 @@ namespace Units {
 
 			foreach (Coord tile in tiles) {
 				Unit targetUnit = battlefield.units[tile.x, tile.y];
-				if (targetUnit != null && targetUnit.getCharacter(battlefield) == character) {
+				if (
+					targetUnit != null &&
+					targetUnit.getCharacter(battlefield) == character &&
+					targetUnit.getHealth() != targetUnit.maxHealth) {
+						
 					targets.Add(tile);
 				}
 			}
