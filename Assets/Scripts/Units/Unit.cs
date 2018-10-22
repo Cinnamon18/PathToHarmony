@@ -202,5 +202,13 @@ namespace Units {
 		public List<Buff> getBuffs(Predicate<Buff> predicate) {
 			return buffs.FindAll(predicate);
 		}
+
+		public void playAttackAnimation() {
+
+		}
+
+		public void playIdleAnimation() {
+
+		}
 	}
 }
