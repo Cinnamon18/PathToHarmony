@@ -6,7 +6,6 @@ using Gameplay;
 using Units;
 using UnityEngine;
 
-
 namespace AI {
 	public class simpleAgent : Agent {
 

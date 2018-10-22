@@ -67,21 +67,21 @@ public class MainMenu : MonoBehaviour {
 				new Character("Alice", true, new playerAgent()),
 				new Character("The evil lord zxqv", false, new simpleAgent())
 				};
-		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new string[] { "tutorialEnd" });
+		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new string[] { Stages.tutorialEnd, Stages.genericDefeat });
 
 		//LEVEL 2
 		Character[] characters2 = new[] {
-				new Character("Alice", true, new playerAgent()),
-				new Character("The evil lord zxqv", false, new simpleAgent())
+				new Character("Blair", true, new playerAgent()),
+				new Character("King Xingata", false, new simpleAgent())
 				};
-		Level level2 = new Level("DemoMap", "TestLevel", characters2, new string[] { "andysDemo" });
+		Level level2 = new Level("DemoMap", "TestLevel", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat});
 
 		//LEVEL 3
 		Character[] characters3 = new[] {
-				new Character("Alice", true, new playerAgent()),
-				new Character("The evil lord zxqv", false, new simpleAgent())
+				new Character("Blair", true, new playerAgent()),
+				new Character("evil!Juniper", false, new simpleAgent())
 				};
-		Level level3 = new Level("DemoMap", "DemoLevel", characters2, new string[] { "andysDemo" });
+		Level level3 = new Level("DemoMap", "DemoLevel", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat });
 
 
 		//Just to show off my vision of campaign branching. which now looks like it's not gonna happen, but oh well :p
