@@ -11,6 +11,7 @@ namespace Cutscenes.Stages {
 		public Actor newcomer;
 		public string leaverName;
 		public Sprite expression;
+		public string sfx;
 
 		public StageBuilder SetSpeaker(string speaker) {
 			this.speaker = speaker;
@@ -28,6 +29,11 @@ namespace Cutscenes.Stages {
 				throw new UnityException("Expression \"" + speaker + expression + "\" not found");
 			}
 
+			return this;
+		}
+
+		public StageBuilder SetAudio(string audioID) {
+			this.sfx = audioID;
 			return this;
 		}
 
