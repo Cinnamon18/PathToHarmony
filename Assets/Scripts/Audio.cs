@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Audio : MonoBehaviour {
 
-	private static Dictionary<string, AudioClip> tracks = new Dictionary<string, AudioClip>();
+	private static Dictionary<string, AudioClip> tracks;
 	private static AudioSource sfxSource;
 	private static AudioSource musicSource;
 
@@ -13,7 +13,11 @@ public class Audio : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		tracks.Add("DemoClip", Resources.Load<AudioClip>("Audio/DemoSoundEffect"));
+		if (tracks == null) {
+			tracks = new Dictionary<string, AudioClip>();
+			tracks.Add("DemoClip", Resources.Load<AudioClip>("Audio/DemoSoundEffect"));
+		}
+
 		sfxSource = initialSfx;
 		musicSource = initialMusic;
 	}
