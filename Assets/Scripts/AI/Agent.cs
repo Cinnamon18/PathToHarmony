@@ -41,7 +41,7 @@ namespace AI {
 		}
 
 		protected List<Coord> findNearestEnemies(Coord start) {
-			Debug.Log("Bug here when tiles do not take up entire battlefield dimensions");
+
 			int[,] moveDirs = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 			HashSet<Coord> visited = new HashSet<Coord>();
 			Queue<Coord> moveQueue = new Queue<Coord>();

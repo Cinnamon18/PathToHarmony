@@ -32,8 +32,6 @@ namespace Gameplay {
 		[SerializeField]
 		private TileGenerator generator;
 
-		private TileType[] tileTypes;
-
 		private string mapFilePath = Serialization.mapFilePath;
 		private LevelInfo levelInfo;
 
@@ -42,12 +40,35 @@ namespace Gameplay {
 
 
 		private BattleLoopStage battleStage;
+		public BattleLoopStage BattleStage
+		{
+			get
+			{
+				return battleStage;
+			}
+		}
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
 
 		private int currentCharacter;
+		public int CurrentCharacter
+		{
+			get
+			{
+				return currentCharacter;
+			}
+		}
 		private int playerCharacter;
+		public int PlayerCharacter
+		{
+			get
+			{
+				return playerCharacter;
+			}
+		}
 		public int halfTurnsElapsed;
+
+		private bool skipTurnFlag = false;
 
 		[SerializeField]
 		private Text turnPlayerText;
@@ -78,6 +99,7 @@ namespace Gameplay {
 			deserializeMap();
 			deserializeLevel();
 
+			/*
 			//TODO replace this with predicate based execution
 			CameraController.inputEnabled = false;
 			mainCamera.enabled = false;
@@ -85,6 +107,7 @@ namespace Gameplay {
 			if (level.cutsceneIDs.Length != 0) {
 				cutscene.startCutscene(level.cutsceneIDs[0]);
 			}
+			*/
 
 		}
 
@@ -92,14 +115,7 @@ namespace Gameplay {
 		async void Update() {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
-					
-					if (!cutscene.isRunning) {
-						CameraController.inputEnabled = true;
-						cutsceneCamera.enabled = false;
-						mainCamera.enabled = true;
-						advanceBattleStage();
-					}
-			
+					advanceBattleStage();
 					break;
 				case BattleLoopStage.Pick:
 					advanceBattleStage();
@@ -147,7 +163,11 @@ namespace Gameplay {
 
 					//Character.getMove() is responsible for validation so we assume the move to be legal
 					Move move = await level.characters[currentCharacter].getMove();
-					Debug.Log("movepicked");
+					if (skipTurnFlag)
+					{
+						return;
+					}
+
 					Unit ourUnit = battlefield.units[move.from.x, move.from.y];
 					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.to.x, move.to.y);
 
