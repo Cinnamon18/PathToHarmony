@@ -30,7 +30,7 @@ namespace Gameplay {
 		public Camera cutsceneCamera;
 
 		private BattleLoopStage battleStage;
-		public BattleLoopStage BattleStage{
+		public BattleLoopStage BattleStage {
 			get {
 				return battleStage;
 			}
@@ -51,6 +51,8 @@ namespace Gameplay {
 			}
 		}
 		public int halfTurnsElapsed;
+
+		private bool skipTurnFlag = false;
 
 		[SerializeField]
 		private Text turnPlayerText;
@@ -137,6 +139,10 @@ namespace Gameplay {
 
 					//Character.getMove() is responsible for validation so we assume the move to be legal
 					Move move = await level.characters[currentCharacter].getMove();
+					if (skipTurnFlag) {
+						return;
+					}
+
 					Unit ourUnit = battlefield.units[move.from.x, move.from.y];
 					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.to.x, move.to.y);
 
@@ -390,7 +396,7 @@ namespace Gameplay {
 			//This indicates the scene has been played from the editor, without first running MainMenu. This is a debug mode.
 			if (Persistance.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
-					new Character("Alice", true, new playerAgent()),
+					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new simpleAgent())
 				};
 				level = new Level("DemoMap2", "TestLevel", characters, new string[] { });
@@ -407,14 +413,13 @@ namespace Gameplay {
 		}
 
 		public void skipTurn() {
-			
 			Agent agent = level.characters[currentCharacter].agent;
-			if(agent is playerAgent) {
-				((playerAgent)agent).unhighlightAll();
+			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection) {
+				if (agent is PlayerAgent) {
+					((PlayerAgent)agent).unhighlightAll();
+					advanceBattleStage();
+				}
 			}
-			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection)
-				advanceBattleStage();
-			
 		}
 	}
 }

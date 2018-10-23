@@ -7,7 +7,7 @@ using Units;
 using UnityEngine;
 
 namespace AI {
-	public class playerAgent : Agent {
+	public class PlayerAgent : Agent {
 
 		private List<Coord> moveOptions;
 		private List<Coord> highlightedEnemyUnits;
@@ -16,7 +16,7 @@ namespace AI {
 
 		private const int INPUT_LOOP_DELAY = 10;
 
-		public playerAgent() : base() {
+		public PlayerAgent() : base() {
 			otherHighlightedObjects = new List<GameObject>();
 		}
 
