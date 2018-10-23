@@ -19,10 +19,10 @@ namespace AI {
 
 			List<Coord> available = filterHasMove(allies);
 
-			Coord unitCoord;
+			Coord unitCoord = new Coord(0,0);
 			Unit curUnit;
 			foreach (Coord coord in available) {
-				Units unit = battlefield.units[coord.x, coord.y];
+				Unit unit = battlefield.units[coord.x, coord.y];
 				if (unit is HealerUnit) {
 					unitCoord = coord;
 					curUnit = unit;
@@ -41,8 +41,9 @@ namespace AI {
 					// TODO
 					// Flee
 				} else {
-					List<Coord> attackZone = curUnit.getTotalAttackZone(unitCoord.x, unitCoord.y, battlefield, character);
-					List<Coord> targets = intersectCoords(attackZone, enemies);
+					HashSet<Coord> attackZone = curUnit.getTotalAttackZone(unitCoord.x, unitCoord.y, battlefield, character);
+					attackZone.IntersectWith(allies);
+					List<Coord> targets = new List<Coord>(attackZone);
 					if (targets.Count > 0) {
 						// TODO
 						// Choose best target
@@ -52,7 +53,21 @@ namespace AI {
 					}
 				}
 			} else if (curUnit is MeleeUnit) {
-
+				if (curUnit.getHealth() < curUnit.maxHealth * 0.4) {
+					// TODO
+					// Flee
+				} else {
+					HashSet<Coord> attackZone = curUnit.getTotalAttackZone(unitCoord.x, unitCoord.y, battlefield, character);
+					attackZone.IntersectWith(enemies);
+					List<Coord> targets = new List<Coord>(attackZone);
+					if (targets.Count > 0) {
+						// TODO
+						// Choose best target
+					} else {
+						// TODO
+						// Move to closest
+					}
+				}
 			} else if (curUnit is RangedUnit) {
 
 			} else if (curUnit is StatusUnit) {
@@ -84,7 +99,7 @@ namespace AI {
 			//Just so the player can keep track of what's happening
 			await Task.Delay(300);
 
-			return new Move(unitCoord.x, unitCoord.y, bestCoord.x, bestCoord.y);
+			return new Move();
 		}
 
 	}

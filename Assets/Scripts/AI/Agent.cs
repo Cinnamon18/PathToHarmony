@@ -186,6 +186,17 @@ namespace AI {
 			return hasMove;
 		}
 
+		protected List<Coord> filterHealers(List<Coord> units) {
+			List<Coord> healers = new List<Coord>();
+			foreach (Coord coord in units) {
+				Unit unit = battlefield.units[coord.x, coord.y];
+				if (unit != null && unit is HealerUnit) {
+					healers.Add(coord);
+				}
+			}
+			return healers;
+		}
+
 		// Return a list of Tiles from which a unit can attack any enemy unit
 		protected List<Coord> getOffenseTiles(Coord unitCoord) {
 			List<Coord> offenseTiles = new List<Coord>();
@@ -256,6 +267,10 @@ namespace AI {
 				return exceptCoords(moves, dangerZone);
 			}
 			return new List<Coord>();
+		}
+
+		protected Move flee(Coord unitCoord, Unit unit, List<Coord> healers) {
+			return new Move();
 		}
 
 		//Use to check if multiple conditions are met (i.e. if the coord is a location that can be moved to and is from a list of desirable locations)
