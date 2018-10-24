@@ -3236,6 +3236,16 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 29417752}
     m_Modifications:
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: previewObj.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: unitPrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4968038942280118, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
       propertyPath: m_LocalPosition.x
       value: 5.2838826
@@ -3277,7 +3287,7 @@ Prefab:
         type: 2}
       propertyPath: previewObj.Array.data[1]
       value: 
-      objectReference: {fileID: 983116297}
+      objectReference: {fileID: 100004, guid: 2c86103a7b5b4a441a4776ca223e098b, type: 3}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: previewHolder
@@ -3338,6 +3348,17 @@ Prefab:
       propertyPath: overWriteToggle
       value: 
       objectReference: {fileID: 979497548}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: previewObj.Array.data[2]
+      value: 
+      objectReference: {fileID: 100000, guid: 9eef5367c31e66c4c9d8a05ca9d23b16, type: 3}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: unitPrefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 1629421154834734, guid: 225de50b0ce81b747a6c3f2f1c1ffbac,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
   m_IsPrefabAsset: 0
