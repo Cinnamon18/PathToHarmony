@@ -47,6 +47,7 @@ namespace Gameplay {
 				return battleStage;
 			}
 		}
+
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
 
@@ -58,6 +59,7 @@ namespace Gameplay {
 				return currentCharacter;
 			}
 		}
+
 		private int playerCharacter;
 		public int PlayerCharacter
 		{
@@ -98,16 +100,6 @@ namespace Gameplay {
 			getLevel();
 			deserializeMap();
 			deserializeLevel();
-
-			/*
-			//TODO replace this with predicate based execution
-			CameraController.inputEnabled = false;
-			mainCamera.enabled = false;
-			cutsceneCamera.enabled = true;
-			if (level.cutsceneIDs.Length != 0) {
-				cutscene.startCutscene(level.cutsceneIDs[0]);
-			}
-			*/
 
 		}
 
@@ -163,8 +155,8 @@ namespace Gameplay {
 
 					//Character.getMove() is responsible for validation so we assume the move to be legal
 					Move move = await level.characters[currentCharacter].getMove();
-					if (skipTurnFlag)
-					{
+
+					if (skipTurnFlag) {
 						return;
 					}
 
@@ -269,11 +261,9 @@ namespace Gameplay {
 			}
 		}
 
-		private void checkTile(Tile tile, Unit unit)
-		{
+		private void checkTile(Tile tile, Unit unit) {
 			TileEffects effects = tile.tileEffects;
-			switch (effects)
-			{
+			switch (effects) {
 				case TileEffects.Normal:
 					break;
 				case TileEffects.DOT:
@@ -425,7 +415,7 @@ namespace Gameplay {
 			//This indicates the scene has been played from the editor, without first running MainMenu. This is a debug mode.
 			if (Persistance.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
-					new Character("Alice", true, new playerAgent()),
+					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new simpleAgent())
 				};
 				level = new Level("DemoMap", "DemoLevel", characters, new string[] { });
@@ -438,6 +428,17 @@ namespace Gameplay {
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 			foreach (Character character in level.characters) {
 				character.agent.battlefield = this.battlefield;
+			}
+		}
+
+
+		public void skipTurn() {
+			Agent agent = level.characters[currentCharacter].agent;
+			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection) {
+				if (agent is PlayerAgent) {
+					((PlayerAgent)agent).unhighlightAll();
+					advanceBattleStage();
+				}
 			}
 		}
 
