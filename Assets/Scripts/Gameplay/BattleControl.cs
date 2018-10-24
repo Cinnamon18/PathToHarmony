@@ -30,12 +30,29 @@ namespace Gameplay {
 		public Camera cutsceneCamera;
 
 		private BattleLoopStage battleStage;
+		public BattleLoopStage BattleStage {
+			get {
+				return battleStage;
+			}
+		}
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
 
 		private int currentCharacter;
+		public int CurrentCharacter {
+			get {
+				return currentCharacter;
+			}
+		}
 		private int playerCharacter;
+		public int PlayerCharacter {
+			get {
+				return playerCharacter;
+			}
+		}
 		public int halfTurnsElapsed;
+
+		private bool skipTurnFlag = false;
 
 		[SerializeField]
 		private Text turnPlayerText;
@@ -48,9 +65,7 @@ namespace Gameplay {
 		[SerializeField]
 		private Stage cutscene;
 
-		// Use this for initialization
 		void Start() {
-			//Actual constructor code. This should still be here after the demo :p
 			playerCharacter = 0;
 			battlefield = new Battlefield();
 			currentCharacter = -1;
@@ -61,35 +76,34 @@ namespace Gameplay {
 			turnChangeBackground.enabled = false;
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
+			cutscene.hideVisualElements();
+			useNormalCamera();
 
 			getLevel();
 			deserializeMap();
 			deserializeLevel();
 
-			//TODO replace this with predicate based execution
-			CameraController.inputEnabled = false;
-			mainCamera.enabled = false;
-			cutsceneCamera.enabled = true;
-			if (level.cutsceneIDs.Length != 0) {
-				cutscene.startCutscene(level.cutsceneIDs[0]);
-			}
+			addUnit(UnitType.Cleric, level.characters[0], 5, 5, Faction.Xingata);
+			addUnit(UnitType.Archer, level.characters[0], 4, 4, Faction.Xingata);
 		}
 
-		// Update is called once per frame
+		// Poor man's state machine. in retrospect i have no idea why i didn't use a proper one. oh well, next game.
 		async void Update() {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
-					if (!cutscene.isRunning) {
-						CameraController.inputEnabled = true;
-						cutsceneCamera.enabled = false;
-						mainCamera.enabled = true;
-						advanceBattleStage();
-					}
+					advanceBattleStage();
 					break;
 				case BattleLoopStage.Pick:
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.BattleLoopStart:
+					if (!battleStageChanged) {
+						break;
+					}
+					battleStageChanged = false;
+					//Check for cutscenes every start phase
+					await runAppropriateCutscenes();
+
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.TurnChange:
@@ -125,6 +139,10 @@ namespace Gameplay {
 
 					//Character.getMove() is responsible for validation so we assume the move to be legal
 					Move move = await level.characters[currentCharacter].getMove();
+					if (skipTurnFlag) {
+						return;
+					}
+
 					Unit ourUnit = battlefield.units[move.from.x, move.from.y];
 					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.to.x, move.to.y);
 
@@ -161,6 +179,8 @@ namespace Gameplay {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
 					}
 
+					//Check cutscenes after a unit was eliminated. Could be important for plot relevant characters or smth.
+					await runAppropriateCutscenes();
 					checkWinAndLose();
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
@@ -189,7 +209,13 @@ namespace Gameplay {
 					}
 					battleStageChanged = false;
 
+					//Check cutscenes every end phase
+					await runAppropriateCutscenes();
+
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[currentCharacter]]) {
+						Coord coord = battlefield.getUnitCoords(unit);
+						Tile tile = battlefield.map[coord.x, coord.y].Peek();
+						checkTile(tile, unit);
 						unit.hasMovedThisTurn = false;
 						unit.setHasAttackedThisTurn(false);
 					}
@@ -211,10 +237,24 @@ namespace Gameplay {
 				return true;
 
 			} else if (objective.isLoseCondition(halfTurnsElapsed)) {
-				defeatImage.enabled = true;
+				restartLevelDefeat();
 				return true;
 			} else {
 				return false;
+			}
+		}
+
+		private void checkTile(Tile tile, Unit unit) {
+			TileEffects effects = tile.tileEffects;
+			switch (effects) {
+				case TileEffects.Normal:
+					break;
+				case TileEffects.DOT:
+					unit.setHealth(unit.getHealth() - 20);
+					break;
+				case TileEffects.Heal:
+					unit.setHealth(unit.getHealth() + 20);
+					break;
 			}
 		}
 
@@ -225,6 +265,16 @@ namespace Gameplay {
 
 			Persistance.campaign.levelIndex++;
 			//Oh Boy i hope this works.
+			SceneManager.LoadScene("DemoBattle");
+		}
+
+		private async void restartLevelDefeat() {
+			defeatImage.enabled = true;
+			await Task.Delay(TimeSpan.FromMilliseconds(6000));
+			victoryImage.enabled = false;
+			//TODO show ui to quit or retry
+
+			//Restart the level, don't increment
 			SceneManager.LoadScene("DemoBattle");
 		}
 
@@ -249,7 +299,42 @@ namespace Gameplay {
 			);
 		}
 
-		//Convenience
+		private async Task runAppropriateCutscenes() {
+			foreach (String cutsceneID in level.cutsceneIDs) {
+				if (Stages.testExecutionCondition(cutsceneID, battlefield, objective, halfTurnsElapsed)) {
+					await runCutscene(cutsceneID);
+					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
+					break;
+				}
+			}
+		}
+
+		private async Task runCutscene(string cutsceneID) {
+			cutscene.startCutscene(cutsceneID);
+			useCutsceneCamera();
+
+			//Wait for cutscene to finish.
+			while (cutscene.isRunning) {
+				//Unity, forgive me for not using coroutines. I am repentant. I understand my crimes and will not recommimt.
+				await Task.Delay(100);
+			}
+
+			useNormalCamera();
+		}
+
+		private void useCutsceneCamera() {
+			CameraController.inputEnabled = false;
+			mainCamera.enabled = false;
+			cutsceneCamera.enabled = true;
+		}
+
+		private void useNormalCamera() {
+			CameraController.inputEnabled = true;
+			cutsceneCamera.enabled = false;
+			mainCamera.enabled = true;
+		}
+
+
 		private void advanceBattleStage() {
 			battleStage = battleStage.NextPhase();
 			battleStageChanged = true;
@@ -311,7 +396,7 @@ namespace Gameplay {
 			//This indicates the scene has been played from the editor, without first running MainMenu. This is a debug mode.
 			if (Persistance.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
-					new Character("Alice", true, new playerAgent()),
+					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new simpleAgent())
 				};
 				level = new Level("DemoMap2", "TestLevel", characters, new string[] { });
@@ -324,6 +409,16 @@ namespace Gameplay {
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 			foreach (Character character in level.characters) {
 				character.agent.battlefield = this.battlefield;
+			}
+		}
+
+		public void skipTurn() {
+			Agent agent = level.characters[currentCharacter].agent;
+			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection) {
+				if (agent is PlayerAgent) {
+					((PlayerAgent)agent).unhighlightAll();
+					advanceBattleStage();
+				}
 			}
 		}
 	}
