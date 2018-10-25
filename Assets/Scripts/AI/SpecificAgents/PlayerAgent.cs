@@ -7,16 +7,14 @@ using Units;
 using UnityEngine;
 
 namespace AI {
-	public class PlayerAgent : Agent {
+	public class playerAgent : Agent {
 
 		private List<Coord> moveOptions;
 		private List<Coord> highlightedEnemyUnits;
 		private List<GameObject> otherHighlightedObjects;
 		private Unit highlightedFriendlyUnit;
 
-		private const int INPUT_LOOP_DELAY = 10;
-
-		public PlayerAgent() : base() {
+		public playerAgent() : base() {
 			otherHighlightedObjects = new List<GameObject>();
 		}
 
@@ -31,9 +29,6 @@ namespace AI {
 				while (currentMove.to == null && currentMove.from != null) {
 					await getMovePhase(currentMove);
 				}
-
-
-				// await Task.Delay(1);
 			}
 
 			return currentMove;
@@ -43,7 +38,7 @@ namespace AI {
 			//Await player input. But. Unity doesn't really support async await.
 			//I'm feeling kinda dumb for not just learning coroutines. Next time!
 			while (!Input.GetButtonDown("Select")) {
-				await Task.Delay(INPUT_LOOP_DELAY);
+				await Task.Delay(1);
 			}
 
 			RaycastHit hit;
@@ -102,8 +97,8 @@ namespace AI {
 			}
 
 			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
-			while (Input.GetButtonDown("Select")) {
-				await Task.Delay(INPUT_LOOP_DELAY);
+			while (!Input.GetButtonUp("Select")) {
+				await Task.Delay(1);
 			}
 
 		}
@@ -111,7 +106,7 @@ namespace AI {
 		public async Task getMovePhase(Move currentMove) {
 			//Await player input.
 			while (!Input.GetButtonDown("Select")) {
-				await Task.Delay(INPUT_LOOP_DELAY);
+				await Task.Delay(1);
 			}
 
 			RaycastHit hit;
@@ -163,8 +158,8 @@ namespace AI {
 			}
 
 			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
-			while (Input.GetButtonDown("Select")) {
-				await Task.Delay(INPUT_LOOP_DELAY);
+			while (!Input.GetButtonUp("Select")) {
+				await Task.Delay(1);
 			}
 		}
 		private void highlight(Unit unit, int colorIndex = 0) {
@@ -191,7 +186,7 @@ namespace AI {
 			}
 		}
 
-		public void unhighlightAll() {
+		private void unhighlightAll() {
 			if (moveOptions == null) {
 				//Someone accidentally called this twice in a row
 				return;

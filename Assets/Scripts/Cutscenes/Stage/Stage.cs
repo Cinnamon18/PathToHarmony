@@ -1,5 +1,4 @@
 using Cutscenes.Textboxes;
-using StoppableCoroutines;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,14 +46,9 @@ namespace Cutscenes.Stages {
 		[SerializeField]
 		private Transform textboxBackground;
 
-		[SerializeField]
-		private GameObject skipButton;
-
 		private List<Actor> actors = new List<Actor>();
 
 		public bool isRunning = false;
-		private bool skipCutFlag = false;
-		private StoppableCoroutine currentDialogLine;
 
 		/// <summary>
 		/// Built in rich text tags won't work now, will need to implement custom
@@ -69,14 +63,8 @@ namespace Cutscenes.Stages {
 			}
 		}
 
-		void Update() {
-			if (Input.GetButtonDown("Select")) {
-				stopCurrentCutsceneLine();
-			}
-		}
 
 		public void startCutscene(string cutsceneID) {
-			showVisualElements();
 			StartCoroutine(Invoke(Stages.getStage(cutsceneID)));
 		}
 
@@ -85,13 +73,8 @@ namespace Cutscenes.Stages {
 			yield return RaiseUpTextbox();
 
 			foreach (StageBuilder stageBuilder in stageBuilders) {
-				if (skipCutFlag) {
-					break;
-				}
-
 				yield return Invoke(stageBuilder);
 			}
-			skipCutFlag = false;
 			isRunning = false;
 			hideVisualElements();
 		}
@@ -106,8 +89,8 @@ namespace Cutscenes.Stages {
 					new Vector2(0, targetY),
 					Mathf.Sqrt(t)
 					);
-				//manual correction factor (:
-				textboxBackground.position += new Vector3(0, 0, -20);
+					//manual correction factor (:
+					textboxBackground.position += new Vector3(0, 0, -20);
 			});
 		}
 
@@ -136,10 +119,6 @@ namespace Cutscenes.Stages {
 				foundActor.image.sprite = stageBuilder.expression;
 			}
 
-			if (stageBuilder.sfx != null) {
-				Audio.playSfx(stageBuilder.sfx);
-			}
-
 			if (stageBuilder.message != null) {
 				CutsceneSide side = CutsceneSide.None;
 
@@ -163,12 +142,7 @@ namespace Cutscenes.Stages {
 				}
 
 				textbox.AddText(side, stageBuilder.speaker, stageBuilder.message);
-
-				//I approximate it to take ~0.03 seconds per letter, but we do more so players can actually read
-				float playTimeGuess = (float)(stageBuilder.message.Length * 0.08 + 0.5);
-				currentDialogLine = this.StartStoppableCoroutine(waitForSeconds(playTimeGuess));
-				yield return currentDialogLine.WaitFor();
-
+				yield return new WaitForSeconds(5);
 				foreach (Actor actor in actors) {
 					actor.IsDark = false;
 				}
@@ -269,28 +243,6 @@ namespace Cutscenes.Stages {
 
 		public void hideVisualElements() {
 			this.gameObject.SetActive(false);
-			skipButton.SetActive(false);
-		}
-
-		public void showVisualElements() {
-			this.gameObject.SetActive(true);
-			skipButton.SetActive(true);
-		}
-
-		public void skipCutscene() {
-			stopCurrentCutsceneLine();
-			skipCutFlag = true;
-		}
-
-		private void stopCurrentCutsceneLine() {
-			if (currentDialogLine != null) {
-				currentDialogLine.Stop();
-			}
-			Audio.stopAudio(false);
-		}
-
-		private IEnumerator waitForSeconds(float seconds) {
-			yield return new WaitForSeconds(seconds);
 		}
 
 	}

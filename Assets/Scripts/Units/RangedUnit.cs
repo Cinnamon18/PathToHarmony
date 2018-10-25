@@ -38,7 +38,8 @@ namespace Units {
 			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
 			List<Buff> damageBuffs = getBuffsOfType(BuffType.Damage);
-			foreach (Buff buff in damageBuffs) {
+			foreach (Buff buff in damageBuffs)
+			{
 				damage *= (buff as DamageBuff).getDamageBonus();
 			}
 
@@ -52,10 +53,13 @@ namespace Units {
 			//Damage rounds up
 			enemy.setHealth(enemy.getHealth() - damage);
 
-			if (enemy.getHealth() <= 0) {
+			if (enemy.getHealth() <= 0)
+			{
 				enemy.defeated(battlefield);
 				return true;
-			} else {
+			}
+			else
+			{
 				return false;
 			}
 
@@ -66,21 +70,20 @@ namespace Units {
 			List<Coord> validTargets = new List<Coord>();
 
 			//	Create a diamond field around myX and myY.
-			for (int y = -range; y <= range; y++) {             // For all valid y...
+			for (int y = -range; y <= range; y++)
+			{             // For all valid y...
 				int XAxis = range - Math.Abs(y);
-				for (int x = -XAxis; x <= XAxis; x++) {         // and valid x...
+				for (int x = -XAxis; x <= XAxis; x++)
+				{         // and valid x...
 					bool onTheMap = !(x + myX < 0 || y + myY < 0 || x + myX >= battlefield.map.GetLength(0) || y + myY >= battlefield.map.GetLength(1));
-					if (onTheMap) {
+					if (onTheMap)
+					{
 						Coord inRange = new Coord(x + myX, y + myY);
 						validTargets.Add(inRange);
 					}
 				}
 			}
 			return validTargets;
-		}
-
-		public override HashSet<Coord> getTotalAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
-			return new HashSet<Coord>(getAttackZone(myX, myY, battlefield, character));
 		}
 
 	}

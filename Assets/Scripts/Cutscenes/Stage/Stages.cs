@@ -1,40 +1,13 @@
 using System.Collections.Generic;
-using Gameplay;
 using UnityEngine;
 
 namespace Cutscenes.Stages {
 	public class Stages {
 
-		public const string andysDemo = "andysDemo";
-		public const string tutorialEnd = "tutorialEnd";
-		public const string genericDefeat = "genericDefeat";
-		private static List<string> hasExecuted = new List<string>();
-
-		//hhh sorry we're throwing type safety out the window but. The execution on these coroutines is already a little weird
-		//#31DaysTillDemo
-		//It's a polling approach to give more control to the caller...
-		public static bool testExecutionCondition(string stageID, Battlefield battlefield, GameObjective objective, int halfTurnsElapsed) {
-			if (stageID == andysDemo && !hasExecuted.Contains(andysDemo)) {
-				//Execute on victory condition
-				hasExecuted.Add(andysDemo);
-				return objective.isWinCondition(halfTurnsElapsed);
-			} else if (stageID == tutorialEnd && !hasExecuted.Contains(tutorialEnd)) {
-				//Execute on turn one
-				hasExecuted.Add(tutorialEnd);
-				return halfTurnsElapsed == 0;
-			} else if (stageID == genericDefeat && !hasExecuted.Contains(genericDefeat)) {
-				//Execute on defeat condition
-				hasExecuted.Add(genericDefeat);
-				return objective.isLoseCondition(halfTurnsElapsed);
-			}
-			// throw new UnityException("Invalid stageID \"" + stageID + "\" tested for");
-			return false;
-		}
 
 		public static StageBuilder[] getStage(string stageID) {
-			//You can switch const strings? Hell Yeah!
 			switch (stageID) {
-				case andysDemo:
+				case "andysDemo":
 					return new StageBuilder[] {
 						S().AddActor(CutsceneSide.FarLeft, "BlairActor", "J*n"),
 						S().AddActor(CutsceneSide.FarRight, "BlairActor", "L*za"),
@@ -54,18 +27,18 @@ namespace Cutscenes.Stages {
 						S().AddLeaver("C*risse")
 					};
 					break;
-				case tutorialEnd:
+				case "tutorialEnd":
 					return new StageBuilder[] {
 						S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 						S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
-						S().SetMessage("If anyone saw us, they’d think I’m the victor and you were the loser.")
+						S().SetMessage("If anyone saw us, they’d think I’m the victor and you are the loser.")
 							.SetSpeaker("Juniper"),
-						S().SetMessage("I’ve dreamt of this day since I was a child. Of the day I finally get to meet his majesty.")
+						S().SetMessage("I’ve dreamt of this day since I was a child. Of the day I finally meet his majesty.")
 							.SetSpeaker("Blair").SetExpression("Smile"),
-						S().SetMessage("You know he's leading an army on the field, right?")
+						S().SetMessage("You know he is leading an army on the field.")
 							.SetSpeaker("Juniper"),
 						S().SetMessage("I know, but I still can’t shake off my disappointment.")
-							.SetSpeaker("Blair").SetAudio("DemoClip"),
+							.SetSpeaker("Blair"),
 						S().SetMessage("You never explained to me why you admire the King so much.")
 							.SetSpeaker("Juniper"),
 						S().SetMessage("What is there to explain?")
@@ -85,15 +58,8 @@ namespace Cutscenes.Stages {
 							.SetSpeaker("Juniper")
 					};
 					break;
-				case genericDefeat:
-					return new StageBuilder[] {
-						S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-						S().SetMessage("We are defeated!")
-							.SetSpeaker("Blair")
-					};
-					break;
 				default:
-					throw new UnityException("Invalid cutscene key ID \"" + stageID + "\". Check that the scene is present in Stages.cs");
+					Debug.LogError("Invalid cutscene key ID \"" + stageID + "\". Check that the scene is present in Stages.cs");
 					return null;
 			}
 		}
