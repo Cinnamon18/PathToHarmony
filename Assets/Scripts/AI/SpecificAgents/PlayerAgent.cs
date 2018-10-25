@@ -51,7 +51,7 @@ namespace AI {
 			if (Physics.Raycast(ray, out hit, 1000.0f)) {
 				Vector3Int tileCoords = Util.WorldToGrid(hit.transform.position);
 				IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(tileCoords.x, tileCoords.y, tileCoords.z);
-
+				
 				if (selectedItem is Tile) {
 					//Selected a tile, show info abt that tile
 					//TODO: Show info about tile if a tile is clicked
@@ -63,7 +63,7 @@ namespace AI {
 					//This method will get called again because we didn't find a valid selection
 				} else if (selectedItem is Unit) {
 					Unit selectedUnit = selectedItem as Unit;
-
+					
 					if (selectedUnit.getCharacter(battlefield) == this.character &&
 						(!selectedUnit.hasMovedThisTurn || (!selectedUnit.getHasAttackedThisTurn() &&
 						selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, character).Count != 0))) {
@@ -78,6 +78,7 @@ namespace AI {
 						this.highlightedFriendlyUnit = selectedUnit;
 
 						moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
+				
 						foreach (Coord moveOption in moveOptions) {
 							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 						}

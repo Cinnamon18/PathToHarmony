@@ -26,27 +26,45 @@ namespace Gameplay {
 		private GameObject[] tilePrefabs;
 		[SerializeField]
 		private GameObject[] unitPrefabs;
+
+		[SerializeField]
+		private Transform tilesHolder;
+		[SerializeField]
+		private TileGenerator generator;
+
+		private string mapFilePath = Serialization.mapFilePath;
+		private LevelInfo levelInfo;
+
 		public Camera mainCamera;
 		public Camera cutsceneCamera;
 
+
 		private BattleLoopStage battleStage;
-		public BattleLoopStage BattleStage {
-			get {
+		public BattleLoopStage BattleStage
+		{
+			get
+			{
 				return battleStage;
 			}
 		}
+
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
 
 		private int currentCharacter;
-		public int CurrentCharacter {
-			get {
+		public int CurrentCharacter
+		{
+			get
+			{
 				return currentCharacter;
 			}
 		}
+
 		private int playerCharacter;
-		public int PlayerCharacter {
-			get {
+		public int PlayerCharacter
+		{
+			get
+			{
 				return playerCharacter;
 			}
 		}
@@ -83,8 +101,7 @@ namespace Gameplay {
 			deserializeMap();
 			deserializeLevel();
 
-			addUnit(UnitType.Cleric, level.characters[0], 5, 5, Faction.Xingata);
-			addUnit(UnitType.Archer, level.characters[0], 4, 4, Faction.Xingata);
+
 		}
 
 		// Poor man's state machine. in retrospect i have no idea why i didn't use a proper one. oh well, next game.
@@ -139,6 +156,7 @@ namespace Gameplay {
 
 					//Character.getMove() is responsible for validation so we assume the move to be legal
 					Move move = await level.characters[currentCharacter].getMove();
+
 					if (skipTurnFlag) {
 						return;
 					}
@@ -347,7 +365,8 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, "Assets\\Maps\\"), tilePrefabs, null);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), generator, tilesHolder);
+
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
 
@@ -381,10 +400,11 @@ namespace Gameplay {
 				Stack<UnitInfo> stack = levelInfo.units;
 				while (stack.Count != 0) {
 					UnitInfo info = stack.Pop();
-					if (info.getIsPlayer()) {
+					
+					if (info.getFaction() == Faction.Xingata) {
 						addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
 					} else {
-						addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, Faction.Tsubin);
+						addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, info.getFaction());
 					}
 				}
 			} catch (FileNotFoundException ex) {
@@ -399,7 +419,7 @@ namespace Gameplay {
 					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new simpleAgent())
 				};
-				level = new Level("DemoMap2", "TestLevel", characters, new string[] { });
+				level = new Level("DemoMap", "DemoLevel", characters, new string[] { });
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();
@@ -412,6 +432,7 @@ namespace Gameplay {
 			}
 		}
 
+
 		public void skipTurn() {
 			Agent agent = level.characters[currentCharacter].agent;
 			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection) {
@@ -421,5 +442,6 @@ namespace Gameplay {
 				}
 			}
 		}
+
 	}
 }
