@@ -264,6 +264,7 @@ namespace Gameplay {
 			victoryImage.enabled = false;
 
 			Persistance.campaign.levelIndex++;
+			Persistance.saveProgress();
 			//Oh Boy i hope this works.
 			SceneManager.LoadScene("DemoBattle");
 		}
@@ -406,6 +407,7 @@ namespace Gameplay {
 			}
 
 
+			Persistance.loadProgress();
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 			foreach (Character character in level.characters) {
 				character.agent.battlefield = this.battlefield;
