@@ -97,9 +97,6 @@ public class MainMenu : MonoBehaviour {
 
 		Persistance.campaign = testCampaign1;
 
-		//load the player's current progress
-		Persistance.campaign.levelIndex=Persistance.getLevelIndex();
-
 
 	}
 }
