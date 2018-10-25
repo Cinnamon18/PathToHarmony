@@ -13,7 +13,7 @@ namespace Gameplay {
 		private TileType initialType;
 		public TileType tileType { get; set; }
 		public static GameObject[][] tileFlavor;
-
+		public TileEffects tileEffects;
 		public Tile() : this(TileType.None) { }
 
 		public Tile(TileType tileType) {

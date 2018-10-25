@@ -54,7 +54,7 @@ public class UnitHealthUIManager : MonoBehaviour {
 				unitModels = new List<GameObject> {
 					InstantiateRelative(0, 0, COL_WIDTH / 2),
 					InstantiateRelative(0, 0, -COL_WIDTH / 2),
-					InstantiateRelative(-ROW_HEIGHT / 2, 0, 0)
+					InstantiateRelative(-ROW_HEIGHT, 0, 0)
 				};
 				break;
 			case 4:
