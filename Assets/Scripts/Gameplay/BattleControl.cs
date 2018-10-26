@@ -38,12 +38,10 @@ namespace Gameplay {
 		public Camera mainCamera;
 		public Camera cutsceneCamera;
 
-
+		private const float turnDelayMs = 150.0f;
 		private BattleLoopStage battleStage;
-		public BattleLoopStage BattleStage
-		{
-			get
-			{
+		public BattleLoopStage BattleStage {
+			get {
 				return battleStage;
 			}
 		}
@@ -52,19 +50,15 @@ namespace Gameplay {
 		private bool battleStageChanged;
 
 		private int currentCharacter;
-		public int CurrentCharacter
-		{
-			get
-			{
+		public int CurrentCharacter {
+			get {
 				return currentCharacter;
 			}
 		}
 
 		private int playerCharacter;
-		public int PlayerCharacter
-		{
-			get
-			{
+		public int PlayerCharacter {
+			get {
 				return playerCharacter;
 			}
 		}
@@ -166,7 +160,7 @@ namespace Gameplay {
 
 					if (selectedItem is Tile) {
 						//We selected a tile! lets move to it
-						moveUnit(ourUnit, move.to.x, move.to.y);
+						await moveUnit(ourUnit, move.to.x, move.to.y);
 
 						if (ourUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
 							ourUnit.greyOut();
@@ -192,7 +186,7 @@ namespace Gameplay {
 						}
 
 						ourUnit.setHasAttackedThisTurn(true);
-						await Task.Delay(TimeSpan.FromMilliseconds(250));
+						await Task.Delay(TimeSpan.FromMilliseconds(turnDelayMs));
 					} else {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
 					}
@@ -308,13 +302,23 @@ namespace Gameplay {
 			battlefield.addUnit(newUnit, character, x, y);
 		}
 
-		private void moveUnit(Unit unit, int targetX, int targetY) {
+		private async Task moveUnit(Unit unit, int targetX, int targetY) {
 			Coord unitCoords = battlefield.getUnitCoords(unit);
 			battlefield.units[unitCoords.x, unitCoords.y] = null;
 			battlefield.units[targetX, targetY] = unit;
-			unit.gameObject.transform.position = Util.GridToWorld(
+
+			Vector3 startPos = unit.gameObject.transform.position;
+			Vector3 endPos = Util.GridToWorld(
 				new Vector3Int(targetX, targetY, battlefield.map[targetX, targetY].Count + 1)
 			);
+
+			float moveUnitProgress = 0.0f;
+			while (moveUnitProgress < turnDelayMs) {
+				unit.gameObject.transform.position = Vector3.Lerp(startPos, endPos, (moveUnitProgress / turnDelayMs));
+				await Task.Delay(10);
+				moveUnitProgress += 10;
+			}
+
 		}
 
 		private async Task runAppropriateCutscenes() {
@@ -400,7 +404,7 @@ namespace Gameplay {
 				Stack<UnitInfo> stack = levelInfo.units;
 				while (stack.Count != 0) {
 					UnitInfo info = stack.Pop();
-					
+
 					if (info.getFaction() == Faction.Xingata) {
 						addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
 					} else {
@@ -417,7 +421,7 @@ namespace Gameplay {
 			if (Persistance.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
-					new Character("The evil lord zxqv", false, new simpleAgent())
+					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
 				level = new Level("DemoMap", "DemoLevel", characters, new string[] { });
 				Persistance.campaign = new Campaign("test", 0, new[] { level });

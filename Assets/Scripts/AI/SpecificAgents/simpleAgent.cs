@@ -7,9 +7,9 @@ using Units;
 using UnityEngine;
 
 namespace AI {
-	public class simpleAgent : Agent {
+	public class SimpleAgent : Agent {
 
-		public simpleAgent() : base() { }
+		public SimpleAgent() : base() { }
 
 		public override async Task<Move> getMove() {
 			

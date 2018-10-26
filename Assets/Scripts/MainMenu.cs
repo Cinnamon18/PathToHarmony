@@ -65,21 +65,21 @@ public class MainMenu : MonoBehaviour {
 		//LEVEL 1
 		Character[] characters1 = new[] {
 				new Character("Alice", true, new PlayerAgent()),
-				new Character("The evil lord zxqv", false, new simpleAgent())
+				new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
 		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new string[] { Stages.tutorialEnd, Stages.genericDefeat });
 
 		//LEVEL 2
 		Character[] characters2 = new[] {
 				new Character("Blair", true, new PlayerAgent()),
-				new Character("King Xingata", false, new simpleAgent())
+				new Character("King Xingata", false, new SimpleAgent())
 				};
-		Level level2 = new Level("DemoMap", "TestLevel", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat});
+		Level level2 = new Level("DemoMap", "test", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat});
 
 		//LEVEL 3
 		Character[] characters3 = new[] {
 				new Character("Blair", true, new PlayerAgent()),
-				new Character("evil!Juniper", false, new simpleAgent())
+				new Character("evil!Juniper", false, new SimpleAgent())
 				};
 		Level level3 = new Level("DemoMap", "DemoLevel", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat });
 
