@@ -314,10 +314,15 @@ namespace Gameplay {
 
 			float moveUnitProgress = 0.0f;
 			while (moveUnitProgress < turnDelayMs) {
-				unit.gameObject.transform.position = Vector3.Lerp(startPos, endPos, (moveUnitProgress / turnDelayMs));
+				//Slower at the start and end. a beautiful logistic curve. 
+				float progressPercent = 1 / (1 + Mathf.Pow((float)(Math.E), -5 * ((moveUnitProgress / turnDelayMs) - 0.5f) ));
+				
+				unit.gameObject.transform.position = Vector3.Lerp(startPos, endPos, progressPercent);
 				await Task.Delay(10);
 				moveUnitProgress += 10;
 			}
+
+			unit.gameObject.transform.position = endPos;
 
 		}
 
