@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 223549226788773394}
   - component: {fileID: 114425848792275622}
   - component: {fileID: 114609432408875802}
+  - component: {fileID: 114157555706328888}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -71,12 +72,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4970945173330864}
+  - component: {fileID: 114529739108469126}
   - component: {fileID: 114498037091705390}
-  - component: {fileID: 114064902006437736}
-  - component: {fileID: 65106087909209176}
+  - component: {fileID: 65530104501836048}
   m_Layer: 0
-  m_Name: Cleric
-  m_TagString: Untagged
+  m_Name: Rogue
+  m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -107,14 +108,14 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1629421154834734}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1706.0206, y: 885.26306, z: 1125.7451}
+  m_LocalPosition: {x: -78.32809, y: 55.619495, z: 62.92675}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224403954332622900}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &65106087909209176
+--- !u!65 &65530104501836048
 BoxCollider:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,25 +127,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114064902006437736
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1629421154834734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25cfc8ed9e795444cbf91112421e416e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hasMovedThisTurn: 0
-  factionMaterials:
-  - {fileID: 2100000, guid: 20370b9f95d7f344c9231b49341c796a, type: 2}
-  - {fileID: 2100000, guid: bc76b035f66e4654cb7cd55b3725e0f6, type: 2}
-  - {fileID: 2100000, guid: 09bc9d9c67dafe1488bd908246fc34ef, type: 2}
-  - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
-  buffUIManager: {fileID: 114823220750792148}
-  healthUIManager: {fileID: 114498037091705390}
 --- !u!114 &114082730755437250
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -188,6 +170,17 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &114157555706328888
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1214039177007956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3846fc1807b1b8e409a1572e47874a0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114425848792275622
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -221,9 +214,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114738306655082024}
-  unitModelPrefab: {fileID: 1758190060128154, guid: 84ac064d145b78c478eb72ab0e4c029c,
+  unitModelPrefab: {fileID: 1918555787466630, guid: 4c3f558f59ccef14b8cb45ffde4dd0a2,
     type: 2}
-  unit: {fileID: 114064902006437736}
+  unit: {fileID: 114529739108469126}
+--- !u!114 &114529739108469126
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1629421154834734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9a0e5d570e60e04ab752d1c034839a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasMovedThisTurn: 0
+  factionMaterials:
+  - {fileID: 2100000, guid: 20370b9f95d7f344c9231b49341c796a, type: 2}
+  - {fileID: 2100000, guid: bc76b035f66e4654cb7cd55b3725e0f6, type: 2}
+  - {fileID: 2100000, guid: 09bc9d9c67dafe1488bd908246fc34ef, type: 2}
+  - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
+  buffUIManager: {fileID: 114823220750792148}
+  healthUIManager: {fileID: 114498037091705390}
 --- !u!114 &114609432408875802
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -278,7 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768a8178c70685d4dbc598b97f53e6f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unit: {fileID: 0}
+  unit: {fileID: 114529739108469126}
   buffIconPrefab: {fileID: 114708540217932716, guid: 669f709c7589f4c4591c7384479983b7,
     type: 2}
 --- !u!114 &114833226706664378

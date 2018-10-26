@@ -57,6 +57,7 @@ GameObject:
   - component: {fileID: 4389145696863198}
   - component: {fileID: 114678508051923064}
   - component: {fileID: 114119226248979004}
+  - component: {fileID: 65733106137444954}
   m_Layer: 0
   m_Name: Archer
   m_TagString: Untagged
@@ -114,6 +115,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &65733106137444954
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1434694798503106}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114082031825110908
 MonoBehaviour:
   m_ObjectHideFlags: 1

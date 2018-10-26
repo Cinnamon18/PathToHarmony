@@ -3236,16 +3236,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 29417752}
     m_Modifications:
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: previewObj.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: unitPrefabs.Array.size
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 4968038942280118, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
       propertyPath: m_LocalPosition.x
       value: 5.2838826
@@ -3280,14 +3270,9 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
-      propertyPath: previewObj.Array.data[0]
+      propertyPath: overWriteToggle
       value: 
-      objectReference: {fileID: 100000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: previewObj.Array.data[1]
-      value: 
-      objectReference: {fileID: 100004, guid: 2c86103a7b5b4a441a4776ca223e098b, type: 3}
+      objectReference: {fileID: 979497548}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
       propertyPath: previewHolder
@@ -3310,6 +3295,11 @@ Prefab:
       objectReference: {fileID: 1356961223}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
+      propertyPath: factionDropdown
+      value: 
+      objectReference: {fileID: 1832452344}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
       propertyPath: unitsHolder
       value: 
       objectReference: {fileID: 498710353}
@@ -3320,56 +3310,9 @@ Prefab:
       objectReference: {fileID: 1472701162}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
-      propertyPath: previewObj.Array.data[1]
-      value: 
-      objectReference: {fileID: 100004, guid: 2c86103a7b5b4a441a4776ca223e098b, type: 3}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: dropdown
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
       propertyPath: generator
       value: 
       objectReference: {fileID: 1983750603}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: playerDropdown
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: factionDropdown
-      value: 
-      objectReference: {fileID: 1832452344}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: overWriteToggle
-      value: 
-      objectReference: {fileID: 979497548}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: previewObj.Array.data[2]
-      value: 
-      objectReference: {fileID: 100000, guid: 9eef5367c31e66c4c9d8a05ca9d23b16, type: 3}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: unitPrefabs.Array.data[2]
-      value: 
-      objectReference: {fileID: 1629421154834734, guid: 225de50b0ce81b747a6c3f2f1c1ffbac,
-        type: 2}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: previewObj.Array.data[3]
-      value: 
-      objectReference: {fileID: 100000, guid: ca2d0397ae7772d40a268f4f27759d8d, type: 3}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: unitPrefabs.Array.data[3]
-      value: 
-      objectReference: {fileID: 1434694798503106, guid: e6af2e076be38264f9620648a2a888a9,
-        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
   m_IsPrefabAsset: 0

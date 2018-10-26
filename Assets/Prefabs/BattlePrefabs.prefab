@@ -2850,6 +2850,8 @@ MonoBehaviour:
   - {fileID: 1488143649172512, guid: e1360b7388da1f24d8c7b0ca79b0d929, type: 2}
   - {fileID: 1629421154834734, guid: 225de50b0ce81b747a6c3f2f1c1ffbac, type: 2}
   - {fileID: 1434694798503106, guid: e6af2e076be38264f9620648a2a888a9, type: 2}
+  - {fileID: 1629421154834734, guid: 69c0be666f9bbac4fb58123a3fdc8d65, type: 2}
+  - {fileID: 1629421154834734, guid: c17983c11eecd5545b4630ae0bd53033, type: 2}
   tilesHolder: {fileID: 0}
   generator: {fileID: 0}
   mainCamera: {fileID: 20312723109998728}
