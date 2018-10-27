@@ -96,6 +96,7 @@ public class MainMenu : MonoBehaviour {
 		});
 
 		Persistance.campaign = testCampaign1;
+		Persistance.loadProgress();
 
 
 	}

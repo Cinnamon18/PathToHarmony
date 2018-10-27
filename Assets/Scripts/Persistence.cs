@@ -14,18 +14,21 @@ public static class Persistance {
 
 	public static void saveProgress() {
 		PlayerPrefs.SetInt(CAMPAIGN_LEVEL_INDEX, campaign.levelIndex);
+		Util.Log("Persistence: Aaved level index of " + campaign.levelIndex);
 		save();
 	}
 
 	public static void loadProgress() {
 		if (PlayerPrefs.HasKey(CAMPAIGN_LEVEL_INDEX)) {
 			campaign.levelIndex = PlayerPrefs.GetInt(CAMPAIGN_LEVEL_INDEX);
+			Util.Log("Persistence: Loaded level index of " + campaign.levelIndex);
 		}
 	}
 
 	public static void savePlayerCharacterInfo() {
 		PlayerPrefs.SetString(PLAYER_NAME_PREF, playerCharacter.name);
 		save();
+		
 	}
 
 	public static Character getPlayerCharacter() {
