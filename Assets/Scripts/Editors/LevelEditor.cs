@@ -18,9 +18,11 @@ namespace Editors {
 		public Text loadMapText;
 		public Text loadLevelText;
 		public Text saveLevelText;
+		
 
-		public TMPro.TMP_Dropdown dropdown;
-		private bool isPlayer;
+		public TMP_Dropdown playerDropdown;
+		public TMP_Dropdown factionDropdown;
+		private Faction currentFaction;
 
 		[SerializeField]
 		private Transform unitsHolder;
@@ -30,8 +32,10 @@ namespace Editors {
 		private string mapName;
 		private string levelName;
 
-		[SerializeField]
 		private GameObject[] tilePrefabs;
+		//to create tile no matter order
+		[SerializeField]
+		private TileGenerator generator;
 
 		private Battlefield battlefield;
 		[SerializeField]
@@ -48,22 +52,32 @@ namespace Editors {
 			//use battlefield to help place units
 			battlefield = new Battlefield();
 			mapName = defaultMap;
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs, tilesHolder);
+
+			//get tile gamobjects from generator
+			tilePrefabs = generator.getPrefabs();
+
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), generator, tilesHolder);
 			//Hacky but Serialization holds how tall the last map loaded is
 			//use to know how tall Unit array should be
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
 			//unitsinfo is used to store units and whether they are player or enemy units
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
-			isPlayer = true;
+
+			//what type of unit is being placed
+			currentFaction = Faction.Xingata;
+
+
 			if (previewObj.Length != unitPrefabs.Length) {
 				Debug.LogError("Must have equal number of prefab and preview objects.");
 			}
 			//Tell Editor type
 			setEditorType();
-			dropdown.onValueChanged.AddListener(delegate {
-				//player when 0
-				isPlayer = (dropdown.value == 0);
+	
+			factionDropdown.onValueChanged.AddListener(delegate {
+				//set current faction
+				currentFaction = (Faction)factionDropdown.value;
 			});
+		
 
 		}
 		public override void serialize() {
@@ -76,10 +90,12 @@ namespace Editors {
 			StringBuilder serialized = new StringBuilder(mapName + ";");
 
 			foreach (UnitInfo info in unitsInfo) {
-				if (info == null) {
-					serialized.Append(";");
-				} else {
+				if (info != null)
+				{
 					serialized.Append(info.serialize() + ";");
+				} else
+				{
+					serialized.Append(";");
 				}
 			}
 
@@ -94,17 +110,26 @@ namespace Editors {
 
 
 		public void loadMap() {
-			removeAllUnits();
-			eraseTiles();
-			mapName = loadMapText.text;
-			reloadMap();
-			resetTextBoxes();
+			if (Serialization.ReadData(mapName, mapFilePath) != null)
+			{
+				removeAllUnits();
+				eraseTiles();
+				mapName = loadMapText.text;
+				reloadMap();
+				resetTextBoxes();
+			} else
+			{
+				Debug.Log("Map filename does not exist");
+			}
+		
 		}
 
 		private void reloadMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs, tilesHolder);
+
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), generator, tilesHolder);
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
+			
 		}
 
 		public void loadLevel() {
@@ -118,11 +143,11 @@ namespace Editors {
 				Stack<UnitInfo> stack = levelInfo.units;
 				while (stack.Count != 0) {
 					UnitInfo info = stack.Pop();
-					isPlayer = info.getIsPlayer();
+					currentFaction = info.getFaction();
 					addUnit(info.getUnitType(), info.getCoord().x, info.getCoord().y);
 				}
-				//reset bool to match dropdown
-				isPlayer = dropdown.value == 0;
+				//reset faction to match dropdown
+				currentFaction = (Faction)factionDropdown.value;
 			} catch (FileNotFoundException ex) {
 				Debug.LogError("Level does not exist.");
 				Debug.LogError(ex);
@@ -155,17 +180,10 @@ namespace Editors {
 					unitPrefabs[index].gameObject.transform.rotation);
 				newUnitGO.transform.parent = unitsHolder;
 				Unit newUnit = newUnitGO.GetComponent<Unit>();
-				Faction currentFaction;
-				//set material to differentiate between player and enemy
-				//TODO: will change later when user can choose unit of a particular faction
-				if (isPlayer) {
-					currentFaction = playerFaction;
-				} else {
-					currentFaction = enemyFaction;
-				}
+			
 				newUnit.setFaction(currentFaction);
 
-				UnitInfo info = new UnitInfo(unitType, isPlayer, new Vector3Int(x, y, z));
+				UnitInfo info = new UnitInfo(unitType, currentFaction, new Vector3Int(x, y, z));
 				unitsInfo[x, y] = info;
 			} else {
 				Debug.Log("Cannot place units on top of each other.");

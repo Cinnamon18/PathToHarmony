@@ -37,19 +37,27 @@ public static class Serialization {
 	}
 
 	public static string ReadData(string fileName, string path) {
-		string filePath = path + fileName + ".txt";
+		try
+		{
+			string filePath = path + fileName + ".txt";
 
-		//Read the text from directly from the test.txt file
-		StreamReader reader = new StreamReader(filePath);
-		string data = reader.ReadToEnd();
-		reader.Close();
-		Util.Log("read file at " + filePath + "successfully!");
-		return data;
+			//Read the text from directly from the test.txt file
+			StreamReader reader = new StreamReader(filePath);
+			string data = reader.ReadToEnd();
+			reader.Close();
+			Util.Log("read file at " + filePath + "successfully!");
+			return data;
+		} catch (FileNotFoundException ex)
+		{
+			Debug.LogError("File name "+ path + fileName + ".txt" + " entered does not exist.");
+			return null;
+		}
+		
 	}
 
 
 	//Basically, give it the data as encoded by MapEditor.serializeTile
-	public static Tile[,,] DeserializeTiles(string tileRaw, GameObject[] tilePrefabs, Transform tileHolder) {
+	public static Tile[,,] DeserializeTiles(string tileRaw, TileGenerator generator, Transform tileHolder) {
 		//Parse the saved data. If there's nothing there, indicate that by -1
 		int[] data = tileRaw.Split(',').Select((datum) => {
 			int num = -1;
@@ -70,29 +78,41 @@ public static class Serialization {
 					if (data[flatIndex] != -1 && data[flatIndex] != 0) {
 
 						int tileTypeInt = data[flatIndex];
-						Tile tile = GameObject.Instantiate(tilePrefabs[tileTypeInt],
-							Util.GridToWorld(x, y, z),
-							tilePrefabs[tileTypeInt].transform.rotation)
-							.GetComponent<Tile>();
 
-						//make child of singe transform for easier deletion
-						tile.transform.parent = tileHolder;
-						tile.tileType = (TileType)(tileTypeInt);
-						parsedTiles[x, y, z] = tile;
+						TileType type = (TileType)tileTypeInt;
+						GameObject newTile = generator.getTileByType((TileType)tileTypeInt);
+					
+						if (newTile != null)
+						{
+							//typePrefabs was old way of doing this
+							Tile tile = GameObject.Instantiate(newTile,
+								Util.GridToWorld(x, y, z),
+								Quaternion.Euler(-90, 0, 0))
+								.GetComponent<Tile>();
 
-						//Make it taste better
-						addFlavor(new Vector3Int(x, y, z), tile);
+							//make child of singe transform for easier deletion
+							tile.transform.parent = tileHolder;
+							tile.tileType = (TileType)(tileTypeInt);
+							
+							parsedTiles[x, y, z] = tile;
+
+							//Make it taste better
+							addFlavor(new Vector3Int(x, y, z), tile);
+						} else
+						{
+							Debug.Log("Null tile");
+						}
+						
 					}
 				}
 			}
 		}
-
 		return parsedTiles;
 	}
 
 	//I know this is a hacky way of doing this, but it'll work.... for now....  #TODO
-	public static Stack<Tile>[,] DeserializeTilesStack(string tileRaw, GameObject[] tilePrefabs, Transform tilesHolder) {
-		Tile[,,] parsedTiles = DeserializeTiles(tileRaw, tilePrefabs, tilesHolder);
+	public static Stack<Tile>[,] DeserializeTilesStack(string tileRaw, TileGenerator generator, Transform tilesHolder) {
+		Tile[,,] parsedTiles = DeserializeTiles(tileRaw, generator, tilesHolder);
 		mapHeight = parsedTiles.GetLength(2);
 		Stack<Tile>[,] stackedTiles = new Stack<Tile>[parsedTiles.GetLength(0), parsedTiles.GetLength(1)];
 		for (int x = 0; x < parsedTiles.GetLength(0); x++) {
@@ -129,15 +149,21 @@ public static class Serialization {
 
 	public static LevelInfo getLevel(string levelName) {
 		string levelString = ReadData(levelName, levelFilePath);
-		Queue<string> levelData = new Queue<string>();
-		foreach (string str in levelString.Split(';')) {
-			if (!(str.Equals("") | str.Equals(null))) {
-				levelData.Enqueue(str);
+		if (levelString != null)
+		{
+			Queue<string> levelData = new Queue<string>();
+			foreach (string str in levelString.Split(';'))
+			{
+				if (!(str.Equals("") | str.Equals(null)))
+				{
+					levelData.Enqueue(str);
+				}
 			}
+			Stack<UnitInfo> units = new Stack<UnitInfo>();
+			String mapname = DeserializeUnits(levelData, units);
+			return new LevelInfo(units, mapname);
 		}
-		Stack<UnitInfo> units = new Stack<UnitInfo>();
-		String mapname = DeserializeUnits(levelData, units);
-		return new LevelInfo(units, mapname);
+		return null;
 
 	}
 
@@ -155,13 +181,10 @@ public static class Serialization {
 			if (data.Length == 5) {
 				//get store Unittype
 				UnitType type = (UnitType)data[0];
-				//see if player unit
-				bool isPlayerUnit = false;
-
-				if (data[1] == 1) {
-					isPlayerUnit = true;
-				}
-				units.Push(new UnitInfo(type, isPlayerUnit, new Vector3Int(data[2], data[3], data[4])));
+				//get stored Faction
+				Faction faction = (Faction)data[1];
+				
+				units.Push(new UnitInfo(type, faction, new Vector3Int(data[2], data[3], data[4])));
 			}
 
 		}
@@ -180,5 +203,7 @@ public static class Serialization {
 
 		return campaign;
 	}
+
+
 
 }

@@ -9,8 +9,7 @@ namespace Gameplay {
 	public class Tile : MonoBehaviour, IBattlefieldItem {
 		private Material originalMaterial;
 
-		[SerializeField]
-		private TileType initialType;
+		public TileType initialType;
 		public TileType tileType { get; set; }
 		public static GameObject[][] tileFlavor;
 		public TileEffects tileEffects;
@@ -61,5 +60,6 @@ namespace Gameplay {
 		public override string ToString() {
 			return tileType.ToString();
 		}
+
 	}
 }

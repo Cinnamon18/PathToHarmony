@@ -53,6 +53,7 @@ namespace AI {
 		}
 
 		protected List<Coord> findNearestEnemies(Coord start) {
+
 			int[,] moveDirs = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 			HashSet<Coord> visited = new HashSet<Coord>();
 			Queue<Coord> moveQueue = new Queue<Coord>();
@@ -79,6 +80,7 @@ namespace AI {
 						}
 					}
 				}
+				
 
 				for (int x = 0; x < moveDirs.GetLength(0); x++) {
 					Coord nextCoord = new Coord(curCoord.x + moveDirs[x, 0], curCoord.y + moveDirs[x, 1]);
@@ -89,7 +91,9 @@ namespace AI {
 						}
 					}
 				}
+				
 			}
+			
 			return enemies;
 		}
 

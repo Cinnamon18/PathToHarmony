@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Constants;
 using Gameplay;
@@ -105,23 +105,25 @@ namespace Units {
 					int targetY = currentMove.y + moveDirs[x, 1];
 					if (targetX < battlefield.map.GetLength(0) && targetY < battlefield.map.GetLength(1) && targetX >= 0 && targetY >= 0) {
 						Stack<Tile> targetTile = battlefield.map[targetX, targetY];
+						if (targetTile.Count != 0) {
+							float movePointsExpended = currentMove.weight + targetTile.Peek().tileType.Cost(this.moveType);
+							Coord targetMove = new Coord(targetX, targetY);
+							AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
 
-						float movePointsExpended = currentMove.weight + targetTile.Peek().tileType.Cost(this.moveType);
-						Coord targetMove = new Coord(targetX, targetY);
-						AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
-
-						if (movePointsExpended <= this.numMoveTiles && !visited.Contains(targetMove)) {
-							//If it's empty, we can move to it and on it
-							if (battlefield.units[targetX, targetY] == null) {
-								visited.Add(targetMove);
-								movePQueue.Enqueue(targetMoveAI);
-							} else if (battlefield.units[targetX, targetY].getCharacter(battlefield) == this.getCharacter(battlefield)) {
-								//If it's our unit, we can move through it, but not on it
-								movePQueue.Enqueue(targetMoveAI);
-							} else {
-								//If it's a hostile unit, we can't move to or through it.
+							if (movePointsExpended <= this.numMoveTiles && !visited.Contains(targetMove)) {
+								//If it's empty, we can move to it and on it
+								if (battlefield.units[targetX, targetY] == null) {
+									visited.Add(targetMove);
+									movePQueue.Enqueue(targetMoveAI);
+								} else if (battlefield.units[targetX, targetY].getCharacter(battlefield) == this.getCharacter(battlefield)) {
+									//If it's our unit, we can move through it, but not on it
+									movePQueue.Enqueue(targetMoveAI);
+								} else {
+									//If it's a hostile unit, we can't move to or through it.
+								}
 							}
 						}
+
 					}
 				}
 			}
@@ -131,7 +133,12 @@ namespace Units {
 
 		public void greyOut() {
 			foreach (GameObject model in this.getModels()) {
-				model.GetComponent<Renderer>().material.shader = Shader.Find("Grayscale");
+				if (model != null) {
+					model.GetComponent<Renderer>().material.shader = Shader.Find("Grayscale");
+				} else {
+					Debug.Log("Unit destroyed.  Cannot apply shader");
+				}
+
 			}
 		}
 

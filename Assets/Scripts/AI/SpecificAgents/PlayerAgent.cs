@@ -10,7 +10,7 @@ namespace AI {
 	public class PlayerAgent : Agent {
 
 		private List<Coord> moveOptions;
-		private List<Coord> highlightedEnemyUnits;
+		private List<Coord> targetableUnits;
 		private List<GameObject> otherHighlightedObjects;
 		private Unit highlightedFriendlyUnit;
 
@@ -58,7 +58,6 @@ namespace AI {
 					Tile selectedTile = selectedItem as Tile;
 					unhighlightAll();
 					highlight(selectedTile.gameObject);
-					otherHighlightedObjects.Add(selectedTile.gameObject);
 
 					//This method will get called again because we didn't find a valid selection
 				} else if (selectedItem is Unit) {
@@ -78,12 +77,13 @@ namespace AI {
 						this.highlightedFriendlyUnit = selectedUnit;
 
 						moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
+
 						foreach (Coord moveOption in moveOptions) {
 							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 						}
 
-						this.highlightedEnemyUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, this.character);
-						foreach (Coord targetableUnit in highlightedEnemyUnits) {
+						this.targetableUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, this.character);
+						foreach (Coord targetableUnit in targetableUnits) {
 							highlight(battlefield.units[targetableUnit.x, targetableUnit.y], 2);
 							highlight(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, 2);
 						}
@@ -142,14 +142,14 @@ namespace AI {
 						unhighlightAll();
 						currentMove.from = null;
 
-					} else if (selectedUnit.getCharacter(battlefield) == this.character) {
+					} else if (selectedUnit.getCharacter(battlefield) == this.character && !(highlightedFriendlyUnit is Cleric)) {
 						//Clicked on a friendly unit. Deselect the current one.
 						unhighlightAll();
 						currentMove.from = null;
 
 					} else {
 						//Clicked on a hostile unit! fight!
-						if (highlightedEnemyUnits.Any(coord => coord.x == tileCoords.x && coord.y == tileCoords.y)) {
+						if (targetableUnits.Any(coord => coord.x == tileCoords.x && coord.y == tileCoords.y)) {
 							currentMove.to = new Coord(tileCoords.x, tileCoords.y);
 						} else {
 							//Clicked on invalid enemy unit, restart.
@@ -183,6 +183,8 @@ namespace AI {
 		private void highlight(GameObject objectToHighlight, int colorIndex = 0) {
 			objectToHighlight.AddComponent<cakeslice.Outline>();
 			objectToHighlight.GetComponent<cakeslice.Outline>().color = colorIndex;
+			otherHighlightedObjects.Add(objectToHighlight);
+
 		}
 
 		private void unhighlight(GameObject objectToHighlight) {
@@ -201,7 +203,7 @@ namespace AI {
 				unhighlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 			}
 
-			foreach (Coord highlightedEnemyUnit in highlightedEnemyUnits) {
+			foreach (Coord highlightedEnemyUnit in targetableUnits) {
 				unhighlight(battlefield.units[highlightedEnemyUnit.x, highlightedEnemyUnit.y].gameObject);
 				unhighlight(battlefield.map[highlightedEnemyUnit.x, highlightedEnemyUnit.y].Peek().gameObject);
 			}
@@ -211,7 +213,7 @@ namespace AI {
 			}
 
 			moveOptions.Clear();
-			highlightedEnemyUnits.Clear();
+			targetableUnits.Clear();
 			otherHighlightedObjects.Clear();
 		}
 
