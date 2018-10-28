@@ -100,8 +100,9 @@ namespace AI {
 						this.targetableUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, this.character);
 
 						foreach (Coord targetableUnit in targetableUnits) {
-							highlight(battlefield.units[targetableUnit.x, targetableUnit.y], 2);
-							highlight(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, 2);
+							int colorIndex = selectedUnit is Cleric ? 3 : 2; 
+							highlight(battlefield.units[targetableUnit.x, targetableUnit.y], colorIndex);
+							highlight(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, colorIndex);
 						}
 
 					} else {
@@ -183,7 +184,6 @@ namespace AI {
 		}
 
 		private void highlight(GameObject objectToHighlight, int colorIndex = 0) {
-			Debug.Log(objectToHighlight + "  " + colorIndex);
 			objectToHighlight.AddComponent<cakeslice.Outline>().color = colorIndex;
 			otherHighlightedObjects.Add(objectToHighlight);
 		}

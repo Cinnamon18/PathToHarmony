@@ -369,7 +369,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1470636243741518
 GameObject:
   m_ObjectHideFlags: 1
@@ -2856,6 +2856,8 @@ MonoBehaviour:
   generator: {fileID: 0}
   mainCamera: {fileID: 20312723109998728}
   cutsceneCamera: {fileID: 20177197615643530}
+  currentCharacter: 0
+  playerCharacter: 0
   halfTurnsElapsed: 0
   turnPlayerText: {fileID: 114077355169017558}
   turnChangeBackground: {fileID: 114073804194313002}
@@ -3153,10 +3155,11 @@ MonoBehaviour:
   lineThickness: 1
   lineIntensity: 1
   fillAmount: 0.3
-  lineColor0: {r: 1, g: 1, b: 0, a: 1}
-  lineColor1: {r: 1, g: 1, b: 0, a: 1}
-  lineColor2: {r: 1, g: 0, b: 0, a: 1}
-  lineColor3: {r: 0, g: 0, b: 1, a: 1}
+  colors:
+  - {r: 1, g: 1, b: 0, a: 1}
+  - {r: 1, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 0, g: 1, b: 0, a: 1}
   additiveRendering: 0
   backfaceCulling: 1
   cornerOutlines: 0
