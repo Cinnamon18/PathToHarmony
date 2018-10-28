@@ -183,9 +183,8 @@ namespace AI {
 		}
 
 		private void highlight(GameObject objectToHighlight, int colorIndex = 0) {
-			// Debug.Log(objectToHighlight + "  " + colorIndex);
-			objectToHighlight.AddComponent<cakeslice.Outline>();
-			objectToHighlight.GetComponent<cakeslice.Outline>().color = colorIndex;
+			Debug.Log(objectToHighlight + "  " + colorIndex);
+			objectToHighlight.AddComponent<cakeslice.Outline>().color = colorIndex;
 			otherHighlightedObjects.Add(objectToHighlight);
 		}
 
