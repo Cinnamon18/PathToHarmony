@@ -35,6 +35,10 @@ namespace AI {
 					}
 				}
 			}
+
+			if (bestCoord == null) {
+				bestCoord = new Coord(unitCoord.x, unitCoord.y);
+			}
 			
 			//Just so the player can keep track of what's happening
 			await Task.Delay(300);

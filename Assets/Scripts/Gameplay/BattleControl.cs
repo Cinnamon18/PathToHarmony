@@ -158,7 +158,10 @@ namespace Gameplay {
 					Unit ourUnit = battlefield.units[move.from.x, move.from.y];
 					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.to.x, move.to.y);
 
-					if (selectedItem is Tile) {
+					if (move.from.Equals(move.to)) {
+						//This is the null move. just do nothing!
+						ourUnit.greyOut();
+					} else if (selectedItem is Tile) {
 						//We selected a tile! lets move to it
 						await moveUnit(ourUnit, move.to.x, move.to.y);
 
@@ -315,8 +318,8 @@ namespace Gameplay {
 			float moveUnitProgress = 0.0f;
 			while (moveUnitProgress < turnDelayMs) {
 				//Slower at the start and end. a beautiful logistic curve. 
-				float progressPercent = 1 / (1 + Mathf.Pow((float)(Math.E), -5 * ((moveUnitProgress / turnDelayMs) - 0.5f) ));
-				
+				float progressPercent = 1 / (1 + Mathf.Pow((float)(Math.E), -5 * ((moveUnitProgress / turnDelayMs) - 0.5f)));
+
 				unit.gameObject.transform.position = Vector3.Lerp(startPos, endPos, progressPercent);
 				await Task.Delay(10);
 				moveUnitProgress += 10;
@@ -428,7 +431,7 @@ namespace Gameplay {
 					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
-				level = new Level("DemoMap", "DemoLevel", characters, new string[] { });
+				level = new Level("DemoMap2", "EasyVictory", characters, new string[] { });
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();

@@ -24,28 +24,43 @@ namespace AI {
 			Move currentMove = new Move();
 			while (currentMove.from == null || currentMove.to == null) {
 				currentMove = new Move();
+
 				while (currentMove.from == null) {
-					await getSelectionPhase(currentMove);
+					//Await player input. But. Unity doesn't really support async await.
+					//I'm feeling kinda dumb for not just learning coroutines. Next time!
+					while (!Input.GetButtonDown("Select")) {
+						await Task.Delay(INPUT_LOOP_DELAY);
+					}
+
+					getSelectionPhase(currentMove);
+
+					//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
+					while (Input.GetButtonDown("Select")) {
+						await Task.Delay(INPUT_LOOP_DELAY);
+					}
 				}
+
+				//Part 2
 
 				while (currentMove.to == null && currentMove.from != null) {
-					await getMovePhase(currentMove);
+					//Await player input.
+					while (!Input.GetButtonDown("Select")) {
+						await Task.Delay(INPUT_LOOP_DELAY);
+					}
+
+					getMovePhase(currentMove);
+
+					//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
+					while (Input.GetButtonDown("Select")) {
+						await Task.Delay(INPUT_LOOP_DELAY);
+					}
 				}
-
-
-				// await Task.Delay(1);
 			}
 
 			return currentMove;
 		}
 
-		public async Task getSelectionPhase(Move currentMove) {
-			//Await player input. But. Unity doesn't really support async await.
-			//I'm feeling kinda dumb for not just learning coroutines. Next time!
-			while (!Input.GetButtonDown("Select")) {
-				await Task.Delay(INPUT_LOOP_DELAY);
-			}
-
+		public void getSelectionPhase(Move currentMove) {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit, 1000.0f)) {
@@ -79,10 +94,11 @@ namespace AI {
 						moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
 
 						foreach (Coord moveOption in moveOptions) {
-							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
+							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject, 1);
 						}
 
 						this.targetableUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, this.character);
+
 						foreach (Coord targetableUnit in targetableUnits) {
 							highlight(battlefield.units[targetableUnit.x, targetableUnit.y], 2);
 							highlight(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, 2);
@@ -101,19 +117,9 @@ namespace AI {
 				}
 			}
 
-			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
-			while (Input.GetButtonDown("Select")) {
-				await Task.Delay(INPUT_LOOP_DELAY);
-			}
-
 		}
 
-		public async Task getMovePhase(Move currentMove) {
-			//Await player input.
-			while (!Input.GetButtonDown("Select")) {
-				await Task.Delay(INPUT_LOOP_DELAY);
-			}
-
+		public void getMovePhase(Move currentMove) {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit, 1000.0f)) {
@@ -161,12 +167,8 @@ namespace AI {
 					Debug.LogWarning("Item of unrecognized type clicked on.");
 				}
 			}
-
-			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
-			while (Input.GetButtonDown("Select")) {
-				await Task.Delay(INPUT_LOOP_DELAY);
-			}
 		}
+
 		private void highlight(Unit unit, int colorIndex = 0) {
 			foreach (GameObject obj in unit.getModels()) {
 				highlight(obj, colorIndex);
@@ -181,15 +183,19 @@ namespace AI {
 		}
 
 		private void highlight(GameObject objectToHighlight, int colorIndex = 0) {
+			// Debug.Log(objectToHighlight + "  " + colorIndex);
 			objectToHighlight.AddComponent<cakeslice.Outline>();
 			objectToHighlight.GetComponent<cakeslice.Outline>().color = colorIndex;
 			otherHighlightedObjects.Add(objectToHighlight);
-
 		}
 
 		private void unhighlight(GameObject objectToHighlight) {
 			if (objectToHighlight != null) {
-				GameObject.Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
+				//mmm defensive programming
+				cakeslice.Outline[] outlines = objectToHighlight.GetComponents<cakeslice.Outline>();
+				foreach(cakeslice.Outline outline in outlines) {
+					GameObject.Destroy(outline);
+				}
 			}
 		}
 
