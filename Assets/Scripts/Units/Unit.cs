@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Constants;
 using Gameplay;
@@ -18,6 +18,7 @@ namespace Units {
 		private int health;
 		private List<Buff> buffs;
 		public bool hasMovedThisTurn;
+		private bool hasAttackedThisTurn;
 
 		private int numMoveTiles { get; set; }
 
@@ -37,6 +38,7 @@ namespace Units {
 			this.maxHealth = maxHealth;
 			this.health = maxHealth;
 			hasMovedThisTurn = false;
+			hasAttackedThisTurn = false;
 			this.numMoveTiles = moveDistance;
 		}
 
@@ -50,14 +52,20 @@ namespace Units {
 			return myCharacter;
 		}
 
+		//return damage that would result from a battle without inflicting it. Useful for AI
+		public abstract int battleDamage(Unit enemy, Tile enemyTile);
+
 		//returns true if the enemy was destroyed by battle
 		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
 
 		//Added for use by AI
 		public abstract List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character);
 
+
+		public abstract HashSet<Coord> getTotalAttackZone(int myX, int myY, Battlefield battlefield, Character character);
+
 		//returns a list of targetable units
-		public List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
+		public virtual List<Coord> getTargets(int myX, int myY, Battlefield battlefield, Character character) {
 
 			List<Coord> targets = new List<Coord>();
 			List<Coord> tiles = getAttackZone(myX, myY, battlefield, character);
@@ -77,9 +85,12 @@ namespace Units {
 		}
 
 
-		//For now this will use a simple percolation algorithm using a visited set instead of a disjoint set approach
+		//For now this will use a simple approach using a visited set instead of a disjoint set approach
 		//We can get away with this because there's only one "flow" source point (the unit).
 		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
+			if (hasMovedThisTurn) {
+				return new List<Coord>();
+			}
 
 			HashSet<Coord> visited = new HashSet<Coord>();
 			PriorityQueue<AIMove> movePQueue = new PriorityQueue<AIMove>();
@@ -94,28 +105,47 @@ namespace Units {
 					int targetY = currentMove.y + moveDirs[x, 1];
 					if (targetX < battlefield.map.GetLength(0) && targetY < battlefield.map.GetLength(1) && targetX >= 0 && targetY >= 0) {
 						Stack<Tile> targetTile = battlefield.map[targetX, targetY];
+						if (targetTile.Count != 0) {
+							float movePointsExpended = currentMove.weight + targetTile.Peek().tileType.Cost(this.moveType);
+							Coord targetMove = new Coord(targetX, targetY);
+							AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
 
-						int movePointsExpended = currentMove.weight + targetTile.Peek().tileType.Cost(this.moveType);
-						Coord targetMove = new Coord(targetX, targetY);
-						AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
-
-						if (movePointsExpended <= this.numMoveTiles && !visited.Contains(targetMove)) {
-							//If it's empty, we can move to it and on it
-							if (battlefield.units[targetX, targetY] == null) {
-								visited.Add(targetMove);
-								movePQueue.Enqueue(targetMoveAI);
-							} else if (battlefield.units[targetX, targetY].getCharacter(battlefield) == this.getCharacter(battlefield)) {
-								//If it's our unit, we can move through it, but not on it
-								movePQueue.Enqueue(targetMoveAI);
-							} else {
-								//If it's a hostile unit, we can't move to or through it.
+							if (movePointsExpended <= this.numMoveTiles && !visited.Contains(targetMove)) {
+								//If it's empty, we can move to it and on it
+								if (battlefield.units[targetX, targetY] == null) {
+									visited.Add(targetMove);
+									movePQueue.Enqueue(targetMoveAI);
+								} else if (battlefield.units[targetX, targetY].getCharacter(battlefield) == this.getCharacter(battlefield)) {
+									//If it's our unit, we can move through it, but not on it
+									movePQueue.Enqueue(targetMoveAI);
+								} else {
+									//If it's a hostile unit, we can't move to or through it.
+								}
 							}
 						}
+
 					}
 				}
 			}
 
 			return visited.ToList();
+		}
+
+		public void greyOut() {
+			foreach (GameObject model in this.getModels()) {
+				if (model != null) {
+					model.GetComponent<Renderer>().material.shader = Shader.Find("Grayscale");
+				} else {
+					Debug.Log("Unit destroyed.  Cannot apply shader");
+				}
+
+			}
+		}
+
+		public void unGreyOut() {
+			foreach (GameObject model in this.getModels()) {
+				model.GetComponent<Renderer>().material.shader = Shader.Find("Standard");
+			}
 		}
 
 		public void setFaction(Faction faction) {
@@ -130,6 +160,19 @@ namespace Units {
 
 		public int getHealth() {
 			return this.health;
+		}
+
+		public void setHasAttackedThisTurn(bool hasAttackedThisTurn) {
+			this.hasAttackedThisTurn = hasAttackedThisTurn;
+			if (hasAttackedThisTurn) {
+				greyOut();
+			} else {
+				unGreyOut();
+			}
+		}
+
+		public bool getHasAttackedThisTurn() {
+			return hasAttackedThisTurn;
 		}
 
 		public List<GameObject> getModels() {
@@ -165,6 +208,14 @@ namespace Units {
 
 		public List<Buff> getBuffs(Predicate<Buff> predicate) {
 			return buffs.FindAll(predicate);
+		}
+
+		public void playAttackAnimation() {
+
+		}
+
+		public void playIdleAnimation() {
+
 		}
 	}
 }

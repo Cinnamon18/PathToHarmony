@@ -101,7 +101,7 @@ public static class Util {
 				foreach (var value in enumerable) {
 					serializedObject.Append(value + " ");
 				}
-				Debug.Log(logItem + serializedObject.ToString());
+				Debug.Log(logItem + " with contents: " + serializedObject.ToString());
 			} else {
 				Debug.Log(logItem);
 			}

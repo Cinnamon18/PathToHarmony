@@ -10,6 +10,8 @@ namespace Cutscenes.Stages {
 		public string message;
 		public Actor newcomer;
 		public string leaverName;
+		public Sprite expression;
+		public string sfx;
 
 		public StageBuilder SetSpeaker(string speaker) {
 			this.speaker = speaker;
@@ -21,7 +23,24 @@ namespace Cutscenes.Stages {
 			return this;
 		}
 
-		public StageBuilder AddActor(CutsceneSide side, Actor newcomer, string name) {
+		public StageBuilder SetExpression(string expression) {
+			this.expression = Resources.Load<Sprite>("CharacterSprites/" + speaker + expression);
+			if (this.expression == null) {
+				throw new UnityException("Expression \"" + speaker + expression + "\" not found");
+			}
+
+			return this;
+		}
+
+		public StageBuilder SetAudio(string audioID) {
+			this.sfx = audioID;
+			return this;
+		}
+
+		public StageBuilder AddActor(CutsceneSide side, string actorName, string name) {
+			Actor newcomer = Resources.Load<Actor>("Actors/" + actorName);
+			newcomer = GameObject.Instantiate(newcomer);
+
 			newcomer.name = name;
 			this.newcomer = newcomer;
 			this.newcomer.side = side;
@@ -32,6 +51,7 @@ namespace Cutscenes.Stages {
 			this.leaverName = leaverName;
 			return this;
 		}
+
 
 	}
 }

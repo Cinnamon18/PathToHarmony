@@ -1,7 +1,9 @@
 using Cutscenes.Textboxes;
+using StoppableCoroutines;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -43,12 +45,16 @@ namespace Cutscenes.Stages {
 		private Transform farRight;
 
 		[SerializeField]
-		private Actor actorPrefab;
+		private Transform textboxBackground;
 
 		[SerializeField]
-		private Transform textboxBackground;
-		
+		private GameObject skipButton;
+
 		private List<Actor> actors = new List<Actor>();
+
+		public bool isRunning = false;
+		private bool skipCutFlag = false;
+		private StoppableCoroutine currentDialogLine;
 
 		/// <summary>
 		/// Built in rich text tags won't work now, will need to implement custom
@@ -58,33 +64,36 @@ namespace Cutscenes.Stages {
 		/// <w>This is how you close a tag</w>
 		/// </summary>
 		public void Start() {
-			StartCoroutine(Invoke(
-				S().AddActor(CutsceneSide.FarLeft, Instantiate(actorPrefab), "J*n"),
-				S().AddActor(CutsceneSide.FarRight, Instantiate(actorPrefab), "L*za"),
-				S().SetMessage("I wanna show you something.")
-					.SetSpeaker("L*za"),
-				S().SetMessage("It's a little...<s><r>unconventional</r></s>.")
-					.SetSpeaker("L*za"),
-				S().SetMessage("Is it...<s>illegal</s>?")
-					.SetSpeaker("J*n"),
-				S().AddLeaver("L*za"),
-				S().AddActor(CutsceneSide.Left, Instantiate(actorPrefab), "H*race"),
-				S().AddActor(CutsceneSide.Right, Instantiate(actorPrefab), "C*risse"),
-				S().SetMessage("Would you believe I'm actually from <w><r>Earth</r></w>?")
-					.SetSpeaker("J*n"),
-				S().AddLeaver("H*race"),
-				S().AddLeaver("J*n"),
-				S().AddLeaver("C*risse")
-				));
+			if (SceneManager.GetActiveScene().name == "Story Test") {
+				startCutscene("andysDemo");
+			}
+		}
+
+		void Update() {
+			if (Input.GetButtonDown("Select")) {
+				stopCurrentCutsceneLine();
+			}
+		}
+
+		public void startCutscene(string cutsceneID) {
+			showVisualElements();
+			StartCoroutine(Invoke(Stages.getStage(cutsceneID)));
 		}
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
-
+			isRunning = true;
 			yield return RaiseUpTextbox();
 
 			foreach (StageBuilder stageBuilder in stageBuilders) {
+				if (skipCutFlag) {
+					break;
+				}
+
 				yield return Invoke(stageBuilder);
 			}
+			skipCutFlag = false;
+			isRunning = false;
+			hideVisualElements();
 		}
 
 		private IEnumerator RaiseUpTextbox() {
@@ -97,6 +106,8 @@ namespace Cutscenes.Stages {
 					new Vector2(0, targetY),
 					Mathf.Sqrt(t)
 					);
+				//manual correction factor (:
+				textboxBackground.position += new Vector3(0, 0, -20);
 			});
 		}
 
@@ -112,11 +123,37 @@ namespace Cutscenes.Stages {
 				yield return AddActor(stageBuilder.newcomer, stageBuilder.newcomer.side);
 			}
 
+			if (stageBuilder.expression != null) {
+				Actor foundActor = FindActor(stageBuilder.speaker);
+
+				if (foundActor == null) {
+					throw new UnityException(
+						"There exists no actor in the scene with name: "
+						+ stageBuilder.speaker
+						);
+				}
+
+				foundActor.image.sprite = stageBuilder.expression;
+			}
+
+			if (stageBuilder.sfx != null) {
+				Audio.playSfx(stageBuilder.sfx);
+			}
+
 			if (stageBuilder.message != null) {
 				CutsceneSide side = CutsceneSide.None;
 
 				if (!string.IsNullOrEmpty(stageBuilder.speaker)) {
-					side = FindActor(stageBuilder.speaker).side;	
+					Actor foundActor = FindActor(stageBuilder.speaker);
+
+					if (foundActor == null) {
+						throw new UnityException(
+							"There exists no actor in the scene with name: "
+							+ stageBuilder.speaker
+							);
+					}
+
+					side = foundActor.side;
 
 					foreach (Actor actor in actors) {
 						if (actor.side != side) {
@@ -126,7 +163,12 @@ namespace Cutscenes.Stages {
 				}
 
 				textbox.AddText(side, stageBuilder.speaker, stageBuilder.message);
-				yield return new WaitForSeconds(5);
+
+				//I approximate it to take ~0.03 seconds per letter, but we do more so players can actually read
+				float playTimeGuess = (float)(stageBuilder.message.Length * 0.08 + 0.5);
+				currentDialogLine = this.StartStoppableCoroutine(waitForSeconds(playTimeGuess));
+				yield return currentDialogLine.WaitFor();
+
 				foreach (Actor actor in actors) {
 					actor.IsDark = false;
 				}
@@ -161,10 +203,15 @@ namespace Cutscenes.Stages {
 			Vector2 endPos = new Vector2(holderToUse.transform.position.x, 0);
 
 			Vector2 startPos = new Vector2(
-				((side == CutsceneSide.Left || side == CutsceneSide.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300), 
+				((side == CutsceneSide.Left || side == CutsceneSide.FarLeft) ? -1 : 1) * (dimensions.rect.width / 2 + 300),
 				actor.transform.position.y);
-			
-			Debug.Log(startPos);
+
+			// Debug.Log(startPos);
+
+			if (side == CutsceneSide.Left || side == CutsceneSide.FarLeft) {
+				actor.transform.localScale = new Vector3(-1, 1, 1);
+			}
+
 
 			actor.transform.SetParent(background.transform);
 			actor.transform.position = startPos;
@@ -211,7 +258,7 @@ namespace Cutscenes.Stages {
 					parent = left;
 					break;
 				case CutsceneSide.Right:
-					parent = right; 
+					parent = right;
 					break;
 				case CutsceneSide.FarRight:
 					parent = farRight;
@@ -220,9 +267,30 @@ namespace Cutscenes.Stages {
 			return parent;
 		}
 
-		// shorthand for easier setup
-		private StageBuilder S() {
-			return new StageBuilder();
+		public void hideVisualElements() {
+			this.gameObject.SetActive(false);
+			skipButton.SetActive(false);
+		}
+
+		public void showVisualElements() {
+			this.gameObject.SetActive(true);
+			skipButton.SetActive(true);
+		}
+
+		public void skipCutscene() {
+			stopCurrentCutsceneLine();
+			skipCutFlag = true;
+		}
+
+		private void stopCurrentCutsceneLine() {
+			if (currentDialogLine != null) {
+				currentDialogLine.Stop();
+			}
+			Audio.stopAudio(false);
+		}
+
+		private IEnumerator waitForSeconds(float seconds) {
+			yield return new WaitForSeconds(seconds);
 		}
 
 	}

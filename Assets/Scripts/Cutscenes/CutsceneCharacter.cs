@@ -25,7 +25,7 @@ namespace Cutscenes {
 			currentExpression = this.expressions[0];
 		}
 
-		public void setExpression(CharacterExpression expression) {
+		public void setExpression(Expression expression) {
 			currentExpression = expressions[(int)(expression)];
 		}
 

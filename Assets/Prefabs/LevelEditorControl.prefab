@@ -8,19 +8,19 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications: []
     m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 0}
+  m_SourcePrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1983972024403430}
-  m_IsPrefabParent: 1
+  m_IsPrefabAsset: 1
 --- !u!1 &1983972024403430
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  serializedVersion: 6
   m_Component:
   - component: {fileID: 4968038942280118}
-  - component: {fileID: 114926093766367342}
   - component: {fileID: 120062188739160932}
+  - component: {fileID: 114475156128921598}
   m_Layer: 0
   m_Name: LevelEditorControl
   m_TagString: Untagged
@@ -31,7 +31,7 @@ GameObject:
 --- !u!4 &4968038942280118
 Transform:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1983972024403430}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
@@ -41,31 +41,47 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114926093766367342
+--- !u!114 &114475156128921598
 MonoBehaviour:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1983972024403430}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 429f75a9fba671e4c85be9fd9db068f3, type: 3}
+  m_Script: {fileID: 11500000, guid: ce353aafccdbc40498f32dc577c92397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialDim: {x: 10, y: 10, z: 5}
-  lineRenderer: {fileID: 120062188739160932}
-  previewTile: {fileID: 0}
-  tilePrefabs:
-  - {fileID: 1124543106267346, guid: ca5e17eb54878214699b3b6170e2ba91, type: 2}
-  - {fileID: 1476900757798324, guid: 358ff3cb144ab784cafc3c6871537556, type: 2}
-  - {fileID: 1631768313649640, guid: a1e87bd7999691841a5076af4115546d, type: 2}
-  - {fileID: 1089309764938158, guid: 255682cfefb3fa24ba865d9b80df3408, type: 2}
-  - {fileID: 1380285279712962, guid: aa6bee92761d02242bf6006b1be187a5, type: 2}
-  - {fileID: 1812626124276284, guid: c49fecef21116b3469ff60f627c3bbfd, type: 2}
+  overWriteToggle: {fileID: 0}
+  previewObj:
+  - {fileID: 100000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
+  - {fileID: 100004, guid: 2c86103a7b5b4a441a4776ca223e098b, type: 3}
+  - {fileID: 100000, guid: 9eef5367c31e66c4c9d8a05ca9d23b16, type: 3}
+  - {fileID: 100000, guid: ca2d0397ae7772d40a268f4f27759d8d, type: 3}
+  - {fileID: 100004, guid: d4df879346cd6bb41aa9a688f7dc442c, type: 3}
+  - {fileID: 100004, guid: d036ff1e7505f75429f5bf9f9eb9678d, type: 3}
+  previewHolder: {fileID: 0}
+  initialDim: {x: 10, y: 10, z: 10}
+  defaultMap: DemoMap
+  loadMapText: {fileID: 0}
+  loadLevelText: {fileID: 0}
+  saveLevelText: {fileID: 0}
+  playerDropdown: {fileID: 0}
+  factionDropdown: {fileID: 0}
+  unitsHolder: {fileID: 0}
+  tilesHolder: {fileID: 0}
+  generator: {fileID: 0}
+  unitPrefabs:
+  - {fileID: 1629421154834734, guid: 7993afc9425649441aef57855464ed26, type: 2}
+  - {fileID: 1488143649172512, guid: e1360b7388da1f24d8c7b0ca79b0d929, type: 2}
+  - {fileID: 1629421154834734, guid: 225de50b0ce81b747a6c3f2f1c1ffbac, type: 2}
+  - {fileID: 1434694798503106, guid: e6af2e076be38264f9620648a2a888a9, type: 2}
+  - {fileID: 1629421154834734, guid: 69c0be666f9bbac4fb58123a3fdc8d65, type: 2}
+  - {fileID: 1629421154834734, guid: c17983c11eecd5545b4630ae0bd53033, type: 2}
 --- !u!120 &120062188739160932
 LineRenderer:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1983972024403430}
   m_Enabled: 1
