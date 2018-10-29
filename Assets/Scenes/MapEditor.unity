@@ -696,6 +696,12 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 230002641}
   m_CullTransparentMesh: 0
+--- !u!114 &249689884 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114602939986176404, guid: 19a0164e13840754fb41c540e918a70d,
+    type: 2}
+  m_PrefabInternal: {fileID: 1039377988}
+  m_Script: {fileID: 11500000, guid: 98d0489178187754d93dc4cf7ca8ba6b, type: 3}
 --- !u!1 &267009526
 GameObject:
   m_ObjectHideFlags: 0
@@ -1183,15 +1189,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4372296006840212, guid: 07da6b86e8b66534fa4ded8ceb58980e, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -57.716118
+      value: -57.6
       objectReference: {fileID: 0}
     - target: {fileID: 4372296006840212, guid: 07da6b86e8b66534fa4ded8ceb58980e, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 3.2257624
+      value: 6.56
       objectReference: {fileID: 0}
     - target: {fileID: 4372296006840212, guid: 07da6b86e8b66534fa4ded8ceb58980e, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -58.39757
+      value: -63.22
       objectReference: {fileID: 0}
     - target: {fileID: 4372296006840212, guid: 07da6b86e8b66534fa4ded8ceb58980e, type: 2}
       propertyPath: m_LocalRotation.x
@@ -1455,6 +1461,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
         type: 2}
+      propertyPath: overWriteToggle
+      value: 
+      objectReference: {fileID: 1449281785}
+    - target: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
+        type: 2}
       propertyPath: previewHolder
       value: 
       objectReference: {fileID: 1564912050}
@@ -1465,6 +1476,11 @@ Prefab:
       objectReference: {fileID: 1623906865}
     - target: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
         type: 2}
+      propertyPath: tilesGenerator
+      value: 
+      objectReference: {fileID: 249689884}
+    - target: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
+        type: 2}
       propertyPath: loadFileText
       value: 
       objectReference: {fileID: 183176396}
@@ -1473,6 +1489,11 @@ Prefab:
       propertyPath: loadDimText
       value: 
       objectReference: {fileID: 2115042090}
+    - target: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
+        type: 2}
+      propertyPath: saveFileText
+      value: 
+      objectReference: {fileID: 1578918969}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b0d77d4d3f15d974ba491bbc9aa2149a, type: 2}
   m_IsPrefabAsset: 0
@@ -1557,7 +1578,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1118884008}
         m_MethodName: serializeTiles
         m_Mode: 1
         m_Arguments:
@@ -1604,6 +1625,54 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 954651022}
   m_CullTransparentMesh: 0
+--- !u!1001 &1039377988
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4162161006382248, guid: 19a0164e13840754fb41c540e918a70d, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4162161006382248, guid: 19a0164e13840754fb41c540e918a70d, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4162161006382248, guid: 19a0164e13840754fb41c540e918a70d, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4162161006382248, guid: 19a0164e13840754fb41c540e918a70d, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4162161006382248, guid: 19a0164e13840754fb41c540e918a70d, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4162161006382248, guid: 19a0164e13840754fb41c540e918a70d, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4162161006382248, guid: 19a0164e13840754fb41c540e918a70d, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4162161006382248, guid: 19a0164e13840754fb41c540e918a70d, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 19a0164e13840754fb41c540e918a70d, type: 2}
+  m_IsPrefabAsset: 0
+--- !u!114 &1118884008 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
+    type: 2}
+  m_PrefabInternal: {fileID: 890532267}
+  m_Script: {fileID: 11500000, guid: 429f75a9fba671e4c85be9fd9db068f3, type: 3}
 --- !u!1 &1276193659
 GameObject:
   m_ObjectHideFlags: 0
@@ -2011,9 +2080,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: updateOverwriteMode
-        m_Mode: 0
+      - m_Target: {fileID: 1118884008}
+        m_MethodName: resetOverWritePerm
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2101,7 +2170,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1118884008}
         m_MethodName: deserializeTiles
         m_Mode: 1
         m_Arguments:
@@ -2170,14 +2239,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1564912049}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -48.55, y: 0.72, z: -49.44}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: -0.7071068}
+  m_LocalPosition: {x: -48, y: 1, z: -54}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224782489}
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 270, y: 0, z: 0}
 --- !u!114 &1564912051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2201,7 +2270,7 @@ GameObject:
   - component: {fileID: 1578918970}
   - component: {fileID: 1578918969}
   m_Layer: 5
-  m_Name: Text
+  m_Name: SaveText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2590,7 +2659,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1118884008}
         m_MethodName: updateSizeUI
         m_Mode: 1
         m_Arguments:
@@ -2905,8 +2974,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: updateMapName
-        m_Mode: 0
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

@@ -70,7 +70,11 @@ namespace Gameplay {
 			if (x < units.GetLength(0) && y < units.GetLength(1) && units[x, y] != null) {
 				return units[x, y];
 			} else if (x < map.GetLength(0) && y < map.GetLength(1) && map[x, y].Peek() != null) {
-				return map[x, y].Peek();
+				if (map[x,y].Count != 0)
+				{
+					return map[x, y].Peek();
+				}
+				
 			}
 
 			return null;

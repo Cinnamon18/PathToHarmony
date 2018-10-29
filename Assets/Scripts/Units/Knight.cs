@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Constants;
-using Gameplay;
-using UnityEngine;
+﻿using Constants;
 
 namespace Units {
 	public class Knight : MeleeUnit {

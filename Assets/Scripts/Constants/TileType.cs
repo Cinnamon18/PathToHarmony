@@ -19,7 +19,8 @@
 		CastleCorner,
 		PalisadeVertical,
 		PalisadeHorizontal,
-		PalisadeCorner
+		PalisadeCorner,
+		Rock
 	}
     public enum TileEffects
     {

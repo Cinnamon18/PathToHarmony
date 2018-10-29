@@ -24,11 +24,13 @@ namespace Units {
 				int moveDistance,
 				DamageType damageType,
 				int rangedAttackStrength,
+				int range,
 				Faction faction
 			) : base(armorType, maxHealth, moveType, moveDistance, faction) {
 
 			this.damageType = damageType;
 			this.rangedAttackStrength = rangedAttackStrength;
+			this.range = range;
 		}
 
 		public override int battleDamage(Unit enemy, Tile enemyTile) {

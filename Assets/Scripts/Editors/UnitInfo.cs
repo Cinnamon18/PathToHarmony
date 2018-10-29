@@ -6,30 +6,28 @@ using UnityEngine;
 namespace Editors {
 	public class UnitInfo {
 		private UnitType unitType;
-		private bool isPlayerUnit;
+		private Faction unitFaction;
 		private Vector3Int unitPos;
 
-		public UnitInfo(UnitType type, bool player, Vector3Int pos) {
+		public UnitInfo(UnitType type, Faction faction, Vector3Int pos) {
 			unitType = type;
-			isPlayerUnit = player;
+			unitFaction = faction;
 			unitPos = pos;
 		}
 
 		public string serialize() {
-			if (isPlayerUnit) {
-				return ((int)(this.unitType)) + "," + 1 + "," + unitPos.x + "," + unitPos.y + "," + unitPos.z; ;
-			} else {
-				return ((int)(this.unitType)) + "," + 0 + "," + unitPos.x + "," + unitPos.y + "," + unitPos.z;
-			}
 
+			return ((int)(this.unitType)) + "," + (int)(this.unitFaction) + "," + unitPos.x + "," + unitPos.y + "," + unitPos.z;
+	
 		}
 
 		public UnitType getUnitType() {
 			return unitType;
 		}
 
-		public bool getIsPlayer() {
-			return isPlayerUnit;
+		public Faction getFaction()
+		{
+			return unitFaction;
 		}
 
 		public Vector3Int getCoord() {

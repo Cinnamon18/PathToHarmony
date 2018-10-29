@@ -9,8 +9,7 @@ namespace Gameplay {
 	public class Tile : MonoBehaviour, IBattlefieldItem {
 		private Material originalMaterial;
 
-		[SerializeField]
-		private TileType initialType;
+		public TileType initialType;
 		public TileType tileType { get; set; }
 		public static GameObject[][] tileFlavor;
 		public TileEffects tileEffects;
@@ -21,12 +20,17 @@ namespace Gameplay {
 		}
 
 		void Awake() {
+
+			GameObject smallRock = Resources.Load<GameObject>("TileFlavor/" + "SmallRock");
+			GameObject smallTree = Resources.Load<GameObject>("TileFlavor/" + "SmallTree");
+			GameObject bush = Resources.Load<GameObject>("TileFlavor/" + "Bush");
+
 			if (Tile.tileFlavor == null) {
 				GameObject[][] _tileFlavor = new GameObject[][] {
 					new GameObject[] {},
 					new GameObject[] {},
-					new GameObject[] {Resources.Load<GameObject>("TileFlavor/" + "SmallRock"), Resources.Load<GameObject>("TileFlavor/" + "SmallTree")},
-					new GameObject[] {Resources.Load<GameObject>("TileFlavor/" + "SmallTree")},
+					new GameObject[] {smallRock, smallTree, bush},
+					new GameObject[] {smallTree, bush},
 					new GameObject[] {},
 					new GameObject[] {},
 					new GameObject[] {},
@@ -35,11 +39,15 @@ namespace Gameplay {
 					new GameObject[] {},
 					new GameObject[] {},
 					new GameObject[] {},
+					new GameObject[] {bush},
+					new GameObject[] {bush},
 					new GameObject[] {},
 					new GameObject[] {},
 					new GameObject[] {},
 					new GameObject[] {},
-					new GameObject[] {}
+					new GameObject[] {},
+					new GameObject[] {},
+					new GameObject[] {smallRock}
 				};
 
 				Tile.tileFlavor = _tileFlavor;
@@ -61,5 +69,6 @@ namespace Gameplay {
 		public override string ToString() {
 			return tileType.ToString();
 		}
+
 	}
 }

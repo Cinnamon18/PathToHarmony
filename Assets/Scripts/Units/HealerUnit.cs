@@ -45,9 +45,11 @@ namespace Units {
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
 			int damage = this.battleDamage(enemy, enemyTile);
-
 			//Damage rounds up
 			enemy.setHealth(enemy.getHealth() - damage);
+			if (enemy.getHasAttackedThisTurn() || enemy.hasMovedThisTurn) {
+				enemy.greyOut();
+			}
 
 			if (enemy.getHealth() >= enemy.maxHealth) {
 				enemy.setHealth(enemy.maxHealth);
