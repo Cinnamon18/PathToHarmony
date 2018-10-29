@@ -71,7 +71,7 @@ namespace AI {
 								bestTarget = target;
 							}
 						}
-						
+						if (curUnit.hasMovedThisTurn)
 					} else {
 						targets = findNearestEnemeis(unitCoord);
 						if (targets.Count == 0) {
