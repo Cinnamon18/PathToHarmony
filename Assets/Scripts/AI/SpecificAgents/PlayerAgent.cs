@@ -145,9 +145,9 @@ namespace AI {
 					Unit selectedUnit = selectedItem as Unit;
 
 					if (highlightedFriendlyUnit == selectedUnit) {
-						//clicked on the same unit, deselect
+						//clicked on the same unit, return the "do nothing" move
 						unhighlightAll();
-						currentMove.from = null;
+						currentMove.to = new Coord(tileCoords.x, tileCoords.y);
 
 					} else if (selectedUnit.getCharacter(battlefield) == this.character && !(highlightedFriendlyUnit is Cleric)) {
 						//Clicked on a friendly unit. Deselect the current one.
