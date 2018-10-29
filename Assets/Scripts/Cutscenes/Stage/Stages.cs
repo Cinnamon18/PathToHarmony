@@ -8,26 +8,41 @@ namespace Cutscenes.Stages {
 		public const string andysDemo = "andysDemo";
 		public const string tutorialEnd = "tutorialEnd";
 		public const string genericDefeat = "genericDefeat";
-		private static List<string> hasExecuted = new List<string>();
+		private static HashSet<string> hasExecuted = new HashSet<string>();
 
-		//hhh sorry we're throwing type safety out the window but. The execution on these coroutines is already a little weird
+		//hhh sorry we're throwing good OO design out the window but. The execution on these coroutines is already a little weird
 		//#31DaysTillDemo
 		//It's a polling approach to give more control to the caller...
 		public static bool testExecutionCondition(string stageID, Battlefield battlefield, GameObjective objective, int halfTurnsElapsed) {
-			if (stageID == andysDemo && !hasExecuted.Contains(andysDemo)) {
-				//Execute on victory condition
-				hasExecuted.Add(andysDemo);
-				return objective.isWinCondition(halfTurnsElapsed);
-			} else if (stageID == tutorialEnd && !hasExecuted.Contains(tutorialEnd)) {
-				//Execute on turn one
-				hasExecuted.Add(tutorialEnd);
-				return halfTurnsElapsed == 0;
-			} else if (stageID == genericDefeat && !hasExecuted.Contains(genericDefeat)) {
-				//Execute on defeat condition
-				hasExecuted.Add(genericDefeat);
-				return objective.isLoseCondition(halfTurnsElapsed);
+
+			if (hasExecuted.Contains(stageID)) {
+				return false;
 			}
-			// throw new UnityException("Invalid stageID \"" + stageID + "\" tested for");
+
+			switch (stageID) {
+				case andysDemo:
+					if (objective.isWinCondition(halfTurnsElapsed)) {
+						hasExecuted.Add(stageID);
+						return true;
+					}
+					break;
+				case tutorialEnd:
+					if (halfTurnsElapsed == 0) {
+						hasExecuted.Add(stageID);
+						return true;
+					}
+					break;
+				case genericDefeat:
+					if (objective.isLoseCondition(halfTurnsElapsed)) {
+						hasExecuted.Add(stageID);
+						return true;
+					}
+					break;
+				default:
+					Debug.LogError("Invalid cutscene key ID \"" + stageID + "\". Check that the scene is present in Stages.cs");
+					return false;
+			}
+
 			return false;
 		}
 
@@ -93,8 +108,8 @@ namespace Cutscenes.Stages {
 					};
 					break;
 				default:
-					throw new UnityException("Invalid cutscene key ID \"" + stageID + "\". Check that the scene is present in Stages.cs");
-					return null;
+					Debug.LogError("Invalid cutscene key ID \"" + stageID + "\". Check that the scene is present in Stages.cs");
+					return new StageBuilder[0];
 			}
 		}
 

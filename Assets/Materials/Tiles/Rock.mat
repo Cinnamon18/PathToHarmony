@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: ScrubGrass
-  m_Shader: {fileID: 4800000, guid: 7e33ba607b6a6964ca6fdd7c073a3bb4, type: 3}
+  m_Name: Rock
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -46,10 +46,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _NoiseTex:
-        m_Texture: {fileID: 2800000, guid: 16dc412552b2e224cb286b0d7cce4067, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -64,9 +60,9 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0
+    - _Glossiness: 0.4
     - _GlossyReflections: 1
-    - _Metallic: 0
+    - _Metallic: 0.2
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -76,7 +72,5 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _BottomColor: {r: 0.56078434, g: 0.5262715, b: 0.16078429, a: 1}
-    - _Color: {r: 0.25663045, g: 0.6886792, b: 0.32541436, a: 1}
+    - _Color: {r: 0.301, g: 0.257233, b: 0.139062, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
-    - _TopColor: {r: 0.9516667, g: 1, b: 0.42000002, a: 1}

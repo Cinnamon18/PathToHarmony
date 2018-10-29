@@ -40,31 +40,13 @@ namespace Gameplay {
 
 		private const float turnDelayMs = 150.0f;
 		private BattleLoopStage battleStage;
-		public BattleLoopStage BattleStage {
-			get {
-				return battleStage;
-			}
-		}
 
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
-
-		private int currentCharacter;
-		public int CurrentCharacter {
-			get {
-				return currentCharacter;
-			}
-		}
-
-		private int playerCharacter;
-		public int PlayerCharacter {
-			get {
-				return playerCharacter;
-			}
-		}
+		public int currentCharacter;
+		public int playerCharacter;
 		public int halfTurnsElapsed;
 
-		private bool skipTurnFlag = false;
 
 		[SerializeField]
 		private Text turnPlayerText;
@@ -151,14 +133,15 @@ namespace Gameplay {
 					//Character.getMove() is responsible for validation so we assume the move to be legal
 					Move move = await level.characters[currentCharacter].getMove();
 
-					if (skipTurnFlag) {
-						return;
-					}
-
 					Unit ourUnit = battlefield.units[move.from.x, move.from.y];
 					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.to.x, move.to.y);
 
-					if (selectedItem is Tile) {
+					if (move.from.Equals(move.to)) {
+						//This is the null move. just do nothing!
+						ourUnit.hasMovedThisTurn = true;
+						ourUnit.setHasAttackedThisTurn(true);
+						ourUnit.greyOut();
+					} else if (selectedItem is Tile) {
 						//We selected a tile! lets move to it
 						await moveUnit(ourUnit, move.to.x, move.to.y);
 
@@ -191,8 +174,6 @@ namespace Gameplay {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
 					}
 
-					//Check cutscenes after a unit was eliminated. Could be important for plot relevant characters or smth.
-					await runAppropriateCutscenes();
 					checkWinAndLose();
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
@@ -316,8 +297,8 @@ namespace Gameplay {
 			float moveUnitProgress = 0.0f;
 			while (moveUnitProgress < turnDelayMs) {
 				//Slower at the start and end. a beautiful logistic curve. 
-				float progressPercent = 1 / (1 + Mathf.Pow((float)(Math.E), -5 * ((moveUnitProgress / turnDelayMs) - 0.5f) ));
-				
+				float progressPercent = 1 / (1 + Mathf.Pow((float)(Math.E), -5 * ((moveUnitProgress / turnDelayMs) - 0.5f)));
+
 				unit.gameObject.transform.position = Vector3.Lerp(startPos, endPos, progressPercent);
 				await Task.Delay(10);
 				moveUnitProgress += 10;
@@ -429,7 +410,7 @@ namespace Gameplay {
 					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
-				level = new Level("DemoMap", "DemoLevel", characters, new string[] { });
+				level = new Level("DemoMap2", "EasyVictory", characters, new string[] { });
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();
@@ -443,13 +424,12 @@ namespace Gameplay {
 			}
 		}
 
-
 		public void skipTurn() {
 			Agent agent = level.characters[currentCharacter].agent;
 			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection) {
 				if (agent is PlayerAgent) {
 					((PlayerAgent)agent).unhighlightAll();
-					advanceBattleStage();
+					setBattleLoopStage(BattleLoopStage.EndTurn);
 				}
 			}
 		}
