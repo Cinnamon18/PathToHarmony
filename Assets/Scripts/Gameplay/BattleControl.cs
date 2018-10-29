@@ -375,7 +375,7 @@ namespace Gameplay {
 			if (Persistance.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new playerAgent()),
-					new Character("The evil lord zxqv", false, new simpleAgent())
+					new Character("The evil lord zxqv", false, new eliminationAgent())
 				};
 				level = new Level("DemoMap2", "TestLevel", characters, new string[] { });
 				Persistance.campaign = new Campaign("test", 0, new[] { level });

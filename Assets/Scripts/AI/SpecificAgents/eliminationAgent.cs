@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Gameplay;
 using Units;
 using UnityEngine;
+using Constants;
 
 namespace AI {
 	public class eliminationAgent : Agent {
@@ -13,14 +14,18 @@ namespace AI {
 
 		public override async Task<Move> getMove() {
 
+			Debug.Log("Elimination Agent");
+
+			//Get all unit categories
 			List<Coord> units = findAllUnits();
 			List<Coord> enemies = filterEnemies(units);
 			List<Coord> allies = filterAllies(units);
 
 			List<Coord> available = filterHasMove(allies);
 
+			// Select a unit based on type
 			Coord unitCoord = new Coord(0,0);
-			Unit curUnit;
+			Unit curUnit = null;
 			foreach (Coord coord in available) {
 				Unit unit = battlefield.units[coord.x, coord.y];
 				if (unit is HealerUnit) {
@@ -36,6 +41,7 @@ namespace AI {
 				}
 			}
 
+			//Decide action based on type
 			if (curUnit is HealerUnit) {
 				if (curUnit.getHealth() < curUnit.maxHealth * 0.4) {
 					// TODO
@@ -52,7 +58,7 @@ namespace AI {
 					}
 				}
 			} else if (curUnit is MeleeUnit) {
-				if (curUnit.getHealth() < curUnit.maxHealth * 0.4) {
+				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee
 				} else {
@@ -66,7 +72,7 @@ namespace AI {
 						foreach (Coord target in targets) {
 							Tile enemyTile = battlefield.map[target.x, target.y].Peek();
 							Unit enemy = battlefield.units[target.x, target.y];
-							AIBattle battle = new AIBattle(curUnit, unitCoord, enemyTile, target);
+							AIBattle battle = new AIBattle(curUnit, enemy, enemyTile, target);
 							if (battle.score > bestScore) {
 								bestScore = battle.score;
 								bestTarget = target;
@@ -83,15 +89,32 @@ namespace AI {
 						adjacentTiles.Add(new Coord(bestTarget.x, bestTarget.y + 1));
 						adjacentTiles.Add(new Coord(bestTarget.x, bestTarget.y - 1));
 						adjacentTiles.IntersectWith(curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
-					} else {
-						targets = findNearestEnemeis(unitCoord);
-						if (targets.Count == 0) {
-							return new Move(unitCoord, unitCoord);
+						
+						// Hardcoded hack for time efficiency
+						if (manhattanDistance(unitCoord, bestTarget) == 1) {
+							adjacentTiles.Add(unitCoord);
 						}
-						int minDIst = Int32.MaxValue;
+						Coord bestCoord = null;
+						int tileDef = Int32.MinValue;
+						foreach (Coord coord in adjacentTiles) {
+							if (tileDef < ConstantTables.TileDefense[(int)battlefield.map[coord.x, coord.y].Peek().tileType]){
+								tileDef = ConstantTables.TileDefense[(int)battlefield.map[coord.x, coord.y].Peek().tileType];
+								bestCoord = coord;
+							}
+						}
+						if (unitCoord.Equals(bestCoord)) {
+							return new Move(unitCoord, bestTarget);
+						}
+						return new Move(unitCoord, bestCoord);
+					} else {
+						targets = findNearestEnemies(unitCoord);
+						// if (targets.Count == 0) {
+						// 	return new Move(unitCoord, unitCoord);
+						// }
+						int minDist = Int32.MaxValue;
 						Coord bestCoord = null;
 						foreach (Coord coord in curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
-							int dist = this.manhattanDistance(coord, targetCoord);
+							int dist = this.manhattanDistance(coord, targets[0]);
 							if (dist < minDist) {
 								minDist = dist;
 								bestCoord = coord;
