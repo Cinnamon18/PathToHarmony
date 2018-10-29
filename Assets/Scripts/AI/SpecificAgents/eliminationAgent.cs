@@ -59,15 +59,26 @@ namespace AI {
 					HashSet<Coord> attackZone = curUnit.getTotalAttackZone(unitCoord.x, unitCoord.y, battlefield, character);
 					attackZone.IntersectWith(enemies);
 					List<Coord> targets = new List<Coord>(attackZone);
+					float bestScore = 0;
+					Coord bestTarget = null;
 					if (targets.Count > 0) {
-						// TODO
-						// Choose best target
+						foreach (Coord target in targets) {
+							Tile enemyTile = battlefield.map[target.x, target.y].Peek();
+							Unit enemy = battlefield.units[target.x, target.y];
+							AIBattle battle = new AIBattle(curUnit, unitCoord, enemyTile, target);
+							if (battle.score > bestScore) {
+								bestScore = battle.score;
+								bestTarget = target;
+							}
+						}
+						
 					} else {
 						targets = findNearestEnemeis(unitCoord);
 						if (targets.Count == 0) {
 							return new Move(unitCoord, unitCoord);
 						}
 						int minDIst = Int32.MaxValue;
+						Coord bestCoord = null;
 						foreach (Coord coord in curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
 							int dist = this.manhattanDistance(coord, targetCoord);
 							if (dist < minDist) {
