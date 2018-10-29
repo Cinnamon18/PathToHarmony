@@ -48,8 +48,7 @@ namespace AI {
 						// TODO
 						// Choose best target
 					} else {
-						// TODO
-						// Move to closest
+						
 					}
 				}
 			} else if (curUnit is MeleeUnit) {
@@ -64,14 +63,35 @@ namespace AI {
 						// TODO
 						// Choose best target
 					} else {
-						// TODO
-						// Move to closest
+						targets = findNearestEnemeis(unitCoord);
+						if (targets.Count == 0) {
+							return new Move(unitCoord, unitCoord);
+						}
+						int minDIst = Int32.MaxValue;
+						foreach (Coord coord in curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
+							int dist = this.manhattanDistance(coord, targetCoord);
+							if (dist < minDist) {
+								minDist = dist;
+								bestCoord = coord;
+							}
+						}
+						return new Move(unitCoord, bestCoord);
 					}
 				}
 			} else if (curUnit is RangedUnit) {
+				if (curUnit.getHealth() < curUnit.maxHealth * 0.4) {
+					// TODO
+					// Flee
+				} else {
 
+				}
 			} else if (curUnit is StatusUnit) {
+				if (curUnit.getHealth() < curUnit.maxHealth * 0.4) {
+					// TODO
+					// Flee
+				} else {
 
+				}
 			}
 			// Unit unit = selectUnit();
 			// Coord unitCoord = battlefield.getUnitCoords(unit);	
