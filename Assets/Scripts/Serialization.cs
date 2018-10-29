@@ -161,7 +161,7 @@ public static class Serialization {
 			}
 			Stack<UnitInfo> units = new Stack<UnitInfo>();
 			String mapname = DeserializeUnits(levelData, units);
-			return new LevelInfo(units, mapname);
+			return new LevelInfo(units, mapname, ObjectiveType.Elimination);
 		}
 		return null;
 

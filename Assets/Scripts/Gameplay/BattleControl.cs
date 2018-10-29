@@ -373,26 +373,38 @@ namespace Gameplay {
 		private void deserializeLevel() {
 			//Testing Level Deserialization
 			LevelInfo levelInfo = Serialization.getLevel(level.levelFileName);
-
-
-
-			//TODO: game objective will be serialized in the level editor data. assign it here, and do any other necessary reference assignment
-			objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
-
-			// Uncomment these for the escort objective
-			// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
-			// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
-			// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
-
-			// Uncomment these for the intercept objective
-			// (objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
-
-			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
-			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
-
-			//For these objectives to work, you must also comment out the lines in the initial battle stage below
-			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);
-			// objective = new InterceptObjective(battlefield, level, characters[playerCharacter], 20);
+			switch(levelInfo.objective)
+			{
+				case ObjectiveType.Elimination:
+					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
+					break;
+				case ObjectiveType.Escort:
+					//For these objectives to work, you must also comment out the lines in the initial battle stage below
+					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 20);
+					// Uncomment these for the escort objective
+					(objective as EscortObjective).vips.Add(battlefield.units[0,0]);
+					// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
+					// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
+					break;
+				case ObjectiveType.Intercept:
+					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 20);
+					(objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
+					break;
+				case ObjectiveType.Capture:
+					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, new List<Coord>(new Coord[] { new Coord(1, 1) }), 0);
+					break;
+				case ObjectiveType.Defend:
+					objective = new DefendObjective(battlefield, level, level.characters[playerCharacter], 20, new List<Coord>(new Coord[] { new Coord(3, 4), new Coord(1, 1) }), 0);
+					break;
+				case ObjectiveType.Survival:
+				
+					break;
+				default:
+					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
+					break;
+			}
+	
+			
 
 
 
