@@ -62,6 +62,7 @@ namespace AI {
 					float bestScore = 0;
 					Coord bestTarget = null;
 					if (targets.Count > 0) {
+						// If targets are in range find best
 						foreach (Coord target in targets) {
 							Tile enemyTile = battlefield.map[target.x, target.y].Peek();
 							Unit enemy = battlefield.units[target.x, target.y];
@@ -71,7 +72,17 @@ namespace AI {
 								bestTarget = target;
 							}
 						}
-						if (curUnit.hasMovedThisTurn)
+						// If unit has already moved attack best target
+						if (curUnit.hasMovedThisTurn) {
+							return new Move(unitCoord, bestTarget);
+						}
+						// Else choose best tile to move to
+						HashSet<Coord> adjacentTiles = new HashSet<Coord>();
+						adjacentTiles.Add(new Coord(bestTarget.x + 1, bestTarget.y));
+						adjacentTiles.Add(new Coord(bestTarget.x - 1, bestTarget.y));
+						adjacentTiles.Add(new Coord(bestTarget.x, bestTarget.y + 1));
+						adjacentTiles.Add(new Coord(bestTarget.x, bestTarget.y - 1));
+						adjacentTiles.IntersectWith(curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
 					} else {
 						targets = findNearestEnemeis(unitCoord);
 						if (targets.Count == 0) {
