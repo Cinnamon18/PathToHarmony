@@ -138,6 +138,8 @@ namespace Gameplay {
 
 					if (move.from.Equals(move.to)) {
 						//This is the null move. just do nothing!
+						ourUnit.hasMovedThisTurn = true;
+						ourUnit.setHasAttackedThisTurn(true);
 						ourUnit.greyOut();
 					} else if (selectedItem is Tile) {
 						//We selected a tile! lets move to it
@@ -172,8 +174,6 @@ namespace Gameplay {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
 					}
 
-					//Check cutscenes after a unit was eliminated. Could be important for plot relevant characters or smth.
-					await runAppropriateCutscenes();
 					checkWinAndLose();
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
