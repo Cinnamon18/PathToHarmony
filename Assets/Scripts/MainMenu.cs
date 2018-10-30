@@ -99,5 +99,11 @@ public class MainMenu : MonoBehaviour {
 		Persistance.loadProgress();
 
 
+		//store path to streaming assets, where map and level files are stored
+		string streamingPath = Application.streamingAssetsPath + "/";
+		Util.Log("Stream Path: " + streamingPath);
+		Persistance.streamingPath = streamingPath;
+
+
 	}
 }

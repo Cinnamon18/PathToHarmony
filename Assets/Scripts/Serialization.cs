@@ -12,8 +12,14 @@ using Editors;
 using Random = UnityEngine.Random;
 
 public static class Serialization {
-	public static string mapFilePath = "./Assets/Maps/";
-	public static string levelFilePath = "./Assets/Levels/";
+	//public static string mapFilePath = "./AssetsAssets/StreamingAssets/Maps/Maps/";
+	public static string mapFilePath = Persistance.streamingPath + "Maps/";
+
+	//public static string levelFilePath = "./Assets/Levels/";
+	public static string levelFilePath = Persistance.streamingPath + "Levels/";
+
+
+
 	//This is used for LevelEditor so the obj[,,,] array know how tall it should be
 	//And can place units now matter how tall the map is.
 	//Gotta be better way but works for now.
