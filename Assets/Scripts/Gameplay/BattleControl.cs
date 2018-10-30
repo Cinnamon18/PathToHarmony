@@ -112,7 +112,9 @@ namespace Gameplay {
 						"Turns remaining:  " + (objective.maxHalfTurns - ((halfTurnsElapsed / 2) + 1));
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
-					Util.setTimeout(advanceBattleStage, 1000);
+
+					await Task.Delay(1000);
+					advanceBattleStage();
 
 					break;
 				case BattleLoopStage.TurnChangeEnd:
@@ -153,14 +155,14 @@ namespace Gameplay {
 						//Targeted a hostile unit! fight!
 						Unit selectedUnit = selectedItem as Unit;
 
+						await ourUnit.playAttackAnimation();
 						bool defenderDefeated = ourUnit.doBattleWith(
 							selectedUnit,
 							battlefield.map[move.to.x, move.to.y].Peek(),
 							battlefield);
 
-						await Task.Delay(TimeSpan.FromMilliseconds(250));
-
 						if (!defenderDefeated && (selectedItem is MeleeUnit) && (ourUnit is MeleeUnit)) {
+							await selectedUnit.playAttackAnimation();
 							//Counterattack applied only when both units are Melee
 							selectedUnit.doBattleWith(
 								ourUnit,

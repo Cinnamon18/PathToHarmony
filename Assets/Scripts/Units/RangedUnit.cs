@@ -48,7 +48,8 @@ namespace Units {
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			//TODO: create specific implementation for ranged units
+			Audio.playSfx(attackSoundEffect);
+
 			int damage = this.battleDamage(enemy, enemyTile);
 
 			//Damage rounds up
