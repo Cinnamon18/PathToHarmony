@@ -106,9 +106,24 @@ namespace AI {
 						}
 
 					} else {
-						//Selected enemy unit. Show unit and its move options.
-						//TODO: highlight enemy's valid move tiles. don't assign currentMove.from.x or from.y, bc not valid advancement criteria
-					}
+                        //Selected enemy unit. Show unit and its move options.
+						unhighlightAll();
+						highlight(selectedUnit, 2);
+
+						moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
+
+						foreach (Coord moveOption in moveOptions) {
+							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject, 2);
+						}
+
+						this.targetableUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, selectedUnit.getCharacter(battlefield));
+
+						foreach (Coord targetableUnit in targetableUnits) {
+							int colorIndex = selectedUnit is Cleric ? 3 : 2; 
+							highlight(battlefield.units[targetableUnit.x, targetableUnit.y], colorIndex);
+							highlight(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, colorIndex);
+						}
+                    }
 
 				} else if (selectedItem == null) {
 					//Clicked on empty space! Nbd, don't do anything.
