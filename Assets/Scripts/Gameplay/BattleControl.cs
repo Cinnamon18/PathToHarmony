@@ -271,10 +271,26 @@ namespace Gameplay {
 			await Task.Delay(TimeSpan.FromMilliseconds(6000));
 			victoryImage.enabled = false;
 
+
+
 			Persistance.campaign.levelIndex++;
-			Persistance.saveProgress();
-			//Oh Boy i hope this works.
-			SceneManager.LoadScene("DemoBattle");
+			Util.Log("Advancing Level");
+			Util.Log("Next Index: " + Persistance.campaign.levelIndex);
+			Util.Log("Levels: " + Persistance.campaign.levels.Count());
+
+			//check for end of campaign
+			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Count()) {
+				//TODO reset progress to 0?
+				Util.Log("Campaign Victory");
+
+				SceneManager.LoadScene("Victory");
+			} else {
+				Persistance.saveProgress();
+				//Oh Boy i hope this works.
+				SceneManager.LoadScene("DemoBattle");
+			}
+			
+			
 		}
 
 		private async void restartLevelDefeat() {

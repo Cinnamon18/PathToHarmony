@@ -16,7 +16,7 @@ public static class Persistance {
 
 	public static void saveProgress() {
 		PlayerPrefs.SetInt(CAMPAIGN_LEVEL_INDEX, campaign.levelIndex);
-		Util.Log("Persistence: Aaved level index of " + campaign.levelIndex);
+		Util.Log("Persistence: Saved level index of " + campaign.levelIndex);
 		save();
 	}
 
