@@ -155,6 +155,8 @@ public static class Serialization {
 		seperate = objectiveString.Split('-');
 		int objInt = Convert.ToInt32(seperate[0]);
 		ObjectiveType objective = (ObjectiveType)objInt;
+
+		//TODO change deserialize to get List of 2D arrays (make similar with deserialize units with , and ;)
 		Vector2 goalPos = new Vector2();
 		if (seperate.Length == 2)
 		{
@@ -180,7 +182,8 @@ public static class Serialization {
 			LevelInfo levelInfo = new LevelInfo(units, mapname, objective);
 			//only add position for all objectives except Elimination and Surival
 			if (!(objective == ObjectiveType.Elimination) && !(objective == ObjectiveType.Survival))
-				levelInfo.setPosition(goalPos);
+				//TODO use setPosition to set List of goal Vector2's
+				//levelInfo.setPosition(goalPos);
 
 			return levelInfo;
 		}

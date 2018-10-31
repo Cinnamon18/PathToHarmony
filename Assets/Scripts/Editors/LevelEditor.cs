@@ -20,13 +20,16 @@ namespace Editors {
 		public Text saveLevelText;
 		
 
-		public TMP_Dropdown objectiveDropdown;
+		//faction info
 		public TMP_Dropdown factionDropdown;
 		private Faction currentFaction;
-		private ObjectiveType currentObjective;
-		private Vector2 goalPosition;
-		public GameObject goldCoins;
 
+		//objective info
+		public TMP_Dropdown objectiveDropdown;
+		public GameObject goldCoins;
+		private ObjectiveType currentObjective;
+		private Dictionary<Vector2, GameObject> goalObjects;
+		
 		[SerializeField]
 		private Transform unitsHolder;
 		[SerializeField]
@@ -82,14 +85,17 @@ namespace Editors {
 				//set current faction
 				currentFaction = (Faction)factionDropdown.value;
 			});
-			
+
+
+			goalObjects = new Dictionary<Vector2, GameObject>();
+
 			objectiveDropdown.onValueChanged.AddListener(delegate {
 				//set current objective
 				currentObjective = (ObjectiveType)objectiveDropdown.value;
 				if (currentObjective == ObjectiveType.Elimination && currentObjective == ObjectiveType.Survival)
 				{
-					goldCoins.SetActive(false);
-					goalPosition = new Vector2();
+					//TODO create way to delete all goal objs
+					goalObjects.Clear();
 				}
 			});
 
@@ -113,7 +119,8 @@ namespace Editors {
 			serialized.Append("*"+(int)currentObjective);
 			if (currentObjective != ObjectiveType.Elimination && currentObjective != ObjectiveType.Survival)
 			{
-				serialized.Append("-" + goalPosition.x + "," + goalPosition.y);
+				//serialized.Append("-" + goalPosition.x + "," + goalPosition.y);
+				//TODO serialize all positions in Dictionary of goal objs
 			}
 			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, overwriteData);
 			resetTextBoxes();
@@ -145,13 +152,18 @@ namespace Editors {
 
 		public void placeGoal(int x, int y)
 		{
-			goalPosition = new Vector2(x, y);
+			//TODO make sure not placing on top of unit or other goal
+			Vector2 goalPosition = new Vector2(x, y);
 			int z = battlefield.map[x, y].Count + 1;
-			if (!goldCoins.activeSelf)
-			{
-				goldCoins.SetActive(true);
-			}
-			goldCoins.transform.position = Util.GridToWorld(x, y, z);
+			
+			GameObject newGoal = Instantiate(
+				goldCoins,
+				Util.GridToWorld(x, y, z),
+				goldCoins.gameObject.transform.rotation);
+			//TODO create goalHolder for easy deletion
+			//newGoal.transform.parent = unitsHolder;
+			newGoal.SetActive(true);
+			goalObjects[goalPosition] = newGoal;
 		}
 
 		public override void deserialize() {
@@ -192,8 +204,9 @@ namespace Editors {
 			
 			if (currentObjective != ObjectiveType.Elimination && currentObjective != ObjectiveType.Survival)
 			{
-				goalPosition = levelInfo.goalPosition;
-				placeGoal((int)goalPosition.x, (int)goalPosition.y);
+				//TODO retrieve and populate on load
+				//goalPosition = levelInfo.goalPosition;
+				//placeGoal((int)goalPosition.x, (int)goalPosition.y);
 			}
 			//set dropdown from saved objective
 			objectiveDropdown.value = (int)currentObjective;
