@@ -40,6 +40,10 @@ public class MainMenu : MonoBehaviour {
 		SceneManager.LoadScene("DemoBattle");
 	}
 
+	public void resumeGame() {
+		SceneManager.LoadScene("DemoBattle");
+	}
+
 	public void showOptions() {
 		optionsCanvas.enabled = true;
 	}
@@ -74,7 +78,7 @@ public class MainMenu : MonoBehaviour {
 				new Character("Blair", true, new PlayerAgent()),
 				new Character("King Xingata", false, new SimpleAgent())
 				};
-		Level level2 = new Level("DemoMap", "test", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat});
+		Level level2 = new Level("DemoMap", "test", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat });
 
 		//LEVEL 3
 		Character[] characters3 = new[] {
