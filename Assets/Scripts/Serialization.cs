@@ -12,14 +12,7 @@ using Editors;
 using Random = UnityEngine.Random;
 
 public static class Serialization {
-	//public static string mapFilePath = "./AssetsAssets/StreamingAssets/Maps/Maps/";
-	public static string mapFilePath = Persistance.streamingPath + "Maps/";
-
-	//public static string levelFilePath = "./Assets/Levels/";
-	public static string levelFilePath = Persistance.streamingPath + "Levels/";
-
-
-
+	
 	//This is used for LevelEditor so the obj[,,,] array know how tall it should be
 	//And can place units now matter how tall the map is.
 	//Gotta be better way but works for now.
@@ -45,6 +38,10 @@ public static class Serialization {
 	public static string ReadData(string fileName, string path) {
 		try {
 			string filePath = path + fileName + ".txt";
+
+
+			Util.Log("Attempting to read from: " + filePath);
+
 
 			//Read the text from directly from the test.txt file
 			StreamReader reader = new StreamReader(filePath);
@@ -150,7 +147,7 @@ public static class Serialization {
 	}
 
 	public static LevelInfo getLevel(string levelName) {
-		string levelString = ReadData(levelName, levelFilePath);
+		string levelString = ReadData(levelName, PathManager.levelsPath());
 		if (levelString != null) {
 			Queue<string> levelData = new Queue<string>();
 			foreach (string str in levelString.Split(';')) {
@@ -194,7 +191,7 @@ public static class Serialization {
 	//TODO: Decide on semantics for this
 	public static Campaign deserializeCampaign(string fileName) {
 		Campaign campaign = new Campaign();
-		string serializedCampaign = Serialization.ReadData(fileName, mapFilePath);
+		string serializedCampaign = Serialization.ReadData(fileName, PathManager.mapsPath());
 		string[] campaignArr = serializedCampaign.Split(',');
 		campaign.name = campaignArr[0];
 

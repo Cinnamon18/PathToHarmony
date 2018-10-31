@@ -32,7 +32,6 @@ namespace Gameplay {
 		[SerializeField]
 		private TileGenerator generator;
 
-		private string mapFilePath = Serialization.mapFilePath;
 		private LevelInfo levelInfo;
 
 		public Camera mainCamera;
@@ -372,7 +371,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), generator, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, PathManager.mapsPath()), generator, tilesHolder);
 
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
@@ -428,12 +427,15 @@ namespace Gameplay {
 				};
 				level = new Level("DemoMap2", "EasyVictory", characters, new string[] { });
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
+				Persistance.campaign.levelIndex = 0;
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();
+			} else {
+				Persistance.loadProgress();
 			}
 
 
-			Persistance.loadProgress();
+			
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 			foreach (Character character in level.characters) {
 				character.agent.battlefield = this.battlefield;
