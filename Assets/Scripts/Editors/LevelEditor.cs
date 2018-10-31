@@ -20,9 +20,10 @@ namespace Editors {
 		public Text saveLevelText;
 		
 
-		public TMP_Dropdown playerDropdown;
+		public TMP_Dropdown objectiveDropdown;
 		public TMP_Dropdown factionDropdown;
 		private Faction currentFaction;
+		private ObjectiveType currentObjective;
 
 		[SerializeField]
 		private Transform unitsHolder;
@@ -77,7 +78,11 @@ namespace Editors {
 				//set current faction
 				currentFaction = (Faction)factionDropdown.value;
 			});
-		
+			
+			objectiveDropdown.onValueChanged.AddListener(delegate {
+				//set current objective
+				currentObjective = (ObjectiveType)objectiveDropdown.value;
+			});
 
 		}
 		public override void serialize() {
@@ -98,6 +103,8 @@ namespace Editors {
 					serialized.Append(";");
 				}
 			}
+			//Add objective type
+			serialized.Append("*"+(int)currentObjective);
 
 			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, overwriteData);
 			resetTextBoxes();
