@@ -149,6 +149,26 @@ public static class Serialization {
 
 	public static LevelInfo getLevel(string levelName) {
 		string levelString = ReadData(levelName, levelFilePath);
+
+		//separate level in from objective info
+		string[] seperate = levelString.Split('*');
+		levelString = seperate[0];
+		String objectiveString = seperate[1];
+
+		//get objective and position of relevant tile/unit
+		seperate = objectiveString.Split('-');
+		int objInt = Convert.ToInt32(seperate[0]);
+		ObjectiveType objective = (ObjectiveType)objInt;
+		Vector2 goalPos = new Vector2();
+		if (seperate.Length == 2)
+		{
+			string[] goalPosition = seperate[1].Split(',');
+			int x = Convert.ToInt32(goalPosition[0]);
+			int y = Convert.ToInt32(goalPosition[1]);
+			goalPos.x = x;
+			goalPos.y = y;
+		}
+
 		if (levelString != null)
 		{
 			Queue<string> levelData = new Queue<string>();
@@ -161,7 +181,13 @@ public static class Serialization {
 			}
 			Stack<UnitInfo> units = new Stack<UnitInfo>();
 			String mapname = DeserializeUnits(levelData, units);
-			return new LevelInfo(units, mapname, ObjectiveType.Elimination);
+
+			LevelInfo levelInfo = new LevelInfo(units, mapname, objective);
+			//only add position for all objectives except Elimination and Surival
+			if (!(objective == ObjectiveType.Elimination) && !(objective == ObjectiveType.Survival))
+				levelInfo.setPosition(goalPos);
+
+			return levelInfo;
 		}
 		return null;
 
@@ -183,7 +209,11 @@ public static class Serialization {
 				UnitType type = (UnitType)data[0];
 				//get stored Faction
 				Faction faction = (Faction)data[1];
-				
+				/*
+				Debug.Log("x: " + data[2]);
+				Debug.Log("y: " + data[3]);
+				Debug.Log("z: " + data[4]);
+				*/
 				units.Push(new UnitInfo(type, faction, new Vector3Int(data[2], data[3], data[4])));
 			}
 

@@ -24,6 +24,8 @@ namespace Editors {
 		public TMP_Dropdown factionDropdown;
 		private Faction currentFaction;
 		private ObjectiveType currentObjective;
+		private Vector2 goalPosition;
+		public GameObject goldCoins;
 
 		[SerializeField]
 		private Transform unitsHolder;
@@ -39,6 +41,7 @@ namespace Editors {
 		private TileGenerator generator;
 
 		private Battlefield battlefield;
+		private int fieldHeight;
 		[SerializeField]
 		private GameObject[] unitPrefabs;
 		private UnitInfo[,] unitsInfo;
@@ -60,7 +63,8 @@ namespace Editors {
 			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), generator, tilesHolder);
 			//Hacky but Serialization holds how tall the last map loaded is
 			//use to know how tall Unit array should be
-			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
+			fieldHeight = Serialization.mapHeight;
+			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), fieldHeight];
 			//unitsinfo is used to store units and whether they are player or enemy units
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 
@@ -82,6 +86,11 @@ namespace Editors {
 			objectiveDropdown.onValueChanged.AddListener(delegate {
 				//set current objective
 				currentObjective = (ObjectiveType)objectiveDropdown.value;
+				if (currentObjective == ObjectiveType.Elimination && currentObjective == ObjectiveType.Survival)
+				{
+					goldCoins.SetActive(false);
+					goalPosition = new Vector2();
+				}
 			});
 
 		}
@@ -98,16 +107,51 @@ namespace Editors {
 				if (info != null)
 				{
 					serialized.Append(info.serialize() + ";");
-				} else
-				{
-					serialized.Append(";");
-				}
+				} 
 			}
 			//Add objective type
 			serialized.Append("*"+(int)currentObjective);
-
+			if (currentObjective != ObjectiveType.Elimination && currentObjective != ObjectiveType.Survival)
+			{
+				serialized.Append("-" + goalPosition.x + "," + goalPosition.y);
+			}
 			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, overwriteData);
 			resetTextBoxes();
+		}
+
+		//check for assigning goal position
+		private void FixedUpdate()
+		{
+			if ((currentObjective != ObjectiveType.Elimination) && (currentObjective != ObjectiveType.Survival))
+			{
+				RaycastHit hit;
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (Physics.Raycast(ray, out hit, 1000.0f))
+				{
+					Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
+					//press space to assign goal
+					if (Input.GetKeyDown(KeyCode.Space))
+					{
+						Debug.Log("Place goal at (" + objCoords.x + "," + objCoords.x + ")");
+						int x = objCoords.x;
+						int y = objCoords.y;
+				
+						placeGoal(x, y);
+					}
+
+				}
+			}
+		}
+
+		public void placeGoal(int x, int y)
+		{
+			goalPosition = new Vector2(x, y);
+			int z = battlefield.map[x, y].Count + 1;
+			if (!goldCoins.activeSelf)
+			{
+				goldCoins.SetActive(true);
+			}
+			goldCoins.transform.position = Util.GridToWorld(x, y, z);
 		}
 
 		public override void deserialize() {
@@ -144,6 +188,15 @@ namespace Editors {
 			eraseTiles();
 			LevelInfo levelInfo = Serialization.getLevel(loadLevelText.text);
 			mapName = levelInfo.mapName;
+			currentObjective = levelInfo.objective;
+			
+			if (currentObjective != ObjectiveType.Elimination && currentObjective != ObjectiveType.Survival)
+			{
+				goalPosition = levelInfo.goalPosition;
+				placeGoal((int)goalPosition.x, (int)goalPosition.y);
+			}
+			//set dropdown from saved objective
+			objectiveDropdown.value = (int)currentObjective;
 			reloadMap();
 
 			try {
@@ -199,6 +252,7 @@ namespace Editors {
 		}
 
 		private void removeAllUnits() {
+			goldCoins.SetActive(false);
 			foreach (UnitInfo info in unitsInfo) {
 				if (info != null) {
 					unitsInfo[info.getCoord().x, info.getCoord().y] = null;

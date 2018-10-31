@@ -382,7 +382,7 @@ namespace Gameplay {
 					//For these objectives to work, you must also comment out the lines in the initial battle stage below
 					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 20);
 					// Uncomment these for the escort objective
-					(objective as EscortObjective).vips.Add(battlefield.units[0,0]);
+					//(objective as EscortObjective).vips.Add(battlefield.units[0,0]);
 					// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
 					// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
 					break;
@@ -431,7 +431,7 @@ namespace Gameplay {
 					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new simpleAgent())
 				};
-				level = new Level("DemoMap", "DemoLevel", characters, new string[] { });
+				level = new Level("DemoMap", "TestObjective", characters, new string[] { });
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();
