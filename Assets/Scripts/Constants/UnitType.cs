@@ -3,6 +3,8 @@ namespace Constants {
 		Knight = 0,
 		Mage,
 		Cleric,
-		Archer
+		Archer,
+		Rogue,
+		LightHorse
 	}
 }

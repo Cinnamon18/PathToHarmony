@@ -24,11 +24,13 @@ namespace Units {
 				int moveDistance,
 				DamageType damageType,
 				int rangedAttackStrength,
+				int range,
 				Faction faction
 			) : base(armorType, maxHealth, moveType, moveDistance, faction) {
 
 			this.damageType = damageType;
 			this.rangedAttackStrength = rangedAttackStrength;
+			this.range = range;
 		}
 
 		public override int battleDamage(Unit enemy, Tile enemyTile) {
@@ -46,7 +48,8 @@ namespace Units {
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			//TODO: create specific implementation for ranged units
+			Audio.playSfx(attackSoundEffect);
+
 			int damage = this.battleDamage(enemy, enemyTile);
 
 			//Damage rounds up

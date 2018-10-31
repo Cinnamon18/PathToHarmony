@@ -38,39 +38,15 @@ namespace Gameplay {
 		public Camera mainCamera;
 		public Camera cutsceneCamera;
 
-
+		private const float turnDelayMs = 150.0f;
 		private BattleLoopStage battleStage;
-		public BattleLoopStage BattleStage
-		{
-			get
-			{
-				return battleStage;
-			}
-		}
 
 		//Use this to keep one of the Update switch blocks from being called multiple times.
 		private bool battleStageChanged;
-
-		private int currentCharacter;
-		public int CurrentCharacter
-		{
-			get
-			{
-				return currentCharacter;
-			}
-		}
-
-		private int playerCharacter;
-		public int PlayerCharacter
-		{
-			get
-			{
-				return playerCharacter;
-			}
-		}
+		public int currentCharacter;
+		public int playerCharacter;
 		public int halfTurnsElapsed;
 
-		private bool skipTurnFlag = false;
 
 		[SerializeField]
 		private Text turnPlayerText;
@@ -136,7 +112,9 @@ namespace Gameplay {
 						"Turns remaining:  " + (objective.maxHalfTurns - ((halfTurnsElapsed / 2) + 1));
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
-					Util.setTimeout(advanceBattleStage, 1000);
+
+					await Task.Delay(1000);
+					advanceBattleStage();
 
 					break;
 				case BattleLoopStage.TurnChangeEnd:
@@ -154,19 +132,34 @@ namespace Gameplay {
 					}
 					battleStageChanged = false;
 
-					//Character.getMove() is responsible for validation so we assume the move to be legal
+					//After patching the RTS bug, the getMove function will now return null if no move should be made.
 					Move move = await level.characters[currentCharacter].getMove();
 
-					if (skipTurnFlag) {
-						return;
+					if (move == null) {
+						//A null move will be returned if the selection loop is interrupted by an ending turn.
+						//Since no move occurs, nothing else needs to be done this turn (since nothing changed).
+						break;
 					}
 
 					Unit ourUnit = battlefield.units[move.from.x, move.from.y];
-					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.to.x, move.to.y);
 
-					if (selectedItem is Tile) {
+					//The unit sometimes would no longer be in its expected position before the RTS bug was patched,
+					//but this bug might no longer occur, so this check might be unnecessary. It doesn't hurt to leave it in,
+					//since the behavior is the same: either this loop terminates due to a break, or due to an exception.
+					if (ourUnit == null) {
+						Debug.LogWarning("In BattleControl.update(), a move originated from a nonexistent unit, probably due to an ended turn.");
+						break;
+					}
+
+					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.to.x, move.to.y);
+					if (move.from.Equals(move.to)) {
+						//This is the null move. just do nothing!
+						ourUnit.hasMovedThisTurn = true;
+						ourUnit.setHasAttackedThisTurn(true);
+						ourUnit.greyOut();
+					} else if (selectedItem is Tile) {
 						//We selected a tile! lets move to it
-						moveUnit(ourUnit, move.to.x, move.to.y);
+						await moveUnit(ourUnit, move.to.x, move.to.y);
 
 						if (ourUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
 							ourUnit.greyOut();
@@ -176,14 +169,14 @@ namespace Gameplay {
 						//Targeted a hostile unit! fight!
 						Unit selectedUnit = selectedItem as Unit;
 
+						await ourUnit.playAttackAnimation();
 						bool defenderDefeated = ourUnit.doBattleWith(
 							selectedUnit,
 							battlefield.map[move.to.x, move.to.y].Peek(),
 							battlefield);
 
-						await Task.Delay(TimeSpan.FromMilliseconds(250));
-
 						if (!defenderDefeated && (selectedItem is MeleeUnit) && (ourUnit is MeleeUnit)) {
+							await selectedUnit.playAttackAnimation();
 							//Counterattack applied only when both units are Melee
 							selectedUnit.doBattleWith(
 								ourUnit,
@@ -192,13 +185,11 @@ namespace Gameplay {
 						}
 
 						ourUnit.setHasAttackedThisTurn(true);
-						await Task.Delay(TimeSpan.FromMilliseconds(250));
+						await Task.Delay(TimeSpan.FromMilliseconds(turnDelayMs));
 					} else {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
 					}
 
-					//Check cutscenes after a unit was eliminated. Could be important for plot relevant characters or smth.
-					await runAppropriateCutscenes();
 					checkWinAndLose();
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
@@ -308,13 +299,28 @@ namespace Gameplay {
 			battlefield.addUnit(newUnit, character, x, y);
 		}
 
-		private void moveUnit(Unit unit, int targetX, int targetY) {
+		private async Task moveUnit(Unit unit, int targetX, int targetY) {
 			Coord unitCoords = battlefield.getUnitCoords(unit);
 			battlefield.units[unitCoords.x, unitCoords.y] = null;
 			battlefield.units[targetX, targetY] = unit;
-			unit.gameObject.transform.position = Util.GridToWorld(
+
+			Vector3 startPos = unit.gameObject.transform.position;
+			Vector3 endPos = Util.GridToWorld(
 				new Vector3Int(targetX, targetY, battlefield.map[targetX, targetY].Count + 1)
 			);
+
+			float moveUnitProgress = 0.0f;
+			while (moveUnitProgress < turnDelayMs) {
+				//Slower at the start and end. a beautiful logistic curve. 
+				float progressPercent = 1 / (1 + Mathf.Pow((float)(Math.E), -5 * ((moveUnitProgress / turnDelayMs) - 0.5f)));
+
+				unit.gameObject.transform.position = Vector3.Lerp(startPos, endPos, progressPercent);
+				await Task.Delay(10);
+				moveUnitProgress += 10;
+			}
+
+			unit.gameObject.transform.position = endPos;
+
 		}
 
 		private async Task runAppropriateCutscenes() {
@@ -412,7 +418,7 @@ namespace Gameplay {
 				Stack<UnitInfo> stack = levelInfo.units;
 				while (stack.Count != 0) {
 					UnitInfo info = stack.Pop();
-					
+
 					if (info.getFaction() == Faction.Xingata) {
 						addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
 					} else {
@@ -429,14 +435,15 @@ namespace Gameplay {
 			if (Persistance.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
-					new Character("The evil lord zxqv", false, new simpleAgent())
+					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
+
 				level = new Level("DemoMap", "TestObjective", characters, new string[] { });
+
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();
 			}
-
 
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 			foreach (Character character in level.characters) {
@@ -444,13 +451,14 @@ namespace Gameplay {
 			}
 		}
 
-
 		public void skipTurn() {
 			Agent agent = level.characters[currentCharacter].agent;
 			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection) {
 				if (agent is PlayerAgent) {
 					((PlayerAgent)agent).unhighlightAll();
-					advanceBattleStage();
+					((PlayerAgent)agent).currentMove=null;
+					((PlayerAgent)agent).stopAwaiting = true;
+					setBattleLoopStage(BattleLoopStage.EndTurn);
 				}
 			}
 		}

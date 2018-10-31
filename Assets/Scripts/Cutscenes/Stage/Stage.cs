@@ -165,7 +165,7 @@ namespace Cutscenes.Stages {
 				textbox.AddText(side, stageBuilder.speaker, stageBuilder.message);
 
 				//I approximate it to take ~0.03 seconds per letter, but we do more so players can actually read
-				float playTimeGuess = (float)(stageBuilder.message.Length * 0.08 + 0.5);
+				float playTimeGuess = (float)(stageBuilder.message.Length * 0.06 + 1.5);
 				currentDialogLine = this.StartStoppableCoroutine(waitForSeconds(playTimeGuess));
 				yield return currentDialogLine.WaitFor();
 

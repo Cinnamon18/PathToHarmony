@@ -11,7 +11,7 @@ public class EndTurnButton : MonoBehaviour {
 	public Image image;
 	// Update is called once per frame
 	void Update () {
-		if (control.PlayerCharacter == control.CurrentCharacter) {
+		if (control.playerCharacter == control.currentCharacter) {
 			self.interactable = true;
 			image.color = new Color(image.color.r, image.color.g, image.color.b,Mathf.Min(1, image.color.a + 1 * Time.deltaTime));
 		} else {

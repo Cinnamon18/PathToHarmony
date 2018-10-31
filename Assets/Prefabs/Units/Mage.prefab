@@ -108,7 +108,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1488143649172512}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -76.69832, y: 53.72989, z: 54.619457}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224612101109719192}
@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114279958490815484}
-  unitModelPrefab: {fileID: 1008346146587774, guid: 89f0011a906a37349af127f3f427d8d9,
+  unitModelPrefab: {fileID: 1462340461748830, guid: 79656a54a8033e044a1d90e5f22fcfd9,
     type: 2}
   unit: {fileID: 114873663971810214}
 --- !u!114 &114603807495047558
@@ -265,7 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768a8178c70685d4dbc598b97f53e6f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unit: {fileID: 0}
+  unit: {fileID: 114873663971810214}
   buffIconPrefab: {fileID: 114708540217932716, guid: 669f709c7589f4c4591c7384479983b7,
     type: 2}
 --- !u!114 &114776122825187538
@@ -298,6 +298,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
   buffUIManager: {fileID: 114763325435846562}
   healthUIManager: {fileID: 114377653859387102}
+  attackSoundEffect: MageAttack
 --- !u!114 &114876878777951434
 MonoBehaviour:
   m_ObjectHideFlags: 1

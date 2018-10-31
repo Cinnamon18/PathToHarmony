@@ -44,7 +44,7 @@ namespace Units {
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			Audio.playSfx("DemoClip");
+			Audio.playSfx(attackSoundEffect);
 			int damage = this.battleDamage(enemy, enemyTile);
 
 			//Damage rounds up

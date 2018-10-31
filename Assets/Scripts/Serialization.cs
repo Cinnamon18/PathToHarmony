@@ -37,8 +37,7 @@ public static class Serialization {
 	}
 
 	public static string ReadData(string fileName, string path) {
-		try
-		{
+		try {
 			string filePath = path + fileName + ".txt";
 
 			//Read the text from directly from the test.txt file
@@ -47,12 +46,11 @@ public static class Serialization {
 			reader.Close();
 			Util.Log("read file at " + filePath + "successfully!");
 			return data;
-		} catch (FileNotFoundException ex)
-		{
-			Debug.LogError("File name "+ path + fileName + ".txt" + " entered does not exist.");
+		} catch (FileNotFoundException ex) {
+			Debug.LogError("File name " + path + fileName + ".txt" + " entered does not exist.");
 			return null;
 		}
-		
+
 	}
 
 
@@ -81,9 +79,8 @@ public static class Serialization {
 
 						TileType type = (TileType)tileTypeInt;
 						GameObject newTile = generator.getTileByType((TileType)tileTypeInt);
-					
-						if (newTile != null)
-						{
+
+						if (newTile != null) {
 							//typePrefabs was old way of doing this
 							Tile tile = GameObject.Instantiate(newTile,
 								Util.GridToWorld(x, y, z),
@@ -93,16 +90,15 @@ public static class Serialization {
 							//make child of singe transform for easier deletion
 							tile.transform.parent = tileHolder;
 							tile.tileType = (TileType)(tileTypeInt);
-							
+
 							parsedTiles[x, y, z] = tile;
 
 							//Make it taste better
 							addFlavor(new Vector3Int(x, y, z), tile);
-						} else
-						{
+						} else {
 							Debug.Log("Null tile");
 						}
-						
+
 					}
 				}
 			}
@@ -142,7 +138,7 @@ public static class Serialization {
 
 			if (flavorOptions.Length > 0) {
 				GameObject flavorObject = flavorOptions[Random.Range(0, flavorOptions.Length)];
-				GameObject.Instantiate(flavorObject, flavorPos, flavorObject.transform.rotation);
+				GameObject.Instantiate(flavorObject, flavorPos, Quaternion.Euler(-90, Random.Range(0, 360), 0));
 			}
 		}
 	}
@@ -169,13 +165,12 @@ public static class Serialization {
 			goalPos.y = y;
 		}
 
-		if (levelString != null)
-		{
+
+		if (levelString != null) {
+
 			Queue<string> levelData = new Queue<string>();
-			foreach (string str in levelString.Split(';'))
-			{
-				if (!(str.Equals("") | str.Equals(null)))
-				{
+			foreach (string str in levelString.Split(';')) {
+				if (!(str.Equals("") | str.Equals(null))) {
 					levelData.Enqueue(str);
 				}
 			}
@@ -209,11 +204,6 @@ public static class Serialization {
 				UnitType type = (UnitType)data[0];
 				//get stored Faction
 				Faction faction = (Faction)data[1];
-				/*
-				Debug.Log("x: " + data[2]);
-				Debug.Log("y: " + data[3]);
-				Debug.Log("z: " + data[4]);
-				*/
 				units.Push(new UnitInfo(type, faction, new Vector3Int(data[2], data[3], data[4])));
 			}
 

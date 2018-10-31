@@ -1,5 +1,6 @@
 using Cutscenes.Textboxes;
 using System.Collections;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,9 +25,10 @@ namespace Cutscenes.Stages {
 		}
 
 		public StageBuilder SetExpression(string expression) {
-			this.expression = Resources.Load<Sprite>("CharacterSprites/" + speaker + expression);
+			string unNumberedSpeaker = Regex.Replace(speaker, @"\s[0-9]$", "");
+			this.expression = Resources.Load<Sprite>("CharacterSprites/" + unNumberedSpeaker + expression);
 			if (this.expression == null) {
-				throw new UnityException("Expression \"" + speaker + expression + "\" not found");
+				throw new UnityException("Expression \"" + unNumberedSpeaker + expression + "\" not found");
 			}
 
 			return this;

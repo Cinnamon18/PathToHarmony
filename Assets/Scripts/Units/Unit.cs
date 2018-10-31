@@ -7,9 +7,15 @@ using AI;
 using System.Linq;
 using UnityEngine.UI;
 using Buffs;
+using System.Threading.Tasks;
+using Random = UnityEngine.Random;
 
 namespace Units {
 	public abstract class Unit : MonoBehaviour, IBattlefieldItem {
+
+		private const int minIdleTime = 15 * 1000;
+		private const int maxIdleTime = 60 * 1000;
+		private const int idleDelay = 100;
 
 		public readonly ArmorType armor;
 		private readonly MoveType moveType;
@@ -28,6 +34,7 @@ namespace Units {
 		public BuffUIManager buffUIManager;
 		[SerializeField]
 		public UnitHealthUIManager healthUIManager;
+		public string attackSoundEffect;
 
 		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, Faction faction) {
 			armor = armorType;
@@ -40,6 +47,10 @@ namespace Units {
 			hasMovedThisTurn = false;
 			hasAttackedThisTurn = false;
 			this.numMoveTiles = moveDistance;
+		}
+
+		void Start() {
+			startIdleAnimation();
 		}
 
 		public Character getCharacter(Battlefield battlefield) {
@@ -105,32 +116,25 @@ namespace Units {
 					int targetY = currentMove.y + moveDirs[x, 1];
 					if (targetX < battlefield.map.GetLength(0) && targetY < battlefield.map.GetLength(1) && targetX >= 0 && targetY >= 0) {
 						Stack<Tile> targetTile = battlefield.map[targetX, targetY];
-						if (targetTile.Count != 0)
-						{
+						if (targetTile.Count != 0) {
 							float movePointsExpended = currentMove.weight + targetTile.Peek().tileType.Cost(this.moveType);
 							Coord targetMove = new Coord(targetX, targetY);
 							AIMove targetMoveAI = new AIMove(targetX, targetY, movePointsExpended);
 
-							if (movePointsExpended <= this.numMoveTiles && !visited.Contains(targetMove))
-							{
+							if (movePointsExpended <= this.numMoveTiles && !visited.Contains(targetMove)) {
 								//If it's empty, we can move to it and on it
-								if (battlefield.units[targetX, targetY] == null)
-								{
+								if (battlefield.units[targetX, targetY] == null) {
 									visited.Add(targetMove);
 									movePQueue.Enqueue(targetMoveAI);
-								}
-								else if (battlefield.units[targetX, targetY].getCharacter(battlefield) == this.getCharacter(battlefield))
-								{
+								} else if (battlefield.units[targetX, targetY].getCharacter(battlefield) == this.getCharacter(battlefield)) {
 									//If it's our unit, we can move through it, but not on it
 									movePQueue.Enqueue(targetMoveAI);
-								}
-								else
-								{
+								} else {
 									//If it's a hostile unit, we can't move to or through it.
 								}
 							}
 						}
-			
+
 					}
 				}
 			}
@@ -140,14 +144,12 @@ namespace Units {
 
 		public void greyOut() {
 			foreach (GameObject model in this.getModels()) {
-				if (model != null)
-				{
+				if (model != null) {
 					model.GetComponent<Renderer>().material.shader = Shader.Find("Grayscale");
-				} else
-				{
+				} else {
 					Debug.Log("Unit destroyed.  Cannot apply shader");
 				}
-				
+
 			}
 		}
 
@@ -188,6 +190,10 @@ namespace Units {
 			return this.healthUIManager.getModels();
 		}
 
+		public List<Animator> getAnimators() {
+			return this.healthUIManager.getAnimators();
+		}
+
 		public void addBuff(Buff buff) {
 			buffs.Add(buff);
 			buffUIManager.addBuff(buff);
@@ -219,12 +225,35 @@ namespace Units {
 			return buffs.FindAll(predicate);
 		}
 
-		public void playAttackAnimation() {
+		public async Task playAttackAnimation() {
+			List<Animator> animators = healthUIManager.getAnimators();
 
+			foreach (Animator animator in animators) {
+				animator.SetTrigger("Attack");
+			}
+			
+			float animLenght = animators[0].GetCurrentAnimatorStateInfo(0).length;
+			//TODO someone fix this ugly hack
+			animLenght *= 1.5f;
+			await Task.Delay((int)(animLenght * 1000));
 		}
 
-		public void playIdleAnimation() {
+		public async void startIdleAnimation() {
+			while (true) {
+				await Task.Delay(Random.Range(minIdleTime, maxIdleTime));
 
+				//Re get these every time b/c they might be destroyed
+				try {
+					List<Animator> animators = healthUIManager.getAnimators();
+					foreach (Animator animator in animators) {
+						animator.SetTrigger("StartIdle");
+						await Task.Delay(idleDelay);
+					}
+				} catch (MissingReferenceException e) {
+					//This prevents annoying errors when run from the editor.
+					Debug.LogWarning("Editor quit with idle animation thread still running");
+				}
+			}
 		}
 	}
 }

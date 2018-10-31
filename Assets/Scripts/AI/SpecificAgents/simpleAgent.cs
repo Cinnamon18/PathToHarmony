@@ -7,9 +7,9 @@ using Units;
 using UnityEngine;
 
 namespace AI {
-	public class simpleAgent : Agent {
+	public class SimpleAgent : Agent {
 
-		public simpleAgent() : base() { }
+		public SimpleAgent() : base() { }
 
 		public override async Task<Move> getMove() {
 			
@@ -34,6 +34,10 @@ namespace AI {
 						bestCoord = coord;
 					}
 				}
+			}
+
+			if (bestCoord == null) {
+				bestCoord = new Coord(unitCoord.x, unitCoord.y);
 			}
 			
 			//Just so the player can keep track of what's happening
