@@ -14,24 +14,36 @@ namespace AI {
 		private List<GameObject> otherHighlightedObjects;
 		private Unit highlightedFriendlyUnit;
 
-		private const int INPUT_LOOP_DELAY = 10;
+        public Move currentMove;
 
-		public PlayerAgent() : base() {
+
+        private const int INPUT_LOOP_DELAY = 10;
+
+    
+
+		public bool stopAwaiting = false;
+
+        public PlayerAgent() : base() {
 			otherHighlightedObjects = new List<GameObject>();
 		}
 
+		//Either returns a valid move or returns null if no move should be made.
 		public override async Task<Move> getMove() {
-			Move currentMove = new Move();
-			while (currentMove.from == null || currentMove.to == null) {
+			//Note: stopAwaiting will cause this entire phase to end.
+			currentMove = new Move();
+			while (!stopAwaiting && currentMove.from == null || currentMove.to == null) {
 				currentMove = new Move();
 
-				while (currentMove.from == null) {
+				while (!stopAwaiting && currentMove.from == null) {
 					//Await player input. But. Unity doesn't really support async await.
 					//I'm feeling kinda dumb for not just learning coroutines. Next time!
-					while (!Input.GetButtonDown("Select")) {
+					while (!stopAwaiting && !Input.GetButtonDown("Select")) {
 						await Task.Delay(INPUT_LOOP_DELAY);
 					}
-
+					if (stopAwaiting) {
+						stopAwaiting = false;
+						return null;
+					}
 					getSelectionPhase(currentMove);
 
 					//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
@@ -40,23 +52,32 @@ namespace AI {
 					}
 				}
 
-				//Part 2
+				if (stopAwaiting) {
+					stopAwaiting = false;
+					return null;
+				}
 
-				while (currentMove.to == null && currentMove.from != null) {
+				//Part 2
+				while (!stopAwaiting && currentMove.to == null && currentMove.from != null) {
 					//Await player input.
-					while (!Input.GetButtonDown("Select")) {
+					while (!stopAwaiting && !Input.GetButtonDown("Select")) {
 						await Task.Delay(INPUT_LOOP_DELAY);
 					}
-
+					if (stopAwaiting) {
+						stopAwaiting = false;
+						return null;
+					}
 					getMovePhase(currentMove);
-
 					//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
 					while (Input.GetButtonDown("Select")) {
 						await Task.Delay(INPUT_LOOP_DELAY);
 					}
 				}
 			}
-
+			if (stopAwaiting) {
+				stopAwaiting = false;
+				return null;
+			}
 			return currentMove;
 		}
 
@@ -106,9 +127,24 @@ namespace AI {
 						}
 
 					} else {
-						//Selected enemy unit. Show unit and its move options.
-						//TODO: highlight enemy's valid move tiles. don't assign currentMove.from.x or from.y, bc not valid advancement criteria
-					}
+                        //Selected enemy unit. Show unit and its move options.
+						unhighlightAll();
+						highlight(selectedUnit, 2);
+
+						moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
+
+						foreach (Coord moveOption in moveOptions) {
+							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject, 2);
+						}
+
+						this.targetableUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, selectedUnit.getCharacter(battlefield));
+
+						foreach (Coord targetableUnit in targetableUnits) {
+							int colorIndex = selectedUnit is Cleric ? 3 : 2; 
+							highlight(battlefield.units[targetableUnit.x, targetableUnit.y], colorIndex);
+							highlight(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, colorIndex);
+						}
+                    }
 
 				} else if (selectedItem == null) {
 					//Clicked on empty space! Nbd, don't do anything.

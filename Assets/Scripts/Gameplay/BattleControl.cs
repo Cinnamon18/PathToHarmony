@@ -112,7 +112,9 @@ namespace Gameplay {
 						"Turns remaining:  " + (objective.maxHalfTurns - ((halfTurnsElapsed / 2) + 1));
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
-					Util.setTimeout(advanceBattleStage, 1000);
+
+					await Task.Delay(1000);
+					advanceBattleStage();
 
 					break;
 				case BattleLoopStage.TurnChangeEnd:
@@ -130,12 +132,26 @@ namespace Gameplay {
 					}
 					battleStageChanged = false;
 
-					//Character.getMove() is responsible for validation so we assume the move to be legal
+					//After patching the RTS bug, the getMove function will now return null if no move should be made.
 					Move move = await level.characters[currentCharacter].getMove();
 
-					Unit ourUnit = battlefield.units[move.from.x, move.from.y];
-					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.to.x, move.to.y);
+					if (move == null) {
+						//A null move will be returned if the selection loop is interrupted by an ending turn.
+						//Since no move occurs, nothing else needs to be done this turn (since nothing changed).
+						break;
+					}
 
+					Unit ourUnit = battlefield.units[move.from.x, move.from.y];
+
+					//The unit sometimes would no longer be in its expected position before the RTS bug was patched,
+					//but this bug might no longer occur, so this check might be unnecessary. It doesn't hurt to leave it in,
+					//since the behavior is the same: either this loop terminates due to a break, or due to an exception.
+					if (ourUnit == null) {
+						Debug.LogWarning("In BattleControl.update(), a move originated from a nonexistent unit, probably due to an ended turn.");
+						break;
+					}
+
+					IBattlefieldItem selectedItem = battlefield.battlefieldItemAt(move.to.x, move.to.y);
 					if (move.from.Equals(move.to)) {
 						//This is the null move. just do nothing!
 						ourUnit.hasMovedThisTurn = true;
@@ -153,14 +169,14 @@ namespace Gameplay {
 						//Targeted a hostile unit! fight!
 						Unit selectedUnit = selectedItem as Unit;
 
+						await ourUnit.playAttackAnimation();
 						bool defenderDefeated = ourUnit.doBattleWith(
 							selectedUnit,
 							battlefield.map[move.to.x, move.to.y].Peek(),
 							battlefield);
 
-						await Task.Delay(TimeSpan.FromMilliseconds(250));
-
 						if (!defenderDefeated && (selectedItem is MeleeUnit) && (ourUnit is MeleeUnit)) {
+							await selectedUnit.playAttackAnimation();
 							//Counterattack applied only when both units are Melee
 							selectedUnit.doBattleWith(
 								ourUnit,
@@ -429,6 +445,8 @@ namespace Gameplay {
 			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection) {
 				if (agent is PlayerAgent) {
 					((PlayerAgent)agent).unhighlightAll();
+					((PlayerAgent)agent).currentMove=null;
+					((PlayerAgent)agent).stopAwaiting = true;
 					setBattleLoopStage(BattleLoopStage.EndTurn);
 				}
 			}

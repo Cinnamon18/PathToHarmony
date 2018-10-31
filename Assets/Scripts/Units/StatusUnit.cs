@@ -36,6 +36,8 @@ namespace Units {
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
+			Audio.playSfx(attackSoundEffect);
+
 			// only add if the enemy does not already have this buff
 			if (enemy.getBuffsOfClass(this.buffType).Count == 0) {
 				enemy.addBuff(this.buffType);

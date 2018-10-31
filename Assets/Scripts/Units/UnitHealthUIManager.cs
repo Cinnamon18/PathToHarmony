@@ -8,7 +8,7 @@ public class UnitHealthUIManager : MonoBehaviour {
 
 	private const int MAX_MODELS_PER_UNIT = 10;
 	private const float COL_WIDTH = 2.6f;
-	private const float ROW_HEIGHT = 1.8f; 
+	private const float ROW_HEIGHT = 1.8f;
 
 	[SerializeField]
 	public Image healthBar;
@@ -135,6 +135,7 @@ public class UnitHealthUIManager : MonoBehaviour {
 				};
 				break;
 			default:
+				Debug.LogError("unit at > 100%, health ui manager not really sure what to do with that");
 				break;
 		}
 	}
@@ -144,7 +145,7 @@ public class UnitHealthUIManager : MonoBehaviour {
 			unit.transform.position + new Vector3((float)(x), (float)(y), (float)(z)),
 			unitModelPrefab.transform.rotation,
 			unit.transform);
-		model.GetComponent<Renderer>().material = this.material;
+		model.GetComponentInChildren<SkinnedMeshRenderer>().material = this.material;
 		return model;
 	}
 
@@ -162,8 +163,20 @@ public class UnitHealthUIManager : MonoBehaviour {
 		unitModels.Clear();
 	}
 
+	public List<Animator> getAnimators() {
+		List<Animator> animators = new List<Animator>();
+		foreach (GameObject model in unitModels) {
+			animators.Add(model.GetComponent<Animator>());
+		}
+		return animators;
+	}
+
 	public List<GameObject> getModels() {
-		return this.unitModels;
+		List<GameObject> models = new List<GameObject>();
+		foreach (GameObject model in unitModels) {
+			models.Add(model.GetComponentInChildren<SkinnedMeshRenderer>().gameObject);
+		}
+		return models;
 	}
 
 

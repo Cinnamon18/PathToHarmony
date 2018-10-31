@@ -8,6 +8,7 @@ namespace Cutscenes.Stages {
 		public const string andysDemo = "andysDemo";
 		public const string tutorialEnd = "tutorialEnd";
 		public const string genericDefeat = "genericDefeat";
+		public const string expressionShowOff = "expressionShowOff";
 		private static HashSet<string> hasExecuted = new HashSet<string>();
 
 		//hhh sorry we're throwing good OO design out the window but. The execution on these coroutines is already a little weird
@@ -34,6 +35,12 @@ namespace Cutscenes.Stages {
 					break;
 				case genericDefeat:
 					if (objective.isLoseCondition(halfTurnsElapsed)) {
+						hasExecuted.Add(stageID);
+						return true;
+					}
+					break;
+				case expressionShowOff:
+					if (halfTurnsElapsed == 1) {
 						hasExecuted.Add(stageID);
 						return true;
 					}
@@ -66,7 +73,7 @@ namespace Cutscenes.Stages {
 							.SetSpeaker("J*n"),
 						S().AddLeaver("H*race"),
 						S().AddLeaver("J*n"),
-						S().AddLeaver("C*risse")
+						S().AddLeaver("C*risse"),
 					};
 					break;
 				case tutorialEnd:
@@ -80,7 +87,7 @@ namespace Cutscenes.Stages {
 						S().SetMessage("You know he's leading an army on the field, right?")
 							.SetSpeaker("Juniper"),
 						S().SetMessage("I know, but I still can’t shake off my disappointment.")
-							.SetSpeaker("Blair").SetAudio("DemoClip"),
+							.SetSpeaker("Blair").SetAudio("KnightAttack"),
 						S().SetMessage("You never explained to me why you admire the King so much.")
 							.SetSpeaker("Juniper"),
 						S().SetMessage("What is there to explain?")
@@ -97,14 +104,44 @@ namespace Cutscenes.Stages {
 						S().SetMessage("Congratulations, both of you.")
 							.SetSpeaker("Bruno"),
 						S().SetMessage("Where have you been? You at least watched our battle, right?")
-							.SetSpeaker("Juniper")
+							.SetSpeaker("Juniper"),
+						S().AddLeaver("Blair"),
+						S().AddLeaver("Juniper"),
 					};
 					break;
 				case genericDefeat:
 					return new StageBuilder[] {
 						S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 						S().SetMessage("We are defeated!")
-							.SetSpeaker("Blair")
+							.SetSpeaker("Blair"),
+						S().AddLeaver("Blair")
+					};
+					break;
+				case expressionShowOff:
+					return new StageBuilder[] {
+						S().AddActor(CutsceneSide.FarLeft, "JuniperActor", "Juniper"),
+						S().AddActor(CutsceneSide.FarRight, "NarratorActor", "Narrator"),
+						S().SetMessage("Hey, hey, hey yall!")
+							.SetSpeaker("Juniper").SetExpression("Neutral"),
+						S().SetMessage("Look how many expressions i can make!")
+							.SetSpeaker("Juniper").SetExpression("Smile"),
+						S().SetMessage("Juniper takes a deep breath, activating her clone-jutsu.")
+							.SetSpeaker("Narrator"),
+						S().AddLeaver("Narrator"),
+						S().AddActor(CutsceneSide.Left, "JuniperActor", "Juniper 2"),
+						S().SetMessage("Grrr!")
+							.SetSpeaker("Juniper 2").SetExpression("Angry"),
+						S().AddActor(CutsceneSide.Right, "JuniperActor", "Juniper 3"),
+						S().SetMessage("Wow, that's startling")
+							.SetSpeaker("Juniper 3").SetExpression("Surprised"),
+						S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper 4"),
+						S().SetMessage("Awww, no more room for clones :(")
+							.SetSpeaker("Juniper 4").SetExpression("Frown"),
+						S().AddLeaver("Juniper"),
+						S().AddLeaver("Juniper 2"),
+						S().AddLeaver("Juniper 3"),
+						S().AddLeaver("Juniper 4"),
+
 					};
 					break;
 				default:
