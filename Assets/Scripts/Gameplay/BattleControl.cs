@@ -159,7 +159,7 @@ namespace Gameplay {
 						ourUnit.greyOut();
 					} else if (selectedItem is Tile) {
 						//We selected a tile! lets move to it
-						await moveUnit(ourUnit, move.to.x, move.to.y);
+						await moveUnit(ourUnit, move.to);
 
 						if (ourUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
 							ourUnit.greyOut();
@@ -169,6 +169,7 @@ namespace Gameplay {
 						//Targeted a hostile unit! fight!
 						Unit selectedUnit = selectedItem as Unit;
 
+						await rotateUnit(ourUnit, battlefield.getUnitCoords(selectedUnit));
 						await ourUnit.playAttackAnimation();
 						bool defenderDefeated = ourUnit.doBattleWith(
 							selectedUnit,
@@ -176,6 +177,7 @@ namespace Gameplay {
 							battlefield);
 
 						if (!defenderDefeated && (selectedItem is MeleeUnit) && (ourUnit is MeleeUnit)) {
+							await rotateUnit(selectedUnit, battlefield.getUnitCoords(ourUnit));
 							await selectedUnit.playAttackAnimation();
 							//Counterattack applied only when both units are Melee
 							selectedUnit.doBattleWith(
@@ -289,7 +291,7 @@ namespace Gameplay {
 
 		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
 			int index = (int)(unitType);
-			
+
 			GameObject newUnitGO = Instantiate(
 				unitPrefabs[index],
 				Util.GridToWorld(x, y, battlefield.map[x, y].Count + 1),
@@ -300,28 +302,55 @@ namespace Gameplay {
 			battlefield.addUnit(newUnit, character, x, y);
 		}
 
-		private async Task moveUnit(Unit unit, int targetX, int targetY) {
+		private async Task moveUnit(Unit unit, Coord target) {
 			Coord unitCoords = battlefield.getUnitCoords(unit);
 			battlefield.units[unitCoords.x, unitCoords.y] = null;
-			battlefield.units[targetX, targetY] = unit;
+			battlefield.units[target.x, target.y] = unit;
 
 			Vector3 startPos = unit.gameObject.transform.position;
 			Vector3 endPos = Util.GridToWorld(
-				new Vector3Int(targetX, targetY, battlefield.map[targetX, targetY].Count + 1)
+				new Vector3Int(target.x, target.y, battlefield.map[target.x, target.y].Count + 1)
 			);
 
+			//Rotate to face target
+			await rotateUnit(unit, target);
+
+			//interpolate. 
 			float moveUnitProgress = 0.0f;
 			while (moveUnitProgress < turnDelayMs) {
 				//Slower at the start and end. a beautiful logistic curve. 
-				float progressPercent = 1 / (1 + Mathf.Pow((float)(Math.E), -5 * ((moveUnitProgress / turnDelayMs) - 0.5f)));
+				float progressPercent = 1 / (1 + Mathf.Pow((float)(Math.E), -4 * ((moveUnitProgress / turnDelayMs) - 0.5f)));
 
 				unit.gameObject.transform.position = Vector3.Lerp(startPos, endPos, progressPercent);
 				await Task.Delay(10);
 				moveUnitProgress += 10;
 			}
-
+			//Just in case....
 			unit.gameObject.transform.position = endPos;
+		}
 
+		private async Task rotateUnit(Unit unit, Coord target) {
+			Quaternion startPos = unit.gameObject.transform.rotation;
+			Vector3 relPos = unit.transform.position;
+			relPos -= (new Vector3(0, unit.transform.position.y, 0) + Util.GridToWorld(target));//change this to actual coords
+			Quaternion endPos = Quaternion.LookRotation(relPos, Vector3.up);
+
+			//Help 3d math is hard
+			endPos *= Quaternion.Euler(0, 180, 0);
+
+			float moveUnitProgress = 0.0f;
+			while (moveUnitProgress < turnDelayMs) {
+				//Slower at the start and end. a beautiful logistic curve. 
+				float progressPercent = 1 / (1 + Mathf.Pow((float)(Math.E), -4 * ((moveUnitProgress / turnDelayMs) - 0.5f)));
+
+				unit.gameObject.transform.rotation = Quaternion.Lerp(startPos, endPos, progressPercent);
+
+				await Task.Delay(10);
+				moveUnitProgress += 10;
+			}
+
+			//Just in case....
+			unit.gameObject.transform.rotation = endPos;
 		}
 
 		private async Task runAppropriateCutscenes() {
@@ -384,54 +413,44 @@ namespace Gameplay {
 			//add all units
 			//default enemy faction
 			Faction enemyFaction = Faction.Velgari;
-			try
-			{
+			try {
 				Stack<UnitInfo> stack = levelInfo.units;
-				while (stack.Count != 0)
-				{
+				while (stack.Count != 0) {
 					UnitInfo info = stack.Pop();
 
-					if (info.getFaction() == Faction.Xingata)
-					{
+					if (info.getFaction() == Faction.Xingata) {
 						addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
-					}
-					else
-					{
+					} else {
 						addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, info.getFaction());
 						enemyFaction = info.getFaction();
 					}
 				}
-			}
-			catch (FileNotFoundException ex)
-			{
+			} catch (FileNotFoundException ex) {
 				Debug.Log("Incorrect level name" + ex.ToString());
 			}
 
 
 			//get all goal info
 			List<Coord> goalPositions = levelInfo.goalPositions;
-			switch(levelInfo.objective)
-			{
+			switch (levelInfo.objective) {
 				case ObjectiveType.Elimination:
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
 					break;
 				case ObjectiveType.Escort:
 					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 20);
 					//add vips
-					foreach (Coord pos in goalPositions)
-					{
+					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[0], pos.x, pos.y, Faction.Xingata);
 						(objective as EscortObjective).vips.Add(battlefield.units[pos.x, pos.y]);
 					}
 					break;
 				case ObjectiveType.Intercept:
 					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 20);
-					foreach (Coord pos in goalPositions)
-					{
+					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[1], pos.x, pos.y, enemyFaction);
 						(objective as InterceptObjective).vips.Add(battlefield.units[pos.x, pos.y]);
 					}
-					
+
 					break;
 				case ObjectiveType.Capture:
 					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 0);
@@ -446,7 +465,7 @@ namespace Gameplay {
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
 					break;
 			}
-	
+
 		}
 
 		private void getLevel() {
@@ -475,7 +494,7 @@ namespace Gameplay {
 			if (currentCharacter == playerCharacter && battleStage == BattleLoopStage.ActionSelection) {
 				if (agent is PlayerAgent) {
 					((PlayerAgent)agent).unhighlightAll();
-					((PlayerAgent)agent).currentMove=null;
+					((PlayerAgent)agent).currentMove = null;
 					((PlayerAgent)agent).stopAwaiting = true;
 					setBattleLoopStage(BattleLoopStage.EndTurn);
 				}

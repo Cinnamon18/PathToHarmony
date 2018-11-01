@@ -135,7 +135,6 @@ public class UnitHealthUIManager : MonoBehaviour {
 				};
 				break;
 			default:
-				Debug.LogError("unit at > 100%, health ui manager not really sure what to do with that");
 				break;
 		}
 	}
@@ -143,7 +142,7 @@ public class UnitHealthUIManager : MonoBehaviour {
 	private GameObject InstantiateRelative(double x, double y, double z) {
 		GameObject model = Instantiate(unitModelPrefab,
 			unit.transform.position + new Vector3((float)(x), (float)(y), (float)(z)),
-			unitModelPrefab.transform.rotation,
+			unit.transform.rotation,
 			unit.transform);
 		model.GetComponentInChildren<SkinnedMeshRenderer>().material = this.material;
 		return model;
