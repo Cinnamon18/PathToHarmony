@@ -148,7 +148,7 @@ namespace Editors {
 					if (Input.GetKeyDown(KeyCode.Space))
 					{
 						Debug.Log("Place goal at (" + objCoords.x + "," + objCoords.x + ")");
-						placeGoal(x, y);
+						addGoal(x, y);
 					}
 					else if (Input.GetButtonDown("AltSelect"))
 					{
@@ -159,7 +159,7 @@ namespace Editors {
 			}
 		}
 
-		public void placeGoal(int x, int y)
+		public void addGoal(int x, int y)
 		{
 			//TODO make sure not placing on top of unit or other goal
 			Vector2 goalPosition = new Vector2(x, y);
@@ -233,6 +233,13 @@ namespace Editors {
 			LevelInfo levelInfo = Serialization.getLevel(loadLevelText.text);
 			mapName = levelInfo.mapName;
 			currentObjective = levelInfo.objective;
+
+			//add goal for each vector in list
+			List<Vector2> goalPositions = levelInfo.goalPositions;
+			foreach (Vector2 pos in goalPositions)
+			{
+				addGoal((int)pos.x, (int)pos.y);
+			}
 			
 			if (currentObjective != ObjectiveType.Elimination && currentObjective != ObjectiveType.Survival)
 			{
@@ -294,7 +301,7 @@ namespace Editors {
 		}
 
 		private void removeAllUnits() {
-			goalModel.SetActive(false);
+	
 			foreach (UnitInfo info in unitsInfo) {
 				if (info != null) {
 					unitsInfo[info.getCoord().x, info.getCoord().y] = null;

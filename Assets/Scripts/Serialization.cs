@@ -145,26 +145,31 @@ public static class Serialization {
 
 	public static LevelInfo getLevel(string levelName) {
 		string levelString = ReadData(levelName, levelFilePath);
-
+		
 		//separate level in from objective info
 		string[] seperate = levelString.Split('*');
 		levelString = seperate[0];
 		String objectiveString = seperate[1];
-
+		
 		//get objective and position of relevant tile/unit
-		seperate = objectiveString.Split('-');
-		int objInt = Convert.ToInt32(seperate[0]);
+		string[] goalInfo = objectiveString.Split(';');
+		int objInt = Convert.ToInt32(goalInfo[0]);
 		ObjectiveType objective = (ObjectiveType)objInt;
 
 		//TODO change deserialize to get List of 2D arrays (make similar with deserialize units with , and ;)
-		Vector2 goalPos = new Vector2();
-		if (seperate.Length == 2)
+		List<Vector2> goalPosList = new List<Vector2>();
+		if (goalInfo.Length >= 2)
 		{
-			string[] goalPosition = seperate[1].Split(',');
-			int x = Convert.ToInt32(goalPosition[0]);
-			int y = Convert.ToInt32(goalPosition[1]);
-			goalPos.x = x;
-			goalPos.y = y;
+			//get all Vector2 positions for goals
+			for(int i = 1; i < goalInfo.Length; i++)
+			{
+				string posStr = goalInfo[i];
+				string[] goalPosition = posStr.Split(',');
+				int x = Convert.ToInt32(goalPosition[0]);
+				int y = Convert.ToInt32(goalPosition[1]);
+				Vector2 position = new Vector2(x, y);
+				goalPosList.Add(position);
+			}
 		}
 
 
@@ -179,11 +184,9 @@ public static class Serialization {
 			Stack<UnitInfo> units = new Stack<UnitInfo>();
 			String mapname = DeserializeUnits(levelData, units);
 
+			//Package level data
 			LevelInfo levelInfo = new LevelInfo(units, mapname, objective);
-			//only add position for all objectives except Elimination and Surival
-			if (!(objective == ObjectiveType.Elimination) && !(objective == ObjectiveType.Survival))
-				//TODO use setPosition to set List of goal Vector2's
-				//levelInfo.setPosition(goalPos);
+			levelInfo.setGoalPositions(goalPosList);
 
 			return levelInfo;
 		}

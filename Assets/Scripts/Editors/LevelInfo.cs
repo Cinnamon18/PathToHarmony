@@ -18,7 +18,7 @@ namespace Editors {
 			this.objective = objective;
 		}
 
-		public void setPositions(List<Vector2> pos)
+		public void setGoalPositions(List<Vector2> pos)
 		{
 			goalPositions = pos;
 		}
