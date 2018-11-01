@@ -145,7 +145,46 @@ public static class Serialization {
 
 	public static LevelInfo getLevel(string levelName) {
 		string levelString = ReadData(levelName, levelFilePath);
+		
+		//separate level in from objective info
+		string[] seperate = levelString.Split('*');
+		ObjectiveType objective;
+		List<Coord> goalPosList = new List<Coord>();
+		if (seperate.Length == 2)
+		{
+			levelString = seperate[0];
+
+			String objectiveString = seperate[1];
+
+			//get objective and position of relevant tile/unit
+			string[] goalInfo = objectiveString.Split(';');
+			int objInt = Convert.ToInt32(goalInfo[0]);
+			objective = (ObjectiveType)objInt;
+			
+			if (goalInfo.Length >= 2)
+			{
+				//get all Vector2 positions for goals
+				for (int i = 1; i < goalInfo.Length; i++)
+				{
+					string posStr = goalInfo[i];
+					string[] goalPosition = posStr.Split(',');
+					int x = Convert.ToInt32(goalPosition[0]);
+					int y = Convert.ToInt32(goalPosition[1]);
+					Coord position = new Coord(x, y);
+					goalPosList.Add(position);
+				}
+			}
+
+		} else
+		{
+			//default for old way of serializing level
+			objective = ObjectiveType.Elimination;
+
+		}
+
+
 		if (levelString != null) {
+
 			Queue<string> levelData = new Queue<string>();
 			foreach (string str in levelString.Split(';')) {
 				if (!(str.Equals("") | str.Equals(null))) {
@@ -154,7 +193,12 @@ public static class Serialization {
 			}
 			Stack<UnitInfo> units = new Stack<UnitInfo>();
 			String mapname = DeserializeUnits(levelData, units);
-			return new LevelInfo(units, mapname);
+
+			//Package level data
+			LevelInfo levelInfo = new LevelInfo(units, mapname, objective);
+			levelInfo.setGoalPositions(goalPosList);
+
+			return levelInfo;
 		}
 		return null;
 
@@ -176,7 +220,6 @@ public static class Serialization {
 				UnitType type = (UnitType)data[0];
 				//get stored Faction
 				Faction faction = (Faction)data[1];
-
 				units.Push(new UnitInfo(type, faction, new Vector3Int(data[2], data[3], data[4])));
 			}
 
