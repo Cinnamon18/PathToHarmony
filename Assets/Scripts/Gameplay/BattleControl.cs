@@ -289,6 +289,7 @@ namespace Gameplay {
 
 		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
 			int index = (int)(unitType);
+			
 			GameObject newUnitGO = Instantiate(
 				unitPrefabs[index],
 				Util.GridToWorld(x, y, battlefield.map[x, y].Count + 1),
@@ -377,45 +378,75 @@ namespace Gameplay {
 		}
 
 		private void deserializeLevel() {
-			//Testing Level Deserialization
+			//get all level info for units, objectives and map name
 			LevelInfo levelInfo = Serialization.getLevel(level.levelFileName);
 
-
-
-			//TODO: game objective will be serialized in the level editor data. assign it here, and do any other necessary reference assignment
-			objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
-
-			// Uncomment these for the escort objective
-			// (objective as EscortObjective).vips.Add(battlefield.units[0,0]);
-			// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
-			// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
-
-			// Uncomment these for the intercept objective
-			// (objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
-
-			// objective = new CaptureObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(1,1)}), 0);
-			// objective = new DefendObjective(battlefield, level, characters[playerCharacter], 20, new List<Coord>(new Coord[] {new Coord(3,4), new Coord(1,1)}), 0);
-
-			//For these objectives to work, you must also comment out the lines in the initial battle stage below
-			// objective = new EscortObjective(battlefield, level, characters[playerCharacter], 20);
-			// objective = new InterceptObjective(battlefield, level, characters[playerCharacter], 20);
-
-
-
-			try {
+			//add all units
+			//default enemy faction
+			Faction enemyFaction = Faction.Velgari;
+			try
+			{
 				Stack<UnitInfo> stack = levelInfo.units;
-				while (stack.Count != 0) {
+				while (stack.Count != 0)
+				{
 					UnitInfo info = stack.Pop();
 
-					if (info.getFaction() == Faction.Xingata) {
+					if (info.getFaction() == Faction.Xingata)
+					{
 						addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
-					} else {
+					}
+					else
+					{
 						addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, info.getFaction());
+						enemyFaction = info.getFaction();
 					}
 				}
-			} catch (FileNotFoundException ex) {
+			}
+			catch (FileNotFoundException ex)
+			{
 				Debug.Log("Incorrect level name" + ex.ToString());
 			}
+
+
+			//get all goal info
+			List<Coord> goalPositions = levelInfo.goalPositions;
+			switch(levelInfo.objective)
+			{
+				case ObjectiveType.Elimination:
+					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
+					break;
+				case ObjectiveType.Escort:
+					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 20);
+					//add vips
+					foreach (Coord pos in goalPositions)
+					{
+						addUnit(UnitType.Knight, level.characters[0], pos.x, pos.y, Faction.Xingata);
+						(objective as EscortObjective).vips.Add(battlefield.units[pos.x, pos.y]);
+					}
+					break;
+				case ObjectiveType.Intercept:
+					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 20);
+					foreach (Coord pos in goalPositions)
+					{
+						addUnit(UnitType.Knight, level.characters[1], pos.x, pos.y, enemyFaction);
+						(objective as InterceptObjective).vips.Add(battlefield.units[pos.x, pos.y]);
+					}
+					
+					break;
+				case ObjectiveType.Capture:
+					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 0);
+					break;
+				case ObjectiveType.Defend:
+					objective = new DefendObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 0);
+					break;
+				case ObjectiveType.Survival:
+					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 2);
+					break;
+				default:
+					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
+					break;
+			}
+	
 		}
 
 		private void getLevel() {
@@ -425,7 +456,9 @@ namespace Gameplay {
 					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
-				level = new Level("DemoMap2", "EasyVictory", characters, new string[] { });
+
+				level = new Level("Demo", "DemoLevel", characters, new string[] { });
+
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();
