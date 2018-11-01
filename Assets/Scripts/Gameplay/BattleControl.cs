@@ -439,11 +439,6 @@ namespace Gameplay {
 					objective = new DefendObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 0);
 					break;
 				case ObjectiveType.Survival:
-					Debug.Log("survive");
-					foreach (Coord pos in goalPositions)
-					{
-						Debug.Log("x" + pos.x + "y" + pos.y);
-					}
 					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 2);
 					break;
 				default:

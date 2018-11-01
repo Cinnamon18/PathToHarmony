@@ -29,10 +29,13 @@ namespace Editors {
 		public TMP_Dropdown objectiveDropdown;
 		public GameObject goalModel;
 		public Transform goalHolder;
+		public Text goalText;
 		private ObjectiveType currentObjective;
 		private Dictionary<Vector2, GameObject> goalMap;
-		
-		[SerializeField]
+		private string goalInstructions = "Click spacebar to place goal (like VIP unit for Esort or position to defend for Defent.)  " +
+			"Click alt to remove goal.";
+
+	    [SerializeField]
 		private Transform unitsHolder;
 		[SerializeField]
 		private Transform tilesHolder;
@@ -98,8 +101,14 @@ namespace Editors {
 				{
 					removeAllGoals();
 				}
+				setGoalText();
 			});
-
+			
+			if (currentObjective == ObjectiveType.Elimination || currentObjective == ObjectiveType.Survival)
+			{
+				setGoalText();
+			}
+		
 		}
 		public override void serialize() {
 			levelName = saveLevelText.text;
@@ -158,7 +167,7 @@ namespace Editors {
 			}
 		}
 
-		public void addGoal(int x, int y)
+		private void addGoal(int x, int y)
 		{
 			Vector2 goalPosition = new Vector2(x, y);
 			int z = battlefield.map[x, y].Count + 1;
@@ -173,14 +182,10 @@ namespace Editors {
 
 				goalMap[goalPosition] = newGoal;
 			}
-			
-			
-			
-			
-			
+
 		}
 
-		public void removeGoal(int x, int y, RaycastHit hit)
+		private void removeGoal(int x, int y, RaycastHit hit)
 		{
 			Vector2 removeCoords = new Vector2(x, y);
 			if (hit.collider.gameObject.tag.Equals("Goal"))
@@ -191,12 +196,23 @@ namespace Editors {
 			
 		}
 
-		public void removeAllGoals()
+		private void removeAllGoals()
 		{
 			goalMap.Clear();
 			foreach (Transform child in goalHolder)
 			{
 				GameObject.Destroy(child.gameObject);
+			}
+		}
+
+		private void setGoalText()
+		{
+			if (currentObjective == ObjectiveType.Elimination || currentObjective == ObjectiveType.Survival)
+			{
+				goalText.text = "";
+			} else
+			{
+				goalText.text = goalInstructions;
 			}
 		}
 
