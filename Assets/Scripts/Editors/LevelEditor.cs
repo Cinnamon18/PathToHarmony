@@ -136,14 +136,18 @@ namespace Editors {
 				if (Physics.Raycast(ray, out hit, 1000.0f))
 				{
 					Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
+					int x = objCoords.x;
+					int y = objCoords.y;
+
 					//press space to assign goal
 					if (Input.GetKeyDown(KeyCode.Space))
 					{
 						Debug.Log("Place goal at (" + objCoords.x + "," + objCoords.x + ")");
-						int x = objCoords.x;
-						int y = objCoords.y;
-				
 						placeGoal(x, y);
+					}
+					else if (Input.GetButtonDown("AltSelect"))
+					{
+						removeGoal(x, y, hit);
 					}
 
 				}
@@ -164,6 +168,18 @@ namespace Editors {
 			//newGoal.transform.parent = unitsHolder;
 			newGoal.SetActive(true);
 			goalObjects[goalPosition] = newGoal;
+		}
+
+		public void removeGoal(int x, int y, RaycastHit hit)
+		{
+			Vector2 removeCoords = new Vector2(x, y);
+			if (hit.collider.gameObject.tag.Equals("Goal"))
+			{
+				Debug.Log("Remove goal at (" + x + "," + y + ")");
+				goalObjects.Remove(removeCoords);
+				Destroy(hit.collider.gameObject);
+			}
+			
 		}
 
 		public override void deserialize() {
@@ -237,10 +253,7 @@ namespace Editors {
 			if (hit.collider.gameObject.tag.Equals("Unit")) {
 				unitsInfo[coord.x, coord.y] = null;
 				Destroy(hit.collider.gameObject);
-			} else {
-				Debug.Log("Cannot delete non-Units.");
-			}
-
+			} 
 		}
 
 		private void addUnit(UnitType unitType, int x, int y) {
