@@ -10,6 +10,7 @@ using System.Text;
 using System.ComponentModel;
 using TMPro;
 using System.IO;
+using System.Linq;
 
 namespace Editors {
 	public class LevelEditor : Editor<Unit> {
@@ -29,7 +30,7 @@ namespace Editors {
 		public GameObject goalModel;
 		public Transform goalHolder;
 		private ObjectiveType currentObjective;
-		private Dictionary<Vector2, GameObject> goalObjects;
+		private Dictionary<Vector2, GameObject> goalMap;
 		
 		[SerializeField]
 		private Transform unitsHolder;
@@ -88,7 +89,7 @@ namespace Editors {
 			});
 
 
-			goalObjects = new Dictionary<Vector2, GameObject>();
+			goalMap = new Dictionary<Vector2, GameObject>();
 
 			objectiveDropdown.onValueChanged.AddListener(delegate {
 				//set current objective
@@ -119,8 +120,12 @@ namespace Editors {
 			serialized.Append("*"+(int)currentObjective);
 			if (currentObjective != ObjectiveType.Elimination && currentObjective != ObjectiveType.Survival)
 			{
-				//serialized.Append("-" + goalPosition.x + "," + goalPosition.y);
-				//TODO serialize all positions in Dictionary of goal objs
+				//get position of goals to serialize
+				List<Vector2> positions = goalMap.Select(d => d.Key).ToList();
+				foreach (Vector2 pos in positions)
+				{
+					serialized.Append(";" + pos.x + "," + pos.y);
+				}
 			}
 			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, overwriteData);
 			resetTextBoxes();
@@ -166,7 +171,7 @@ namespace Editors {
 				goalModel.gameObject.transform.rotation);
 			newGoal.transform.parent = goalHolder;
 
-			goalObjects[goalPosition] = newGoal;
+			goalMap[goalPosition] = newGoal;
 			
 		}
 
@@ -176,7 +181,7 @@ namespace Editors {
 			if (hit.collider.gameObject.tag.Equals("Goal"))
 			{
 				Debug.Log("Remove goal at (" + x + "," + y + ")");
-				goalObjects.Remove(removeCoords);
+				goalMap.Remove(removeCoords);
 				Destroy(hit.collider.gameObject);
 			}
 			
@@ -184,7 +189,7 @@ namespace Editors {
 
 		public void removeAllGoals()
 		{
-			goalObjects.Clear();
+			goalMap.Clear();
 			foreach (Transform child in goalHolder)
 			{
 				GameObject.Destroy(child.gameObject);
