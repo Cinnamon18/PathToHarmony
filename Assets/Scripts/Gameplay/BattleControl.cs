@@ -457,7 +457,7 @@ namespace Gameplay {
 					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
 
-				level = new Level("Demo", "DemoLevel", characters, new string[] { });
+				level = new Level("DemoMap2", "EasyVictory", characters, new string[] { });
 
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
