@@ -1958,7 +1958,7 @@ GameObject:
   - component: {fileID: 741058327}
   - component: {fileID: 741058326}
   m_Layer: 5
-  m_Name: GoalObjective
+  m_Name: GoalInstructions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

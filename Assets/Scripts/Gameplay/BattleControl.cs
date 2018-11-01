@@ -289,6 +289,7 @@ namespace Gameplay {
 
 		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
 			int index = (int)(unitType);
+			
 			GameObject newUnitGO = Instantiate(
 				unitPrefabs[index],
 				Util.GridToWorld(x, y, battlefield.map[x, y].Count + 1),
@@ -456,7 +457,7 @@ namespace Gameplay {
 					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
 
-				level = new Level("DemoMap", "TestObjective", characters, new string[] { });
+				level = new Level("Demo", "DemoLevel", characters, new string[] { });
 
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
