@@ -10,7 +10,7 @@ namespace Editors {
 		public Stack<UnitInfo> units;
 		public string mapName;
 		public ObjectiveType objective;
-		public List<Vector2> goalPositions;
+		public List<Coord> goalPositions;
 
 		public LevelInfo(Stack<UnitInfo> units, string name, ObjectiveType objective) {
 			this.units = units;
@@ -18,7 +18,7 @@ namespace Editors {
 			this.objective = objective;
 		}
 
-		public void setGoalPositions(List<Vector2> pos)
+		public void setGoalPositions(List<Coord> pos)
 		{
 			goalPositions = pos;
 		}

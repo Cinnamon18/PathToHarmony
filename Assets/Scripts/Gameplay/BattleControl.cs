@@ -377,57 +377,80 @@ namespace Gameplay {
 		}
 
 		private void deserializeLevel() {
-			//Testing Level Deserialization
+			//get all level info for units, objectives and map name
 			LevelInfo levelInfo = Serialization.getLevel(level.levelFileName);
+
+			//add all units
+			//default enemy faction
+			Faction enemyFaction = Faction.Velgari;
+			try
+			{
+				Stack<UnitInfo> stack = levelInfo.units;
+				while (stack.Count != 0)
+				{
+					UnitInfo info = stack.Pop();
+
+					if (info.getFaction() == Faction.Xingata)
+					{
+						addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
+					}
+					else
+					{
+						addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, info.getFaction());
+						enemyFaction = info.getFaction();
+					}
+				}
+			}
+			catch (FileNotFoundException ex)
+			{
+				Debug.Log("Incorrect level name" + ex.ToString());
+			}
+
+
+			//get all goal info
+			List<Coord> goalPositions = levelInfo.goalPositions;
 			switch(levelInfo.objective)
 			{
 				case ObjectiveType.Elimination:
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
 					break;
 				case ObjectiveType.Escort:
-					//For these objectives to work, you must also comment out the lines in the initial battle stage below
 					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 20);
-					// Uncomment these for the escort objective
-					//(objective as EscortObjective).vips.Add(battlefield.units[0,0]);
-					// (objective as EscortObjective).vips.Add(battlefield.units[1,0]);
-					// (objective as EscortObjective).vips.Add(battlefield.units[0,1]);
+					//add vips
+					foreach (Coord pos in goalPositions)
+					{
+						addUnit(UnitType.Knight, level.characters[0], pos.x, pos.y, Faction.Xingata);
+						(objective as EscortObjective).vips.Add(battlefield.units[pos.x, pos.y]);
+					}
 					break;
 				case ObjectiveType.Intercept:
 					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 20);
-					(objective as InterceptObjective).vips.Add(battlefield.units[3,7]);
+					foreach (Coord pos in goalPositions)
+					{
+						addUnit(UnitType.Knight, level.characters[1], pos.x, pos.y, enemyFaction);
+						(objective as InterceptObjective).vips.Add(battlefield.units[pos.x, pos.y]);
+					}
+					
 					break;
 				case ObjectiveType.Capture:
-					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, new List<Coord>(new Coord[] { new Coord(1, 1) }), 0);
+					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 0);
 					break;
 				case ObjectiveType.Defend:
-					objective = new DefendObjective(battlefield, level, level.characters[playerCharacter], 20, new List<Coord>(new Coord[] { new Coord(3, 4), new Coord(1, 1) }), 0);
+					objective = new DefendObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 0);
 					break;
 				case ObjectiveType.Survival:
-				
+					Debug.Log("survive");
+					foreach (Coord pos in goalPositions)
+					{
+						Debug.Log("x" + pos.x + "y" + pos.y);
+					}
+					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 2);
 					break;
 				default:
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
 					break;
 			}
 	
-			
-
-
-
-			try {
-				Stack<UnitInfo> stack = levelInfo.units;
-				while (stack.Count != 0) {
-					UnitInfo info = stack.Pop();
-
-					if (info.getFaction() == Faction.Xingata) {
-						addUnit(info.getUnitType(), level.characters[0], info.getCoord().x, info.getCoord().y, Faction.Xingata);
-					} else {
-						addUnit(info.getUnitType(), level.characters[1], info.getCoord().x, info.getCoord().y, info.getFaction());
-					}
-				}
-			} catch (FileNotFoundException ex) {
-				Debug.Log("Incorrect level name" + ex.ToString());
-			}
 		}
 
 		private void getLevel() {

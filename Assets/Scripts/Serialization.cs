@@ -157,7 +157,7 @@ public static class Serialization {
 		ObjectiveType objective = (ObjectiveType)objInt;
 
 		//TODO change deserialize to get List of 2D arrays (make similar with deserialize units with , and ;)
-		List<Vector2> goalPosList = new List<Vector2>();
+		List<Coord> goalPosList = new List<Coord>();
 		if (goalInfo.Length >= 2)
 		{
 			//get all Vector2 positions for goals
@@ -167,7 +167,7 @@ public static class Serialization {
 				string[] goalPosition = posStr.Split(',');
 				int x = Convert.ToInt32(goalPosition[0]);
 				int y = Convert.ToInt32(goalPosition[1]);
-				Vector2 position = new Vector2(x, y);
+				Coord position = new Coord(x, y);
 				goalPosList.Add(position);
 			}
 		}

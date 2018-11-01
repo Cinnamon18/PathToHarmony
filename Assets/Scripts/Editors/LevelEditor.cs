@@ -185,7 +185,6 @@ namespace Editors {
 			Vector2 removeCoords = new Vector2(x, y);
 			if (hit.collider.gameObject.tag.Equals("Goal"))
 			{
-				Debug.Log("Remove goal at (" + x + "," + y + ")");
 				goalMap.Remove(removeCoords);
 				Destroy(hit.collider.gameObject);
 			}
@@ -240,18 +239,12 @@ namespace Editors {
 			currentObjective = levelInfo.objective;
 
 			//add goal for each vector in list
-			List<Vector2> goalPositions = levelInfo.goalPositions;
-			foreach (Vector2 pos in goalPositions)
+			List<Coord> goalPositions = levelInfo.goalPositions;
+			foreach (Coord pos in goalPositions)
 			{
 				addGoal((int)pos.x, (int)pos.y);
 			}
 			
-			if (currentObjective != ObjectiveType.Elimination && currentObjective != ObjectiveType.Survival)
-			{
-				//TODO retrieve and populate on load
-				//goalPosition = levelInfo.goalPosition;
-				//placeGoal((int)goalPosition.x, (int)goalPosition.y);
-			}
 			//set dropdown from saved objective
 			objectiveDropdown.value = (int)currentObjective;
 			reloadMap();
