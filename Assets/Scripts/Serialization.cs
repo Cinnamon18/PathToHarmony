@@ -148,28 +148,38 @@ public static class Serialization {
 		
 		//separate level in from objective info
 		string[] seperate = levelString.Split('*');
-		levelString = seperate[0];
-		String objectiveString = seperate[1];
-		
-		//get objective and position of relevant tile/unit
-		string[] goalInfo = objectiveString.Split(';');
-		int objInt = Convert.ToInt32(goalInfo[0]);
-		ObjectiveType objective = (ObjectiveType)objInt;
-
-		//TODO change deserialize to get List of 2D arrays (make similar with deserialize units with , and ;)
+		ObjectiveType objective;
 		List<Coord> goalPosList = new List<Coord>();
-		if (goalInfo.Length >= 2)
+		if (seperate.Length == 2)
 		{
-			//get all Vector2 positions for goals
-			for(int i = 1; i < goalInfo.Length; i++)
+			levelString = seperate[0];
+
+			String objectiveString = seperate[1];
+
+			//get objective and position of relevant tile/unit
+			string[] goalInfo = objectiveString.Split(';');
+			int objInt = Convert.ToInt32(goalInfo[0]);
+			objective = (ObjectiveType)objInt;
+			
+			if (goalInfo.Length >= 2)
 			{
-				string posStr = goalInfo[i];
-				string[] goalPosition = posStr.Split(',');
-				int x = Convert.ToInt32(goalPosition[0]);
-				int y = Convert.ToInt32(goalPosition[1]);
-				Coord position = new Coord(x, y);
-				goalPosList.Add(position);
+				//get all Vector2 positions for goals
+				for (int i = 1; i < goalInfo.Length; i++)
+				{
+					string posStr = goalInfo[i];
+					string[] goalPosition = posStr.Split(',');
+					int x = Convert.ToInt32(goalPosition[0]);
+					int y = Convert.ToInt32(goalPosition[1]);
+					Coord position = new Coord(x, y);
+					goalPosList.Add(position);
+				}
 			}
+
+		} else
+		{
+			//default for old way of serializing level
+			objective = ObjectiveType.Elimination;
+
 		}
 
 
