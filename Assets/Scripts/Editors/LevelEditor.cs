@@ -147,7 +147,6 @@ namespace Editors {
 					//press space to assign goal
 					if (Input.GetKeyDown(KeyCode.Space))
 					{
-						Debug.Log("Place goal at (" + objCoords.x + "," + objCoords.x + ")");
 						addGoal(x, y);
 					}
 					else if (Input.GetButtonDown("AltSelect"))
@@ -161,17 +160,23 @@ namespace Editors {
 
 		public void addGoal(int x, int y)
 		{
-			//TODO make sure not placing on top of unit or other goal
 			Vector2 goalPosition = new Vector2(x, y);
 			int z = battlefield.map[x, y].Count + 1;
-			
-			GameObject newGoal = Instantiate(
+			//make sure not placing on top of unit or other goal
+			if (unitsInfo[x, y] == null && !goalMap.ContainsKey(goalPosition))
+			{
+				GameObject newGoal = Instantiate(
 				goalModel,
 				Util.GridToWorld(x, y, z),
 				goalModel.gameObject.transform.rotation);
-			newGoal.transform.parent = goalHolder;
+				newGoal.transform.parent = goalHolder;
 
-			goalMap[goalPosition] = newGoal;
+				goalMap[goalPosition] = newGoal;
+			}
+			
+			
+			
+			
 			
 		}
 
