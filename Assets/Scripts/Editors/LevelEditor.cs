@@ -26,7 +26,8 @@ namespace Editors {
 
 		//objective info
 		public TMP_Dropdown objectiveDropdown;
-		public GameObject goldCoins;
+		public GameObject goalModel;
+		public Transform goalHolder;
 		private ObjectiveType currentObjective;
 		private Dictionary<Vector2, GameObject> goalObjects;
 		
@@ -92,10 +93,9 @@ namespace Editors {
 			objectiveDropdown.onValueChanged.AddListener(delegate {
 				//set current objective
 				currentObjective = (ObjectiveType)objectiveDropdown.value;
-				if (currentObjective == ObjectiveType.Elimination && currentObjective == ObjectiveType.Survival)
+				if (currentObjective == ObjectiveType.Elimination || currentObjective == ObjectiveType.Survival)
 				{
-					//TODO create way to delete all goal objs
-					goalObjects.Clear();
+					removeAllGoals();
 				}
 			});
 
@@ -161,13 +161,13 @@ namespace Editors {
 			int z = battlefield.map[x, y].Count + 1;
 			
 			GameObject newGoal = Instantiate(
-				goldCoins,
+				goalModel,
 				Util.GridToWorld(x, y, z),
-				goldCoins.gameObject.transform.rotation);
-			//TODO create goalHolder for easy deletion
-			//newGoal.transform.parent = unitsHolder;
-			newGoal.SetActive(true);
+				goalModel.gameObject.transform.rotation);
+			newGoal.transform.parent = goalHolder;
+
 			goalObjects[goalPosition] = newGoal;
+			
 		}
 
 		public void removeGoal(int x, int y, RaycastHit hit)
@@ -180,6 +180,15 @@ namespace Editors {
 				Destroy(hit.collider.gameObject);
 			}
 			
+		}
+
+		public void removeAllGoals()
+		{
+			goalObjects.Clear();
+			foreach (Transform child in goalHolder)
+			{
+				GameObject.Destroy(child.gameObject);
+			}
 		}
 
 		public override void deserialize() {
@@ -213,7 +222,9 @@ namespace Editors {
 
 		public void loadLevel() {
 			removeAllUnits();
+			removeAllGoals();
 			eraseTiles();
+
 			LevelInfo levelInfo = Serialization.getLevel(loadLevelText.text);
 			mapName = levelInfo.mapName;
 			currentObjective = levelInfo.objective;
@@ -278,7 +289,7 @@ namespace Editors {
 		}
 
 		private void removeAllUnits() {
-			goldCoins.SetActive(false);
+			goalModel.SetActive(false);
 			foreach (UnitInfo info in unitsInfo) {
 				if (info != null) {
 					unitsInfo[info.getCoord().x, info.getCoord().y] = null;
