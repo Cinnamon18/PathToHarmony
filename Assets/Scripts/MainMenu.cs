@@ -6,6 +6,7 @@ using Gameplay;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour {
 
@@ -21,19 +22,29 @@ public class MainMenu : MonoBehaviour {
 		optionsCanvas.enabled = false;
 		creditsCanvas.enabled = false;
 
+		//setup audio sliders
+		Persistance.loadAudioSettings(masterMixer);
+		Slider[] optionsSliders = optionsCanvas.GetComponentsInChildren<Slider>();
+		optionsSliders[0].value = PlayerPrefs.GetFloat(Persistance.MASTER_VOLUME);
+		optionsSliders[1].value = PlayerPrefs.GetFloat(Persistance.MUSIC_VOLUME);
+		optionsSliders[2].value = PlayerPrefs.GetFloat(Persistance.SFX_VOLUEME);
+
 		setupDefaultCampaign();
 	}
 
 	public void setMasterVolume(float vol) {
-		masterMixer.SetFloat("MasterVolume", vol);
+		masterMixer.SetFloat(Persistance.MASTER_VOLUME, vol);
+		Persistance.saveAudioSettings(masterMixer);
 	}
 
 	public void setMusicVolume(float vol) {
-		masterMixer.SetFloat("MusicVolume", vol);
+		masterMixer.SetFloat(Persistance.MUSIC_VOLUME, vol);
+		Persistance.saveAudioSettings(masterMixer);
 	}
 
 	public void setSfxVolume(float vol) {
-		masterMixer.SetFloat("SfxVolume", vol);
+		masterMixer.SetFloat(Persistance.SFX_VOLUEME, vol);
+		Persistance.saveAudioSettings(masterMixer);
 	}
 
 	public void playGame() {
@@ -115,7 +126,7 @@ public class MainMenu : MonoBehaviour {
 		});
 
 		Persistance.campaign = gameModeShowOff;
-	
+
 
 	}
 }
