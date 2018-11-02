@@ -277,9 +277,18 @@ namespace Gameplay {
 			victoryImage.enabled = false;
 
 			Persistance.campaign.levelIndex++;
-			Persistance.saveProgress();
-			//Oh Boy i hope this works.
-			SceneManager.LoadScene("DemoBattle");
+
+
+			//check for end of campaign
+			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Count()) {
+				SceneManager.LoadScene("Victory");
+			} else {
+				Persistance.saveProgress();
+				//Oh Boy im glad this works.
+				SceneManager.LoadScene("DemoBattle");
+			}
+
+			
 		}
 
 		private async void restartLevelDefeat() {
