@@ -68,7 +68,7 @@ namespace Editors {
 			//get tile gamobjects from generator
 			tilePrefabs = generator.getPrefabs();
 
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), generator, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, Paths.mapsPath()), generator, tilesHolder);
 			//Hacky but Serialization holds how tall the last map loaded is
 			//use to know how tall Unit array should be
 			fieldHeight = Serialization.mapHeight;
@@ -136,7 +136,7 @@ namespace Editors {
 					serialized.Append(";" + pos.x + "," + pos.y);
 				}
 			}
-			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, overwriteData);
+			Serialization.WriteData(serialized.ToString(), levelName, Paths.levelsPath(), overwriteData);
 			resetTextBoxes();
 		}
 
@@ -223,7 +223,7 @@ namespace Editors {
 
 
 		public void loadMap() {
-			if (Serialization.ReadData(mapName, mapFilePath) != null)
+			if (Serialization.ReadData(mapName, Paths.mapsPath()) != null)
 			{
 				removeAllUnits();
 				eraseTiles();
@@ -239,7 +239,7 @@ namespace Editors {
 
 		private void reloadMap() {
 
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), generator, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, Paths.mapsPath()), generator, tilesHolder);
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 			

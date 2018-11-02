@@ -32,7 +32,7 @@ namespace Gameplay {
 		[SerializeField]
 		private TileGenerator generator;
 
-		private string mapFilePath = Serialization.mapFilePath;
+		
 		private LevelInfo levelInfo;
 
 		public Camera mainCamera;
@@ -289,8 +289,18 @@ namespace Gameplay {
 			victoryImage.enabled = false;
 
 			Persistance.campaign.levelIndex++;
-			//Oh Boy i hope this works.
-			SceneManager.LoadScene("DemoBattle");
+
+
+			//check for end of campaign
+			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Count()) {
+				SceneManager.LoadScene("Victory");
+			} else {
+				Persistance.saveProgress();
+				//Oh Boy im glad this works.
+				SceneManager.LoadScene("DemoBattle");
+			}
+
+			
 		}
 
 		private async void restartLevelDefeat() {
@@ -415,7 +425,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), generator, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, Paths.mapsPath()), generator, tilesHolder);
 
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}
@@ -506,11 +516,13 @@ namespace Gameplay {
 					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
 
-				level = new Level("DemoMap", "EasyVictory", characters, new string[] { });
+				level = new Level("DemoMap2", "quickTest", characters, new string[] { });
 
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();
+			} else {
+				Persistance.loadProgress();
 			}
 
 			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Length) {
