@@ -112,8 +112,8 @@ public class MainMenu : MonoBehaviour {
 			capture, defend, escort, intercept
 		});
 
-		Persistance.campaign = gameModeShowOff;
-
+		//Persistance.campaign = gameModeShowOff;
+	
 
 	}
 }
