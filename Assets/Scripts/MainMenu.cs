@@ -37,10 +37,12 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void playGame() {
+		Persistance.saveProgress();
 		SceneManager.LoadScene("DemoBattle");
 	}
 
 	public void resumeGame() {
+		Persistance.loadProgress();
 		SceneManager.LoadScene("DemoBattle");
 	}
 
@@ -99,7 +101,7 @@ public class MainMenu : MonoBehaviour {
 			level3
 		});
 
-		Persistance.campaign = testCampaign1;
+		// Persistance.campaign = testCampaign1;
 
 
 
@@ -112,7 +114,7 @@ public class MainMenu : MonoBehaviour {
 			capture, defend, escort, intercept
 		});
 
-		//Persistance.campaign = gameModeShowOff;
+		Persistance.campaign = gameModeShowOff;
 	
 
 	}

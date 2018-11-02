@@ -32,7 +32,7 @@ namespace Gameplay {
 		[SerializeField]
 		private TileGenerator generator;
 
-		
+
 		private LevelInfo levelInfo;
 
 		public Camera mainCamera;
@@ -290,17 +290,14 @@ namespace Gameplay {
 
 			Persistance.campaign.levelIndex++;
 
-
 			//check for end of campaign
 			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Count()) {
-				SceneManager.LoadScene("Victory");
+				SceneManager.LoadScene("VictoryScene");
 			} else {
 				Persistance.saveProgress();
 				//Oh Boy im glad this works.
 				SceneManager.LoadScene("DemoBattle");
 			}
-
-			
 		}
 
 		private async void restartLevelDefeat() {
@@ -379,7 +376,7 @@ namespace Gameplay {
 
 		private async Task runAppropriateCutscenes() {
 			foreach (String cutsceneID in level.cutsceneIDs) {
-				if (Stages.testExecutionCondition(cutsceneID, battlefield, objective, halfTurnsElapsed)) {
+				if (Stages.testExecutionCondition(cutsceneID, battlefield, objective, halfTurnsElapsed, battleStage)) {
 					await runCutscene(cutsceneID);
 					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
 					break;
@@ -521,13 +518,10 @@ namespace Gameplay {
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();
-			} else {
-				Persistance.loadProgress();
 			}
-
-			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Length) {
-				SceneManager.LoadScene("VictoryScene");
-			}
+			//  else {
+			// 	Persistance.loadProgress();
+			// }
 
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 			foreach (Character character in level.characters) {

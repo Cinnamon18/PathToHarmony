@@ -239,8 +239,6 @@ namespace Units {
 			}
 			
 			float animLenght = animators[0].GetCurrentAnimatorStateInfo(0).length;
-			//TODO someone fix this ugly hack
-			animLenght *= 1.5f;
 			await Task.Delay((int)(animLenght * 1000));
 		}
 

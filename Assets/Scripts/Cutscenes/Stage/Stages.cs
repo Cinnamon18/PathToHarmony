@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Constants;
 using Gameplay;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace Cutscenes.Stages {
 		//hhh sorry we're throwing good OO design out the window but. The execution on these coroutines is already a little weird
 		//#31DaysTillDemo
 		//It's a polling approach to give more control to the caller...
-		public static bool testExecutionCondition(string stageID, Battlefield battlefield, GameObjective objective, int halfTurnsElapsed) {
+		public static bool testExecutionCondition(string stageID, Battlefield battlefield, GameObjective objective, int halfTurnsElapsed, BattleLoopStage battleStage) {
 
 			if (hasExecuted.Contains(stageID)) {
 				return false;
@@ -22,7 +23,7 @@ namespace Cutscenes.Stages {
 
 			switch (stageID) {
 				case andysDemo:
-					if (objective.isWinCondition(halfTurnsElapsed)) {
+					if (objective.isWinCondition(halfTurnsElapsed) && battleStage == BattleLoopStage.EndTurn) {
 						hasExecuted.Add(stageID);
 						return true;
 					}
@@ -34,7 +35,7 @@ namespace Cutscenes.Stages {
 					}
 					break;
 				case genericDefeat:
-					if (objective.isLoseCondition(halfTurnsElapsed)) {
+					if (objective.isLoseCondition(halfTurnsElapsed) && battleStage == BattleLoopStage.EndTurn) {
 						hasExecuted.Add(stageID);
 						return true;
 					}
