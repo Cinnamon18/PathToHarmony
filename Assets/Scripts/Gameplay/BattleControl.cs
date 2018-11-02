@@ -32,7 +32,7 @@ namespace Gameplay {
 		[SerializeField]
 		private TileGenerator generator;
 
-		private string mapFilePath = Serialization.mapFilePath;
+		
 		private LevelInfo levelInfo;
 
 		public Camera mainCamera;
@@ -403,7 +403,7 @@ namespace Gameplay {
 
 
 		private void deserializeMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, mapFilePath), generator, tilesHolder);
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(level.mapFileName, Paths.mapsPath()), generator, tilesHolder);
 
 			battlefield.units = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 		}

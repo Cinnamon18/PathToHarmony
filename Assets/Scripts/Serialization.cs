@@ -12,8 +12,7 @@ using Editors;
 using Random = UnityEngine.Random;
 
 public static class Serialization {
-	public static string mapFilePath = "./Assets/Maps/";
-	public static string levelFilePath = "./Assets/Levels/";
+	
 	//This is used for LevelEditor so the obj[,,,] array know how tall it should be
 	//And can place units now matter how tall the map is.
 	//Gotta be better way but works for now.
@@ -144,7 +143,7 @@ public static class Serialization {
 	}
 
 	public static LevelInfo getLevel(string levelName) {
-		string levelString = ReadData(levelName, levelFilePath);
+		string levelString = ReadData(levelName, Paths.levelsPath());
 		
 		//separate level in from objective info
 		string[] seperate = levelString.Split('*');
@@ -231,7 +230,7 @@ public static class Serialization {
 	//TODO: Decide on semantics for this
 	public static Campaign deserializeCampaign(string fileName) {
 		Campaign campaign = new Campaign();
-		string serializedCampaign = Serialization.ReadData(fileName, mapFilePath);
+		string serializedCampaign = Serialization.ReadData(fileName, Paths.mapsPath());
 		string[] campaignArr = serializedCampaign.Split(',');
 		campaign.name = campaignArr[0];
 
