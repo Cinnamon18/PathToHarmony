@@ -58,6 +58,8 @@ namespace Gameplay {
 		private Image defeatImage;
 		[SerializeField]
 		private Stage cutscene;
+		[SerializeField]
+		private GameObject vipCrownPrefab;
 
 		void Start() {
 			playerCharacter = 0;
@@ -192,7 +194,7 @@ namespace Gameplay {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
 					}
 
-					checkWinAndLose();
+					// checkWinAndLose();
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					ourUnit.hasMovedThisTurn = true;
@@ -441,22 +443,38 @@ namespace Gameplay {
 					//add vips
 					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[0], pos.x, pos.y, Faction.Xingata);
-						(objective as EscortObjective).vips.Add(battlefield.units[pos.x, pos.y]);
+						Unit unit = battlefield.units[pos.x, pos.y];
+						(objective as EscortObjective).vips.Add(unit);
+						Instantiate(vipCrownPrefab, unit.transform.position + new Vector3(0, 3, 0), vipCrownPrefab.transform.rotation, unit.transform);
 					}
 					break;
 				case ObjectiveType.Intercept:
 					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 20);
 					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[1], pos.x, pos.y, enemyFaction);
-						(objective as InterceptObjective).vips.Add(battlefield.units[pos.x, pos.y]);
+						Unit unit = battlefield.units[pos.x, pos.y];
+						(objective as InterceptObjective).vips.Add(unit);
+						Instantiate(vipCrownPrefab, unit.transform.position + new Vector3(0, 3, 0), vipCrownPrefab.transform.rotation, unit.transform);
 					}
 
 					break;
 				case ObjectiveType.Capture:
-					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 0);
+					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 2);
+					foreach (Coord pos in goalPositions) {
+						Instantiate(vipCrownPrefab,
+							battlefield.map[pos.x, pos.y].Peek().transform.position + new Vector3(0, 3, 0),
+							vipCrownPrefab.transform.rotation,
+							battlefield.map[pos.x, pos.y].Peek().transform);
+					}
 					break;
 				case ObjectiveType.Defend:
-					objective = new DefendObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 0);
+					objective = new DefendObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 2);
+					foreach (Coord pos in goalPositions) {
+						Instantiate(vipCrownPrefab,
+							battlefield.map[pos.x, pos.y].Peek().transform.position + new Vector3(0, 3, 0),
+							vipCrownPrefab.transform.rotation,
+							battlefield.map[pos.x, pos.y].Peek().transform);
+					}
 					break;
 				case ObjectiveType.Survival:
 					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 2);
@@ -476,7 +494,7 @@ namespace Gameplay {
 					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
 
-				level = new Level("DemoMap2", "EasyVictory", characters, new string[] { });
+				level = new Level("DemoMap", "InterceptTest", characters, new string[] { });
 
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
