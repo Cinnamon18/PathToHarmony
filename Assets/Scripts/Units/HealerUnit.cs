@@ -31,16 +31,16 @@ namespace Units {
 		}
 
 		public override int battleDamage(Unit enemy, Tile enemyTile) {
-			float damage = this.meleeAttackStrength * (1f * (this as Unit).getHealth() / this.maxHealth);
-			damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
-			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
+			float healing = -1 * this.meleeAttackStrength * (1f * (this as Unit).getHealth() / this.maxHealth);
+			// damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
+			// damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
-			List<Buff> damageBuffs = getBuffsOfType(BuffType.Damage);
-			foreach (Buff buff in damageBuffs) {
-				damage *= (buff as DamageBuff).getDamageBonus();
-			}
+			// List<Buff> damageBuffs = getBuffsOfType(BuffType.Damage);
+			// foreach (Buff buff in damageBuffs) {
+				// damage *= (buff as DamageBuff).getDamageBonus();
+			// }
 
-			return (int)(Mathf.Ceil(damage));
+			return (int)(Mathf.Floor(healing));
 		}
 
 		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
