@@ -277,6 +277,7 @@ namespace Gameplay {
 			victoryImage.enabled = false;
 
 			Persistance.campaign.levelIndex++;
+			Persistance.saveProgress();
 			//Oh Boy i hope this works.
 			SceneManager.LoadScene("DemoBattle");
 		}
@@ -499,6 +500,8 @@ namespace Gameplay {
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();
+			} else {
+				Persistance.loadProgress();
 			}
 
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];

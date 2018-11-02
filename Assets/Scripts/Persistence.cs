@@ -9,6 +9,23 @@ public static class Persistance {
 	public static Campaign campaign { get; set; }
 
 	private const string PLAYER_NAME_PREF = "playerName";
+	private const string CAMPAIGN_LEVEL_INDEX = "campaignLevelIndex";
+
+
+	public static void saveProgress() {
+
+		PlayerPrefs.SetInt(CAMPAIGN_LEVEL_INDEX, campaign.levelIndex);
+		Util.Log("Persistence: Saved level index of " + campaign.levelIndex);
+		save();
+	}
+
+	public static void loadProgress() {
+
+		if (PlayerPrefs.HasKey(CAMPAIGN_LEVEL_INDEX)) {
+			campaign.levelIndex = PlayerPrefs.GetInt(CAMPAIGN_LEVEL_INDEX);
+			Util.Log("Persistence: Loaded level index of " + campaign.levelIndex);
+		}
+	}
 
 	public static void savePlayerCharacterInfo() {
 		PlayerPrefs.SetString(PLAYER_NAME_PREF, playerCharacter.name);
