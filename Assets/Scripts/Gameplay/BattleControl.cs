@@ -42,7 +42,7 @@ namespace Gameplay {
 		private BattleLoopStage battleStage;
 
 		//Use this to keep one of the Update switch blocks from being called multiple times.
-		private bool battleStageChanged;
+		private bool battleStageChanged = true;
 		public int currentCharacter;
 		public int playerCharacter;
 		public int halfTurnsElapsed;
@@ -86,6 +86,18 @@ namespace Gameplay {
 		async void Update() {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
+					if (!battleStageChanged) {
+						break;
+					}
+					battleStageChanged = false;
+
+					turnPlayerText.text =
+						"Battle objective:\n" +
+						objective.getName();
+					turnPlayerText.enabled = true;
+					turnChangeBackground.enabled = true;
+					await Task.Delay(3000);
+
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.Pick:
@@ -115,9 +127,9 @@ namespace Gameplay {
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
 
-					await Task.Delay(1000);
-					advanceBattleStage();
+					await Task.Delay(2000);
 
+					advanceBattleStage();
 					break;
 				case BattleLoopStage.TurnChangeEnd:
 					turnPlayerText.enabled = false;
@@ -477,7 +489,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Survival:
-					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 2);
+					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 20);
 					break;
 				default:
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
@@ -499,6 +511,10 @@ namespace Gameplay {
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutscene.hideVisualElements();
+			}
+
+			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Length) {
+				SceneManager.LoadScene("VictoryScene");
 			}
 
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
