@@ -85,7 +85,7 @@ public class MainMenu : MonoBehaviour {
 				new Character("Blair", true, new PlayerAgent()),
 				new Character("evil!Juniper", false, new SimpleAgent())
 				};
-		Level level3 = new Level("DemoMap", "DemoLevel", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat });
+		Level level3 = new Level("DemoMap", "DemoLevel", characters3, new string[] { Stages.andysDemo, Stages.genericDefeat });
 
 
 		//Just to show off my vision of campaign branching. which now looks like it's not gonna happen, but oh well :p
@@ -100,6 +100,19 @@ public class MainMenu : MonoBehaviour {
 		});
 
 		Persistance.campaign = testCampaign1;
+
+
+
+		Level capture = new Level("DemoMap", "CaptureTest", characters3, new string[] { Stages.expressionShowOff });
+		Level defend = new Level("DemoMap", "DefendTest", characters3, new string[] { Stages.genericDefeat });
+		Level escort = new Level("DemoMap", "EscortTest", characters3, new string[] { Stages.genericDefeat });
+		Level intercept = new Level("DemoMap", "InterceptTest", characters3, new string[] { Stages.genericDefeat });
+
+		Campaign gameModeShowOff = new Campaign("gamemode show off", 0, new[] {
+			capture, defend, escort, intercept
+		});
+
+		Persistance.campaign = gameModeShowOff;
 
 
 	}

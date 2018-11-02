@@ -50,7 +50,7 @@ namespace Units {
 		}
 
 		void Start() {
-			// startIdleAnimation();
+			startIdleAnimation();
 		}
 
 		public Character getCharacter(Battlefield battlefield) {
