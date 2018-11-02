@@ -56,7 +56,7 @@ namespace Units {
 			}
 
 			if (enemy.getHealth() >= enemy.maxHealth) {
-				enemy.setHealth(enemy.maxHealth, enemy.maxHealth);
+				enemy.setHealth(enemy.maxHealth);
 				return true;
 			} else {
 				return false;

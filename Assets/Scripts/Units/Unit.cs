@@ -164,9 +164,10 @@ namespace Units {
 			this.healthUIManager.setMaterial(factionMaterials[(int)(this.faction)], health);
 		}
 
-		public async Task setHealth(int health, int oldHealth, bool playAnimation = false) {
-			this.health = health;
-			await healthUIManager.setHealth(health, oldHealth, playAnimation);
+		public async Task setHealth(int newHealth, bool playAnimation = false) {
+			int oldHealth = this.health;
+			this.health = newHealth;
+			await healthUIManager.setHealth(newHealth, oldHealth, playAnimation);
 		}
 
 		public async Task changeHealth(int change, bool playAnimation = false) {
