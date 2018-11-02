@@ -37,7 +37,6 @@ namespace Units {
 		}
 
 		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			Audio.playSfx(attackSoundEffect);
 			await playAttackAnimation();
 
 			// only add if the enemy does not already have this buff

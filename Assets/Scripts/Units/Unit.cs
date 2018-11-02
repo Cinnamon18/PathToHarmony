@@ -166,12 +166,13 @@ namespace Units {
 
 		public async Task setHealth(int newHealth, bool playAnimation = false) {
 			int oldHealth = this.health;
-			this.health = newHealth;
+			this.health = Mathf.Clamp(newHealth, 0, maxHealth);
 			await healthUIManager.setHealth(newHealth, oldHealth, playAnimation);
 		}
 
 		public async Task changeHealth(int change, bool playAnimation = false) {
 			this.health += change;
+			this.health = Mathf.Clamp(health, 0, maxHealth);
 			await healthUIManager.setHealth(health, health - change, playAnimation);
 		}
 
@@ -237,9 +238,12 @@ namespace Units {
 			foreach (Animator animator in animators) {
 				animator.SetTrigger("Attack");
 			}
-			
+
 			float animLenght = animators[0].GetCurrentAnimatorStateInfo(0).length;
-			await Task.Delay((int)(animLenght * 1000));
+			//Play the sound effect halfway through. this is closer to the "hit" portion of the animation.
+			await Task.Delay((int)(animLenght * 500));
+			Audio.playSfx(attackSoundEffect);
+			await Task.Delay((int)(animLenght * 500));
 		}
 
 		public async void startIdleAnimation() {

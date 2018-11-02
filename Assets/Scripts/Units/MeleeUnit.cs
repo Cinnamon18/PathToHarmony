@@ -45,7 +45,6 @@ namespace Units {
 		}
 
 		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			Audio.playSfx(attackSoundEffect);
 			await playAttackAnimation();
 
 			int damage = this.battleDamage(enemy, enemyTile);

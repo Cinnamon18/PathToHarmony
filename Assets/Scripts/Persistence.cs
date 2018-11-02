@@ -10,6 +10,10 @@ public static class Persistance {
 
 	private const string PLAYER_NAME_PREF = "playerName";
 	private const string CAMPAIGN_LEVEL_INDEX = "campaignLevelIndex";
+	private const string MASTER_VOLUME = "masterVolume";
+	private const string MUSIC_VOLUME = "musicVolume";
+	private const string SFX_VOLUEME = "sfxVolume";
+
 
 
 	public static void saveProgress() {

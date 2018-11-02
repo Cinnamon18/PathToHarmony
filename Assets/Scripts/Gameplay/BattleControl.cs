@@ -199,6 +199,14 @@ namespace Gameplay {
 								battlefield);
 						}
 
+						//Re-grey model if needed... I'm regretting my desire to make the health ui manager stateless :p
+						if (ourUnit is HealerUnit) {
+							if (selectedUnit.hasMovedThisTurn ||
+							selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+								selectedUnit.greyOut();
+							}
+						}
+
 						ourUnit.setHasAttackedThisTurn(true);
 						// await Task.Delay(TimeSpan.FromMilliseconds(turnDelayMs));
 					} else {
@@ -513,7 +521,7 @@ namespace Gameplay {
 					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
 
-				level = new Level("DemoMap2", "quickTest", characters, new string[] { });
+				level = new Level("DemoMap2", "EasyVictory", characters, new string[] { });
 
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");

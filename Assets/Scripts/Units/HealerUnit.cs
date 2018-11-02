@@ -38,30 +38,20 @@ namespace Units {
 
 			// List<Buff> damageBuffs = getBuffsOfType(BuffType.Damage);
 			// foreach (Buff buff in damageBuffs) {
-				// damage *= (buff as DamageBuff).getDamageBonus();
+			// damage *= (buff as DamageBuff).getDamageBonus();
 			// }
 
 			return (int)(Mathf.Floor(healing));
 		}
 
 		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			Audio.playSfx(attackSoundEffect);
 			await playAttackAnimation();
 
 			int damage = this.battleDamage(enemy, enemyTile);
 			//Damage rounds up
 			await enemy.changeHealth(-damage, true);
-			if (enemy.getHasAttackedThisTurn() || enemy.hasMovedThisTurn) {
-				enemy.greyOut();
-			}
 
-			if (enemy.getHealth() >= enemy.maxHealth) {
-				enemy.setHealth(enemy.maxHealth);
-				return true;
-			} else {
-				return false;
-			}
-
+			return false;
 		}
 
 		//returns a list of targetable allies
