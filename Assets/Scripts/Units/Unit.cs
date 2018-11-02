@@ -67,7 +67,7 @@ namespace Units {
 		public abstract int battleDamage(Unit enemy, Tile enemyTile);
 
 		//returns true if the enemy was destroyed by battle
-		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
+		public abstract Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
 
 		//Added for use by AI
 		public abstract List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character);
@@ -164,9 +164,14 @@ namespace Units {
 			this.healthUIManager.setMaterial(factionMaterials[(int)(this.faction)], health);
 		}
 
-		public void setHealth(int health) {
+		public async Task setHealth(int health, int oldHealth, bool playAnimation = false) {
 			this.health = health;
-			healthUIManager.setHealth(health);
+			await healthUIManager.setHealth(health, oldHealth, playAnimation);
+		}
+
+		public async Task changeHealth(int change, bool playAnimation = false) {
+			this.health += change;
+			await healthUIManager.setHealth(health, health - change, playAnimation);
 		}
 
 		public int getHealth() {

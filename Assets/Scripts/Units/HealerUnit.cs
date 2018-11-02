@@ -8,6 +8,7 @@ using AI;
 using System.Linq;
 using UnityEngine.UI;
 using Buffs;
+using System.Threading.Tasks;
 
 namespace Units {
 	public class HealerUnit : Unit {
@@ -43,18 +44,19 @@ namespace Units {
 			return (int)(Mathf.Floor(healing));
 		}
 
-		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
+		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
 			Audio.playSfx(attackSoundEffect);
+			await playAttackAnimation();
 
 			int damage = this.battleDamage(enemy, enemyTile);
 			//Damage rounds up
-			enemy.setHealth(enemy.getHealth() - damage);
+			await enemy.changeHealth(-damage, true);
 			if (enemy.getHasAttackedThisTurn() || enemy.hasMovedThisTurn) {
 				enemy.greyOut();
 			}
 
 			if (enemy.getHealth() >= enemy.maxHealth) {
-				enemy.setHealth(enemy.maxHealth);
+				enemy.setHealth(enemy.maxHealth, enemy.maxHealth);
 				return true;
 			} else {
 				return false;

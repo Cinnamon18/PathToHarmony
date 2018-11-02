@@ -127,7 +127,7 @@ namespace Gameplay {
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
 
-					await Task.Delay(2000);
+					await Task.Delay(1000);
 
 					advanceBattleStage();
 					break;
@@ -177,6 +177,7 @@ namespace Gameplay {
 
 						if (ourUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
 							ourUnit.greyOut();
+							ourUnit.setHasAttackedThisTurn(true);
 						}
 
 					} else if (selectedItem is Unit) {
@@ -184,32 +185,31 @@ namespace Gameplay {
 						Unit selectedUnit = selectedItem as Unit;
 
 						await rotateUnit(ourUnit, battlefield.getUnitCoords(selectedUnit));
-						await ourUnit.playAttackAnimation();
-						bool defenderDefeated = ourUnit.doBattleWith(
+						bool defenderDefeated = await ourUnit.doBattleWith(
 							selectedUnit,
 							battlefield.map[move.to.x, move.to.y].Peek(),
 							battlefield);
 
 						if (!defenderDefeated && (selectedItem is MeleeUnit) && (ourUnit is MeleeUnit)) {
 							await rotateUnit(selectedUnit, battlefield.getUnitCoords(ourUnit));
-							await selectedUnit.playAttackAnimation();
 							//Counterattack applied only when both units are Melee
-							selectedUnit.doBattleWith(
+							await selectedUnit.doBattleWith(
 								ourUnit,
 								battlefield.map[move.from.x, move.from.y].Peek(),
 								battlefield);
 						}
 
 						ourUnit.setHasAttackedThisTurn(true);
-						await Task.Delay(TimeSpan.FromMilliseconds(turnDelayMs));
+						// await Task.Delay(TimeSpan.FromMilliseconds(turnDelayMs));
 					} else {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
 					}
 
 					// checkWinAndLose();
 
-					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					ourUnit.hasMovedThisTurn = true;
+
+					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => {
 						//I know this looks inelegant but it avoid calling getUnitCoords if necessary
 						if (!unit.hasMovedThisTurn) {
@@ -275,10 +275,10 @@ namespace Gameplay {
 				case TileEffects.Normal:
 					break;
 				case TileEffects.DOT:
-					unit.setHealth(unit.getHealth() - 20);
+					unit.changeHealth(-20);
 					break;
 				case TileEffects.Heal:
-					unit.setHealth(unit.getHealth() + 20);
+					unit.changeHealth(20);
 					break;
 			}
 		}

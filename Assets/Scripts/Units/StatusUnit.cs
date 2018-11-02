@@ -8,6 +8,7 @@ using AI;
 using System.Linq;
 using UnityEngine.UI;
 using Buffs;
+using System.Threading.Tasks;
 
 namespace Units {
 	public class StatusUnit : Unit {
@@ -35,8 +36,9 @@ namespace Units {
 			return 0; //Status units dont deal any direct damage
 		}
 
-		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
+		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
 			Audio.playSfx(attackSoundEffect);
+			await playAttackAnimation();
 
 			// only add if the enemy does not already have this buff
 			if (enemy.getBuffsOfClass(this.buffType).Count == 0) {
