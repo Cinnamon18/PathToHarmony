@@ -65,6 +65,7 @@ namespace Gameplay {
 			getLevel();
 			deserializeMap();
 			deserializeLevel();
+			addUnit(UnitType.Cleric, level.characters[1], 6, 6, Faction.Tsubin);
 		}
 
 		// Poor man's state machine. in retrospect i have no idea why i didn't use a proper one. oh well, next game.

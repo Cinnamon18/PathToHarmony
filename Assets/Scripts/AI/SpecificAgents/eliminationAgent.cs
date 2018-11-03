@@ -14,8 +14,6 @@ namespace AI {
 
 		public override async Task<Move> getMove() {
 
-			Debug.Log("Elimination Agent");
-
 			//Get all unit categories
 			List<Coord> units = findAllUnits();
 			List<Coord> enemies = filterEnemies(units);
@@ -43,25 +41,111 @@ namespace AI {
 
 			//Decide action based on type
 			if (curUnit is HealerUnit) {
-				if (curUnit.getHealth() < curUnit.maxHealth * 0.4) {
-					// TODO
-					// Flee
-				} else {
-					HashSet<Coord> attackZone = curUnit.getTotalAttackZone(unitCoord.x, unitCoord.y, battlefield, character);
-					attackZone.IntersectWith(allies);
-					List<Coord> targets = new List<Coord>(attackZone);
-					if (targets.Count > 0) {
-						// TODO
-						// Choose best target
-					} else {
-						
+				Debug.Log("Healer");
+				Coord bestTarget = null;
+				float bestScore = 0;
+				if (curUnit.hasMovedThisTurn) {
+					foreach(Coord target in curUnit.getTargets(unitCoord.x, unitCoord.y, battlefield, character)) {
+						Unit targetUnit = battlefield.units[target.x, target.y];
+						float score = targetUnit.maxHealth / targetUnit.getHealth();
+						if (score > bestScore) {
+							bestTarget = target;
+							bestScore = score;
+						}
 					}
+					return new Move(unitCoord, bestTarget);
 				}
-			} else if (curUnit is MeleeUnit) {
 				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee
 				} else {
+					List<Coord> injured = filterInjured(allies, 0.6f);
+					if (injured.Count > 0) {
+						HashSet<Coord> attackZone = curUnit.getTotalAttackZone(unitCoord.x, unitCoord.y, battlefield, character);
+						attackZone.IntersectWith(injured);
+						List<Coord> targets = new List<Coord>(attackZone);
+						if (targets.Count > 0) {
+							bestTarget = null;
+							bestScore = 0;
+							foreach (Coord target in targets) {
+								Unit targetUnit = battlefield.units[target.x, target.y];
+								float score = targetUnit.maxHealth / targetUnit.getHealth();
+								if (score > bestScore) {
+									bestTarget = target;
+									bestScore = score;
+								}
+							}
+							// If unit has already moved heal best target
+							if (curUnit.hasMovedThisTurn) {
+								return new Move(unitCoord, bestTarget);
+							}
+							// Else choose best tile to move to
+							HashSet<Coord> adjacentTiles = new HashSet<Coord>();
+							adjacentTiles.Add(new Coord(bestTarget.x + 1, bestTarget.y));
+							adjacentTiles.Add(new Coord(bestTarget.x - 1, bestTarget.y));
+							adjacentTiles.Add(new Coord(bestTarget.x, bestTarget.y + 1));
+							adjacentTiles.Add(new Coord(bestTarget.x, bestTarget.y - 1));
+							adjacentTiles.IntersectWith(curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+							
+							// Hardcoded hack for time efficiency
+							if (manhattanDistance(unitCoord, bestTarget) == 1) {
+								adjacentTiles.Add(unitCoord);
+							}
+							Coord bestCoord = null;
+							int tileDef = Int32.MinValue;
+							foreach (Coord coord in adjacentTiles) {
+								if (tileDef < ConstantTables.TileDefense[(int)battlefield.map[coord.x, coord.y].Peek().tileType]){
+									tileDef = ConstantTables.TileDefense[(int)battlefield.map[coord.x, coord.y].Peek().tileType];
+									bestCoord = coord;
+								}
+							}
+							if (unitCoord.Equals(bestCoord)) {
+								return new Move(unitCoord, bestTarget);
+							}
+							return new Move(unitCoord, bestCoord);
+						} else {
+							// Find nearest injured and move to them
+							bestTarget = nearestCoord(unitCoord, injured);
+							Coord bestCoord = nearestCoord(bestTarget, curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+							return new Move(unitCoord, bestCoord);
+						}
+					} else {
+						// Evade
+						HashSet<Coord> dangerZone = enemyAttackZone(enemies);
+						HashSet<Coord> safeZone = safeMoves(unitCoord, dangerZone);
+						if (safeZone.Count > 0) {
+							bestScore = Int32.MaxValue;
+							Coord bestCoord = null;
+							foreach (Coord coord in safeZone) {
+								int distScore = sumDistances(coord, allies);
+								if (distScore < bestScore) {
+									bestScore = distScore;
+									bestCoord = coord;
+								}
+							}
+							return new Move(unitCoord, bestCoord);
+						} else {
+							bestScore = 0;
+							Coord bestCoord = null;
+							foreach (Coord coord in curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
+								int distScore = sumDistances(coord, enemies);
+								if (distScore > bestScore) {
+									bestScore = distScore;
+									bestCoord = coord;
+								}
+							}
+							return new Move(unitCoord, bestCoord);
+						}
+					}
+					
+				}
+			} else if (curUnit is MeleeUnit) {
+				Debug.Log("Melee");
+				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
+					// TODO
+					// Flee
+				} else {
+					// Seek an enemy to attack if health is high
 					HashSet<Coord> attackZone = curUnit.getTotalAttackZone(unitCoord.x, unitCoord.y, battlefield, character);
 					attackZone.IntersectWith(enemies);
 					List<Coord> targets = new List<Coord>(attackZone);
@@ -107,31 +191,27 @@ namespace AI {
 						}
 						return new Move(unitCoord, bestCoord);
 					} else {
+						// Else if there are no enemies in move range, find the nearest to move to
 						targets = findNearestEnemies(unitCoord);
 						// if (targets.Count == 0) {
 						// 	return new Move(unitCoord, unitCoord);
 						// }
-						int minDist = Int32.MaxValue;
-						Coord bestCoord = null;
-						foreach (Coord coord in curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
-							int dist = this.manhattanDistance(coord, targets[0]);
-							if (dist < minDist) {
-								minDist = dist;
-								bestCoord = coord;
-							}
-						}
+						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
 						return new Move(unitCoord, bestCoord);
 					}
 				}
 			} else if (curUnit is RangedUnit) {
-				if (curUnit.getHealth() < curUnit.maxHealth * 0.4) {
+				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee
 				} else {
-
+					// TODO
+					// Check for enemies
+					// Choose best enemy or
+					// Choose best tile to advance to
 				}
 			} else if (curUnit is StatusUnit) {
-				if (curUnit.getHealth() < curUnit.maxHealth * 0.4) {
+				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee
 				} else {

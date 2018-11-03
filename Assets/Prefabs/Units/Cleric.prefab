@@ -106,7 +106,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1629421154834734}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1706.0206, y: 885.26306, z: 1125.7451}
+  m_LocalPosition: {x: 377.5841, y: 271.04636, z: 379.31848}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224403954332622900}
@@ -249,8 +249,6 @@ MonoBehaviour:
   unit: {fileID: 0}
   buffIconPrefab: {fileID: 114708540217932716, guid: 669f709c7589f4c4591c7384479983b7,
     type: 2}
-  buffIconSprites:
-  - {fileID: 21300000, guid: 696958353d3bbe9448b5e253cd686bfd, type: 3}
 --- !u!114 &114833226706664378
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -280,15 +278,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1629421154834734}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecd08cf5fb600534e80e01bc54dd55bb, type: 3}
+  m_Script: {fileID: 11500000, guid: 25cfc8ed9e795444cbf91112421e416e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hasMovedThisTurn: 0
   factionMaterials:
   - {fileID: 2100000, guid: 20370b9f95d7f344c9231b49341c796a, type: 2}
   - {fileID: 2100000, guid: bc76b035f66e4654cb7cd55b3725e0f6, type: 2}
-  - {fileID: 2100000, guid: 09bc9d9c67dafe1488bd908246fc34ef, type: 2}
   - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
+  - {fileID: 2100000, guid: 09bc9d9c67dafe1488bd908246fc34ef, type: 2}
   buffUIManager: {fileID: 114823220750792148}
   healthUIManager: {fileID: 114498037091705390}
 --- !u!222 &222509604232229978
