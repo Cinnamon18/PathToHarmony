@@ -205,17 +205,60 @@ namespace AI {
 					// TODO
 					// Flee
 				} else {
-					// TODO
-					// Check for enemies
-					// Choose best enemy or
-					// Choose best tile to advance to
+					// Seek an enemy to attack if health is high
+					HashSet<Coord> attackZone = curUnit.getTotalAttackZone(unitCoord.x, unitCoord.y, battlefield, character);
+					attackZone.IntersectWith(enemies);
+					List<Coord> targets = new List<Coord>(attackZone);
+					float bestScore = 0;
+					Coord bestTarget = null;
+					if (targets.Count > 0) {
+						// If targets are in range find best
+						foreach (Coord target in targets) {
+							Tile enemyTile = battlefield.map[target.x, target.y].Peek();
+							Unit enemy = battlefield.units[target.x, target.y];
+							AIBattle battle = new AIBattle(curUnit, enemy, enemyTile, target);
+							if (battle.score > bestScore) {
+								bestScore = battle.score;
+								bestTarget = target;
+							}
+						}
+						return new Move(unitCoord, bestTarget);
+					} else {
+						// Else if there are no enemies in move range, find the nearest to move to
+						targets = findNearestEnemies(unitCoord);
+						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+						return new Move(unitCoord, bestCoord);
+					}
 				}
 			} else if (curUnit is StatusUnit) {
 				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee
 				} else {
-
+					// Seek an enemy to attack if health is high
+					HashSet<Coord> attackZone = curUnit.getTotalAttackZone(unitCoord.x, unitCoord.y, battlefield, character);
+					attackZone.IntersectWith(enemies);
+					List<Coord> targets = new List<Coord>(attackZone);
+					float bestScore = 0;
+					Coord bestTarget = null;
+					if (targets.Count > 0) {
+						// If targets are in range find best
+						foreach (Coord target in targets) {
+							Tile enemyTile = battlefield.map[target.x, target.y].Peek();
+							Unit enemy = battlefield.units[target.x, target.y];
+							AIBattle battle = new AIBattle(curUnit, enemy, enemyTile, target);
+							if (battle.score > bestScore) {
+								bestScore = battle.score;
+								bestTarget = target;
+							}
+						}
+						return new Move(unitCoord, bestTarget);
+					} else {
+						// Else if there are no enemies in move range, find the nearest to move to
+						targets = findNearestEnemies(unitCoord);
+						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+						return new Move(unitCoord, bestCoord);
+					}
 				}
 			}
 			// Unit unit = selectUnit();
