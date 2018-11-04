@@ -57,7 +57,7 @@ namespace Gameplay {
 		[SerializeField]
 		private Image defeatImage;
 		[SerializeField]
-		private Stage cutscene;
+		private Stage cutsceneCanvas;
 		[SerializeField]
 		private GameObject vipCrownPrefab;
 
@@ -72,7 +72,7 @@ namespace Gameplay {
 			turnChangeBackground.enabled = false;
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
-			cutscene.hideVisualElements();
+			cutsceneCanvas.hideVisualElements();
 			useNormalCamera();
 
 			getLevel();
@@ -201,8 +201,8 @@ namespace Gameplay {
 
 						//Re-grey model if needed... I'm regretting my desire to make the health ui manager stateless :p
 						if (ourUnit is HealerUnit) {
-							if (selectedUnit.hasMovedThisTurn ||
-							selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+							if (selectedUnit.hasMovedThisTurn || selectedUnit.getHasAttackedThisTurn()){
+							// selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
 								selectedUnit.greyOut();
 							}
 						}
@@ -248,7 +248,7 @@ namespace Gameplay {
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[currentCharacter]]) {
 						Coord coord = battlefield.getUnitCoords(unit);
 						Tile tile = battlefield.map[coord.x, coord.y].Peek();
-						checkTile(tile, unit);
+						await checkTile(tile, unit);
 						unit.hasMovedThisTurn = false;
 						unit.setHasAttackedThisTurn(false);
 					}
@@ -277,16 +277,16 @@ namespace Gameplay {
 			}
 		}
 
-		private void checkTile(Tile tile, Unit unit) {
+		private async Task checkTile(Tile tile, Unit unit) {
 			TileEffects effects = tile.tileEffects;
 			switch (effects) {
 				case TileEffects.Normal:
 					break;
 				case TileEffects.DOT:
-					unit.changeHealth(-20);
+					await unit.changeHealth(-20, true);
 					break;
 				case TileEffects.Heal:
-					unit.changeHealth(20);
+					await unit.changeHealth(20, true);
 					break;
 			}
 		}
@@ -383,21 +383,21 @@ namespace Gameplay {
 		}
 
 		private async Task runAppropriateCutscenes() {
-			foreach (String cutsceneID in level.cutsceneIDs) {
-				if (Stages.testExecutionCondition(cutsceneID, battlefield, objective, halfTurnsElapsed, battleStage)) {
-					await runCutscene(cutsceneID);
+			foreach (Cutscene cutscene in level.cutscenes) {
+				if (cutscene.executionCondition( new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage))) {
+					await runCutscene(cutscene);
 					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
 					break;
 				}
 			}
 		}
 
-		private async Task runCutscene(string cutsceneID) {
-			cutscene.startCutscene(cutsceneID);
+		private async Task runCutscene(Cutscene cutscene) {
+			cutsceneCanvas.startCutscene(cutscene);
 			useCutsceneCamera();
 
 			//Wait for cutscene to finish.
-			while (cutscene.isRunning) {
+			while (cutsceneCanvas.isRunning) {
 				//Unity, forgive me for not using coroutines. I am repentant. I understand my crimes and will not recommimt.
 				await Task.Delay(100);
 			}
@@ -521,11 +521,11 @@ namespace Gameplay {
 					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
 
-				level = new Level("DemoMap2", "EasyVictory", characters, new string[] { });
+				level = new Level("DemoMap2", "EasyVictory", characters, new Cutscene[] { });
 
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
-				cutscene.hideVisualElements();
+				cutsceneCanvas.hideVisualElements();
 			}
 			//  else {
 			// 	Persistance.loadProgress();

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using StoppableCoroutines;
 
 namespace Cutscenes {
-	public class Cutscene : MonoBehaviour {
+	public class CutsceneDepricated : MonoBehaviour {
 
 		private static Sprite[] backgrounds;
 		// private CutsceneCharacter[] characters;
@@ -42,7 +42,7 @@ namespace Cutscenes {
 		// (which i'm pretty sure means we can't use a factory) and avoid the "can we beat the first frame"
 		// race condition. I hope. I think. Godddd unity :(
 
-		public void setup(CutsceneScript script, Cutscene refrenceDupe = null) {
+		public void setup(CutsceneScript script, CutsceneDepricated refrenceDupe = null) {
 			this.script = script;
 			dialogueText.text = "";
 

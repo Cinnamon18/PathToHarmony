@@ -2864,7 +2864,7 @@ MonoBehaviour:
   turnChangeBackground: {fileID: 114073804194313002}
   victoryImage: {fileID: 114664594610877960}
   defeatImage: {fileID: 114942931124994122}
-  cutscene: {fileID: 114396652447904612}
+  cutsceneCanvas: {fileID: 114396652447904612}
   vipCrownPrefab: {fileID: 1901324456013322, guid: 950f723dbdb18b74585d4f6d7fff74e0,
     type: 2}
 --- !u!114 &114884110430295150
