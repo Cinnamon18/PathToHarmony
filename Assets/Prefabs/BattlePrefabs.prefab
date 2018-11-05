@@ -2920,9 +2920,10 @@ MonoBehaviour:
   lineThickness: 1
   lineIntensity: 1
   fillAmount: 0.3
-  lineColor0: {r: 1, g: 1, b: 0, a: 1}
-  lineColor1: {r: 1, g: 1, b: 0, a: 1}
-  lineColor2: {r: 1, g: 0, b: 0, a: 1}
+  lineColor0: {r: 0.97504056, g: 1, b: 0, a: 1}
+  lineColor1: {r: 0.9725245, g: 1, b: 0, a: 1}
+  lineColor2: {r: 1, g: 0, b: 0.027406693, a: 1}
+  lineColor3: {r: 0, g: 1, b: 0.08852029, a: 1}
   additiveRendering: 0
   backfaceCulling: 1
   cornerOutlines: 0
