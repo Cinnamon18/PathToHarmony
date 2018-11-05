@@ -92,9 +92,7 @@ namespace Gameplay {
 					}
 					battleStageChanged = false;
 
-					string bgm = Audio.battleBgm[Random.Range(0, Audio.battleBgm.Length - 1)];
-					Audio.playSound(bgm, true, true);
-
+					playBgm();
 
 					turnPlayerText.text =
 						"Battle objective:\n" +
@@ -361,6 +359,11 @@ namespace Gameplay {
 			}
 			//Just in case....
 			unit.gameObject.transform.position = endPos;
+
+			//Yes yes i know this is terrible.
+			if(unit is RangedUnit) {
+				unit.setHasAttackedThisTurn(true);
+			}
 		}
 
 		private async Task rotateUnit(Unit unit, Coord target) {
@@ -422,6 +425,10 @@ namespace Gameplay {
 			mainCamera.enabled = true;
 		}
 
+		private void playBgm() {
+			string bgm = Audio.battleBgm[Random.Range(0, Audio.battleBgm.Length - 1)];
+			Audio.playSound(bgm, true, true);
+		}
 
 		private void advanceBattleStage() {
 			battleStage = battleStage.NextPhase();
