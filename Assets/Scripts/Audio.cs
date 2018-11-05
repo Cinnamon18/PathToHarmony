@@ -11,6 +11,8 @@ public class Audio : MonoBehaviour {
 	public AudioSource initialSfx;
 	public AudioSource initialMusic;
 
+	public static string[] battleBgm = new string[] {"BattleTheme1"};
+
 	// Use this for initialization
 	void Start() {
 		if (tracks == null) {
@@ -21,6 +23,7 @@ public class Audio : MonoBehaviour {
 			tracks.Add("LightHorseAttack", Resources.Load<AudioClip>("Audio/LightHorseAttack"));
 			tracks.Add("MageAttack", Resources.Load<AudioClip>("Audio/MageAttack"));
 			tracks.Add("RogueAttack", Resources.Load<AudioClip>("Audio/RogueAttack"));
+			tracks.Add("BattleTheme1", Resources.Load<AudioClip>("Audio/BattleTheme1"));
 
 		}
 

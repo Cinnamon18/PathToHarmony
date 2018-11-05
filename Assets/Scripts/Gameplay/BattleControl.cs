@@ -14,6 +14,7 @@ using Editors;
 using System.IO;
 using Cutscenes.Stages;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
@@ -90,6 +91,10 @@ namespace Gameplay {
 						break;
 					}
 					battleStageChanged = false;
+
+					string bgm = Audio.battleBgm[Random.Range(0, Audio.battleBgm.Length - 1)];
+					Audio.playSound(bgm, true, true);
+
 
 					turnPlayerText.text =
 						"Battle objective:\n" +
@@ -201,8 +206,8 @@ namespace Gameplay {
 
 						//Re-grey model if needed... I'm regretting my desire to make the health ui manager stateless :p
 						if (ourUnit is HealerUnit) {
-							if (selectedUnit.hasMovedThisTurn || selectedUnit.getHasAttackedThisTurn()){
-							// selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+							if (selectedUnit.hasMovedThisTurn || selectedUnit.getHasAttackedThisTurn()) {
+								// selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
 								selectedUnit.greyOut();
 							}
 						}
@@ -384,7 +389,7 @@ namespace Gameplay {
 
 		private async Task runAppropriateCutscenes() {
 			foreach (Cutscene cutscene in level.cutscenes) {
-				if (cutscene.executionCondition( new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage))) {
+				if (cutscene.executionCondition(new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage))) {
 					await runCutscene(cutscene);
 					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
 					break;
