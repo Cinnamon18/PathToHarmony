@@ -1,3 +1,9 @@
+
+
+
+
+
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +13,7 @@ using System.Text;
 using System;
 using System.Linq;
 using Gameplay;
+using System.Text.RegularExpressions;
 
 namespace Editors {
 	public class MapEditor : Editor<Tile> {
@@ -18,18 +25,27 @@ namespace Editors {
 		private LineRenderer lineRenderer;
 		[SerializeField]
 		private Transform tilesHolder;
+		[SerializeField]
+		private TileGenerator tilesGenerator;
+	
+
 		private string mapName;
 
 		public Text loadFileText;
 		public Text loadDimText;
+		public Text saveFileText;
 
 		// Use this for initialization
 		protected void Start() {
+			//set preview objs to match tilegenerator
+			previewObj = tilesGenerator.getPrefabs();
+
 			base.objs = new Tile[initialDim.x, initialDim.y, initialDim.z];
 			makeYellowBaseTiles();
 			drawBorders();
 			//Tell editor type
 			setEditorType();
+
 		}
 
 		void Update() {
@@ -37,11 +53,11 @@ namespace Editors {
 		}
 
 		public override void serialize() {
-			deserializeTiles();
+			serializeTiles();
 		}
 
 		public override void deserialize() {
-			serializeTiles();
+			deserializeTiles();
 		}
 
 		public override void remove(Vector3Int tileCoords, Tile tile, RaycastHit hit) {
@@ -144,7 +160,8 @@ namespace Editors {
 		public void makeYellowBaseTiles() {
 			for (int x = 0; x < base.objs.GetLength(0); x++) {
 				for (int y = 0; y < base.objs.GetLength(1); y++) {
-					GameObject newTile = Instantiate(previewObj[(int)(TileType.None)], Util.GridToWorld(x, y, 0), previewObj[currentIndex].transform.rotation);
+					GameObject empty = tilesGenerator.getTileByType(TileType.None);
+					GameObject newTile = Instantiate(empty, Util.GridToWorld(x, y, 0), previewObj[currentIndex].transform.rotation);
 					newTile.transform.parent = tilesHolder;
 					base.objs[x, y, 0] = newTile.GetComponent<Tile>();
 				}
@@ -159,23 +176,27 @@ namespace Editors {
 
 
 		public void deserializeTiles() {
-			eraseTiles();
-			updateMapName(loadFileText.text);
-
-			objs = Serialization.DeserializeTiles(Serialization.ReadData(mapName, mapFilePath), previewObj, tilesHolder);
-			base.objs = new Tile[objs.GetLength(0), objs.GetLength(1), objs.GetLength(2)];
+		
+			string mapData = Serialization.ReadData(loadFileText.text, Paths.mapsPath());
+			if (mapData != null)
+			{
+				updateMapName(loadFileText.text);
+				eraseTiles();
+				base.objs = Serialization.DeserializeTiles(mapData, tilesGenerator, tilesHolder);
+				makeYellowBaseTiles();
+			}
+			
 
 		}
 
 		private void eraseTiles() {
-			if (base.objs != null) {
-				foreach (Tile tile in base.objs) {
-					if (tile != null) {
-						Destroy(tile.gameObject);
-					}
-				}
-				base.objs = null;
+
+			foreach(Transform child in tilesHolder)
+			{
+				Destroy(child.gameObject);
 			}
+
+			base.objs = null;
 
 		}
 
@@ -214,6 +235,8 @@ namespace Editors {
 		}
 
 		public void serializeTiles() {
+
+			updateMapName(saveFileText.text);
 			if (mapName == null || mapName == "") {
 				Debug.LogError("Can't save without a file name");
 				return;
@@ -223,17 +246,23 @@ namespace Editors {
 			Tile[] flattenedTile = Util.Flatten3DArray(base.objs);
 
 			foreach (Tile tile in flattenedTile) {
+				
 				if (tile == null) {
 					serialized.Append(",");
 				} else {
+					if (tile.initialType == TileType.None)
+					{
+						Debug.Log("Empty is here");
+					}
 					serialized.Append(tile.serialize() + ",");
 				}
 			}
 
-			Serialization.WriteData(serialized.ToString(), mapName, mapFilePath, overwriteData);
+			Serialization.WriteData(serialized.ToString(), mapName, Paths.mapsPath(), overwriteData);
 		}
 
 		public void updateSizeUI() {
+
 			String newSize = loadDimText.text;
 			int[] dimensions = newSize.Split(',').Select((dimension) => {
 				//If you're used to java this might look weird. In c# you can explicitly pass by refrence with the keyword "out". Neat, isn't it?
@@ -243,7 +272,17 @@ namespace Editors {
 				}
 				return num;
 			}).ToArray();
-			updateSize(dimensions[0], dimensions[1], dimensions[2]);
+			
+			//Make sure dimension text is in correct format
+			if (dimensions.Length != 3)
+			{
+				Debug.LogError("Dimension text is in incorrect format.");
+			} else
+			{
+				updateSize(dimensions[0], dimensions[1], dimensions[2]);
+			}
+			
 		}
+
 	}
 }

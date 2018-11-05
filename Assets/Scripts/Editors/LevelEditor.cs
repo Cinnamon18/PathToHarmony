@@ -10,6 +10,7 @@ using System.Text;
 using System.ComponentModel;
 using TMPro;
 using System.IO;
+using System.Linq;
 
 namespace Editors {
 	public class LevelEditor : Editor<Unit> {
@@ -18,11 +19,23 @@ namespace Editors {
 		public Text loadMapText;
 		public Text loadLevelText;
 		public Text saveLevelText;
+		
 
-		public TMPro.TMP_Dropdown dropdown;
-		private bool isPlayer;
+		//faction info
+		public TMP_Dropdown factionDropdown;
+		private Faction currentFaction;
 
-		[SerializeField]
+		//objective info
+		public TMP_Dropdown objectiveDropdown;
+		public GameObject goalModel;
+		public Transform goalHolder;
+		public Text goalText;
+		private ObjectiveType currentObjective;
+		private Dictionary<Vector2, GameObject> goalMap;
+		private string goalInstructions = "Click spacebar to place goal (like VIP unit for Esort or position to defend for Defent.)  " +
+			"Click alt to remove goal.";
+
+	    [SerializeField]
 		private Transform unitsHolder;
 		[SerializeField]
 		private Transform tilesHolder;
@@ -30,10 +43,13 @@ namespace Editors {
 		private string mapName;
 		private string levelName;
 
-		[SerializeField]
 		private GameObject[] tilePrefabs;
+		//to create tile no matter order
+		[SerializeField]
+		private TileGenerator generator;
 
 		private Battlefield battlefield;
+		private int fieldHeight;
 		[SerializeField]
 		private GameObject[] unitPrefabs;
 		private UnitInfo[,] unitsInfo;
@@ -48,23 +64,51 @@ namespace Editors {
 			//use battlefield to help place units
 			battlefield = new Battlefield();
 			mapName = defaultMap;
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs, tilesHolder);
+
+			//get tile gamobjects from generator
+			tilePrefabs = generator.getPrefabs();
+
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, Paths.mapsPath()), generator, tilesHolder);
 			//Hacky but Serialization holds how tall the last map loaded is
 			//use to know how tall Unit array should be
-			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
+			fieldHeight = Serialization.mapHeight;
+			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), fieldHeight];
 			//unitsinfo is used to store units and whether they are player or enemy units
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
-			isPlayer = true;
+
+			//what type of unit is being placed
+			currentFaction = Faction.Xingata;
+
+
 			if (previewObj.Length != unitPrefabs.Length) {
 				Debug.LogError("Must have equal number of prefab and preview objects.");
 			}
 			//Tell Editor type
 			setEditorType();
-			dropdown.onValueChanged.AddListener(delegate {
-				//player when 0
-				isPlayer = (dropdown.value == 0);
+	
+			factionDropdown.onValueChanged.AddListener(delegate {
+				//set current faction
+				currentFaction = (Faction)factionDropdown.value;
 			});
 
+
+			goalMap = new Dictionary<Vector2, GameObject>();
+
+			objectiveDropdown.onValueChanged.AddListener(delegate {
+				//set current objective
+				currentObjective = (ObjectiveType)objectiveDropdown.value;
+				if (currentObjective == ObjectiveType.Elimination || currentObjective == ObjectiveType.Survival)
+				{
+					removeAllGoals();
+				}
+				setGoalText();
+			});
+			
+			if (currentObjective == ObjectiveType.Elimination || currentObjective == ObjectiveType.Survival)
+			{
+				setGoalText();
+			}
+		
 		}
 		public override void serialize() {
 			levelName = saveLevelText.text;
@@ -76,15 +120,100 @@ namespace Editors {
 			StringBuilder serialized = new StringBuilder(mapName + ";");
 
 			foreach (UnitInfo info in unitsInfo) {
-				if (info == null) {
-					serialized.Append(";");
-				} else {
+				if (info != null)
+				{
 					serialized.Append(info.serialize() + ";");
+				} 
+			}
+			//Add objective type
+			serialized.Append("*"+(int)currentObjective);
+			if (currentObjective != ObjectiveType.Elimination && currentObjective != ObjectiveType.Survival)
+			{
+				//get position of goals to serialize
+				List<Vector2> positions = goalMap.Select(d => d.Key).ToList();
+				foreach (Vector2 pos in positions)
+				{
+					serialized.Append(";" + pos.x + "," + pos.y);
 				}
 			}
-
-			Serialization.WriteData(serialized.ToString(), levelName, levelFilePath, overwriteData);
+			Serialization.WriteData(serialized.ToString(), levelName, Paths.levelsPath(), overwriteData);
 			resetTextBoxes();
+		}
+
+		//check for assigning goal position
+		private void FixedUpdate()
+		{
+			if ((currentObjective != ObjectiveType.Elimination) && (currentObjective != ObjectiveType.Survival))
+			{
+				RaycastHit hit;
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (Physics.Raycast(ray, out hit, 1000.0f))
+				{
+					Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
+					int x = objCoords.x;
+					int y = objCoords.y;
+
+					//press space to assign goal
+					if (Input.GetKeyDown(KeyCode.Space))
+					{
+						addGoal(x, y);
+					}
+					else if (Input.GetButtonDown("AltSelect"))
+					{
+						removeGoal(x, y, hit);
+					}
+
+				}
+			}
+		}
+
+		private void addGoal(int x, int y)
+		{
+			Vector2 goalPosition = new Vector2(x, y);
+			int z = battlefield.map[x, y].Count + 1;
+			//make sure not placing on top of unit or other goal
+			if (unitsInfo[x, y] == null && !goalMap.ContainsKey(goalPosition))
+			{
+				GameObject newGoal = Instantiate(
+				goalModel,
+				Util.GridToWorld(x, y, z),
+				goalModel.gameObject.transform.rotation);
+				newGoal.transform.parent = goalHolder;
+
+				goalMap[goalPosition] = newGoal;
+			}
+
+		}
+
+		private void removeGoal(int x, int y, RaycastHit hit)
+		{
+			Vector2 removeCoords = new Vector2(x, y);
+			if (hit.collider.gameObject.tag.Equals("Goal"))
+			{
+				goalMap.Remove(removeCoords);
+				Destroy(hit.collider.gameObject);
+			}
+			
+		}
+
+		private void removeAllGoals()
+		{
+			goalMap.Clear();
+			foreach (Transform child in goalHolder)
+			{
+				GameObject.Destroy(child.gameObject);
+			}
+		}
+
+		private void setGoalText()
+		{
+			if (currentObjective == ObjectiveType.Elimination || currentObjective == ObjectiveType.Survival)
+			{
+				goalText.text = "";
+			} else
+			{
+				goalText.text = goalInstructions;
+			}
 		}
 
 		public override void deserialize() {
@@ -94,35 +223,57 @@ namespace Editors {
 
 
 		public void loadMap() {
-			removeAllUnits();
-			eraseTiles();
-			mapName = loadMapText.text;
-			reloadMap();
-			resetTextBoxes();
+			if (Serialization.ReadData(mapName, Paths.mapsPath()) != null)
+			{
+				removeAllUnits();
+				eraseTiles();
+				mapName = loadMapText.text;
+				reloadMap();
+				resetTextBoxes();
+			} else
+			{
+				Debug.Log("Map filename does not exist");
+			}
+		
 		}
 
 		private void reloadMap() {
-			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, mapFilePath), tilePrefabs, tilesHolder);
+
+			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, Paths.mapsPath()), generator, tilesHolder);
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
+			
 		}
 
 		public void loadLevel() {
 			removeAllUnits();
+			removeAllGoals();
 			eraseTiles();
+
 			LevelInfo levelInfo = Serialization.getLevel(loadLevelText.text);
 			mapName = levelInfo.mapName;
+			currentObjective = levelInfo.objective;
+
+			//add goal for each vector in list
+			List<Coord> goalPositions = levelInfo.goalPositions;
+			foreach (Coord pos in goalPositions)
+			{
+				addGoal((int)pos.x, (int)pos.y);
+			}
+			
+			//set dropdown from saved objective
+			objectiveDropdown.value = (int)currentObjective;
 			reloadMap();
 
 			try {
 				Stack<UnitInfo> stack = levelInfo.units;
 				while (stack.Count != 0) {
 					UnitInfo info = stack.Pop();
-					isPlayer = info.getIsPlayer();
+					currentFaction = info.getFaction();
 					addUnit(info.getUnitType(), info.getCoord().x, info.getCoord().y);
 				}
-				//reset bool to match dropdown
-				isPlayer = dropdown.value == 0;
+				//reset faction to match dropdown
+				currentFaction = (Faction)factionDropdown.value;
 			} catch (FileNotFoundException ex) {
 				Debug.LogError("Level does not exist.");
 				Debug.LogError(ex);
@@ -139,10 +290,7 @@ namespace Editors {
 			if (hit.collider.gameObject.tag.Equals("Unit")) {
 				unitsInfo[coord.x, coord.y] = null;
 				Destroy(hit.collider.gameObject);
-			} else {
-				Debug.Log("Cannot delete non-Units.");
-			}
-
+			} 
 		}
 
 		private void addUnit(UnitType unitType, int x, int y) {
@@ -155,17 +303,10 @@ namespace Editors {
 					unitPrefabs[index].gameObject.transform.rotation);
 				newUnitGO.transform.parent = unitsHolder;
 				Unit newUnit = newUnitGO.GetComponent<Unit>();
-				Faction currentFaction;
-				//set material to differentiate between player and enemy
-				//TODO: will change later when user can choose unit of a particular faction
-				if (isPlayer) {
-					currentFaction = playerFaction;
-				} else {
-					currentFaction = enemyFaction;
-				}
+			
 				newUnit.setFaction(currentFaction);
 
-				UnitInfo info = new UnitInfo(unitType, isPlayer, new Vector3Int(x, y, z));
+				UnitInfo info = new UnitInfo(unitType, currentFaction, new Vector3Int(x, y, z));
 				unitsInfo[x, y] = info;
 			} else {
 				Debug.Log("Cannot place units on top of each other.");
@@ -174,6 +315,7 @@ namespace Editors {
 		}
 
 		private void removeAllUnits() {
+	
 			foreach (UnitInfo info in unitsInfo) {
 				if (info != null) {
 					unitsInfo[info.getCoord().x, info.getCoord().y] = null;
