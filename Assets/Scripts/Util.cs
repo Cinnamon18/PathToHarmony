@@ -7,6 +7,7 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using System.Linq;
 using UnityEngine.UI;
+using Gameplay;
 
 public static class Util {
 
@@ -45,17 +46,22 @@ public static class Util {
 		return WorldToGrid(new Vector3(x, y, z));
 	}
 
-	public static Vector3 GridToWorld(Vector3Int grid) {
-		return new Vector3(grid.x * GridWidth, grid.z * GridHeight, grid.y * GridWidth);
+	public static Vector3 GridToWorld(Coord coord) {
+		return GridToWorld(new Vector3Int(coord.x, coord.y, 0));
 	}
 
 	public static Vector3 GridToWorld(int x, int y, int z) {
 		return GridToWorld(new Vector3Int(x, y, z));
 	}
 
+	public static Vector3 GridToWorld(Vector3Int grid) {
+		return new Vector3(grid.x * GridWidth, grid.z * GridHeight, grid.y * GridWidth);
+	}
+
 	public static Vector3 GridToWorld(float x, float y, float z) {
 		return new Vector3(x * GridWidth, z * GridHeight, y * GridWidth);
 	}
+
 
 	//What can I say, I've come to love typescript. We might have to overload this. But hey, if you're new to async
 	//here's an easy way to start! And you wont get spoiled by the .net 5 async/await sugar :p
@@ -101,7 +107,7 @@ public static class Util {
 				foreach (var value in enumerable) {
 					serializedObject.Append(value + " ");
 				}
-				Debug.Log(logItem + serializedObject.ToString());
+				Debug.Log(logItem + " with contents: " + serializedObject.ToString());
 			} else {
 				Debug.Log(logItem);
 			}
@@ -124,14 +130,14 @@ public static class Util {
 	/// <returns></returns>
 	public static MatchCollection GetTaggedSubstrings(char symbol, string message) {
 		return Regex.Matches(message, string.Format(
-			"(?s)(?<=<{0}>)(.*?)(?=</{0}>)", 
+			"(?s)(?<=<{0}>)(.*?)(?=</{0}>)",
 			symbol));
 	}
 
 	public static string RemoveTags(char symbol, string message) {
-		return Regex.Replace(message, 
-			string.Format("<(/)?({0}\b)[^>]*>", 
-			symbol), 
+		return Regex.Replace(message,
+			string.Format("<(/)?({0}\b)[^>]*>",
+			symbol),
 			string.Empty);
 	}
 

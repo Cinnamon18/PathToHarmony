@@ -15,6 +15,7 @@ namespace Gameplay {
 
 		public abstract bool isWinCondition(int halfTurnsElapsed);
 		public abstract bool isLoseCondition(int halfTurnsElapsed);
+		public abstract string getName();
 
 	}
 }

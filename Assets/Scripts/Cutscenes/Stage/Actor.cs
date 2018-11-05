@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Cutscenes.Stages {
 	public class Actor : MonoBehaviour {
 		[SerializeField]
-		private Image image;
+		public Image image;
 
 		[SerializeField]
 		public CutsceneSide side;

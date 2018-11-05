@@ -4,7 +4,7 @@ namespace Cutscenes {
 		public CutsceneBackground background;
 		public CutsceneSide side;
 		public CutsceneCharacter character;
-		public CharacterExpression expression;
+		public Expression expression;
 		public string dialogue;
 
 		public CutsceneScriptLine(
@@ -12,7 +12,7 @@ namespace Cutscenes {
 			CutsceneBackground background = CutsceneBackground.None,
 			CutsceneSide side = CutsceneSide.Left,
 			CutsceneCharacter character = null,
-			CharacterExpression expression = CharacterExpression.Default,
+			Expression expression = Expression.Neutral,
 			string dialogue = "") {
 
 			this.action = action;

@@ -10,37 +10,78 @@ namespace AI {
 	public class PlayerAgent : Agent {
 
 		private List<Coord> moveOptions;
-		private List<Coord> highlightedEnemyUnits;
+		private List<Coord> targetableUnits;
 		private List<GameObject> otherHighlightedObjects;
 		private Unit highlightedFriendlyUnit;
 
-		public PlayerAgent(Battlefield battlefield, Level level, Action<UnityEngine.Object> Destroy) : base(battlefield, level, Destroy) {
+        public Move currentMove;
+
+
+        private const int INPUT_LOOP_DELAY = 10;
+
+    
+
+		public bool stopAwaiting = false;
+
+        public PlayerAgent() : base() {
 			otherHighlightedObjects = new List<GameObject>();
 		}
 
+		//Either returns a valid move or returns null if no move should be made.
 		public override async Task<Move> getMove() {
-			Move currentMove = new Move();
-			while (currentMove.from == null || currentMove.to == null) {
+			//Note: stopAwaiting will cause this entire phase to end.
+			currentMove = new Move();
+			while (!stopAwaiting && currentMove.from == null || currentMove.to == null) {
 				currentMove = new Move();
-				while (currentMove.from == null) {
-					await getSelectionPhase(currentMove);
+
+				while (!stopAwaiting && currentMove.from == null) {
+					//Await player input. But. Unity doesn't really support async await.
+					//I'm feeling kinda dumb for not just learning coroutines. Next time!
+					while (!stopAwaiting && !Input.GetButtonDown("Select")) {
+						await Task.Delay(INPUT_LOOP_DELAY);
+					}
+					if (stopAwaiting) {
+						stopAwaiting = false;
+						return null;
+					}
+					getSelectionPhase(currentMove);
+
+					//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
+					while (Input.GetButtonDown("Select")) {
+						await Task.Delay(INPUT_LOOP_DELAY);
+					}
 				}
 
-				while (currentMove.to == null && currentMove.from != null) {
-					await getMovePhase(currentMove);
+				if (stopAwaiting) {
+					stopAwaiting = false;
+					return null;
+				}
+
+				//Part 2
+				while (!stopAwaiting && currentMove.to == null && currentMove.from != null) {
+					//Await player input.
+					while (!stopAwaiting && !Input.GetButtonDown("Select")) {
+						await Task.Delay(INPUT_LOOP_DELAY);
+					}
+					if (stopAwaiting) {
+						stopAwaiting = false;
+						return null;
+					}
+					getMovePhase(currentMove);
+					//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
+					while (Input.GetButtonDown("Select")) {
+						await Task.Delay(INPUT_LOOP_DELAY);
+					}
 				}
 			}
-
+			if (stopAwaiting) {
+				stopAwaiting = false;
+				return null;
+			}
 			return currentMove;
 		}
 
-		public async Task getSelectionPhase(Move currentMove) {
-			//Await player input. But. Unity doesn't really support async await.
-			//I'm feeling kinda dumb for not just learning coroutines. Next time!
-			while (!Input.GetButtonDown("Select")) {
-				await Task.Delay(1);
-			}
-
+		public void getSelectionPhase(Move currentMove) {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit, 1000.0f)) {
@@ -53,7 +94,6 @@ namespace AI {
 					Tile selectedTile = selectedItem as Tile;
 					unhighlightAll();
 					highlight(selectedTile.gameObject);
-					otherHighlightedObjects.Add(selectedTile.gameObject);
 
 					//This method will get called again because we didn't find a valid selection
 				} else if (selectedItem is Unit) {
@@ -73,20 +113,38 @@ namespace AI {
 						this.highlightedFriendlyUnit = selectedUnit;
 
 						moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
+
 						foreach (Coord moveOption in moveOptions) {
-							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
+							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject, 1);
 						}
 
-						this.highlightedEnemyUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, this.character);
-						foreach (Coord targetableUnit in highlightedEnemyUnits) {
-							highlight(battlefield.units[targetableUnit.x, targetableUnit.y], 2);
-							highlight(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, 2);
+						this.targetableUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, this.character);
+
+						foreach (Coord targetableUnit in targetableUnits) {
+							int colorIndex = selectedUnit is Cleric ? 3 : 2; 
+							highlight(battlefield.units[targetableUnit.x, targetableUnit.y], colorIndex);
+							highlight(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, colorIndex);
 						}
 
 					} else {
-						//Selected enemy unit. Show unit and its move options.
-						//TODO: highlight enemy's valid move tiles. don't assign currentMove.from.x or from.y, bc not valid advancement criteria
-					}
+                        //Selected enemy unit. Show unit and its move options.
+						unhighlightAll();
+						highlight(selectedUnit, 2);
+
+						moveOptions = selectedUnit.getValidMoves(tileCoords.x, tileCoords.y, battlefield);
+
+						foreach (Coord moveOption in moveOptions) {
+							highlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject, 2);
+						}
+
+						this.targetableUnits = selectedUnit.getTargets(tileCoords.x, tileCoords.y, battlefield, selectedUnit.getCharacter(battlefield));
+
+						foreach (Coord targetableUnit in targetableUnits) {
+							int colorIndex = selectedUnit is Cleric ? 3 : 2; 
+							highlight(battlefield.units[targetableUnit.x, targetableUnit.y], colorIndex);
+							highlight(battlefield.map[targetableUnit.x, targetableUnit.y].Peek().gameObject, colorIndex);
+						}
+                    }
 
 				} else if (selectedItem == null) {
 					//Clicked on empty space! Nbd, don't do anything.
@@ -96,19 +154,9 @@ namespace AI {
 				}
 			}
 
-			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
-			while (!Input.GetButtonUp("Select")) {
-				await Task.Delay(1);
-			}
-
 		}
 
-		public async Task getMovePhase(Move currentMove) {
-			//Await player input.
-			while (!Input.GetButtonDown("Select")) {
-				await Task.Delay(1);
-			}
-
+		public void getMovePhase(Move currentMove) {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit, 1000.0f)) {
@@ -133,18 +181,18 @@ namespace AI {
 					Unit selectedUnit = selectedItem as Unit;
 
 					if (highlightedFriendlyUnit == selectedUnit) {
-						//clicked on the same unit, deselect
+						//clicked on the same unit, return the "do nothing" move
 						unhighlightAll();
-						currentMove.from = null;
+						currentMove.to = new Coord(tileCoords.x, tileCoords.y);
 
-					} else if (selectedUnit.getCharacter(battlefield) == this.character) {
+					} else if (selectedUnit.getCharacter(battlefield) == this.character && !(highlightedFriendlyUnit is Cleric)) {
 						//Clicked on a friendly unit. Deselect the current one.
 						unhighlightAll();
 						currentMove.from = null;
 
 					} else {
 						//Clicked on a hostile unit! fight!
-						if (highlightedEnemyUnits.Any(coord => coord.x == tileCoords.x && coord.y == tileCoords.y)) {
+						if (targetableUnits.Any(coord => coord.x == tileCoords.x && coord.y == tileCoords.y)) {
 							currentMove.to = new Coord(tileCoords.x, tileCoords.y);
 						} else {
 							//Clicked on invalid enemy unit, restart.
@@ -156,12 +204,8 @@ namespace AI {
 					Debug.LogWarning("Item of unrecognized type clicked on.");
 				}
 			}
-
-			//Wait for the mouse down event to un-fire. This avoids an infinite loop in the next condition.
-			while (!Input.GetButtonUp("Select")) {
-				await Task.Delay(1);
-			}
 		}
+
 		private void highlight(Unit unit, int colorIndex = 0) {
 			foreach (GameObject obj in unit.getModels()) {
 				highlight(obj, colorIndex);
@@ -176,17 +220,21 @@ namespace AI {
 		}
 
 		private void highlight(GameObject objectToHighlight, int colorIndex = 0) {
-			objectToHighlight.AddComponent<cakeslice.Outline>();
-			objectToHighlight.GetComponent<cakeslice.Outline>().color = colorIndex;
+			objectToHighlight.AddComponent<cakeslice.Outline>().color = colorIndex;
+			otherHighlightedObjects.Add(objectToHighlight);
 		}
 
 		private void unhighlight(GameObject objectToHighlight) {
 			if (objectToHighlight != null) {
-				Destroy(objectToHighlight.GetComponent<cakeslice.Outline>());
+				//mmm defensive programming
+				cakeslice.Outline[] outlines = objectToHighlight.GetComponents<cakeslice.Outline>();
+				foreach(cakeslice.Outline outline in outlines) {
+					GameObject.Destroy(outline);
+				}
 			}
 		}
 
-		private void unhighlightAll() {
+		public void unhighlightAll() {
 			if (moveOptions == null) {
 				//Someone accidentally called this twice in a row
 				return;
@@ -196,7 +244,7 @@ namespace AI {
 				unhighlight(battlefield.map[moveOption.x, moveOption.y].Peek().gameObject);
 			}
 
-			foreach (Coord highlightedEnemyUnit in highlightedEnemyUnits) {
+			foreach (Coord highlightedEnemyUnit in targetableUnits) {
 				unhighlight(battlefield.units[highlightedEnemyUnit.x, highlightedEnemyUnit.y].gameObject);
 				unhighlight(battlefield.map[highlightedEnemyUnit.x, highlightedEnemyUnit.y].Peek().gameObject);
 			}
@@ -206,7 +254,7 @@ namespace AI {
 			}
 
 			moveOptions.Clear();
-			highlightedEnemyUnits.Clear();
+			targetableUnits.Clear();
 			otherHighlightedObjects.Clear();
 		}
 

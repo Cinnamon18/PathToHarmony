@@ -1,8 +1,8 @@
 # Path to Harmony
-A fantasy turn based tactics game, developed with Georgia Tech's VGDev club.
+A fantasy turn based tactics game, developed by Georgia Tech's VGDev club.
 
 ## Installation
-* You may need [blender](https://www.blender.org/) installed to view the models. Will update to confirm if this is an issue.
+* You will need [blender](https://www.blender.org/) installed to view the models. Please install before opening the project for the first time, or you'll have to re-clone.
 
 ## Style/Convention suggestions
 * Try to keep lines to a reasonable length, ~120 characters.

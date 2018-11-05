@@ -12,8 +12,12 @@ namespace Gameplay {
 
 		public InterceptObjective(Battlefield battlefield, Level level, Character playerCharacter, int maxHalfTurns, List<Unit> vips) :
 			base(battlefield, level, playerCharacter, maxHalfTurns) {
-				this.vips = vips;
-			}
+			this.vips = vips;
+		}
+
+		public override string getName() {
+			return "Intercept";
+		}
 
 		public override bool isLoseCondition(int halfTurnsElapsed) {
 			if (battlefield.charactersUnits[playerCharacter].Count == 0) {

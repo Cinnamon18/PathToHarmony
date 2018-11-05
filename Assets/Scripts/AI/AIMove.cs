@@ -5,14 +5,20 @@ namespace AI {
 	//A move for a unit, only contains destination information but has a weight
 	public class AIMove : Coord, IComparable<AIMove> {
 
-		public int weight;
+		public float weight;
 
-		public AIMove(int x, int y, int movePointsLeft) : base(x, y) {
-			this.weight = movePointsLeft;
+		public AIMove(int x, int y, float weight) : base(x, y) {
+			this.weight = weight;
 		}
 
 		public int CompareTo(AIMove otherMove) {
-			return this.weight - otherMove.weight;
+			if (this.weight > otherMove.weight) {
+				return 1;
+			} else if (this.weight == otherMove.weight) {
+				return 0;
+			} else {
+				return -1;
+			}
 		}
 
 		public override bool Equals(object obj) {
@@ -24,7 +30,7 @@ namespace AI {
 		}
 
 		public override int GetHashCode() {
-			return x * 743 + y + 541 * weight;
+			return (int) (x * 743 + y + 541 * weight);
 		}
 	}
 }
