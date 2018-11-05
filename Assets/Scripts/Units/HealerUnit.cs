@@ -8,6 +8,7 @@ using AI;
 using System.Linq;
 using UnityEngine.UI;
 using Buffs;
+using System.Threading.Tasks;
 
 namespace Units {
 	public class HealerUnit : Unit {
@@ -37,29 +38,20 @@ namespace Units {
 
 			// List<Buff> damageBuffs = getBuffsOfType(BuffType.Damage);
 			// foreach (Buff buff in damageBuffs) {
-				// damage *= (buff as DamageBuff).getDamageBonus();
+			// damage *= (buff as DamageBuff).getDamageBonus();
 			// }
 
 			return (int)(Mathf.Floor(healing));
 		}
 
-		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			Audio.playSfx(attackSoundEffect);
+		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
+			await playAttackAnimation();
 
 			int damage = this.battleDamage(enemy, enemyTile);
 			//Damage rounds up
-			enemy.setHealth(enemy.getHealth() - damage);
-			if (enemy.getHasAttackedThisTurn() || enemy.hasMovedThisTurn) {
-				enemy.greyOut();
-			}
+			await enemy.changeHealth(-damage, true);
 
-			if (enemy.getHealth() >= enemy.maxHealth) {
-				enemy.setHealth(enemy.maxHealth);
-				return true;
-			} else {
-				return false;
-			}
-
+			return false;
 		}
 
 		//returns a list of targetable allies

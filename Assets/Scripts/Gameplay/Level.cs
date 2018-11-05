@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cutscenes.Stages;
 using UnityEngine;
 
 namespace Gameplay {
@@ -7,18 +8,18 @@ namespace Gameplay {
 		public string mapFileName;
 		public Character[] characters;
 		public string levelFileName;
-		public string[] cutsceneIDs;
+		public Cutscene[] cutscenes;
 
 		public Level(
 			string mapFileName,
 			string levelFileName,
 			Character[] players,
-			string[] cutsceneIDs) {
+			Cutscene[] cutscenes) {
 
 			this.mapFileName = mapFileName;
 			this.characters = players;
 			this.levelFileName = levelFileName;
-			this.cutsceneIDs = cutsceneIDs;
+			this.cutscenes = cutscenes;
 
 		}
 	}

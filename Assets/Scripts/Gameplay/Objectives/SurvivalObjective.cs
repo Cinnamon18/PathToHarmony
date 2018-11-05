@@ -11,6 +11,10 @@ namespace Gameplay {
 			return false;
 		}
 
+		public override string getName() {
+			return "Survival";
+		}
+
 		public override bool isWinCondition(int halfTurnsElapsed) {
 			if (halfTurnsElapsed >= maxHalfTurns) {
 				return true;

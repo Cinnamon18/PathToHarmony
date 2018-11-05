@@ -4,6 +4,10 @@ namespace Gameplay {
 		public EliminationObjective(Battlefield battlefield, Level level, Character playerCharacter, int maxHalfTurns) :
 			base(battlefield, level, playerCharacter, maxHalfTurns) { }
 
+		public override string getName() {
+			return "Eliminate";
+		}
+
 		public override bool isLoseCondition(int halfTurnsElapsed) {
 			if (battlefield.charactersUnits[playerCharacter].Count == 0) {
 				return true;

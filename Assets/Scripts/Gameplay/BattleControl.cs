@@ -32,7 +32,7 @@ namespace Gameplay {
 		[SerializeField]
 		private TileGenerator generator;
 
-		
+
 		private LevelInfo levelInfo;
 
 		public Camera mainCamera;
@@ -42,7 +42,7 @@ namespace Gameplay {
 		private BattleLoopStage battleStage;
 
 		//Use this to keep one of the Update switch blocks from being called multiple times.
-		private bool battleStageChanged;
+		private bool battleStageChanged = true;
 		public int currentCharacter;
 		public int playerCharacter;
 		public int halfTurnsElapsed;
@@ -57,7 +57,7 @@ namespace Gameplay {
 		[SerializeField]
 		private Image defeatImage;
 		[SerializeField]
-		private Stage cutscene;
+		private Stage cutsceneCanvas;
 		[SerializeField]
 		private GameObject vipCrownPrefab;
 
@@ -72,7 +72,7 @@ namespace Gameplay {
 			turnChangeBackground.enabled = false;
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
-			cutscene.hideVisualElements();
+			cutsceneCanvas.hideVisualElements();
 			useNormalCamera();
 
 			getLevel();
@@ -86,6 +86,18 @@ namespace Gameplay {
 		async void Update() {
 			switch (battleStage) {
 				case BattleLoopStage.Initial:
+					if (!battleStageChanged) {
+						break;
+					}
+					battleStageChanged = false;
+
+					turnPlayerText.text =
+						"Battle objective:\n" +
+						objective.getName();
+					turnPlayerText.enabled = true;
+					turnChangeBackground.enabled = true;
+					await Task.Delay(3000);
+
 					advanceBattleStage();
 					break;
 				case BattleLoopStage.Pick:
@@ -116,8 +128,8 @@ namespace Gameplay {
 					turnChangeBackground.enabled = true;
 
 					await Task.Delay(1000);
-					advanceBattleStage();
 
+					advanceBattleStage();
 					break;
 				case BattleLoopStage.TurnChangeEnd:
 					turnPlayerText.enabled = false;
@@ -165,6 +177,7 @@ namespace Gameplay {
 
 						if (ourUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
 							ourUnit.greyOut();
+							ourUnit.setHasAttackedThisTurn(true);
 						}
 
 					} else if (selectedItem is Unit) {
@@ -172,32 +185,39 @@ namespace Gameplay {
 						Unit selectedUnit = selectedItem as Unit;
 
 						await rotateUnit(ourUnit, battlefield.getUnitCoords(selectedUnit));
-						await ourUnit.playAttackAnimation();
-						bool defenderDefeated = ourUnit.doBattleWith(
+						bool defenderDefeated = await ourUnit.doBattleWith(
 							selectedUnit,
 							battlefield.map[move.to.x, move.to.y].Peek(),
 							battlefield);
 
 						if (!defenderDefeated && (selectedItem is MeleeUnit) && (ourUnit is MeleeUnit)) {
 							await rotateUnit(selectedUnit, battlefield.getUnitCoords(ourUnit));
-							await selectedUnit.playAttackAnimation();
 							//Counterattack applied only when both units are Melee
-							selectedUnit.doBattleWith(
+							await selectedUnit.doBattleWith(
 								ourUnit,
 								battlefield.map[move.from.x, move.from.y].Peek(),
 								battlefield);
 						}
 
+						//Re-grey model if needed... I'm regretting my desire to make the health ui manager stateless :p
+						if (ourUnit is HealerUnit) {
+							if (selectedUnit.hasMovedThisTurn || selectedUnit.getHasAttackedThisTurn()){
+							// selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+								selectedUnit.greyOut();
+							}
+						}
+
 						ourUnit.setHasAttackedThisTurn(true);
-						await Task.Delay(TimeSpan.FromMilliseconds(turnDelayMs));
+						// await Task.Delay(TimeSpan.FromMilliseconds(turnDelayMs));
 					} else {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
 					}
 
 					// checkWinAndLose();
 
-					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					ourUnit.hasMovedThisTurn = true;
+
+					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => {
 						//I know this looks inelegant but it avoid calling getUnitCoords if necessary
 						if (!unit.hasMovedThisTurn) {
@@ -228,7 +248,7 @@ namespace Gameplay {
 					foreach (Unit unit in battlefield.charactersUnits[level.characters[currentCharacter]]) {
 						Coord coord = battlefield.getUnitCoords(unit);
 						Tile tile = battlefield.map[coord.x, coord.y].Peek();
-						checkTile(tile, unit);
+						await checkTile(tile, unit);
 						unit.hasMovedThisTurn = false;
 						unit.setHasAttackedThisTurn(false);
 					}
@@ -257,16 +277,16 @@ namespace Gameplay {
 			}
 		}
 
-		private void checkTile(Tile tile, Unit unit) {
+		private async Task checkTile(Tile tile, Unit unit) {
 			TileEffects effects = tile.tileEffects;
 			switch (effects) {
 				case TileEffects.Normal:
 					break;
 				case TileEffects.DOT:
-					unit.setHealth(unit.getHealth() - 20);
+					await unit.changeHealth(-20, true);
 					break;
 				case TileEffects.Heal:
-					unit.setHealth(unit.getHealth() + 20);
+					await unit.changeHealth(20, true);
 					break;
 			}
 		}
@@ -278,17 +298,14 @@ namespace Gameplay {
 
 			Persistance.campaign.levelIndex++;
 
-
 			//check for end of campaign
 			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Count()) {
-				SceneManager.LoadScene("Victory");
+				SceneManager.LoadScene("VictoryScene");
 			} else {
 				Persistance.saveProgress();
 				//Oh Boy im glad this works.
 				SceneManager.LoadScene("DemoBattle");
 			}
-
-			
 		}
 
 		private async void restartLevelDefeat() {
@@ -366,21 +383,21 @@ namespace Gameplay {
 		}
 
 		private async Task runAppropriateCutscenes() {
-			foreach (String cutsceneID in level.cutsceneIDs) {
-				if (Stages.testExecutionCondition(cutsceneID, battlefield, objective, halfTurnsElapsed)) {
-					await runCutscene(cutsceneID);
+			foreach (Cutscene cutscene in level.cutscenes) {
+				if (cutscene.executionCondition( new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage))) {
+					await runCutscene(cutscene);
 					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
 					break;
 				}
 			}
 		}
 
-		private async Task runCutscene(string cutsceneID) {
-			cutscene.startCutscene(cutsceneID);
+		private async Task runCutscene(Cutscene cutscene) {
+			cutsceneCanvas.startCutscene(cutscene);
 			useCutsceneCamera();
 
 			//Wait for cutscene to finish.
-			while (cutscene.isRunning) {
+			while (cutsceneCanvas.isRunning) {
 				//Unity, forgive me for not using coroutines. I am repentant. I understand my crimes and will not recommimt.
 				await Task.Delay(100);
 			}
@@ -487,7 +504,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Survival:
-					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 2);
+					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 20);
 					break;
 				default:
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
@@ -504,14 +521,15 @@ namespace Gameplay {
 					new Character("The evil lord zxqv", false, new SimpleAgent())
 				};
 
-				level = new Level("DemoMap2", "quickTest", characters, new string[] { });
+				level = new Level("DemoMap2", "EasyVictory", characters, new Cutscene[] { });
 
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
-				cutscene.hideVisualElements();
-			} else {
-				Persistance.loadProgress();
+				cutsceneCanvas.hideVisualElements();
 			}
+			//  else {
+			// 	Persistance.loadProgress();
+			// }
 
 			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
 			foreach (Character character in level.characters) {

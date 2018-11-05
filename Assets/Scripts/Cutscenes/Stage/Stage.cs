@@ -65,7 +65,7 @@ namespace Cutscenes.Stages {
 		/// </summary>
 		public void Start() {
 			if (SceneManager.GetActiveScene().name == "Story Test") {
-				startCutscene("andysDemo");
+				startCutscene(new AndysDemo());
 			}
 		}
 
@@ -75,9 +75,9 @@ namespace Cutscenes.Stages {
 			}
 		}
 
-		public void startCutscene(string cutsceneID) {
+		public void startCutscene(Cutscene cutscene) {
 			showVisualElements();
-			StartCoroutine(Invoke(Stages.getStage(cutsceneID)));
+			StartCoroutine(Invoke(cutscene.getStage()));
 		}
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
