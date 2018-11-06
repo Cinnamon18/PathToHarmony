@@ -82,7 +82,7 @@ public class MainMenu : MonoBehaviour {
 		//LEVEL 1
 		Character[] characters1 = new[] {
 				new Character("Alice", true, new PlayerAgent()),
-				new Character("The evil lord zxqv", false, new SimpleAgent())
+				new Character("The evil lord zxqv", false, new eliminationAgent())
 				};
 		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new Cutscene[] { new ExpressionShowOff(), new GenericDefeat() });
 
