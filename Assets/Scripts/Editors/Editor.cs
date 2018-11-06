@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Units;
 using Gameplay;
+using UnityEngine.UI;
 
 namespace Editors {
 	public abstract class Editor<T> : MonoBehaviour {
 		protected T[,,] objs;
+		public Toggle overWriteToggle;
 		protected bool overwriteData;
-		protected string mapFilePath = Serialization.mapFilePath;
-		protected string levelFilePath = Serialization.levelFilePath;
+				
 
 		//info for preview
 		public GameObject[] previewObj;
@@ -52,11 +53,16 @@ namespace Editors {
 				Vector3Int objCoords = Util.WorldToGrid(hit.transform.position);
 				T obj = objs[objCoords.x, objCoords.y, objCoords.z];
 
-				if (Input.GetButtonDown("Select")) {
+				if (Input.GetButtonDown("Select"))
+				{
 					create(objCoords, obj);
-				} else if (Input.GetButtonDown("AltSelect")) {
+				}
+				else if (Input.GetButtonDown("AltSelect"))
+				{
 					remove(objCoords, obj, hit);
 				}
+				
+				
 
 			}
 
@@ -66,20 +72,29 @@ namespace Editors {
 
 		protected void updatePreview(float scroll) {
 			GameObject oldPreviewTile;
-
+			int previousIndex = currentIndex;
 			if (previewHolder.transform.childCount != 0) {
 				oldPreviewTile = previewHolder.GetChild(0).gameObject;
-				if (scroll != 0) {
-					if (scroll < 0) {
+			
+				if (scroll != 0)
+				{
+					if (scroll < 0)
+					{
 						currentIndex--;
-					} else if (scroll > 0) {
+					}
+					else if (scroll > 0)
+					{
 						currentIndex++;
 					}
+
 					//Why can't we all just agree on what % means? This makes it "warp back around". My gut says there's a more elegant way to do this, but....
 					currentIndex = currentIndex < 0 ? currentIndex + previewObj.Length : currentIndex % previewObj.Length;
+
 					currentPreviewObj = Instantiate(previewObj[currentIndex], oldPreviewTile.transform.position, oldPreviewTile.transform.rotation, previewHolder);
 					Destroy(oldPreviewTile);
 				}
+				
+			
 			} else {
 				Debug.Log("Must have single preview object in preview holder object.");
 			}
@@ -93,8 +108,10 @@ namespace Editors {
 			updatePreview(-1);
 		}
 
-		public void updateOverwriteMode(bool state) {
-			this.overwriteData = state;
+
+		public void resetOverWritePerm()
+		{
+			overwriteData = overWriteToggle.isOn;
 		}
 	}
 }

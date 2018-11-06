@@ -6,6 +6,7 @@ using Gameplay;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour {
 
@@ -21,22 +22,38 @@ public class MainMenu : MonoBehaviour {
 		optionsCanvas.enabled = false;
 		creditsCanvas.enabled = false;
 
+		//setup audio sliders
+		Persistance.loadAudioSettings(masterMixer);
+		Slider[] optionsSliders = optionsCanvas.GetComponentsInChildren<Slider>();
+		optionsSliders[0].value = PlayerPrefs.GetFloat(Persistance.MASTER_VOLUME);
+		optionsSliders[1].value = PlayerPrefs.GetFloat(Persistance.MUSIC_VOLUME);
+		optionsSliders[2].value = PlayerPrefs.GetFloat(Persistance.SFX_VOLUEME);
+
 		setupDefaultCampaign();
 	}
 
 	public void setMasterVolume(float vol) {
-		masterMixer.SetFloat("MasterVolume", vol);
+		masterMixer.SetFloat(Persistance.MASTER_VOLUME, vol);
+		Persistance.saveAudioSettings(masterMixer);
 	}
 
 	public void setMusicVolume(float vol) {
-		masterMixer.SetFloat("MusicVolume", vol);
+		masterMixer.SetFloat(Persistance.MUSIC_VOLUME, vol);
+		Persistance.saveAudioSettings(masterMixer);
 	}
 
 	public void setSfxVolume(float vol) {
-		masterMixer.SetFloat("SfxVolume", vol);
+		masterMixer.SetFloat(Persistance.SFX_VOLUEME, vol);
+		Persistance.saveAudioSettings(masterMixer);
 	}
 
 	public void playGame() {
+		Persistance.saveProgress();
+		SceneManager.LoadScene("DemoBattle");
+	}
+
+	public void resumeGame() {
+		Persistance.loadProgress();
 		SceneManager.LoadScene("DemoBattle");
 	}
 
@@ -64,24 +81,24 @@ public class MainMenu : MonoBehaviour {
 
 		//LEVEL 1
 		Character[] characters1 = new[] {
-				new Character("Alice", true, new playerAgent()),
+				new Character("Alice", true, new PlayerAgent()),
 				new Character("The evil lord zxqv", false, new eliminationAgent())
 				};
-		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new string[] { Stages.tutorialEnd, Stages.genericDefeat });
+		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new string[] { Stages.expressionShowOff, Stages.genericDefeat });
 
 		//LEVEL 2
 		Character[] characters2 = new[] {
-				new Character("Blair", true, new playerAgent()),
-				new Character("King Xingata", false, new simpleAgent())
+				new Character("Blair", true, new PlayerAgent()),
+				new Character("King Xingata", false, new SimpleAgent())
 				};
-		Level level2 = new Level("DemoMap", "TestLevel", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat});
+		Level level2 = new Level("DemoMap", "test", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat });
 
 		//LEVEL 3
 		Character[] characters3 = new[] {
-				new Character("Blair", true, new playerAgent()),
-				new Character("evil!Juniper", false, new simpleAgent())
+				new Character("Blair", true, new PlayerAgent()),
+				new Character("evil!Juniper", false, new SimpleAgent())
 				};
-		Level level3 = new Level("DemoMap", "DemoLevel", characters2, new string[] { Stages.andysDemo, Stages.genericDefeat });
+		Level level3 = new Level("DemoMap", "DemoLevel", characters3, new string[] { Stages.andysDemo, Stages.genericDefeat });
 
 
 		//Just to show off my vision of campaign branching. which now looks like it's not gonna happen, but oh well :p
@@ -95,7 +112,20 @@ public class MainMenu : MonoBehaviour {
 			level3
 		});
 
-		Persistance.campaign = testCampaign1;
+		// Persistance.campaign = testCampaign1;
+
+
+
+		Level capture = new Level("DemoMap", "CaptureTest", characters3, new string[] { Stages.expressionShowOff });
+		Level defend = new Level("DemoMap", "DefendTest", characters3, new string[] { Stages.genericDefeat });
+		Level escort = new Level("DemoMap", "EscortTest", characters3, new string[] { Stages.genericDefeat });
+		Level intercept = new Level("DemoMap", "InterceptTest", characters3, new string[] { Stages.genericDefeat });
+
+		Campaign gameModeShowOff = new Campaign("gamemode show off", 0, new[] {
+			capture, defend, escort, intercept
+		});
+
+		Persistance.campaign = gameModeShowOff;
 
 
 	}

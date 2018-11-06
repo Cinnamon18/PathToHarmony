@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour {
 	 * R/F: control zoom
 	 */
 	//These are just private so they do not clutter the component box, but these can be made public and adjusted if desired.
-	private float translateSpeedKeys = 15;  //The rate at which holding down the movement keys adjusts the linear momentum.
+	private float translateSpeedKeys = 10;  //The rate at which holding down the movement keys adjusts the linear momentum.
 	private float rotateSpeedKeys = 15;  //The rate at which holding down the movement keys (while also holding the shift key) adjusts the linear momentum.
 	private float zoomSpeedExp = 2.5f;  //The rate at which the camera exponentially zooms to achieve the desired distance.
 	private float zoomSpeedLin = 1;     //The rate at which the camera linearally zooms to achieve the desired distance.

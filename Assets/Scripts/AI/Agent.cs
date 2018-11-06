@@ -40,19 +40,8 @@ namespace AI {
 			return null;
 		}
 
-		protected List<Coord> findInjured() {
-			List<Coord> units = filterAllies(findAllUnits());
-			List<Coord> injured = new List<Coord>();
-			foreach (Coord coord in units) {
-				Unit unit = battlefield.units[coord.x, coord.y];
-				if (unit.maxHealth / unit.getHealth() >= 4) {
-					injured.Add(coord);
-				}
-			}
-			return injured;
-		}
-
 		protected List<Coord> findNearestEnemies(Coord start) {
+
 			int[,] moveDirs = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 			HashSet<Coord> visited = new HashSet<Coord>();
 			Queue<Coord> moveQueue = new Queue<Coord>();
@@ -79,6 +68,7 @@ namespace AI {
 						}
 					}
 				}
+				
 
 				for (int x = 0; x < moveDirs.GetLength(0); x++) {
 					Coord nextCoord = new Coord(curCoord.x + moveDirs[x, 0], curCoord.y + moveDirs[x, 1]);
@@ -89,7 +79,9 @@ namespace AI {
 						}
 					}
 				}
+				
 			}
+			
 			return enemies;
 		}
 
@@ -142,6 +134,7 @@ namespace AI {
 			return units;
 		}
 
+		#region Filter functions
 		protected List<Coord> filterEnemies(List<Coord> units) {
 			List<Coord> enemies = new List<Coord>();
 			foreach (Coord coord in units) {
@@ -186,6 +179,17 @@ namespace AI {
 			return hasMove;
 		}
 
+		protected List<Coord> filterInjured(List<Coord> allies, float threshold) {
+			List<Coord> injured = new List<Coord>();
+			foreach (Coord coord in allies) {
+				Unit unit = battlefield.units[coord.x, coord.y];
+				if (unit.maxHealth / unit.getHealth() >= 1.0/threshold) {
+					injured.Add(coord);
+				}
+			}
+			return injured;
+		}
+
 		protected List<Coord> filterHealers(List<Coord> units) {
 			List<Coord> healers = new List<Coord>();
 			foreach (Coord coord in units) {
@@ -196,6 +200,7 @@ namespace AI {
 			}
 			return healers;
 		}
+		#endregion
 
 		// Return a list of Tiles from which a unit can attack any enemy unit
 		protected List<Coord> getOffenseTiles(Coord unitCoord) {
@@ -247,26 +252,46 @@ namespace AI {
 			return targetPQueue.Dequeue().coord;
 		}
 
-		protected List<Coord> enemyAttackZone(List<Coord> enemies) {
-			List<Coord> attackZone = new List<Coord>();
+		protected HashSet<Coord> enemyAttackZone(List<Coord> enemies) {
+			HashSet<Coord> attackZone = new HashSet<Coord>();
 			foreach (Coord enemy in enemies) {
 				Unit unit = coordToUnit(enemy);
 				if (unit != null) {
-					if (unit.getCharacter(battlefield) == character) {
-						attackZone = unionCoords(attackZone, unit.getAttackZone(enemy.x, enemy.y, battlefield, unit.getCharacter(battlefield)));
-					}
+					attackZone.UnionWith(unit.getTotalAttackZone(enemy.x, enemy.y, battlefield, unit.getCharacter(battlefield)));
 				}
 			}
 			return attackZone;
 		}
 
-		protected List<Coord> safeMoves(Coord unitCoord, List<Coord> dangerZone) {
+		protected HashSet<Coord> safeMoves(Coord unitCoord, HashSet<Coord> dangerZone) {
 			Unit unit = coordToUnit(unitCoord);
 			if (unit != null) {
-				List<Coord> moves = unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
-				return exceptCoords(moves, dangerZone);
+				HashSet<Coord> moves = new HashSet<Coord>(unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+				moves.ExceptWith(dangerZone);
+				return moves;
 			}
-			return new List<Coord>();
+			return new HashSet<Coord>();
+		}
+
+		protected Coord nearestCoord(Coord myCoord, List<Coord> coords) {
+			int minDist = Int32.MaxValue;
+			Coord bestCoord = null;
+			foreach(Coord coord in coords) {
+				int dist = manhattanDistance(myCoord, coord);
+				if (dist < minDist) {
+					minDist = dist;
+					bestCoord = coord;
+				}
+			}
+			return bestCoord;
+		}
+
+		protected int sumDistances(Coord myCoord, List<Coord> coords) {
+			int dist = 0;
+			foreach(Coord coord in coords) {
+				dist += manhattanDistance(myCoord, coord);
+			}
+			return dist;
 		}
 
 		protected Move flee(Coord unitCoord, Unit unit, List<Coord> healers) {
