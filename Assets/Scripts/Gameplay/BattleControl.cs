@@ -533,14 +533,8 @@ namespace Gameplay {
 					new Character("The evil lord zxqv", false, new eliminationAgent())
 				};
 
-<<<<<<< HEAD
-				level = new Level("DemoMap2", "EasyVictory", characters, new Cutscene[] { });
-
-				Persistence.campaign = new Campaign("test", 0, new[] { level });
-=======
 				level = new Level("DemoMap2", "AITest", characters, new Cutscene[] { });
-				Persistance.campaign = new Campaign("test", 0, new[] { level });
->>>>>>> pr/11
+				Persistence.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutsceneCanvas.hideVisualElements();
 			}
