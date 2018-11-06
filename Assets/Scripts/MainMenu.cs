@@ -5,12 +5,10 @@ using Cutscenes.Stages;
 using Gameplay;
 using UnityEngine;
 using UnityEngine.Audio;
-//using UnityEngine.SceneManagement;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour {
-
-	public TransitionFade fade;
 
 	[SerializeField]
 	private Canvas optionsCanvas;
@@ -51,12 +49,12 @@ public class MainMenu : MonoBehaviour {
 
 	public void playGame() {
 		Persistance.saveProgress();
-		fade.fadeToScene("DemoBattle");
-		//SceneManager.LoadScene("DemoBattle");
+		SceneManager.LoadScene("DemoBattle");
 	}
 
 	public void resumeGame() {
-		playGame();
+		Persistance.loadProgress();
+		SceneManager.LoadScene("DemoBattle");
 	}
 
 	public void showOptions() {
@@ -131,6 +129,4 @@ public class MainMenu : MonoBehaviour {
 
 
 	}
-
-	
 }
