@@ -17,6 +17,8 @@ public class MainMenu : MonoBehaviour {
 	[SerializeField]
 	private AudioMixer masterMixer;
 
+	public FadeOutTransition transition;
+
 	// Use this for initialization
 	void Start() {
 		optionsCanvas.enabled = false;
@@ -49,12 +51,12 @@ public class MainMenu : MonoBehaviour {
 
 	public void playGame() {
 		Persistance.saveProgress();
-		SceneManager.LoadScene("DemoBattle");
+		//SceneManager.LoadScene("DemoBattle");
+		transition.fadeToScene("DemoBattle");
 	}
 
 	public void resumeGame() {
-		Persistance.loadProgress();
-		SceneManager.LoadScene("DemoBattle");
+		playGame();
 	}
 
 	public void showOptions() {
