@@ -41,7 +41,6 @@ namespace AI {
 
 			//Decide action based on type
 			if (curUnit is HealerUnit) {
-				Debug.Log("Healer");
 				Coord bestTarget = null;
 				float bestScore = 0;
 				if (curUnit.hasMovedThisTurn) {
@@ -140,7 +139,6 @@ namespace AI {
 					
 				}
 			} else if (curUnit is MeleeUnit) {
-				Debug.Log("Melee");
 				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee
