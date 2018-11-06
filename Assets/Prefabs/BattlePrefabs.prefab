@@ -1197,7 +1197,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 243016797410847528, guid: 426083f2385b33e498ab40fc9b641178,
     type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 49da35e683ea5b246aa6246ab52ec6ce, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -2864,7 +2864,9 @@ MonoBehaviour:
   turnChangeBackground: {fileID: 114073804194313002}
   victoryImage: {fileID: 114664594610877960}
   defeatImage: {fileID: 114942931124994122}
-  cutscene: {fileID: 114396652447904612}
+  cutsceneCanvas: {fileID: 114396652447904612}
+  vipCrownPrefab: {fileID: 1901324456013322, guid: 950f723dbdb18b74585d4f6d7fff74e0,
+    type: 2}
 --- !u!114 &114884110430295150
 MonoBehaviour:
   m_ObjectHideFlags: 1

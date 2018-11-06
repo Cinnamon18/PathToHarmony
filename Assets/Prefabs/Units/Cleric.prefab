@@ -77,7 +77,7 @@ GameObject:
   - component: {fileID: 65106087909209176}
   m_Layer: 0
   m_Name: Cleric
-  m_TagString: Untagged
+  m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -125,7 +125,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 5, y: 1, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114064902006437736
 MonoBehaviour:
@@ -146,6 +146,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
   buffUIManager: {fileID: 114823220750792148}
   healthUIManager: {fileID: 114498037091705390}
+  attackSoundEffect: ClericAttack
 --- !u!114 &114082730755437250
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -222,7 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114738306655082024}
-  unitModelPrefab: {fileID: 1758190060128154, guid: 84ac064d145b78c478eb72ab0e4c029c,
+  unitModelPrefab: {fileID: 1418090738876766, guid: 266183e989a5bd04cab8704bd3a50a2c,
     type: 2}
   unit: {fileID: 114064902006437736}
 --- !u!114 &114596612612201020

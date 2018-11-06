@@ -125,7 +125,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 5, y: 1, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114082730755437250
 MonoBehaviour:
@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114738306655082024}
-  unitModelPrefab: {fileID: 1566593838531798, guid: 391a380d9619c4449b78b47941c9d741,
+  unitModelPrefab: {fileID: 1682296314895496, guid: e361c2cbe4340514bab3ba053bef87fa,
     type: 2}
   unit: {fileID: 114560664085255754}
 --- !u!114 &114560664085255754
@@ -236,6 +236,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
   buffUIManager: {fileID: 114823220750792148}
   healthUIManager: {fileID: 114498037091705390}
+  attackSoundEffect: LightHorseAttack
 --- !u!114 &114609432408875802
 MonoBehaviour:
   m_ObjectHideFlags: 1

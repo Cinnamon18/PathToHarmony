@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 65733106137444954}
   m_Layer: 0
   m_Name: Archer
-  m_TagString: Untagged
+  m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -125,7 +125,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 5, y: 1, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114082031825110908
 MonoBehaviour:
@@ -173,6 +173,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
   buffUIManager: {fileID: 114704354078440548}
   healthUIManager: {fileID: 114678508051923064}
+  attackSoundEffect: ArcherAttack
 --- !u!114 &114346198101721564
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -276,7 +277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114493410190774770}
-  unitModelPrefab: {fileID: 1880733604190606, guid: 45e9b6e85e4925a46b2f8726b12f5736,
+  unitModelPrefab: {fileID: 1127233281369998, guid: 2bd54d8679e2ee849907bfab199ef5c2,
     type: 2}
   unit: {fileID: 114119226248979004}
 --- !u!114 &114704354078440548

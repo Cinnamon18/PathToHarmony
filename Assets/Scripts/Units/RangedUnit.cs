@@ -8,6 +8,7 @@ using AI;
 using System.Linq;
 using UnityEngine.UI;
 using Buffs;
+using System.Threading.Tasks;
 
 namespace Units {
 	public class RangedUnit : Unit {
@@ -47,12 +48,12 @@ namespace Units {
 			return (int)(Mathf.Ceil(damage));
 		}
 
-		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
-			//TODO: create specific implementation for ranged units
-			int damage = this.battleDamage(enemy, enemyTile);
+		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
+			await playAttackAnimation();
 
+			int damage = this.battleDamage(enemy, enemyTile);
 			//Damage rounds up
-			enemy.setHealth(enemy.getHealth() - damage);
+			await enemy.changeHealth(-damage, true);
 
 			if (enemy.getHealth() <= 0) {
 				enemy.defeated(battlefield);

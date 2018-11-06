@@ -11,11 +11,20 @@ public class Audio : MonoBehaviour {
 	public AudioSource initialSfx;
 	public AudioSource initialMusic;
 
+	public static string[] battleBgm = new string[] {"BattleTheme1"};
+
 	// Use this for initialization
 	void Start() {
 		if (tracks == null) {
 			tracks = new Dictionary<string, AudioClip>();
-			tracks.Add("DemoClip", Resources.Load<AudioClip>("Audio/DemoSoundEffect"));
+			tracks.Add("ArcherAttack", Resources.Load<AudioClip>("Audio/ArcherAttack"));
+			tracks.Add("ClericAttack", Resources.Load<AudioClip>("Audio/ClericAttack"));
+			tracks.Add("KnightAttack", Resources.Load<AudioClip>("Audio/KnightAttack"));
+			tracks.Add("LightHorseAttack", Resources.Load<AudioClip>("Audio/LightHorseAttack"));
+			tracks.Add("MageAttack", Resources.Load<AudioClip>("Audio/MageAttack"));
+			tracks.Add("RogueAttack", Resources.Load<AudioClip>("Audio/RogueAttack"));
+			tracks.Add("BattleTheme1", Resources.Load<AudioClip>("Audio/BattleTheme1"));
+
 		}
 
 		sfxSource = initialSfx;

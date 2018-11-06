@@ -125,7 +125,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 2, z: 1}
+  m_Size: {x: 5, y: 1, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114012713760685412
 MonoBehaviour:
@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114279958490815484}
-  unitModelPrefab: {fileID: 1008346146587774, guid: 89f0011a906a37349af127f3f427d8d9,
+  unitModelPrefab: {fileID: 1462340461748830, guid: 79656a54a8033e044a1d90e5f22fcfd9,
     type: 2}
   unit: {fileID: 114873663971810214}
 --- !u!114 &114603807495047558
@@ -298,6 +298,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
   buffUIManager: {fileID: 114763325435846562}
   healthUIManager: {fileID: 114377653859387102}
+  attackSoundEffect: MageAttack
 --- !u!114 &114876878777951434
 MonoBehaviour:
   m_ObjectHideFlags: 1

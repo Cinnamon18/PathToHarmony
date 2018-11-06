@@ -8,6 +8,7 @@ using AI;
 using System.Linq;
 using UnityEngine.UI;
 using Buffs;
+using System.Threading.Tasks;
 
 namespace Units {
 	public class HealerUnit : Unit {
@@ -31,33 +32,26 @@ namespace Units {
 		}
 
 		public override int battleDamage(Unit enemy, Tile enemyTile) {
-			float damage = this.meleeAttackStrength * (1f * (this as Unit).getHealth() / this.maxHealth);
-			damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
-			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
+			float healing = -1 * this.meleeAttackStrength * (1f * (this as Unit).getHealth() / this.maxHealth);
+			// damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
+			// damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
-			List<Buff> damageBuffs = getBuffsOfType(BuffType.Damage);
-			foreach (Buff buff in damageBuffs) {
-				damage *= (buff as DamageBuff).getDamageBonus();
-			}
+			// List<Buff> damageBuffs = getBuffsOfType(BuffType.Damage);
+			// foreach (Buff buff in damageBuffs) {
+			// damage *= (buff as DamageBuff).getDamageBonus();
+			// }
 
-			return (int)(Mathf.Ceil(damage));
+			return (int)(Mathf.Floor(healing));
 		}
 
-		public override bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
+		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
+			await playAttackAnimation();
+
 			int damage = this.battleDamage(enemy, enemyTile);
 			//Damage rounds up
-			enemy.setHealth(enemy.getHealth() - damage);
-			if (enemy.getHasAttackedThisTurn() || enemy.hasMovedThisTurn) {
-				enemy.greyOut();
-			}
+			await enemy.changeHealth(-damage, true);
 
-			if (enemy.getHealth() >= enemy.maxHealth) {
-				enemy.setHealth(enemy.maxHealth);
-				return true;
-			} else {
-				return false;
-			}
-
+			return false;
 		}
 
 		//returns a list of targetable allies
@@ -72,7 +66,7 @@ namespace Units {
 					targetUnit != null &&
 					targetUnit.getCharacter(battlefield) == character &&
 					targetUnit.getHealth() != targetUnit.maxHealth) {
-						
+
 					targets.Add(tile);
 				}
 			}

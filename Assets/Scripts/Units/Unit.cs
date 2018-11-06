@@ -7,9 +7,15 @@ using AI;
 using System.Linq;
 using UnityEngine.UI;
 using Buffs;
+using System.Threading.Tasks;
+using Random = UnityEngine.Random;
 
 namespace Units {
 	public abstract class Unit : MonoBehaviour, IBattlefieldItem {
+
+		private const int minIdleTime = 15 * 1000;
+		private const int maxIdleTime = 60 * 1000;
+		private const int idleDelay = 100;
 
 		public readonly ArmorType armor;
 		private readonly MoveType moveType;
@@ -28,6 +34,7 @@ namespace Units {
 		public BuffUIManager buffUIManager;
 		[SerializeField]
 		public UnitHealthUIManager healthUIManager;
+		public string attackSoundEffect;
 
 		public Unit(ArmorType armorType, int maxHealth, MoveType moveType, int moveDistance, Faction faction) {
 			armor = armorType;
@@ -40,6 +47,10 @@ namespace Units {
 			hasMovedThisTurn = false;
 			hasAttackedThisTurn = false;
 			this.numMoveTiles = moveDistance;
+		}
+
+		void Start() {
+			// startIdleAnimation();
 		}
 
 		public Character getCharacter(Battlefield battlefield) {
@@ -56,7 +67,7 @@ namespace Units {
 		public abstract int battleDamage(Unit enemy, Tile enemyTile);
 
 		//returns true if the enemy was destroyed by battle
-		public abstract bool doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
+		public abstract Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield);
 
 		//Added for use by AI
 		public abstract List<Coord> getAttackZone(int myX, int myY, Battlefield battlefield, Character character);
@@ -153,9 +164,16 @@ namespace Units {
 			this.healthUIManager.setMaterial(factionMaterials[(int)(this.faction)], health);
 		}
 
-		public void setHealth(int health) {
-			this.health = health;
-			healthUIManager.setHealth(health);
+		public async Task setHealth(int newHealth, bool playAnimation = false) {
+			int oldHealth = this.health;
+			this.health = Mathf.Clamp(newHealth, 0, maxHealth);
+			await healthUIManager.setHealth(newHealth, oldHealth, playAnimation);
+		}
+
+		public async Task changeHealth(int change, bool playAnimation = false) {
+			this.health += change;
+			this.health = Mathf.Clamp(health, 0, maxHealth);
+			await healthUIManager.setHealth(health, health - change, playAnimation);
 		}
 
 		public int getHealth() {
@@ -177,6 +195,10 @@ namespace Units {
 
 		public List<GameObject> getModels() {
 			return this.healthUIManager.getModels();
+		}
+
+		public List<Animator> getAnimators() {
+			return this.healthUIManager.getAnimators();
 		}
 
 		public void addBuff(Buff buff) {
@@ -210,12 +232,36 @@ namespace Units {
 			return buffs.FindAll(predicate);
 		}
 
-		public void playAttackAnimation() {
+		public async Task playAttackAnimation() {
+			List<Animator> animators = healthUIManager.getAnimators();
 
+			foreach (Animator animator in animators) {
+				animator.SetTrigger("Attack");
+			}
+
+			float animLenght = animators[0].GetCurrentAnimatorStateInfo(0).length;
+			//Play the sound effect halfway through. this is closer to the "hit" portion of the animation.
+			await Task.Delay((int)(animLenght * 500));
+			Audio.playSfx(attackSoundEffect);
+			await Task.Delay((int)(animLenght * 500));
 		}
 
-		public void playIdleAnimation() {
+		public async void startIdleAnimation() {
+			while (true) {
+				await Task.Delay(Random.Range(minIdleTime, maxIdleTime));
 
+				//Re get these every time b/c they might be destroyed
+				try {
+					List<Animator> animators = healthUIManager.getAnimators();
+					foreach (Animator animator in animators) {
+						animator.SetTrigger("StartIdle");
+						await Task.Delay(idleDelay);
+					}
+				} catch (MissingReferenceException e) {
+					//This prevents annoying errors when run from the editor.
+					Debug.LogWarning("Editor quit with idle animation thread still running");
+				}
+			}
 		}
 	}
 }

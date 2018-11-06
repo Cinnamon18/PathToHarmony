@@ -65,7 +65,7 @@ namespace Cutscenes.Stages {
 		/// </summary>
 		public void Start() {
 			if (SceneManager.GetActiveScene().name == "Story Test") {
-				startCutscene("andysDemo");
+				startCutscene(new AndysDemo());
 			}
 		}
 
@@ -75,9 +75,9 @@ namespace Cutscenes.Stages {
 			}
 		}
 
-		public void startCutscene(string cutsceneID) {
+		public void startCutscene(Cutscene cutscene) {
 			showVisualElements();
-			StartCoroutine(Invoke(Stages.getStage(cutsceneID)));
+			StartCoroutine(Invoke(cutscene.getStage()));
 		}
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
@@ -165,7 +165,7 @@ namespace Cutscenes.Stages {
 				textbox.AddText(side, stageBuilder.speaker, stageBuilder.message);
 
 				//I approximate it to take ~0.03 seconds per letter, but we do more so players can actually read
-				float playTimeGuess = (float)(stageBuilder.message.Length * 0.08 + 0.5);
+				float playTimeGuess = (float)(stageBuilder.message.Length * 0.06 + 1.5);
 				currentDialogLine = this.StartStoppableCoroutine(waitForSeconds(playTimeGuess));
 				yield return currentDialogLine.WaitFor();
 
