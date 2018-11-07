@@ -14,6 +14,7 @@ using Editors;
 using System.IO;
 using Cutscenes.Stages;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace Gameplay {
 	public class BattleControl : MonoBehaviour {
@@ -57,7 +58,9 @@ namespace Gameplay {
 		[SerializeField]
 		private Image defeatImage;
 		[SerializeField]
-		private Stage cutsceneCanvas;
+		private GameObject cutsceneCanvasPrefab;
+		[SerializeField]
+		private Button skipButton;
 		[SerializeField]
 		private GameObject vipCrownPrefab;
 
@@ -72,7 +75,7 @@ namespace Gameplay {
 			turnChangeBackground.enabled = false;
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
-			cutsceneCanvas.hideVisualElements();
+
 			useNormalCamera();
 
 			getLevel();
@@ -91,6 +94,8 @@ namespace Gameplay {
 					}
 					battleStageChanged = false;
 
+					playBgm();
+
 					turnPlayerText.text =
 						"Battle objective:\n" +
 						objective.getName();
@@ -102,6 +107,9 @@ namespace Gameplay {
 					break;
 				case BattleLoopStage.Pick:
 					advanceBattleStage();
+					turnPlayerText.enabled = false;
+					turnChangeBackground.enabled = false;
+
 					break;
 				case BattleLoopStage.BattleLoopStart:
 					if (!battleStageChanged) {
@@ -201,8 +209,8 @@ namespace Gameplay {
 
 						//Re-grey model if needed... I'm regretting my desire to make the health ui manager stateless :p
 						if (ourUnit is HealerUnit) {
-							if (selectedUnit.hasMovedThisTurn || selectedUnit.getHasAttackedThisTurn()){
-							// selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+							if (selectedUnit.hasMovedThisTurn || selectedUnit.getHasAttackedThisTurn()) {
+								// selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
 								selectedUnit.greyOut();
 							}
 						}
@@ -356,6 +364,11 @@ namespace Gameplay {
 			}
 			//Just in case....
 			unit.gameObject.transform.position = endPos;
+
+			//Yes yes i know this is terrible.
+			if (unit is RangedUnit) {
+				unit.setHasAttackedThisTurn(true);
+			}
 		}
 
 		private async Task rotateUnit(Unit unit, Coord target) {
@@ -384,7 +397,7 @@ namespace Gameplay {
 
 		private async Task runAppropriateCutscenes() {
 			foreach (Cutscene cutscene in level.cutscenes) {
-				if (cutscene.executionCondition( new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage))) {
+				if (cutscene.executionCondition(new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage))) {
 					await runCutscene(cutscene);
 					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
 					break;
@@ -393,6 +406,16 @@ namespace Gameplay {
 		}
 
 		private async Task runCutscene(Cutscene cutscene) {
+
+			//Hacky solution to cutscene canvas not being designed for multiple different cutscenes being played.
+			Stage cutsceneCanvas = Instantiate(
+				cutsceneCanvasPrefab,
+				cutsceneCanvasPrefab.transform.position,
+				cutsceneCanvasPrefab.transform.rotation,
+				this.transform)
+				.GetComponent<Stage>();
+			skipButton.onClick.AddListener(() => cutsceneCanvas.skipCutscene());
+			cutsceneCanvas.skipButton = skipButton.gameObject;
 			cutsceneCanvas.startCutscene(cutscene);
 			useCutsceneCamera();
 
@@ -401,6 +424,10 @@ namespace Gameplay {
 				//Unity, forgive me for not using coroutines. I am repentant. I understand my crimes and will not recommimt.
 				await Task.Delay(100);
 			}
+
+			//Even though the cutscene can never be accessed again, this is a whole lot cleaner.
+			Destroy(cutsceneCanvas);
+			skipButton.onClick.RemoveAllListeners();
 
 			useNormalCamera();
 		}
@@ -417,6 +444,10 @@ namespace Gameplay {
 			mainCamera.enabled = true;
 		}
 
+		private void playBgm() {
+			string bgm = Audio.battleBgm[Random.Range(0, Audio.battleBgm.Length - 1)];
+			Audio.playSound(bgm, true, true);
+		}
 
 		private void advanceBattleStage() {
 			battleStage = battleStage.NextPhase();
@@ -518,14 +549,12 @@ namespace Gameplay {
 			if (Persistance.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
-					new Character("The evil lord zxqv", false, new SimpleAgent())
+					new Character("The evil lord zxqv", false, new eliminationAgent())
 				};
 
-				level = new Level("DemoMap2", "EasyVictory", characters, new Cutscene[] { });
-
+				level = new Level("DemoMap2", "AITest", characters, new Cutscene[] { });
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
-				cutsceneCanvas.hideVisualElements();
 			}
 			//  else {
 			// 	Persistance.loadProgress();

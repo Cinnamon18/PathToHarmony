@@ -72,9 +72,9 @@ namespace Units {
 			return targets;
 		}
 
-
 		public override HashSet<Coord> getTotalAttackZone(int myX, int myY, Battlefield battlefield, Character character) {
 			HashSet<Coord> attackZone = new HashSet<Coord>();
+			attackZone.UnionWith(getAttackZone(myX, myY, battlefield, character));
 			foreach (Coord coord in getValidMoves(myX, myY, battlefield)) {
 				attackZone.UnionWith(getAttackZone(coord.x, coord.y, battlefield, character));
 			}

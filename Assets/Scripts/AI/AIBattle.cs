@@ -11,10 +11,14 @@ namespace AI {
 		public Coord coord;
 
 		public AIBattle(Unit unit, Unit enemy, Tile enemyTile, Coord enemyCoord) {
-			int damage = unit.battleDamage(enemy, enemyTile);
-			this.score = damage / (float) enemy.getHealth();
-			if (this.score > 1) {
-				this.score = 1;
+			if (unit is StatusUnit) {
+				this.score = 1.0f;
+			} else {
+				int damage = unit.battleDamage(enemy, enemyTile);
+				this.score = damage / (float) enemy.getHealth();
+				if (this.score > 1) {
+					this.score = 1;
+				}
 			}
 			this.coord = enemyCoord;
 		}
