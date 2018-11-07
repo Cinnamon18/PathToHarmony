@@ -84,7 +84,7 @@ public class MainMenu : MonoBehaviour {
 				new Character("Alice", true, new PlayerAgent()),
 				new Character("The evil lord zxqv", false, new eliminationAgent())
 				};
-		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new Cutscene[] { new ExpressionShowOff(), new GenericDefeat() });
+		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new Cutscene[] { new AndysDemo(), new ExpressionShowOff(), new GenericDefeat() });
 
 		//LEVEL 2
 		Character[] characters2 = new[] {
@@ -116,7 +116,7 @@ public class MainMenu : MonoBehaviour {
 
 
 
-		Level capture = new Level("DemoMap", "CaptureTest", characters3, new Cutscene[] { new ExpressionShowOff() });
+		Level capture = new Level("DemoMap", "CaptureTest", characters3, new Cutscene[] { new TutorialEnd(), new GenericDefeat(), new ExpressionShowOff() });
 		Level defend = new Level("DemoMap", "DefendTest", characters3, new Cutscene[] { new GenericDefeat() });
 		Level escort = new Level("DemoMap", "EscortTest", characters3, new Cutscene[] { new GenericDefeat() });
 		Level intercept = new Level("DemoMap", "InterceptTest", characters3, new Cutscene[] { new GenericDefeat() });
