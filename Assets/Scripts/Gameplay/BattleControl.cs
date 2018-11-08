@@ -13,6 +13,7 @@ using Buffs;
 using Editors;
 using System.IO;
 using Cutscenes.Stages;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace Gameplay {
@@ -37,7 +38,6 @@ namespace Gameplay {
 
 		public Camera mainCamera;
 		public Camera cutsceneCamera;
-		public FadeOutTransition fadeOut;
 
 		private const float turnDelayMs = 150.0f;
 		private BattleLoopStage battleStage;
@@ -93,8 +93,6 @@ namespace Gameplay {
 					battleStageChanged = false;
 
 					playBgm();
-
-					await Task.Delay(1700); //wait for fade-in
 
 					turnPlayerText.text =
 						"Battle objective:\n" +
@@ -305,11 +303,11 @@ namespace Gameplay {
 
 			//check for end of campaign
 			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Count()) {
-				fadeOut.fadeToScene("VictoryScene");
+				SceneManager.LoadScene("VictoryScene");
 			} else {
 				Persistance.saveProgress();
 				//Oh Boy im glad this works.
-				fadeOut.fadeToScene("DemoBattle");
+				SceneManager.LoadScene("DemoBattle");
 			}
 		}
 
@@ -320,7 +318,7 @@ namespace Gameplay {
 			//TODO show ui to quit or retry
 
 			//Restart the level, don't increment
-			fadeOut.fadeToScene("DemoBattle");
+			SceneManager.LoadScene("DemoBattle");
 		}
 
 		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
@@ -530,16 +528,12 @@ namespace Gameplay {
 		private void getLevel() {
 			//This indicates the scene has been played from the editor, without first running MainMenu. This is a debug mode.
 			if (Persistance.campaign == null && Application.isEditor) {
-				Util.Log("Debug mode");
-
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new eliminationAgent())
 				};
 
 				level = new Level("DemoMap2", "AITest", characters, new Cutscene[] { });
-				
-
 				Persistance.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 				cutsceneCanvas.hideVisualElements();
