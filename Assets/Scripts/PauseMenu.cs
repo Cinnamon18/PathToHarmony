@@ -22,12 +22,12 @@ public class PauseMenu : MonoBehaviour {
 	}
 
 	public void mainMenu() {
-		Persistance.saveProgress();
+		Persistence.saveProgress();
 		SceneManager.LoadScene("Title");
 	}
 
 	public void quitGame() {
-		Persistance.saveProgress();
+		Persistence.saveProgress();
 		Application.Quit();
 	}
 }

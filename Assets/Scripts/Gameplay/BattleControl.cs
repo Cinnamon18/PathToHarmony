@@ -304,13 +304,13 @@ namespace Gameplay {
 			await Task.Delay(TimeSpan.FromMilliseconds(6000));
 			victoryImage.enabled = false;
 
-			Persistance.campaign.levelIndex++;
+			Persistence.campaign.levelIndex++;
 
 			//check for end of campaign
-			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Count()) {
+			if (Persistence.campaign.levelIndex >= Persistence.campaign.levels.Count()) {
 				SceneManager.LoadScene("VictoryScene");
 			} else {
-				Persistance.saveProgress();
+				Persistence.saveProgress();
 				//Oh Boy im glad this works.
 				SceneManager.LoadScene("DemoBattle");
 			}
@@ -546,21 +546,21 @@ namespace Gameplay {
 
 		private void getLevel() {
 			//This indicates the scene has been played from the editor, without first running MainMenu. This is a debug mode.
-			if (Persistance.campaign == null && Application.isEditor) {
+			if (Persistence.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new eliminationAgent())
 				};
 
 				level = new Level("DemoMap2", "AITest", characters, new Cutscene[] { });
-				Persistance.campaign = new Campaign("test", 0, new[] { level });
+				Persistence.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 			}
 			//  else {
 			// 	Persistance.loadProgress();
 			// }
 
-			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
+			level = Persistence.campaign.levels[Persistence.campaign.levelIndex];
 			foreach (Character character in level.characters) {
 				character.agent.battlefield = this.battlefield;
 			}
