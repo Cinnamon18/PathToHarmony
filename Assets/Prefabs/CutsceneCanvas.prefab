@@ -633,9 +633,9 @@ MonoBehaviour:
   farLeft: {fileID: 224931783328236460}
   right: {fileID: 224265750093784120}
   farRight: {fileID: 224249979964314968}
-  actorPrefab: {fileID: 114973715971095220, guid: b4441dc0998b6764790ac6e974dacda3,
-    type: 2}
   textboxBackground: {fileID: 224360085791810208}
+  skipButton: {fileID: 0}
+  isRunning: 0
 --- !u!114 &114467437916035804
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -934,7 +934,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!224 &224003301075134544
 RectTransform:
@@ -1015,7 +1015,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1675688850720424}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224003301075134544}

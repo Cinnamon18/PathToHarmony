@@ -48,7 +48,7 @@ namespace Cutscenes.Stages {
 		private Transform textboxBackground;
 
 		[SerializeField]
-		private GameObject skipButton;
+		public GameObject skipButton;
 
 		private List<Actor> actors = new List<Actor>();
 
@@ -277,7 +277,14 @@ namespace Cutscenes.Stages {
 			skipButton.SetActive(true);
 		}
 
+
 		public void skipCutscene() {
+			// foreach (Actor actor in actors) {
+			// 	Destroy(actor.gameObject);
+			// }
+			// actors.Clear();
+			// textbox.AddText(Cut, stageBuilder.speaker, stageBuilder.message);
+
 			stopCurrentCutsceneLine();
 			skipCutFlag = true;
 		}
