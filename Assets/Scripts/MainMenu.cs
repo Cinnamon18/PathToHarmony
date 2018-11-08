@@ -88,54 +88,76 @@ public class MainMenu : MonoBehaviour {
 
 	private void setupDefaultCampaign() {
 
-		//LEVEL 1
-		Character[] characters1 = new[] {
-				new Character("Alice", true, new PlayerAgent()),
-				new Character("The evil lord zxqv", false, new eliminationAgent())
+		// //LEVEL 1
+		// Character[] characters1 = new[] {
+		// 		new Character("Alice", true, new PlayerAgent()),
+		// 		new Character("The evil lord zxqv", false, new eliminationAgent())
+		// 		};
+		// Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new Cutscene[] { new AndysDemo(), new ExpressionShowOff(), new GenericDefeat() });
+
+		// //LEVEL 2
+		// Character[] characters2 = new[] {
+		// 		new Character("Blair", true, new PlayerAgent()),
+		// 		new Character("King Xingata", false, new SimpleAgent())
+		// 		};
+		// Level level2 = new Level("DemoMap", "test", characters2, new Cutscene[] { new AndysDemo(), new GenericDefeat() });
+
+		// //LEVEL 3
+		// Character[] characters3 = new[] {
+		// 		new Character("Blair", true, new PlayerAgent()),
+		// 		new Character("evil!Juniper", false, new SimpleAgent())
+		// 		};
+		// Level level3 = new Level("DemoMap", "DemoLevel", characters3, new Cutscene[] { new AndysDemo(), new GenericDefeat() });
+
+
+		// //Just to show off my vision of campaign branching. which now looks like it's not gonna happen, but oh well :p
+		// Campaign testCampaign1 = new Campaign("test1", 0, new[] {
+		// 	level1,
+		// 	level2
+		// });
+
+		// Campaign testCampaign2 = new Campaign("test2", 0, new[] {
+		// 	level1,
+		// 	level3
+		// });
+
+		// // Persistance.campaign = testCampaign1;
+
+
+
+		// Level capture = new Level("DemoMap", "CaptureTest", characters3, new Cutscene[] { new TutorialEnd(), new GenericDefeat(), new ExpressionShowOff() });
+		// Level defend = new Level("DemoMap", "DefendTest", characters3, new Cutscene[] { new GenericDefeat() });
+		// Level escort = new Level("DemoMap", "EscortTest", characters3, new Cutscene[] { new GenericDefeat() });
+		// Level intercept = new Level("DemoMap", "InterceptTest", characters3, new Cutscene[] { new GenericDefeat() });
+
+		// Campaign gameModeShowOff = new Campaign("gamemode show off", 0, new[] {
+		// 	capture, defend, escort, intercept
+		// });
+
+		// // Persistence.campaign = gameModeShowOff;
+
+
+
+		
+
+		//Actual final in game campaign
+
+		//Level 0: Tutorial
+		Character[] TutorialCharacters = new[] {
+				new Character("Blair", true, new BlairTutorialAgent()),
+				new Character("Juniper", false, new JuniperTutorialAgent())
 				};
-		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new Cutscene[] { new AndysDemo(), new ExpressionShowOff(), new GenericDefeat() });
-
-		//LEVEL 2
-		Character[] characters2 = new[] {
-				new Character("Blair", true, new PlayerAgent()),
-				new Character("King Xingata", false, new SimpleAgent())
-				};
-		Level level2 = new Level("DemoMap", "test", characters2, new Cutscene[] { new AndysDemo(), new GenericDefeat() });
-
-		//LEVEL 3
-		Character[] characters3 = new[] {
-				new Character("Blair", true, new PlayerAgent()),
-				new Character("evil!Juniper", false, new SimpleAgent())
-				};
-		Level level3 = new Level("DemoMap", "DemoLevel", characters3, new Cutscene[] { new AndysDemo(), new GenericDefeat() });
+		Level level0 = new Level("TutorialMap", "TutorialLevel", TutorialCharacters, new Cutscene[] {  });
 
 
-		//Just to show off my vision of campaign branching. which now looks like it's not gonna happen, but oh well :p
-		Campaign testCampaign1 = new Campaign("test1", 0, new[] {
-			level1,
-			level2
+
+
+
+
+		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 0, new[] {
+			level0,
 		});
 
-		Campaign testCampaign2 = new Campaign("test2", 0, new[] {
-			level1,
-			level3
-		});
-
-		// Persistance.campaign = testCampaign1;
-
-
-
-		Level capture = new Level("DemoMap", "CaptureTest", characters3, new Cutscene[] { new TutorialEnd(), new GenericDefeat(), new ExpressionShowOff() });
-		Level defend = new Level("DemoMap", "DefendTest", characters3, new Cutscene[] { new GenericDefeat() });
-		Level escort = new Level("DemoMap", "EscortTest", characters3, new Cutscene[] { new GenericDefeat() });
-		Level intercept = new Level("DemoMap", "InterceptTest", characters3, new Cutscene[] { new GenericDefeat() });
-
-		Campaign gameModeShowOff = new Campaign("gamemode show off", 0, new[] {
-			capture, defend, escort, intercept
-		});
-
-		Persistence.campaign = gameModeShowOff;
-
-
+		Persistence.campaign = RealActualFinCampaign;
 	}
 }

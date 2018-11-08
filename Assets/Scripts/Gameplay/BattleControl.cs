@@ -82,7 +82,6 @@ namespace Gameplay {
 			deserializeMap();
 			deserializeLevel();
 
-
 		}
 
 		// Poor man's state machine. in retrospect i have no idea why i didn't use a proper one. oh well, next game.
@@ -549,7 +548,7 @@ namespace Gameplay {
 			if (Persistence.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
-					new Character("The evil lord zxqv", false, new eliminationAgent())
+					new Character("The evil lord zxqv", false, new EliminationAgent())
 				};
 
 				level = new Level("DemoMap2", "AITest", characters, new Cutscene[] { });
