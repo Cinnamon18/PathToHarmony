@@ -5,7 +5,6 @@ using Cutscenes.Stages;
 using Gameplay;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour {
@@ -18,6 +17,9 @@ public class MainMenu : MonoBehaviour {
 	private AudioMixer masterMixer;
 	[SerializeField]
 	private Button muteButton;
+	[SerializeField]
+	private FadeOutTransition fade;
+
 
 	// Use this for initialization
 	void Start() {
@@ -58,12 +60,11 @@ public class MainMenu : MonoBehaviour {
 
 	public void playGame() {
 		Persistence.saveProgress();
-		SceneManager.LoadScene("DemoBattle");
+		fade.fadeToScene("DemoBattle");
 	}
 
 	public void resumeGame() {
-		Persistence.loadProgress();
-		SceneManager.LoadScene("DemoBattle");
+		playGame();
 	}
 
 	public void showOptions() {

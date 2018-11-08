@@ -13,7 +13,6 @@ using Buffs;
 using Editors;
 using System.IO;
 using Cutscenes.Stages;
-using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace Gameplay {
@@ -32,6 +31,8 @@ namespace Gameplay {
 		private Transform tilesHolder;
 		[SerializeField]
 		private TileGenerator generator;
+		[SerializeField]
+		private FadeOutTransition fade;
 
 
 		private LevelInfo levelInfo;
@@ -307,11 +308,11 @@ namespace Gameplay {
 
 			//check for end of campaign
 			if (Persistence.campaign.levelIndex >= Persistence.campaign.levels.Count()) {
-				SceneManager.LoadScene("VictoryScene");
+				fade.fadeToScene("VictoryScene");
 			} else {
 				Persistence.saveProgress();
 				//Oh Boy im glad this works.
-				SceneManager.LoadScene("DemoBattle");
+				fade.fadeToScene("DemoBattle");
 			}
 		}
 
@@ -322,7 +323,7 @@ namespace Gameplay {
 			//TODO show ui to quit or retry
 
 			//Restart the level, don't increment
-			SceneManager.LoadScene("DemoBattle");
+			fade.fadeToScene("DemoBattle");
 		}
 
 		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
