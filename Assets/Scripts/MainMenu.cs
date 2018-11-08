@@ -16,6 +16,8 @@ public class MainMenu : MonoBehaviour {
 	private Canvas creditsCanvas;
 	[SerializeField]
 	private AudioMixer masterMixer;
+	[SerializeField]
+	private Button muteButton;
 
 	// Use this for initialization
 	void Start() {
@@ -23,37 +25,44 @@ public class MainMenu : MonoBehaviour {
 		creditsCanvas.enabled = false;
 
 		//setup audio sliders
-		Persistance.loadAudioSettings(masterMixer);
+		Persistence.loadAudioSettings(masterMixer);
 		Slider[] optionsSliders = optionsCanvas.GetComponentsInChildren<Slider>();
-		optionsSliders[0].value = PlayerPrefs.GetFloat(Persistance.MASTER_VOLUME);
-		optionsSliders[1].value = PlayerPrefs.GetFloat(Persistance.MUSIC_VOLUME);
-		optionsSliders[2].value = PlayerPrefs.GetFloat(Persistance.SFX_VOLUEME);
+		optionsSliders[0].value = Persistence.MasterVolume;//PlayerPrefs.GetFloat(Persistence.MASTER_VOLUME);
+		optionsSliders[1].value = Persistence.MusicVolume;//PlayerPrefs.GetFloat(Persistence.MUSIC_VOLUME);
+		optionsSliders[2].value = Persistence.SfxVolume;//PlayerPrefs.GetFloat(Persistence.SFX_VOLUME);
+		muteButton.GetComponentInChildren<Text>().text = "Mute Audio: " + (Persistence.IsMuted?"On":"Off");
 
 		setupDefaultCampaign();
 	}
 
 	public void setMasterVolume(float vol) {
-		masterMixer.SetFloat(Persistance.MASTER_VOLUME, vol);
-		Persistance.saveAudioSettings(masterMixer);
+		Persistence.MasterVolume = vol;
+		Persistence.saveAudioSettings(masterMixer);
 	}
 
 	public void setMusicVolume(float vol) {
-		masterMixer.SetFloat(Persistance.MUSIC_VOLUME, vol);
-		Persistance.saveAudioSettings(masterMixer);
+		Persistence.MusicVolume = vol;
+		Persistence.saveAudioSettings(masterMixer);
 	}
 
 	public void setSfxVolume(float vol) {
-		masterMixer.SetFloat(Persistance.SFX_VOLUEME, vol);
-		Persistance.saveAudioSettings(masterMixer);
+		Persistence.SfxVolume = vol;
+		Persistence.saveAudioSettings(masterMixer);
+	}
+
+	public void toggleMuteAudio() {
+		Persistence.IsMuted = !Persistence.IsMuted;
+		muteButton.GetComponentInChildren<Text>().text = "Mute Audio: " + (Persistence.IsMuted?"On":"Off");
+		Persistence.saveAudioSettings(masterMixer);
 	}
 
 	public void playGame() {
-		Persistance.saveProgress();
+		Persistence.saveProgress();
 		SceneManager.LoadScene("DemoBattle");
 	}
 
 	public void resumeGame() {
-		Persistance.loadProgress();
+		Persistence.loadProgress();
 		SceneManager.LoadScene("DemoBattle");
 	}
 
@@ -84,7 +93,7 @@ public class MainMenu : MonoBehaviour {
 				new Character("Alice", true, new PlayerAgent()),
 				new Character("The evil lord zxqv", false, new eliminationAgent())
 				};
-		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new Cutscene[] { new ExpressionShowOff(), new GenericDefeat() });
+		Level level1 = new Level("DemoMap2", "EasyVictory", characters1, new Cutscene[] { new AndysDemo(), new ExpressionShowOff(), new GenericDefeat() });
 
 		//LEVEL 2
 		Character[] characters2 = new[] {
@@ -116,7 +125,7 @@ public class MainMenu : MonoBehaviour {
 
 
 
-		Level capture = new Level("DemoMap", "CaptureTest", characters3, new Cutscene[] { new ExpressionShowOff() });
+		Level capture = new Level("DemoMap", "CaptureTest", characters3, new Cutscene[] { new TutorialEnd(), new GenericDefeat(), new ExpressionShowOff() });
 		Level defend = new Level("DemoMap", "DefendTest", characters3, new Cutscene[] { new GenericDefeat() });
 		Level escort = new Level("DemoMap", "EscortTest", characters3, new Cutscene[] { new GenericDefeat() });
 		Level intercept = new Level("DemoMap", "InterceptTest", characters3, new Cutscene[] { new GenericDefeat() });
@@ -125,7 +134,7 @@ public class MainMenu : MonoBehaviour {
 			capture, defend, escort, intercept
 		});
 
-		Persistance.campaign = gameModeShowOff;
+		Persistence.campaign = gameModeShowOff;
 
 
 	}

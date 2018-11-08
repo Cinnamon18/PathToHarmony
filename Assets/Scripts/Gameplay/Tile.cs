@@ -24,6 +24,8 @@ namespace Gameplay {
 			GameObject smallRock = Resources.Load<GameObject>("TileFlavor/" + "SmallRock");
 			GameObject smallTree = Resources.Load<GameObject>("TileFlavor/" + "SmallTree");
 			GameObject bush = Resources.Load<GameObject>("TileFlavor/" + "Bush");
+			GameObject pieceOfHeaven = Resources.Load<GameObject>("TileFlavor/" + "PieceOfHeaven");
+
 
 			if (Tile.tileFlavor == null) {
 				GameObject[][] _tileFlavor = new GameObject[][] {
@@ -47,7 +49,7 @@ namespace Gameplay {
 					new GameObject[] {},
 					new GameObject[] {},
 					new GameObject[] {},
-					new GameObject[] {smallRock}
+					new GameObject[] {smallRock, pieceOfHeaven}
 				};
 
 				Tile.tileFlavor = _tileFlavor;

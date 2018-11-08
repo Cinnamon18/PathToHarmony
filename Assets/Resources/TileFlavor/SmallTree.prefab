@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4916137322432756}
   - component: {fileID: 33465119499615784}
   - component: {fileID: 23435809748828040}
-  - component: {fileID: 95523791033038634}
   m_Layer: 0
   m_Name: SmallTree
   m_TagString: Untagged
@@ -85,21 +84,3 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1525864765863334}
   m_Mesh: {fileID: 4300000, guid: df04645f227d08047a8d9045dfc3eb07, type: 3}
---- !u!95 &95523791033038634
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1525864765863334}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: df04645f227d08047a8d9045dfc3eb07, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0

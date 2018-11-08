@@ -58,7 +58,9 @@ namespace Gameplay {
 		[SerializeField]
 		private Image defeatImage;
 		[SerializeField]
-		private Stage cutsceneCanvas;
+		private GameObject cutsceneCanvasPrefab;
+		[SerializeField]
+		private Button skipButton;
 		[SerializeField]
 		private GameObject vipCrownPrefab;
 
@@ -73,7 +75,7 @@ namespace Gameplay {
 			turnChangeBackground.enabled = false;
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
-			cutsceneCanvas.hideVisualElements();
+
 			useNormalCamera();
 
 			getLevel();
@@ -105,6 +107,9 @@ namespace Gameplay {
 					break;
 				case BattleLoopStage.Pick:
 					advanceBattleStage();
+					turnPlayerText.enabled = false;
+					turnChangeBackground.enabled = false;
+
 					break;
 				case BattleLoopStage.BattleLoopStart:
 					if (!battleStageChanged) {
@@ -299,13 +304,13 @@ namespace Gameplay {
 			await Task.Delay(TimeSpan.FromMilliseconds(6000));
 			victoryImage.enabled = false;
 
-			Persistance.campaign.levelIndex++;
+			Persistence.campaign.levelIndex++;
 
 			//check for end of campaign
-			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Count()) {
+			if (Persistence.campaign.levelIndex >= Persistence.campaign.levels.Count()) {
 				SceneManager.LoadScene("VictoryScene");
 			} else {
-				Persistance.saveProgress();
+				Persistence.saveProgress();
 				//Oh Boy im glad this works.
 				SceneManager.LoadScene("DemoBattle");
 			}
@@ -361,7 +366,7 @@ namespace Gameplay {
 			unit.gameObject.transform.position = endPos;
 
 			//Yes yes i know this is terrible.
-			if(unit is RangedUnit) {
+			if (unit is RangedUnit) {
 				unit.setHasAttackedThisTurn(true);
 			}
 		}
@@ -401,6 +406,16 @@ namespace Gameplay {
 		}
 
 		private async Task runCutscene(Cutscene cutscene) {
+
+			//Hacky solution to cutscene canvas not being designed for multiple different cutscenes being played.
+			Stage cutsceneCanvas = Instantiate(
+				cutsceneCanvasPrefab,
+				cutsceneCanvasPrefab.transform.position,
+				cutsceneCanvasPrefab.transform.rotation,
+				this.transform)
+				.GetComponent<Stage>();
+			skipButton.onClick.AddListener(() => cutsceneCanvas.skipCutscene());
+			cutsceneCanvas.skipButton = skipButton.gameObject;
 			cutsceneCanvas.startCutscene(cutscene);
 			useCutsceneCamera();
 
@@ -409,6 +424,10 @@ namespace Gameplay {
 				//Unity, forgive me for not using coroutines. I am repentant. I understand my crimes and will not recommimt.
 				await Task.Delay(100);
 			}
+
+			//Even though the cutscene can never be accessed again, this is a whole lot cleaner.
+			Destroy(cutsceneCanvas);
+			skipButton.onClick.RemoveAllListeners();
 
 			useNormalCamera();
 		}
@@ -527,22 +546,21 @@ namespace Gameplay {
 
 		private void getLevel() {
 			//This indicates the scene has been played from the editor, without first running MainMenu. This is a debug mode.
-			if (Persistance.campaign == null && Application.isEditor) {
+			if (Persistence.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
 					new Character("The evil lord zxqv", false, new eliminationAgent())
 				};
 
 				level = new Level("DemoMap2", "AITest", characters, new Cutscene[] { });
-				Persistance.campaign = new Campaign("test", 0, new[] { level });
+				Persistence.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
-				cutsceneCanvas.hideVisualElements();
 			}
 			//  else {
 			// 	Persistance.loadProgress();
 			// }
 
-			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
+			level = Persistence.campaign.levels[Persistence.campaign.levelIndex];
 			foreach (Character character in level.characters) {
 				character.agent.battlefield = this.battlefield;
 			}
