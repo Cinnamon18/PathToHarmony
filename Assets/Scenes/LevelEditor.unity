@@ -1534,6 +1534,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4533940363905054, guid: dabee2a0e1337dd459a4e326caa905d4,
     type: 2}
   m_PrefabInternal: {fileID: 486578336}
+--- !u!20 &486578338 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 20524185427130784, guid: dabee2a0e1337dd459a4e326caa905d4,
+    type: 2}
+  m_PrefabInternal: {fileID: 486578336}
 --- !u!1 &498710352
 GameObject:
   m_ObjectHideFlags: 0
@@ -4202,6 +4207,21 @@ Prefab:
       objectReference: {fileID: 1832452344}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
+      propertyPath: objectiveDropdown
+      value: 
+      objectReference: {fileID: 1274724418}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: goalHolder
+      value: 
+      objectReference: {fileID: 1875844791}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
+      propertyPath: goalText
+      value: 
+      objectReference: {fileID: 741058326}
+    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
+        type: 2}
       propertyPath: unitsHolder
       value: 
       objectReference: {fileID: 498710353}
@@ -4217,42 +4237,9 @@ Prefab:
       objectReference: {fileID: 1983750603}
     - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
         type: 2}
-      propertyPath: objectiveDropdown
+      propertyPath: mainCamera
       value: 
-      objectReference: {fileID: 1274724418}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: goldCoins
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: goalModel
-      value: 
-      objectReference: {fileID: 1137115591181998, guid: 6eae591e69542304fa4aac0d9e7214c8,
-        type: 2}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: goalHolder
-      value: 
-      objectReference: {fileID: 1875844791}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: goalText
-      value: 
-      objectReference: {fileID: 741058326}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: previewObj.Array.data[0]
-      value: 
-      objectReference: {fileID: 1690250813421156, guid: 64bca20673b055d4d93550e5dacde526,
-        type: 2}
-    - target: {fileID: 114475156128921598, guid: d132d16b270344648a0f790fe57a7b21,
-        type: 2}
-      propertyPath: previewObj.Array.data[5]
-      value: 
-      objectReference: {fileID: 1953023960320156, guid: 472d2cd7f437d0f418a46300780c204e,
-        type: 2}
+      objectReference: {fileID: 486578338}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d132d16b270344648a0f790fe57a7b21, type: 2}
   m_IsPrefabAsset: 0
