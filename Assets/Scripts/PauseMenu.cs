@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 
 public class PauseMenu : MonoBehaviour {
 
 	[SerializeField]
 	Canvas pauseCanvas;
+	[SerializeField]
+	private FadeOutTransition fade;
 
 	// Use this for initialization
 	void Start() {
@@ -22,12 +24,12 @@ public class PauseMenu : MonoBehaviour {
 	}
 
 	public void mainMenu() {
-		Persistance.saveProgress();
-		SceneManager.LoadScene("Title");
+		Persistence.saveProgress();
+		fade.fadeToScene("Title");
 	}
 
 	public void quitGame() {
-		Persistance.saveProgress();
+		Persistence.saveProgress();
 		Application.Quit();
 	}
 }

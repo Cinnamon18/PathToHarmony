@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class VictoryScene : MonoBehaviour {
 
+
+	[SerializeField]
+	private FadeOutTransition fade;
 	// Use this for initialization
 	public void goToMainMenu() {
-		SceneManager.LoadScene("Title");
+		fade.fadeToScene("Title");
 	}
 }

@@ -8,9 +8,9 @@ using UnityEngine;
 using Constants;
 
 namespace AI {
-	public class eliminationAgent : Agent {
+	public class EliminationAgent : Agent {
 
-		public eliminationAgent() : base() { }
+		public EliminationAgent() : base() { }
 
 		public override async Task<Move> getMove() {
 

@@ -13,7 +13,6 @@ using Buffs;
 using Editors;
 using System.IO;
 using Cutscenes.Stages;
-using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace Gameplay {
@@ -32,6 +31,8 @@ namespace Gameplay {
 		private Transform tilesHolder;
 		[SerializeField]
 		private TileGenerator generator;
+		[SerializeField]
+		private FadeOutTransition fade;
 
 
 		private LevelInfo levelInfo;
@@ -82,7 +83,7 @@ namespace Gameplay {
 			deserializeMap();
 			deserializeLevel();
 
-
+			mainCamera.GetComponent<CameraController>().updateMaxPos(battlefield.map.GetLength(0), battlefield.map.GetLength(1));
 		}
 
 		// Poor man's state machine. in retrospect i have no idea why i didn't use a proper one. oh well, next game.
@@ -225,6 +226,8 @@ namespace Gameplay {
 
 					ourUnit.hasMovedThisTurn = true;
 
+					await runAppropriateCutscenes();
+
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => {
 						//I know this looks inelegant but it avoid calling getUnitCoords if necessary
@@ -304,15 +307,17 @@ namespace Gameplay {
 			await Task.Delay(TimeSpan.FromMilliseconds(6000));
 			victoryImage.enabled = false;
 
-			Persistance.campaign.levelIndex++;
+			Persistence.campaign.levelIndex++;
+
+			await runAppropriateCutscenes(true);
 
 			//check for end of campaign
-			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Count()) {
-				SceneManager.LoadScene("VictoryScene");
+			if (Persistence.campaign.levelIndex >= Persistence.campaign.levels.Count()) {
+				fade.fadeToScene("VictoryScene");
 			} else {
-				Persistance.saveProgress();
+				Persistence.saveProgress();
 				//Oh Boy im glad this works.
-				SceneManager.LoadScene("DemoBattle");
+				fade.fadeToScene("DemoBattle");
 			}
 		}
 
@@ -323,7 +328,7 @@ namespace Gameplay {
 			//TODO show ui to quit or retry
 
 			//Restart the level, don't increment
-			SceneManager.LoadScene("DemoBattle");
+			fade.fadeToScene("DemoBattle");
 		}
 
 		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
@@ -395,9 +400,9 @@ namespace Gameplay {
 			unit.gameObject.transform.rotation = endPos;
 		}
 
-		private async Task runAppropriateCutscenes() {
+		private async Task runAppropriateCutscenes(bool afterVictoryImage = false) {
 			foreach (Cutscene cutscene in level.cutscenes) {
-				if (cutscene.executionCondition(new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage))) {
+				if (cutscene.executionCondition(new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage, afterVictoryImage))) {
 					await runCutscene(cutscene);
 					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
 					break;
@@ -546,21 +551,21 @@ namespace Gameplay {
 
 		private void getLevel() {
 			//This indicates the scene has been played from the editor, without first running MainMenu. This is a debug mode.
-			if (Persistance.campaign == null && Application.isEditor) {
+			if (Persistence.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
-					new Character("The evil lord zxqv", false, new eliminationAgent())
+					new Character("The evil lord zxqv", false, new EliminationAgent())
 				};
 
 				level = new Level("DemoMap2", "AITest", characters, new Cutscene[] { });
-				Persistance.campaign = new Campaign("test", 0, new[] { level });
+				Persistence.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 			}
 			//  else {
 			// 	Persistance.loadProgress();
 			// }
 
-			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
+			level = Persistence.campaign.levels[Persistence.campaign.levelIndex];
 			foreach (Character character in level.characters) {
 				character.agent.battlefield = this.battlefield;
 			}
