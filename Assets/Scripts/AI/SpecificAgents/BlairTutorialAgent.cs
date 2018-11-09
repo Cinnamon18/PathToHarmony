@@ -9,11 +9,18 @@ namespace AI {
 		public BlairTutorialAgent() : base() { }
 
 		private Queue<Move> moves = new Queue<Move>(new[] {
-			new Move(2, 3, 2, 4),
+			new Move(2, 3, 2, 3),
 			new Move(1, 4, 1, 5),
-			new Move(1, 3, 1, 4),
+			new Move(1, 3, 2, 4),
 
-			new Move(2, 5, 2, 4),
+			new Move(2, 4, 2, 4),
+			new Move(1, 5, 3, 4),
+			new Move(2, 3, 3, 3),
+			new Move(3, 3, 3, 4),
+
+			new Move(3, 3, 3, 4),
+			new Move(1, 5, 1, 5),
+			new Move(2, 4, 2, 4),
 		});
 
 		public override async Task<Move> getMove() {

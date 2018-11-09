@@ -48,7 +48,7 @@ namespace Cutscenes.Stages {
 	}
 
 
-	public class TutorialEnd : Cutscene {
+	public class Scene1 : Cutscene {
 		public override bool executionCondition(ExecutionInfo info) {
 			if (hasExecuted) {
 				return false;
@@ -160,6 +160,155 @@ namespace Cutscenes.Stages {
 			};
 		}
 	}
+
+	public class TutorialStart : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 0) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+				S().AddActor(CutsceneSide.FarLeft, "NarratorActor", "Narrator"),
+				S().SetMessage("Over a field flanked by a forest on one side and rows and steps of spectating seats on the other, two parties are in the heat of battle.")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("The commanders of each party shout orders to soldiers who are all holding sparring weapons.")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("Meta: You won't have any input this battle, but next time you'll play as Blair and victory will be your responsibility!")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("There are six different game objectives.")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("Capture a VIP")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("Escort a VIP")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("Defend a zone")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("Capture a zone")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("Survive until time runs out")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("And finally, eliminate all enemies")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("Too complicated? Just remember this: A crown on your unit means protect it. A crown on an enemy means eliminate it.")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("All objectives can also be won by eliminating all opponents.")
+					.SetSpeaker("Narrator"),
+			};
+		}
+	}
+
+	public class TutorialTileDefense : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 1) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+				S().AddActor(CutsceneSide.FarLeft, "JuniperActor", "Juniper"),
+				S().SetMessage("I'll place my rogues in the trees so Blair's units can't hit them as easily.")
+					.SetSpeaker("Juniper"),
+				S().SetMessage("My calvalry moves faster on roads, so I'll attack Blair's archers directly before they can chip away at me.")
+					.SetSpeaker("Juniper"),
+			};
+		}
+	}
+
+
+	public class TutorialJuniperUnitLoss : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 5) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+				S().AddActor(CutsceneSide.FarLeft, "JuniperActor", "Juniper"),
+				S().SetMessage("Blair eliminated one of my units! This isn't looking good.")
+					.SetSpeaker("Juniper").SetExpression("Frown"),
+			};
+		}
+	}
+
+	public class TutorialBlairUnitLoss : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 6) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
+				S().SetMessage("I lost a unit. That’s fine. Small sacrifices are necessary in a battle. His majesty would’ve done the same.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+			};
+		}
+	}
+
+	public class TutorialEnd : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.afterVictoryImage) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
+				// S().SetMessage("Blair has successfully won the mock battle with Juniper.")
+				// 	.SetSpeaker("Narrator"),
+				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
+				S().AddActor(CutsceneSide.FarRight, "SoldierActor", "Headmaster"),
+				S().SetMessage("As it is tradition, his majesty the King himself will grant the title of Royal Officer to the victor of the graduation ceremony. Cadet Blair, please step forward.")
+					.SetSpeaker("Headmaster"),
+				S().SetMessage("Instructors, knights and the marshal on the spectator seats all look baffled at the old headmaster’s words. They look back and forth between the headmaster, who is only beginning to realize his mistake, and the empty throne at the center.")
+					.SetSpeaker("Narrator"),
+				S().AddActor(CutsceneSide.Right, "NarratorActor", "Cadets"),
+				S().SetMessage("Blair draws their sword and points it, flat side of the blade facing up, to the empty throne.")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("Glory to his majesty, the King!")
+					.SetSpeaker("Blair"),
+				S().SetMessage("Glory to his majesty, the King!")
+					.SetSpeaker("Cadets")
+			};
+		}
+	}
+
 
 
 

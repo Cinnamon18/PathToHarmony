@@ -26,7 +26,7 @@ public class FadeOutTransition : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		image.color = new Color(0,0,0, alpha);
+		image.color = new Color(0,0,0, Mathf.Pow(alpha, 2));
 		if (countdown) {
 			timer = timer - Time.deltaTime * speed;
 			alpha = alpha + Time.deltaTime * speed;

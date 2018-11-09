@@ -32,7 +32,7 @@ public class MainMenu : MonoBehaviour {
 		optionsSliders[0].value = Persistence.MasterVolume;//PlayerPrefs.GetFloat(Persistence.MASTER_VOLUME);
 		optionsSliders[1].value = Persistence.MusicVolume;//PlayerPrefs.GetFloat(Persistence.MUSIC_VOLUME);
 		optionsSliders[2].value = Persistence.SfxVolume;//PlayerPrefs.GetFloat(Persistence.SFX_VOLUME);
-		muteButton.GetComponentInChildren<Text>().text = "Mute Audio: " + (Persistence.IsMuted?"On":"Off");
+		muteButton.GetComponentInChildren<Text>().text = (Persistence.IsMuted ? "Audio Muted" : "Audio Not Muted");
 
 		setupDefaultCampaign();
 	}
@@ -54,7 +54,7 @@ public class MainMenu : MonoBehaviour {
 
 	public void toggleMuteAudio() {
 		Persistence.IsMuted = !Persistence.IsMuted;
-		muteButton.GetComponentInChildren<Text>().text = "Mute Audio: " + (Persistence.IsMuted?"On":"Off");
+		muteButton.GetComponentInChildren<Text>().text = (Persistence.IsMuted ? "Audio Muted" : "Audio Not Muted");
 		Persistence.saveAudioSettings(masterMixer);
 	}
 
@@ -139,16 +139,16 @@ public class MainMenu : MonoBehaviour {
 
 
 
-		
+
 
 		//Actual final in game campaign
 
 		//Level 0: Tutorial
 		Character[] TutorialCharacters = new[] {
-				new Character("Blair", true, new BlairTutorialAgent()),
-				new Character("Juniper", false, new JuniperTutorialAgent())
-				};
-		Level level0 = new Level("TutorialMap", "TutorialLevel", TutorialCharacters, new Cutscene[] {  });
+			new Character("Blair", true, new BlairTutorialAgent()),
+			new Character("Juniper", false, new JuniperTutorialAgent())
+		};
+		Level level0 = new Level("TutorialMap", "TutorialLevel", TutorialCharacters, new Cutscene[] { new TutorialStart(), new TutorialTileDefense(), new TutorialJuniperUnitLoss(), new TutorialBlairUnitLoss(), new TutorialEnd() });
 
 
 

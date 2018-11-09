@@ -5,27 +5,27 @@ using UnityEngine.UI;
 
 public class FadeInAtStart : MonoBehaviour {
 
-	private float alpha = 1.2f;
-	public float speed = 0.35f;
+	private float alpha = 1.0f;
+	public float speed = 1.5f;
 
 	public RawImage image;
 
 	// Use this for initialization
-	void Start () {
-		image.color = new Color (0,0,0,1);
+	void Start() {
+		image.color = new Color(0, 0, 0, 1);
 		image.enabled = true;
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
-		alpha = alpha - (Time.deltaTime * speed);
-		float a = alpha;
-		
+	void Update() {
+		alpha -= (Time.deltaTime * speed);
 
-		image.color = new Color (0,0,0, alpha);
+		image.color = new Color(0, 0, 0, Mathf.Log(alpha + 1, 2));
+		// image.color = new Color(0, 0, 0, alpha);
 
-		if (alpha <= -0.1) {
+		if (alpha < 0) {
 			image.enabled = false;
+			Destroy(this.gameObject);
 		}
 	}
 }

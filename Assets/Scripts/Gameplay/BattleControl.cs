@@ -225,6 +225,8 @@ namespace Gameplay {
 
 					ourUnit.hasMovedThisTurn = true;
 
+					await runAppropriateCutscenes();
+
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => {
 						//I know this looks inelegant but it avoid calling getUnitCoords if necessary
@@ -305,6 +307,8 @@ namespace Gameplay {
 			victoryImage.enabled = false;
 
 			Persistence.campaign.levelIndex++;
+
+			await runAppropriateCutscenes(true);
 
 			//check for end of campaign
 			if (Persistence.campaign.levelIndex >= Persistence.campaign.levels.Count()) {
@@ -395,9 +399,9 @@ namespace Gameplay {
 			unit.gameObject.transform.rotation = endPos;
 		}
 
-		private async Task runAppropriateCutscenes() {
+		private async Task runAppropriateCutscenes(bool afterVictoryImage = false) {
 			foreach (Cutscene cutscene in level.cutscenes) {
-				if (cutscene.executionCondition(new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage))) {
+				if (cutscene.executionCondition(new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage, afterVictoryImage))) {
 					await runCutscene(cutscene);
 					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
 					break;
