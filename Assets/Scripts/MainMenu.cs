@@ -150,13 +150,51 @@ public class MainMenu : MonoBehaviour {
 		};
 		Level level0 = new Level("TutorialMap", "TutorialLevel", TutorialCharacters, new Cutscene[] { new TutorialStart(), new TutorialTileDefense(), new TutorialJuniperUnitLoss(), new TutorialBlairUnitLoss(), new TutorialEnd() });
 
+		//Level 3: Retreat
+		Character[] RetreatCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Tsubin Infantry", false, new EliminationAgent())
+		};
+		Level level3 = new Level("Retreat", "3", RetreatCharacters, new Cutscene[] { });
+
+		//Level 4: Central Plains
+		Character[] CentralPlainsCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Corbitan Raiders", false, new EliminationAgent())
+		};
+		Level level4 = new Level("CentralPlains", "4", CentralPlainsCharacters, new Cutscene[] { });
+
+		//Level 5: Chasing
+		Character[] ChasingCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Corbitan Raiders", false, new EliminationAgent())
+		};
+		Level level5 = new Level("Chasing", "5", ChasingCharacters, new Cutscene[] { });
+
+		//Level 6: Crater Attack
+		Character[] CraterAttackCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Velgarian Army", false, new EliminationAgent())
+		};
+		Level level6 = new Level("CraterAttack", "6", CraterAttackCharacters, new Cutscene[] { });
+
+		//Level 7: Crater Battle
+		Character[] CraterBattleCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Tsubin Army", false, new EliminationAgent())
+		};
+		Level level7 = new Level("CraterBattle", "7", CraterBattleCharacters, new Cutscene[] { });
 
 
 
 
-
-		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 0, new[] {
+		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 1, new[] {
 			level0,
+			level3,
+			level4,
+			level5,
+			level6,
+			level7
 		});
 
 		Persistence.campaign = RealActualFinCampaign;

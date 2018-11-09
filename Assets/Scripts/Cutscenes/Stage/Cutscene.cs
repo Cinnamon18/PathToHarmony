@@ -201,6 +201,8 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Narrator"),
 				S().SetMessage("All objectives can also be won by eliminating all opponents.")
 					.SetSpeaker("Narrator"),
+				S().SetMessage("Now lets see how combat happens in Path to Harmony!")
+					.SetSpeaker("Narrator"),
 			};
 		}
 	}
@@ -296,7 +298,9 @@ namespace Cutscenes.Stages {
 				S().AddActor(CutsceneSide.FarRight, "SoldierActor", "Headmaster"),
 				S().SetMessage("As it is tradition, his majesty the King himself will grant the title of Royal Officer to the victor of the graduation ceremony. Cadet Blair, please step forward.")
 					.SetSpeaker("Headmaster"),
-				S().SetMessage("Instructors, knights and the marshal on the spectator seats all look baffled at the old headmaster’s words. They look back and forth between the headmaster, who is only beginning to realize his mistake, and the empty throne at the center.")
+				S().SetMessage("Instructors, knights and the marshal on the spectator seats all look baffled at the old headmaster’s words.")
+					.SetSpeaker("Narrator"),
+				S().SetMessage("They look back and forth between the headmaster, who is only beginning to realize his mistake, and the empty throne at the center.")
 					.SetSpeaker("Narrator"),
 				S().AddActor(CutsceneSide.Right, "NarratorActor", "Cadets"),
 				S().SetMessage("Blair draws their sword and points it, flat side of the blade facing up, to the empty throne.")
