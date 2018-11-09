@@ -540,7 +540,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Survival:
-					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 10);
 					break;
 				default:
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
