@@ -83,6 +83,7 @@ namespace Gameplay {
 			deserializeMap();
 			deserializeLevel();
 
+			mainCamera.GetComponent<CameraController>().updateMaxPos(battlefield.map.GetLength(0), battlefield.map.GetLength(1));
 		}
 
 		// Poor man's state machine. in retrospect i have no idea why i didn't use a proper one. oh well, next game.
