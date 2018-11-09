@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using AI;
 using Cutscenes.Stages;
@@ -190,7 +190,7 @@ public class MainMenu : MonoBehaviour {
 
 		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 1, new[] {
 			level0,
-			level3,
+			level4,
 			level4,
 			level5,
 			level6,
