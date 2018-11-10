@@ -155,14 +155,14 @@ public class MainMenu : MonoBehaviour {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Infantry", false, new EliminationAgent())
 		};
-		Level level1 = new Level("BorderPost", "1", BorderPostCharacter, new Cutscene[] { });
+		Level level1 = new Level("BorderPost", "1", BorderPostCharacter, new Cutscene[] { new PreBattle1(), new PostBattle1()});
 
 		//Level 2: Midas river
 		Character[] MidasRiverCharacter = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Infantry", false, new EliminationAgent())
 		};
-		Level level2 = new Level("MidasRiver", "2", MidasRiverCharacter, new Cutscene[] { });
+		Level level2 = new Level("MidasRiver", "2", MidasRiverCharacter, new Cutscene[] { new PostBattle2() });
 
 
 		//Level 3: Retreat
@@ -170,7 +170,7 @@ public class MainMenu : MonoBehaviour {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Infantry", false, new EliminationAgent())
 		};
-		Level level3 = new Level("Retreat", "3", RetreatCharacters, new Cutscene[] { });
+		Level level3 = new Level("Retreat", "3", RetreatCharacters, new Cutscene[] { new PostBattle3()});
 
 		//Level 4: Central Plains
 		Character[] CentralPlainsCharacters = new[] {
@@ -200,10 +200,16 @@ public class MainMenu : MonoBehaviour {
 		};
 		Level level7 = new Level("CraterBattle", "7", CraterBattleCharacters, new Cutscene[] { });
 
+		//Level 8: Battle for Xingata
+		Character[] XingataCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("King Rouen", false, new EliminationAgent())
+		};
+		Level level8 = new Level("CraterCenter", "8", XingataCharacters, new Cutscene[] { });
 
 
 
-		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 0, new[] {
+		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 8, new[] {
 			level0,
 			level1,
 			level2,
@@ -211,7 +217,8 @@ public class MainMenu : MonoBehaviour {
 			level4,
 			level5,
 			level6,
-			level7
+			level7,
+			level8
 		});
 
 		Persistence.campaign = RealActualFinCampaign;
