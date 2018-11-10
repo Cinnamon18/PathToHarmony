@@ -13,6 +13,7 @@ namespace Cutscenes.Stages {
 		public string leaverName;
 		public Sprite expression;
 		public string sfx;
+		public string background;
 
 		public StageBuilder SetSpeaker(string speaker) {
 			this.speaker = speaker;
@@ -36,6 +37,11 @@ namespace Cutscenes.Stages {
 
 		public StageBuilder SetAudio(string audioID) {
 			this.sfx = audioID;
+			return this;
+		}
+
+		public StageBuilder SetBackground(string background) {
+			this.background = background;
 			return this;
 		}
 
