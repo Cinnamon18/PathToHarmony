@@ -276,7 +276,7 @@ namespace Gameplay {
 		}
 
 		private bool checkWinAndLose() {
-			if (objective.isWinCondition(halfTurnsElapsed) || Input.GetKey(KeyCode.P)) {
+			if (objective.isWinCondition(halfTurnsElapsed)) {
 				advanceCampaign();
 				return true;
 
@@ -499,7 +499,7 @@ namespace Gameplay {
 			List<Coord> goalPositions = levelInfo.goalPositions;
 			switch (levelInfo.objective) {
 				case ObjectiveType.Elimination:
-					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 25);
+					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 30);
 					break;
 				case ObjectiveType.Escort:
 					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 15);
@@ -540,7 +540,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Survival:
-					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 10);
+					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 15);
 					break;
 				default:
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
