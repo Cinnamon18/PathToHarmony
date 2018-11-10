@@ -209,7 +209,7 @@ public class MainMenu : MonoBehaviour {
 
 
 
-		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 8, new[] {
+		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 0, new[] {
 			level0,
 			level1,
 			level2,
