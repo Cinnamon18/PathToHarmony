@@ -132,7 +132,7 @@ namespace Gameplay {
 					currentCharacter = (currentCharacter + 1) % level.characters.Length;
 					turnPlayerText.text =
 						level.characters[currentCharacter].name + "'s turn\n" +
-						"Turns remaining:  " + (objective.maxHalfTurns - ((halfTurnsElapsed / 2) + 1));
+						"Turns remaining:  " + (objective.maxHalfTurns - halfTurnsElapsed);
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
 
@@ -499,10 +499,10 @@ namespace Gameplay {
 			List<Coord> goalPositions = levelInfo.goalPositions;
 			switch (levelInfo.objective) {
 				case ObjectiveType.Elimination:
-					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 25);
 					break;
 				case ObjectiveType.Escort:
-					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 15);
 					//add vips
 					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[0], pos.x, pos.y, Faction.Xingata);
