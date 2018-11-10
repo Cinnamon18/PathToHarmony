@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class FadeInAtStart : MonoBehaviour {
 
 	private float alpha = 1.0f;
-	public float speed = 1.5f;
+	public float speed = 1f;
 
 	public RawImage image;
 

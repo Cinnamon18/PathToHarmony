@@ -28,6 +28,7 @@ namespace Editors {
 		[SerializeField]
 		private TileGenerator tilesGenerator;
 	
+		public Camera mainCamera;
 
 		private string mapName;
 
@@ -46,6 +47,7 @@ namespace Editors {
 			//Tell editor type
 			setEditorType();
 
+			mainCamera.GetComponent<CameraController>().updateMaxPos(objs.GetLength(0), objs.GetLength(1));
 		}
 
 		void Update() {

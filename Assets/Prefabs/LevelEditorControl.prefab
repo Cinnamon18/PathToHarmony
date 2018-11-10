@@ -54,20 +54,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   overWriteToggle: {fileID: 0}
   previewObj:
-  - {fileID: 100000, guid: 736ff070a11e8ce4eaa0627e93f74e67, type: 3}
+  - {fileID: 1690250813421156, guid: 64bca20673b055d4d93550e5dacde526, type: 2}
   - {fileID: 100004, guid: 2c86103a7b5b4a441a4776ca223e098b, type: 3}
   - {fileID: 100000, guid: 9eef5367c31e66c4c9d8a05ca9d23b16, type: 3}
   - {fileID: 100000, guid: ca2d0397ae7772d40a268f4f27759d8d, type: 3}
   - {fileID: 100004, guid: d4df879346cd6bb41aa9a688f7dc442c, type: 3}
-  - {fileID: 100004, guid: d036ff1e7505f75429f5bf9f9eb9678d, type: 3}
+  - {fileID: 1953023960320156, guid: 472d2cd7f437d0f418a46300780c204e, type: 2}
   previewHolder: {fileID: 0}
   initialDim: {x: 10, y: 10, z: 10}
   defaultMap: DemoMap
   loadMapText: {fileID: 0}
   loadLevelText: {fileID: 0}
   saveLevelText: {fileID: 0}
-  playerDropdown: {fileID: 0}
   factionDropdown: {fileID: 0}
+  objectiveDropdown: {fileID: 0}
+  goalModel: {fileID: 1137115591181998, guid: 6eae591e69542304fa4aac0d9e7214c8, type: 2}
+  goalHolder: {fileID: 0}
+  goalText: {fileID: 0}
   unitsHolder: {fileID: 0}
   tilesHolder: {fileID: 0}
   generator: {fileID: 0}
@@ -78,6 +81,7 @@ MonoBehaviour:
   - {fileID: 1434694798503106, guid: e6af2e076be38264f9620648a2a888a9, type: 2}
   - {fileID: 1629421154834734, guid: 69c0be666f9bbac4fb58123a3fdc8d65, type: 2}
   - {fileID: 1629421154834734, guid: c17983c11eecd5545b4630ae0bd53033, type: 2}
+  mainCamera: {fileID: 0}
 --- !u!120 &120062188739160932
 LineRenderer:
   m_ObjectHideFlags: 1

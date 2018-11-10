@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using AI;
 using Cutscenes.Stages;
@@ -150,6 +150,21 @@ public class MainMenu : MonoBehaviour {
 		};
 		Level level0 = new Level("TutorialMap", "TutorialLevel", TutorialCharacters, new Cutscene[] { new TutorialStart(), new TutorialTileDefense(), new TutorialJuniperUnitLoss(), new TutorialBlairUnitLoss(), new TutorialEnd() });
 
+		//Level 1: border post kova
+		Character[] BorderPostCharacter = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Tsubin Infantry", false, new EliminationAgent())
+		};
+		Level level1 = new Level("BorderPost", "1", BorderPostCharacter, new Cutscene[] { });
+
+		//Level 2: Midas river
+		Character[] MidasRiverCharacter = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Tsubin Infantry", false, new EliminationAgent())
+		};
+		Level level2 = new Level("MidasRiver", "2", MidasRiverCharacter, new Cutscene[] { });
+
+
 		//Level 3: Retreat
 		Character[] RetreatCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
@@ -188,8 +203,10 @@ public class MainMenu : MonoBehaviour {
 
 
 
-		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 1, new[] {
+		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 0, new[] {
 			level0,
+			level1,
+			level2,
 			level3,
 			level4,
 			level5,
