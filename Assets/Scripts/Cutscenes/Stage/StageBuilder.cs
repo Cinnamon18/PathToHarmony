@@ -47,6 +47,12 @@ namespace Cutscenes.Stages {
 
 		public StageBuilder AddActor(CutsceneSide side, string actorName, string name) {
 			Actor newcomer = Resources.Load<Actor>("Actors/" + actorName);
+			if (newcomer == null) {
+				throw new UnityException(
+					"There exists no actor in Resources/Actors with name: "
+					+ actorName
+					);
+			}
 			newcomer = GameObject.Instantiate(newcomer);
 
 			newcomer.name = name;

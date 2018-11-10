@@ -19,7 +19,7 @@ namespace AI {
 			new Move(3, 3, 3, 4),
 
 			new Move(3, 3, 3, 4),
-			new Move(1, 5, 1, 5),
+			new Move(1, 5, 3, 4),
 			new Move(2, 4, 2, 4),
 		});
 

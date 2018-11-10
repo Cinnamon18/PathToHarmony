@@ -9,9 +9,10 @@ namespace AI {
 
 		private Queue<Move> moves = new Queue<Move>(new[] {
 			new Move(6, 5, 3, 4),
-			new Move(5, 5, 2, 5),
 			new Move(3, 4, 2, 4),
+			new Move(5, 5, 2, 5),
 			new Move(2, 5, 2, 4),
+
 
 			new Move(3, 4, 2, 4),
 			new Move(2, 5, 2, 4),

@@ -262,6 +262,7 @@ namespace Cutscenes.Stages {
                 S().SetMessage("Glory to his majesty, the King!")
                     .SetSpeaker("Cadets"),
 				// Scene Transition
+				S().AddLeaver("Cadets"),
 				S().AddLeaver("Blair"),
 				S().AddLeaver("Narrator"),
 				S().AddLeaver("Headmaster"),
@@ -282,7 +283,7 @@ namespace Cutscenes.Stages {
                 S().SetMessage("You know he’s leading an army on the field.")
                     .SetSpeaker("Juniper").SetExpression("Neutral"),
                 S().SetMessage("I know, but I still can’t shake off this disappointment.")
-                    .SetSpeaker("Blair").SetExpression("Sad"),
+                    .SetSpeaker("Blair").SetExpression("Frown"),
                 S().SetMessage("You never explained to me why you admire the King so much.")
                     .SetSpeaker("Juniper").SetExpression("Neutral"),
                 S().SetMessage("What’s there to explain?")
@@ -306,15 +307,17 @@ namespace Cutscenes.Stages {
                 S().SetMessage("Oh yeah? Let’s see you beat Blair in a mock battle.")
                     .SetSpeaker("Juniper").SetExpression("Frown"),
                 S().SetMessage("To answer your first question, I have your orders from the marshall. You and Juniper are to " +
-                    "travel with me to the western front. We will advise Lord Sweyn in matters of tactics and aid him, in any way " +
+                    "travel with me to the western front.")
+					.SetSpeaker("Bruno").SetExpression("Neutral"),
+                S().SetMessage("We will advise Lord Sweyn in matters of tactics and aid him, in any way " +
                     "we can, to delay the Tsubin army from reaching Harmony Crater. We leave tomorrow morning.")
                     .SetSpeaker("Bruno").SetExpression("Neutral"),
                 S().SetMessage("Deployed the day after graduation, huh. But… what about Piper?")
                     .SetSpeaker("Blair").SetExpression("Neutral"),
                 S().SetMessage("My sister will not be deployed. Chief Physician told me this morning. It’s the plague.")
-                    .SetSpeaker("Juniper").SetExpression("Sad"),
+                    .SetSpeaker("Juniper").SetExpression("Frown"),
                 S().SetMessage("I am so sorry, Juniper.")
-                    .SetSpeaker("Blair").SetExpression("Sad"),
+                    .SetSpeaker("Blair").SetExpression("Frown"),
                 S().SetMessage("Don’t be. More the reason to win the war, right?")
                     .SetSpeaker("Juniper").SetExpression("Neutral"),
                 S().SetMessage("… Right. The war.")
@@ -355,10 +358,12 @@ namespace Cutscenes.Stages {
 				S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
 				S().AddActor(CutsceneSide.Right, "BlairActor", "Blair"),
 				S().SetMessage("Tsubin ships are transporting their army up the rivers of Ida and Iouna. We know they will land " +
-					"over here, just past the river fork. While they are landing, they will be disorganized and few in numbers. " +
-					"We’ll hit them then, and retreat. In the meantime, I’ve ordered all the western garrisons guarding Ida river to " +
+					"over here, just past the river fork. While they are landing, they will be disorganized and few in numbers. ")
+					.SetSpeaker("Sweyn"),
+				S().SetMessage("We’ll hit them then, and retreat. In the meantime, I’ve ordered all the western garrisons guarding Ida river to " +
 					"report in. I haven’t heard back from one of them.")
 					.SetSpeaker("Sweyn"),
+
 				S().SetMessage("When did you order the garrisons, my lord?")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().SetMessage("Four days ago. Only the messenger sent to Border Post Kova didn’t come back yet.")
@@ -389,7 +394,7 @@ namespace Cutscenes.Stages {
 				S().SetBackground("TempBackground"),
 				// Pre-battle 1
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.FarLeft, "JunieprActor", "Juniper"),
+				S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
 				S().SetMessage("There it is, Border Post Kova. At least our flag still flies.")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().SetMessage("Do you see that thing moving on the river? Is that a raft?")
@@ -397,7 +402,9 @@ namespace Cutscenes.Stages {
 				S().SetMessage("With Tsubin soldiers on it. They are crossing uncontested. The garrison must have already fallen.")
 					.SetSpeaker("Juniper").SetExpression("Surprised"),
 				S().SetMessage("Then we must take it back. (turns to the soldiers) Soldiers of Xingata! Kova has fallen. More enemies " +
-					"are crossing the river as we speak. If we don’t retake that garrison now, enemies will hit us in the back while we " +
+					"are crossing the river as we speak.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("If we don’t retake that garrison now, enemies will hit us in the back while we " +
 					"are facing the main Tsubin force. With me!")
 					.SetSpeaker("Blair").SetExpression("Neutral")
 			};
@@ -442,7 +449,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("Yeah. We must be. I need a change in scenery. Let’s get out of here.")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
-				S().SetMessage("...Yes. Burn the bodies and form up! We’re heading back!")
+				S().SetMessage("...Yes. Burn the bodies and form up! We’re heading back!")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				// Scene Transition
 				S().AddLeaver("Blair"),
@@ -450,25 +457,27 @@ namespace Cutscenes.Stages {
 				S().AddLeaver("Narrator"),
 				S().SetBackground("TempBackground"),
 				// Scene 3
-				S().AddActor(CutsceneSide.FarRight, "NarratorActor", "Narrator"),
+				S().AddActor(CutsceneSide.Right, "NarratorActor", "Narrator"),
 				S().SetMessage("Lord Sweyn’s camp. The whole camp appears much busier."),
 				S().AddActor(CutsceneSide.FarLeft, "SweynActor", "Sweyn"),
 				S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
-				S().AddActor(CutsceneSide.Right, "BlairActor", "Blair"),
+				S().AddActor(CutsceneSide.FarRight, "BlairActor", "Blair"),
 				S().SetMessage("So, enemies were already crossing behind us. Great work retaking Kova, because Tsubin ships are approaching. They will land within the next three hours.")
 					.SetSpeaker("Sweyn"),
 				S().SetMessage("They will soon figure out we are few in numbers. We must do the most damage and retreat.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("Oh, we are aware. Every detail of the operation has been ironed out.")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
-				S().SetMessage("You two will stay with me at the center to hold the line while archers and mages bombard the landing. Bruno has an " +
-					"experience leading cavalry, so he will lead a group to keep the enemies from flanking us from our east. I have a knight leading another cavalry group to our west.")
+				S().SetMessage("You two will stay with me at the center to hold the line while archers and mages bombard the landing.")
+					.SetSpeaker("Sweyn"),
+				S().SetMessage("Bruno has a experience leading cavalry, so he will lead a group to keep the enemies from flanking us from our east. I have a knight leading another cavalry group to our west.")
 					.SetSpeaker("Sweyn"),
 				S().SetMessage("Blair and Juniper look at the tactical map drawn out on the table in silence, still shaken by their last battle."),
 				S().SetMessage("We form up in 30 minutes. I’ll send for you when we do. Get some rest.")
 					.SetSpeaker("Sweyn"),
 				S().AddLeaver("Sweyn"),
-				S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
+				S().AddLeaver("Narrator"),
+				S().AddActor(CutsceneSide.Right, "JuniperActor", "Juniper"),
 				S().SetMessage("War isn’t quite what you believed to be, is it?")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
 				S().SetMessage("No. I imagined a sense of pride and accomplishment. In reality, I was just relieved it was over.")
@@ -522,8 +531,9 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("Only a handful who were around our lord. I sent for Officer Juniper, so she will know.")
 					.SetSpeaker("Sir Tibolt"),
-				S().SetMessage("Keep it that way. We’re retreating. Send for the cavalry groups to fall back. Pick 500 of your best soldiers " +
-					"to hold the enemies back while the rest of the force retreats.")
+				S().SetMessage("Keep it that way. We’re retreating. Send for the cavalry groups to fall back.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("Pick 500 of your best soldiers to hold the enemies back while the rest of the force retreats.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("That’s a suicide mission. No one will take part in it.")
 					.SetSpeaker("Sir Tibolt"),
@@ -562,7 +572,9 @@ namespace Cutscenes.Stages {
 				// Pre-battle 3
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().SetMessage("Your lord is dead, and I am your new commander. You might think why would a commander lead a suicide mission. " +
-					"I’m leading, because it’s not a suicide mission. I don’t intend to die here and neither should you. All I’m asking is to " +
+					"I’m leading, because it’s not a suicide mission.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("I don’t intend to die here and neither should you. All I’m asking is to " +
 					"hold the line until our cavalry reaches us. Hold the line!")
 					.SetSpeaker("Blair").SetExpression("Neutral")
 			};

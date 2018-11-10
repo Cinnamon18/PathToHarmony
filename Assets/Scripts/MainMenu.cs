@@ -64,6 +64,7 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void resumeGame() {
+		Persistence.loadProgress();
 		playGame();
 	}
 
