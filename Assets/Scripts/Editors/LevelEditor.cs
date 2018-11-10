@@ -73,7 +73,7 @@ namespace Editors {
 			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, Paths.mapsPath()), generator, tilesHolder);
 			//Hacky but Serialization holds how tall the last map loaded is
 			//use to know how tall Unit array should be
-			fieldHeight = Serialization.mapHeight;
+			fieldHeight = Serialization.mapHeight + 1;
 			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), fieldHeight];
 			//unitsinfo is used to store units and whether they are player or enemy units
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
@@ -220,7 +220,7 @@ namespace Editors {
 		private void reloadMap() {
 
 			battlefield.map = Serialization.DeserializeTilesStack(Serialization.ReadData(mapName, Paths.mapsPath()), generator, tilesHolder);
-			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight];
+			objs = new Unit[battlefield.map.GetLength(0), battlefield.map.GetLength(1), Serialization.mapHeight + 1];
 			unitsInfo = new UnitInfo[battlefield.map.GetLength(0), battlefield.map.GetLength(1)];
 			mainCamera.GetComponent<CameraController>().updateMaxPos(battlefield.map.GetLength(0), battlefield.map.GetLength(1));
 		}
