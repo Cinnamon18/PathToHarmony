@@ -179,10 +179,8 @@ namespace Cutscenes.Stages {
 				S().AddActor(CutsceneSide.FarLeft, "NarratorActor", "Narrator"),
 				S().SetMessage("Over a field flanked by a forest on one side and rows and steps of spectating seats on the other, two parties are in the heat of battle.")
 					.SetSpeaker("Narrator"),
-				S().SetBackground("TempBackground2"),
 				S().SetMessage("The commanders of each party shout orders to soldiers who are all holding sparring weapons.")
 					.SetSpeaker("Narrator"),
-				S().SetBackground("TempBackground"),
 				S().SetMessage("Meta: You won't have any input this battle, but next time you'll play as Blair and victory will be your responsibility!")
 					.SetSpeaker("Narrator"),
 				S().SetMessage("There are six different game objectives.")
