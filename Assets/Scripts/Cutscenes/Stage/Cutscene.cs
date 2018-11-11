@@ -997,7 +997,7 @@ namespace Cutscenes.Stages {
 				// Scene Transition
 				S().AddLeaver("King Rouen"),
 				S().AddLeaver("Blair"),
-				S().SetBackground(""),
+				S().SetBackground("TempBackground"),
 				// Pre-battle 6
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
