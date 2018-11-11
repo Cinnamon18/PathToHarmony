@@ -134,6 +134,8 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Narrator"),
 				S().SetMessage("You won't have any input this battle, but next time you'll play as Blair and victory will be your responsibility!")
 					.SetSpeaker("Narrator"),
+				S().SetMessage("You can move the camera with wasd, or by moving your cursor to the edge of the screen.	")
+					.SetSpeaker("Narrator"),
 				S().SetMessage("There are six different game objectives.")
 					.SetSpeaker("Narrator"),
 				S().SetMessage("Capture a VIP")
