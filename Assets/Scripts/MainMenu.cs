@@ -34,6 +34,8 @@ public class MainMenu : MonoBehaviour {
 		optionsSliders[2].value = Persistence.SfxVolume;//PlayerPrefs.GetFloat(Persistence.SFX_VOLUME);
 		muteButton.GetComponentInChildren<Text>().text = (Persistence.IsMuted ? "Audio Muted" : "Audio Not Muted");
 
+		Audio.playSound("MainTheme1", true, true);
+
 		setupDefaultCampaign();
 	}
 
@@ -156,7 +158,7 @@ public class MainMenu : MonoBehaviour {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Infantry", false, new EliminationAgent())
 		};
-		Level level1 = new Level("BorderPost", "1", BorderPostCharacter, new Cutscene[] { new PreBattle1(), new PostBattle1()});
+		Level level1 = new Level("BorderPost", "1", BorderPostCharacter, new Cutscene[] { new PreBattle1(), new PostBattle1() });
 
 		//Level 2: Midas river
 		Character[] MidasRiverCharacter = new[] {
@@ -171,14 +173,14 @@ public class MainMenu : MonoBehaviour {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Infantry", false, new EliminationAgent())
 		};
-		Level level3 = new Level("Retreat", "3", RetreatCharacters, new Cutscene[] { new PostBattle3()});
+		Level level3 = new Level("Retreat", "3", RetreatCharacters, new Cutscene[] { new PostBattle3() });
 
 		//Level 4: Central Plains
 		Character[] CentralPlainsCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Corbitan Raiders", false, new EliminationAgent())
 		};
-		Level level4 = new Level("CentralPlains", "4", CentralPlainsCharacters, new Cutscene[] { });	
+		Level level4 = new Level("CentralPlains", "4", CentralPlainsCharacters, new Cutscene[] { });
 
 		//Level 5: Chasing
 		Character[] ChasingCharacters = new[] {
