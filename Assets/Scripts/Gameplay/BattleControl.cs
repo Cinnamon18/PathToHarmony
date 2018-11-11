@@ -277,7 +277,7 @@ namespace Gameplay {
 		}
 
 		private bool checkWinAndLose() {
-			if (objective.isWinCondition(halfTurnsElapsed)) {
+			if (objective.isWinCondition(halfTurnsElapsed) || Input.GetKeyDown(KeyCode.O)) {
 				advanceCampaign();
 				return true;
 

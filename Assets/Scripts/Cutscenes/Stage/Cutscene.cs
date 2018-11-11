@@ -132,7 +132,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Narrator"),
 				S().SetMessage("The commanders of each party shout orders to soldiers who are all holding sparring weapons.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("Meta: You won't have any input this battle, but next time you'll play as Blair and victory will be your responsibility!")
+				S().SetMessage("You won't have any input this battle, but next time you'll play as Blair and victory will be your responsibility!")
 					.SetSpeaker("Narrator"),
 				S().SetMessage("There are six different game objectives.")
 					.SetSpeaker("Narrator"),
@@ -142,7 +142,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Narrator"),
 				S().SetMessage("Defend a zone")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("Capture a zone")
+				S().SetMessage("Capture a zone. (You have to stay on it for a full turn)")
 					.SetSpeaker("Narrator"),
 				S().SetMessage("Survive until time runs out")
 					.SetSpeaker("Narrator"),
