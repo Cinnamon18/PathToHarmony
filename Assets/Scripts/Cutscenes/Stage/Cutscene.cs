@@ -93,7 +93,7 @@ namespace Cutscenes.Stages {
 				S().SetMessage("Look how many expressions i can make!")
 					.SetSpeaker("Juniper").SetExpression("Smile"),
 				S().SetMessage("Juniper takes a deep breath, activating her clone-jutsu.")
-				.SetSpeaker("Narrator"),
+				,
 				S().AddLeaver("Narrator"),
 				S().AddActor(CutsceneSide.Left, "JuniperActor", "Juniper 2"),
 				S().SetMessage("Grrr!")
@@ -134,9 +134,11 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Narrator"),
 				S().SetMessage("You won't have any input this battle, but next time you'll play as Blair and victory will be your responsibility!")
 					.SetSpeaker("Narrator"),
+				S().SetMessage("You can move the camera with wasd, or by moving your cursor to the edge of the screen.	")
+					.SetSpeaker("Narrator"),
 				S().SetMessage("There are six different game objectives.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("Capture a VIP")
+				S().SetMessage("Intercept a VIP")
 					.SetSpeaker("Narrator"),
 				S().SetMessage("Escort a VIP")
 					.SetSpeaker("Narrator"),
@@ -243,20 +245,16 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
             return new StageBuilder[] {
 				// PostTutorial
-                S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				// S().SetMessage("Blair has successfully won the mock battle with Juniper.")
-				// 	.SetSpeaker("Narrator"),
+				// 	,
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
                 S().AddActor(CutsceneSide.FarRight, "SoldierActor", "Headmaster"),
                 S().SetMessage("As it is tradition, his majesty the King himself will grant the title of Royal Officer to the victor of the graduation ceremony. Cadet Blair, please step forward.")
                     .SetSpeaker("Headmaster"),
-                S().SetMessage("Instructors, knights and the marshal on the spectator seats all look baffled at the old headmaster’s words.")
-                    .SetSpeaker("Narrator"),
-                S().SetMessage("They look back and forth between the headmaster, who is only beginning to realize his mistake, and the empty throne at the center.")
-                    .SetSpeaker("Narrator"),
+                S().SetMessage("Instructors, knights and the marshal on the spectator seats all look baffled at the old headmaster’s words."),
+                S().SetMessage("They look back and forth between the headmaster, who is only beginning to realize his mistake, and the empty throne at the center."),
                 S().AddActor(CutsceneSide.Right, "NarratorActor", "Cadets"),
-                S().SetMessage("Blair draws their sword and points it, flat side of the blade facing up, to the empty throne.")
-                    .SetSpeaker("Narrator"),
+                S().SetMessage("Blair draws their sword and points it, flat side of the blade facing up, to the empty throne."),
                 S().SetMessage("Glory to his majesty, the King!")
                     .SetSpeaker("Blair").SetExpression("Neutral"),
                 S().SetMessage("Glory to his majesty, the King!")
@@ -270,14 +268,11 @@ namespace Cutscenes.Stages {
 				// Scene 1
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
                 S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
-                S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
                 S().SetMessage("Blair sits alone on the spectator seat, facing the empty field " +
-                    "where the mock battle took place. Juniper walks up the stepped seats and sits next to Blair.")
-                    .SetSpeaker("Narrator"),
+                    "where the mock battle took place. Juniper walks up the stepped seats and sits next to Blair."),
                 S().SetMessage("If anyone saw us, they’d think I’m the victor and you're the loser.")
                     .SetSpeaker("Juniper").SetExpression("Smile"),
-                S().SetMessage("Blair chuckles and glances at the empty throne to their right.")
-                    .SetSpeaker("Narrator"),
+                S().SetMessage("Blair chuckles and glances at the empty throne to their right."),
                 S().SetMessage("I’ve dreamt of meeting his majesty since I was a child.")
                     .SetSpeaker("Blair").SetExpression("Smile"),
                 S().SetMessage("You know he’s leading an army on the field.")
@@ -349,10 +344,7 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
 			return new StageBuilder[] {
 				// Scene 2
-				S().AddActor(CutsceneSide.FarLeft, "NarratorActor", "Narrator"),
-				S().SetMessage("Western front. Inside Lord Sweyn’s tent, days later.")
-					.SetSpeaker("Narrator"),
-				S().AddLeaver("Narrator"),
+				S().SetMessage("Western front. Inside Lord Sweyn’s tent, days later."),
 				S().AddActor(CutsceneSide.FarLeft, "SweynActor", "Sweyn"),
 				S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
 				S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
@@ -438,12 +430,9 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Post-battle 1
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
-				S().SetMessage("Xingatan soldiers are busy moving corpses into a pile. Brutal warriors of Tsubin have turned into ragdolls;")
-					.SetSpeaker("Narrator"),
-                S().SetMessage("their arms and legs flailing about helplessly in the hands of Xingatan soldiers. Blair and Juniper watches the scene from a distance.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Xingatan soldiers are busy moving corpses into a pile. Brutal warriors of Tsubin have turned into ragdolls;"),
+                S().SetMessage("their arms and legs flailing about helplessly in the hands of Xingatan soldiers. Blair and Juniper watches the scene from a distance."),
                 S().SetMessage("I’ve ordered neighbouring garrisons to reinforce here.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("This isn’t how I imagined a battle. I don’t know what I imagined.")
@@ -462,14 +451,12 @@ namespace Cutscenes.Stages {
 				// Scene Transition
 				S().AddLeaver("Blair"),
 				S().AddLeaver("Juniper"),
-				S().AddLeaver("Narrator"),
 				S().SetBackground("TempBackground"),
 				// Scene 3
-				S().AddActor(CutsceneSide.Right, "NarratorActor", "Narrator"),
-				S().SetMessage("Lord Sweyn’s camp. The whole camp appears much busier.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Lord Sweyn’s camp. The whole camp appears much busier."),
 				S().AddActor(CutsceneSide.FarLeft, "SweynActor", "Sweyn"),
 				S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
+				S().AddActor(CutsceneSide.Right, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.FarRight, "BlairActor", "Blair"),
 				S().SetMessage("So, enemies were already crossing behind us. Great work retaking Kova, because Tsubin ships are approaching. They will land within the next three hours.")
 					.SetSpeaker("Sweyn"),
@@ -479,15 +466,12 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
 				S().SetMessage("You two will stay with me at the center to hold the line while archers and mages bombard the landing.")
 					.SetSpeaker("Sweyn"),
-				S().SetMessage("Bruno has experiences leading cavalry, so he will lead a group to keep the enemies from flanking us from our east. I have a knight leading another cavalry group to our west.")
+				S().SetMessage("Bruno has a experience leading cavalry, so he will lead a group to keep the enemies from flanking us from our east. I have a knight leading another cavalry group to our west.")
 					.SetSpeaker("Sweyn"),
-				S().SetMessage("Blair and Juniper look at the tactical map drawn out on the table in silence, still shaken by their last battle.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Blair and Juniper look at the tactical map drawn out on the table in silence, still shaken by their last battle."),
 				S().SetMessage("We form up in 30 minutes. I’ll send for you when we do. Get some rest.")
 					.SetSpeaker("Sweyn"),
 				S().AddLeaver("Sweyn"),
-				S().AddLeaver("Narrator"),
-				S().AddActor(CutsceneSide.Right, "JuniperActor", "Juniper"),
 				S().SetMessage("War isn’t quite what you believed to be, is it?")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
 				S().SetMessage("No. I imagined a sense of pride and accomplishment. In reality, I was just relieved it was over.")
@@ -520,7 +504,6 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Post-battle 2
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().AddActor(CutsceneSide.FarRight, "SoldierActor", "Sir Tibolt"),
 				S().SetMessage("Royal Officer Blair! Royal Officer Blair!")
 				   .SetSpeaker("Sir Tibolt"),
@@ -528,8 +511,7 @@ namespace Cutscenes.Stages {
 				   .SetSpeaker("Blair").SetExpression("Frown"),
 				S().SetMessage("Lord Sweyn is dead.")
 					.SetSpeaker("Sir Tibolt"),
-				S().SetMessage("A brief silence sets in between them amidst the cacophony of the raging battle.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("A brief silence sets in between them amidst the cacophony of the raging battle."),
 				S().SetMessage("Who’s his heir?")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("Lady Bridget is ruling his land in her father’s stead.")
@@ -552,12 +534,10 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Blair").SetExpression("Frown"),
 				S().SetMessage("No one will lead it.")
 					.SetSpeaker("Sir Tibolt"),
-				S().SetMessage("Blair looks away to the front line tightly locked in a close combat.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Blair looks away to the front line tightly locked in a close combat."),
 				S().SetMessage("‘What would his majesty do?’")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
-				S().SetMessage("There are endless waves of Tsubin warriors freshly landing on the river bank beyond it.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("There are endless waves of Tsubin warriors freshly landing on the river bank beyond it."),
 				S().SetMessage("It is not a suicide mission. Because I will lead it.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().AddActor(CutsceneSide.Right, "JuniperActor", "Juniper"),
@@ -600,11 +580,11 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Pre-battle 3
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().SetMessage("Your lord is dead, and I am your new commander. You might think why would a commander lead a suicide mission. " +
-					"I’m leading, because it’s not a suicide mission.")
+				S().SetMessage("Your lord is dead, and I am your new commander. You might think why would a commander lead a suicide mission.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
-				S().SetMessage("I don’t intend to die here and neither should you. All I’m asking is to " +
-					"hold the line until our cavalry reaches us. Hold the line!")
+				S().SetMessage("I’m leading, because it’s not a suicide mission. I don’t intend to die here and neither should you.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("All I’m asking is to hold the line until our cavalry reaches us. Hold the line!")
 					.SetSpeaker("Blair").SetExpression("Neutral")
 			};
 		}
@@ -643,12 +623,10 @@ namespace Cutscenes.Stages {
 				S().SetBackground("TempBackground"),
 				// Scene 4
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().AddActor(CutsceneSide.FarRight, "BrunoActor", "Bruno"),
 				S().AddActor(CutsceneSide.Right, "JuniperActor", "Juniper"),
-				S().SetMessage("The sound of marching steps, horseshoes and cart wheels repeats in calming rhythm. " +
-					"Yet, Blair can still hear the clashing of metal and screams of anger and pain.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("The sound of marching steps, horseshoes and cart wheels repeats in calming rhythm."),
+				S().SetMessage("Yet, Blair can still hear the clashing of metal and screams of anger and pain."),
 				S().SetMessage("Are you sure you want me in command, not you?")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("I’ve been in command of a large group before. It just isn’t me.")
@@ -665,9 +643,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Bruno").SetExpression("Frown"),
 				S().SetMessage("What is that supposed to mean?")
 					.SetSpeaker("Blair").SetExpression("Frown"),
-				S().SetMessage("Bruno, caught off guard by his own words, avoids Blair’s inquisitive glare and looks forward. A rider holding the royal banner approaches.")
-					.SetSpeaker("Narrator"),
-				S().AddLeaver("Narrator"),
+				S().SetMessage("Bruno, caught off guard by his own words, avoids Blair’s inquisitive glare and looks forward. A rider holding the royal banner approaches."),
 				S().AddActor(CutsceneSide.Left, "SoldierActor", "Messenger"),
 				S().SetMessage("Commander Blair. I have an urgent order from his majesty the King.")
 					.SetSpeaker("Messenger"),
@@ -752,7 +728,7 @@ namespace Cutscenes.Stages {
 				S().SetMessage("Royal guard? Why aren’t you with the King?")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("We were escorting a convoy of royal possessions to the King but we were ambushed. " +
-					"We must track them down!  The Royal Guard asks you to track down and retrieve the possessions we lost.")
+					"We need you to track down and retrieve the possessions we lost.")
 					.SetSpeaker("Shreya"),
 				S().SetMessage("What are these royal possessions?")
 					.SetSpeaker("Juniper").SetExpression("Frown"),
@@ -764,15 +740,16 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Bruno").SetExpression("Frown"),
 				S().SetMessage("They took the carts to their camp, and I know which direction it is.")
 					.SetSpeaker("Shreya"),
-				S().SetMessage("If we attack their camp, raiding parties on the field will scatter and dissolve. Since our missions align, sure. Show us the way, Captain.")
+				S().SetMessage("If we attack their camp, raiding parties on the field will scatter and dissolve.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
-				S().SetMessage("Thank you, Commander, but I must ask you one more thing. You must not open any chests that we retrieve. " +
-					"If you do, it will be considered a crime against the royal family.")
+				S().SetMessage("Since our missions align, sure. Show us the way, Captain.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("Thank you, Commander, but I must ask you one more thing. You must not open any chests that we retrieve.")
+					.SetSpeaker("Shreya"),
+				S().SetMessage("If you do, it will be considered a crime against the royal family.")
 					.SetSpeaker("Shreya"),
 				S().AddLeaver("Blair"),
-				S().AddActor(CutsceneSide.FarLeft, "NarratorActor", "Narrator"),
-				S().SetMessage("Blair nods without giving Shreya’s demand much thought. Juniper takes Bruno aside.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Blair nods without giving Shreya’s demand much thought. Juniper takes Bruno aside."),
 				S().SetMessage("You’ve worked with the King before the plague, right?")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().SetMessage("Five years ago, when Corbita raided our borders.")
@@ -840,14 +817,12 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
 			return new StageBuilder[] {
 				// Scene 5
-				S().AddActor(CutsceneSide.Right, "NarratorActor", "Narrator"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
+				S().AddActor(CutsceneSide.Right, "BrunoActor", "Bruno"),
 				S().AddActor(CutsceneSide.FarRight, "SoldierActor", "Soldier"),
-				S().SetMessage("A wounded soldier lies on the ground. Life is visibly escaping from his terrified eyes. " +
-					"A healer is trying his healing magic on the soldier’s wounds again and again to no avail. Next to them " +
-					"lies the corpse of the enemy commander and a strange weapon that shines bright by itself.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("A wounded soldier lies on the ground. Life is visibly escaping from his terrified eyes."),
+				S().SetMessage("A healer is trying his healing magic on the soldier’s wounds again and again to no avail."),
+				S().SetMessage("Next to them lies the corpse of the enemy commander and a strange weapon that shines bright by itself."),
 				S().SetMessage("What happened here?")
 					.SetSpeaker("Bruno").SetExpression("Frown"),
 				S().SetMessage("The enemy commander lunged at us. We got her, but she still managed to stab one of us before she fell.")
@@ -855,10 +830,8 @@ namespace Cutscenes.Stages {
 				S().SetMessage("If it was a simple stab wound, why can’t our healer heal it?")
 					.SetSpeaker("Blair").SetExpression("Frown"),
 				S().AddLeaver("Soldier"),
-				S().AddLeaver("Bruno"),
 				S().SetMessage("Juniper suddenly yells at Captain Shreya to stop. Shreya is standing by the corpse of the " +
-					"enemy commander. The strange weapon is gone from the ground.")
-					.SetSpeaker("Narrator"),
+					"enemy commander. The strange weapon is gone from the ground."),
 				S().AddActor(CutsceneSide.FarRight, "ShreyaActor", "Shreya"),
 				S().AddActor(CutsceneSide.Left, "JuniperActor", "Juniper"),
 				S().SetMessage("What do you have in your hands, Captain?")
@@ -871,16 +844,18 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Shreya"),
 				S().SetMessage("Oh, I can do better.")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
-				S().SetMessage("Juniper walks up to the elegant chest with a royal seal on it still loaded on the back of a cart. " +
-					"She opens it without hesitation.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Juniper walks up to the elegant chest with a royal seal on it still loaded on the back of a cart. She opens it without hesitation."),
 				S().SetMessage("Juniper! What did you...?")
 					.SetSpeaker("Blair").SetExpression("Angry"),
-				S().SetMessage("Come take a look at what the Royal Guard was sent to transport. It’s filled with enough ‘Pieces of Heaven’ to cure half the plagued population of Xingata. Care to explain, Captain?")
+				S().SetMessage("Come take a look at what the Royal Guard was sent to transport.")
+					.SetSpeaker("Juniper").SetExpression("Neutral"),
+				S().SetMessage("It’s filled with enough ‘Pieces of Heaven’ to cure half the plagued population of Xingata. Care to explain, Captain?")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().SetMessage("I have nothing to say.")
 					.SetSpeaker("Shreya"),
-				S().SetMessage("So you knew? The royal family was sitting on this much cure while its subjects suffered and died in misery! I know a ‘Piece of Heaven’ when I see one. That dagger in your hand is made out of it, isn’t it? I didn’t even know you could weaponize the crystals.")
+				S().SetMessage("So you knew? The royal family was sitting on this much cure while its subjects suffered and died in misery!")
+					.SetSpeaker("Juniper").SetExpression("Angry"),
+				S().SetMessage("I know a ‘Piece of Heaven’ when I see one. That dagger in your hand is made out of it, isn’t it? I didn’t even know you could weaponize the crystals.")
 					.SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("Stop. We’re done here. Burn the bodies and pack up.")
 					.SetSpeaker("Blair").SetExpression("Frown"),
@@ -892,11 +867,11 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("He would never betray Xingata! He is everything we hold dear and look up to! We deliver the royal possessions to the King. That’s an order.")
 					.SetSpeaker("Blair").SetExpression("Angry"),
-				S().SetMessage("Juniper is furious, but the army is already following its commander’s order.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Juniper is furious, but the army is already following its commander’s order."),
 				S().AddLeaver("Shreya"),
-				S().SetMessage("Sometime later, Juniper sneaks up on a chest through the confusion of hustling soldiers, picks up a ‘Piece of Heaven’ and hides it in her knapsack. As soon as she turns around, her eyes meet Blair’s gaze from a distance. Their eyes lock for a long moment, then Blair walks away.")
-					.SetSpeaker("Narrator")
+				S().SetMessage("Sometime later, Juniper sneaks up on a chest through the confusion of hustling soldiers, picks up a ‘Piece of Heaven’ and hides it in her knapsack."),
+				S().SetMessage("As soon as she turns around, her eyes meet Blair’s gaze from a distance. Their eyes lock for a long moment, then Blair walks away.")
+					
 			};
 		}
 	}
@@ -924,23 +899,18 @@ namespace Cutscenes.Stages {
 				// Scene 6
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.FarRight, "RouenActor", "King Rouen"),
-				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
-				S().SetMessage("Blair, immediately after arriving at Xingatan main army camp near Harmony Crater, is called to the King’s tent.")
-					.SetSpeaker("Narrator"),
-				S().SetMessage("Inside his tent, King Rouen, in his sweat-stained tunic, sits at the end of a long table. He is joined by the " +
-					"marshall and vassal lords. He throws a cup of wine across his tent in fury.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Blair, immediately after arriving at Xingatan main army camp near Harmony Crater, is called to the King’s tent."),
+				S().SetMessage("Inside his tent, King Rouen, in his sweat-stained tunic, sits at the end of a long table."),
+				S().SetMessage("He is joined by the marshall and vassal lords. He throws a cup of wine across his tent in fury."),
 				S().SetMessage("Get the hell out! All of you. What good is your counsel if all you’re going to tell me is it can’t be done?")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("Blair steps aside while the war council leaves.Marshall, looking tired, recognizes Blair and puts a hand on Blair’s shoulder, then walks out.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Blair steps aside while the war council leaves.Marshall, looking tired, recognizes Blair and puts a hand on Blair’s shoulder, then walks out."),
 				S().SetMessage("Your majesty. It is an honor to finally...")
 					.SetSpeaker("Blair").SetExpression("Smile"),
 				S().SetMessage("Don’t just stand there, sit.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("Blair freezes for a brief moment while the King yells outside to bring in more drinks. " +
-					"Blair eventually takes a seat at the King’s table. Rouen starts digging into the steak on his plate.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Blair freezes for a brief moment while the King yells outside to bring in more drinks."),
+				S().SetMessage("Blair eventually takes a seat at the King’s table. Rouen starts digging into the steak on his plate."),
 				S().SetMessage("I’ve been hearing your name for the past weeks. Quite an achievement for a fresh graduate.")
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("Thank you, your majesty.")
@@ -955,20 +925,19 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Blair").SetExpression("Smile"),
 				S().SetMessage("You heard the question. Don’t make me repeat it.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("… I grew up reading and listening to the tales of our kings and queens. Defenders of Xingatan values and examples of Xingatan virtues. " +
-					"Heroes who put their kingdom before themselves. I grew up looking up to them, sir. I’ve always wanted to be like them. I’ve wanted to be like....")
+				S().SetMessage("… I grew up reading and listening to the tales of our kings and queens. Defenders of Xingatan values and examples of Xingatan virtues.")
 					.SetSpeaker("Blair").SetExpression("Smile"),
-				S().SetMessage("Blair’s last word is barely audible over King Rouen’s sudden yelp.Rouen drops his fork and grabs his jaw.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Heroes who put their kingdom before themselves. I grew up looking up to them, sir. I’ve always wanted to be like them. I’ve wanted to be like....")
+					.SetSpeaker("Blair").SetExpression("Smile"),
+				S().SetMessage("Blair’s last word is barely audible over King Rouen’s sudden yelp.Rouen drops his fork and grabs his jaw."),
 				S().SetMessage("Fuck!")
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("Sir?")
 					.SetSpeaker("Blair").SetExpression("Surprised"),
 				S().SetMessage("Damn toothache.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("When his pain subsides, Rouen eyes Blair for a moment like a detective trying to catch a lie. " +
-					"There isn’t a trace of flattery in Blair’s face. Rouen chuckles.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("When his pain subsides, Rouen eyes Blair for a moment like a detective trying to catch a lie."),
+				S().SetMessage("There isn’t a trace of flattery in Blair’s face. Rouen chuckles."),
 				S().SetMessage("You know why I’ve called you?")
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("I’m sure Captain Shreya gave a full report, sir.")
@@ -977,16 +946,18 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("I will take full responsibility of…")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
-				S().SetMessage("I didn’t call you to punish you. Any of you. You proved your loyalty by delivering the crystals back to me. " +
-					"Tomorrow, all four powers of the world will clash at Harmony Crater. The following battles will determine the fate of this world. " +
-					"I want you and your army to lead the charge. Pave the way to a world of everlasting peace under my rule.")
+				S().SetMessage("I didn’t call you to punish you. Any of you. You proved your loyalty by delivering the crystals back to me.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("Blair’s eyes redden.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Tomorrow, all four powers of the world will clash at Harmony Crater. The following battles will determine the fate of this world.")
+					.SetSpeaker("King Rouen"),
+				S().SetMessage("I want you and your army to lead the charge. Pave the way to a world of everlasting peace under my rule.")
+					.SetSpeaker("King Rouen"),
+				S().SetMessage("Blair’s eyes redden."),
 				S().SetMessage("It will be my honor.")
 					.SetSpeaker("Blair").SetExpression("Smile"),
-				S().SetMessage("Good. Before I let you go, my quartermaster says the number of crystals don’t add up from the chests you retrieved. " +
-					"You don’t happen to know anything about that, do you?")
+				S().SetMessage("Good. Before I let you go, my quartermaster says the number of crystals don’t add up from the chests you retrieved.")
+					.SetSpeaker("King Rouen"),
+				S().SetMessage("You don’t happen to know anything about that, do you?")
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("… It must have been Corbitans, sir.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
@@ -1000,7 +971,6 @@ namespace Cutscenes.Stages {
 				S().SetBackground("TempBackground"),
 				// Pre-battle 6
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().AddActor(CutsceneSide.Right, "JuniperActor", "Juniper"),
 				S().AddActor(CutsceneSide.FarRight, "BrunoActor", "Bruno"),
 				S().SetMessage("The first wave to hit the foot of the wall isn’t meant to survive the siege. You know the King is sending us to our deaths, right?")
@@ -1009,11 +979,12 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("No. You must replace it with new ones. Then, you are grown up.")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
-				S().SetMessage("Blair thinks for a moment, then turns to the army.")
-					.SetSpeaker("Narrator"),
-				S().SetMessage("You haven’t known me for long, but have I ever failed you? I haven’t lost a single battle. " +
-					"Beyond that Velgarian fortifications lie the cure. Your ailing families back home are waiting for you, YOU to bring them back. " +
-					"I won’t fail you now. I won’t fail Xingata. Follow me to the top of the Crater, and I will give you the cure.")
+				S().SetMessage("Blair thinks for a moment, then turns to the army."),
+				S().SetMessage("You haven’t known me for long, but have I ever failed you? I haven’t lost a single battle.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("Beyond that Velgarian fortifications lie the cure. Your ailing families back home are waiting for you, YOU to bring them back.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("I won’t fail you now. I won’t fail Xingata. Follow me to the top of the Crater, and I will give you the cure.")
 					.SetSpeaker("Blair").SetExpression("Neutral")
 			};
 		}
@@ -1040,12 +1011,10 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
 			return new StageBuilder[] {
 				// Post-battle 6
-				S().AddActor(CutsceneSide.FarLeft, "NarratorActor", "Narrator"),
-				S().SetMessage("Blair, Juniper and Bruno stand atop the rim of the crater, bloodied and exhausted. " +
-					"Battle is still fierce along the rim of the Crater. Across the vast inner crater lie thousands of " +
-					"shattered pieces of charred meteorites of various sizes among Velgarian tents. ‘Pieces of Heaven’ " +
-					"that are embedded into the meteorites glitter with light.")
-					.SetSpeaker("Narrator")
+				S().SetMessage("Blair, Juniper and Bruno stand atop the rim of the crater, bloodied and exhausted. Battle is still fierce along the rim of the Crater."),
+				S().SetMessage("Across the vast inner crater lie thousands of shattered pieces of charred meteorites of various sizes among Velgarian tents."),
+				S().SetMessage("‘Pieces of Heaven’ that are embedded into the meteorites glitter with light.")
+					
 			};
 		}
 	}
@@ -1083,7 +1052,9 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("Anything for you, your majesty.")
 					.SetSpeaker("Blair").SetExpression("Smile"),
-				S().SetMessage("Corbita and Velgari are retreating. Corbitan cavalries were of no use attacking up the slope, and the Velgarians that sent Corbitans home saw their lines breaking on the other sides. Ralley your soldiers and join the rank. We now face the full might of Tsubin.")
+				S().SetMessage("Corbita and Velgari are retreating. Corbitan cavalries were of no use attacking up the slope, and the Velgarians")
+					.SetSpeaker("King Rouen"),
+				S().SetMessage("that sent Corbitans home saw their lines breaking on the other sides. Ralley your soldiers and join the rank. We now face the full might of Tsubin.")
 					.SetSpeaker("King Rouen")
 			};
 		}
@@ -1111,16 +1082,11 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Scene 7
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.Right, "NarratorActor", "Narrator"),
-				S().SetMessage("Inside Blair’s tent, Blair sits alone on the bed in pitch black darkness. " +
-					"In nocturnal silence, Blair’s mind alone is at war.")
-					.SetSpeaker("Narrator"),
-				S().SetMessage("Blair doesn’t hear the approaching footsteps. A shadow enters Blair’s tent. " +
-					"Blair tries to say something in protest, but a radiant dagger made out of pure crystal is plunged " +
-					"through Blair’s abdomen. The assassin pulls out the dagger for a second strike, but Juniper " +
-					"and Bruno barge in. Bruno lunges to grapple the assassin, but the assassin escapes after a brief " +
-					"struggle and runs out the tent.Bruno pursues.Juniper steps outside and screams for a healer.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Inside Blair’s tent, Blair sits alone on the bed in pitch black darkness. In nocturnal silence, Blair’s mind alone is at war."),
+				S().SetMessage("Blair doesn’t hear the approaching footsteps. A shadow enters Blair’s tent."),
+				S().SetMessage("Blair tries to say something in protest, but a radiant dagger made out of pure crystal is plunged through Blair’s abdomen."),
+				S().SetMessage("The assassin pulls out the dagger for a second strike, but Juniper and Bruno barge in. Bruno lunges to grapple the assassin,"),
+				S().SetMessage("but the assassin escapes after a brief struggle and runs out the tent. Bruno pursues. Juniper steps outside and screams for a healer."),
 				S().AddActor(CutsceneSide.Left, "SoldierActor", "Healer"),
 				S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
 				S().SetMessage("I...I can’t.")
@@ -1129,9 +1095,7 @@ namespace Cutscenes.Stages {
 				  .SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("My magic isn’t working on the commander’s wound. I can’t heal it!")
 				  .SetSpeaker("Healer").SetExpression(""),
-				S().SetMessage("Blair’ wound is bleeding with no sign of slowing down.Their face is trembling in terror. " +
-					"Juniper pulls out a ‘Piece of Heaven’ from under her tunic.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Blair’ wound is bleeding with no sign of slowing down.Their face is trembling in terror. Juniper pulls out a ‘Piece of Heaven’ from under her tunic."),
 				S().SetMessage("Do you know how to use it?")
 				.SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().SetMessage("Where did you...?")
@@ -1142,36 +1106,33 @@ namespace Cutscenes.Stages {
 				  .SetSpeaker("Healer").SetExpression(""),
 				S().SetMessage("Just do it!")
 				  .SetSpeaker("Juniper").SetExpression("Angry"),
-				S().SetMessage("The light of the crystal slowly dims as the healer murmurs her incantations. Bleeding " +
-					"slows to a stop, then the wound starts to seal up.Blair’s quivering iris finds its focus again.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("The light of the crystal slowly dims as the healer murmurs her incantations."),
+				S().SetMessage("Bleeding slows to a stop, then the wound starts to seal up.Blair’s quivering iris finds its focus again."),
 				S().SetMessage("I thought I was losing you.")
 				  .SetSpeaker("Juniper").SetExpression("Smile"),
 				S().SetMessage("Thank you. And I’m sorry. That crystal was meant for your sister.")
 				  .SetSpeaker("Blair").SetExpression("Smile"),
 				S().SetMessage("She isn’t dying in front my eyes.")
 				  .SetSpeaker("Juniper").SetExpression("Neutral"),
-				S().AddLeaver("Narrator"),
 				S().AddLeaver("Healer"),
-				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().AddActor(CutsceneSide.Right, "BrunoActor", "Bruno"),
-				S().SetMessage("Bruno comes back into the tent, angry and frustrated.")
-				   .SetSpeaker("Narrator"),
-				S().SetMessage("Thank the gods you are alive, Blair. I lost him. He must have help within our army, " +
-				   "just like the ones that attacked Juniper and me.")
+				S().SetMessage("Bruno comes back into the tent, angry and frustrated."),
+				S().SetMessage("Thank the gods you are alive, Blair. I lost him. He must have help within our army, just like the ones that attacked Juniper and me.")
 				   .SetSpeaker("Bruno").SetExpression("Angry"),
 				S().SetMessage("Or he’s part of our army.")
 				   .SetSpeaker("Juniper").SetExpression("Angry"),
-				S().SetMessage("Bruno, with his eyes closed, silently nods.")
-				   .SetSpeaker("Narrator"),
+				S().SetMessage("Bruno, with his eyes closed, silently nods."),
 				S().SetMessage("What are you saying?")
 				   .SetSpeaker("Blair").SetExpression("Frown"),
-				S().SetMessage("The assassins had to be sent by the King. Who else has crystalline daggers? We also know " +
-				   "he’s been hoarding the crystals while his subjects died covered in their own puss.")
+				S().SetMessage("The assassins had to be sent by the King. Who else has crystalline daggers?")
 				   .SetSpeaker("Juniper").SetExpression("Angry"),
-				S().SetMessage("One of our soldiers told me that royal wizards are performing a ritual at the center of the " +
-	               "Crater as we speak. The King must be turning the crystals into weapons once again. This time, all of them at once. " +
-				   "We must challenge the King. That is the only way to save Xingata.")
+				S().SetMessage("We also knowhe’s been hoarding the crystals while his subjects died covered in their own puss.")
+				   .SetSpeaker("Juniper").SetExpression("Angry"),
+				S().SetMessage("One of our soldiers told me that royal wizards are performing a ritual at the center of the Crater as we speak.")
+					.SetSpeaker("Bruno").SetExpression("Neutral"),
+				S().SetMessage("The King must be turning the crystals into weapons once again. This time, all of them at once.")
+					.SetSpeaker("Bruno").SetExpression("Neutral"),
+				S().SetMessage("We must challenge the King. That is the only way to save Xingata.")
 				   .SetSpeaker("Bruno").SetExpression("Neutral"),
 				S().SetMessage("Blair. He is not the hero of your childhood. Be the leader Xingata needs you to be.")
 				   .SetSpeaker("Juniper").SetExpression("Neutral")
@@ -1202,24 +1163,24 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Scene 8
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().AddActor(CutsceneSide.FarRight, "RouenActor", "King Rouen"),
-				S().SetMessage("At dawn, thousands of Xingatan soldiers stand at Harmony Crater. " +
-					"All of ‘Pieces of Heaven’ have disappeared from scattered meteorites. In the center of them all, " +
-					"King Rouen stands with a heavenly sword in his hand. Made of pure crystals, the sword emanates a " +
-					"blinding light that pulses like a heartbeat.")
-					.SetSpeaker("Narrator"),
-				S().SetMessage("Last night, a hero of Royal Retinue, Commander Blair has been killed by assassins " +
-					"sent from our enemies. Cowards! They show in their despicable act that they are not rulers " +
-					"chosen by the gods. But I am. Yesterday’s victory is the gods’ proclamation that it is not my will, " +
-					"but my fate to rule. All the world's ‘Pieces of Heaven’ have been condensed into this sword. " +
-					"It is the only salvation from the plague. And now that the gods have gifted it to me, I am humanity’s " +
-					"only salvation. Through me and only me, this world will heal and be united.")
+				S().SetMessage("At dawn, thousands of Xingatan soldiers stand at Harmony Crater."),
+				S().SetMessage("All of ‘Pieces of Heaven’ have disappeared from scattered meteorites."),
+				S().SetMessage("In the center of them all, King Rouen stands with a heavenly sword in his hand."),
+				S().SetMessage("Made of pure crystals, the sword emanates a blinding light that pulses like a heartbeat."),
+				S().SetMessage("Last night, a hero of Royal Retinue, Commander Blair has been killed by assassins sent from our enemies.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("Rouen stops speaking when he notices Blair, Juniper and Bruno marching down the crater " +
-					"toward him. Behind them, the army that followed them from the western rivers marches with them fully armed. " +
-					"The army stops some distance away, but Blair, Juniper and Bruno come face to face with Rouen.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Cowards! They show in their despicable act that they are not rulers chosen by the gods. But I am.")
+					.SetSpeaker("King Rouen"),
+				S().SetMessage("Yesterday’s victory is the gods’ proclamation that it is not my will, but my fate to rule.")
+					.SetSpeaker("King Rouen"),
+				S().SetMessage("All the world's ‘Pieces of Heaven’ have been condensed into this sword. It is the only salvation from the plague.")
+					.SetSpeaker("King Rouen"),
+				S().SetMessage("And now that the gods have gifted it to me, I am humanity’s only salvation. Through me and only me, this world will heal and be united.")
+					.SetSpeaker("King Rouen"),
+				S().SetMessage("Rouen stops speaking when he notices Blair, Juniper and Bruno marching down the crater toward him."),
+				S().SetMessage("Behind them, the army that followed them from the western rivers marches with them fully armed."),
+				S().SetMessage("The army stops some distance away, but Blair, Juniper and Bruno come face to face with Rouen."),
 				S().SetMessage("I don’t know what you are trying to accomplish here, Blair. I’ve won.")
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("You doom our people.")
@@ -1237,10 +1198,11 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("A kingdom is built on beliefs. When that beliefs are betrayed, the kingdom falls.")
 					.SetSpeaker("Blair").SetExpression("Angry"),
-				S().SetMessage("Blair’s army marches to surround the King. Royal Retinue marches in response. Royal Guards urge " +
-					"the King to fall back. However, no other army on the Crater makes a move to stop Blair’s apparent act of revolt.")
-					.SetSpeaker("Narrator"),
-				S().SetMessage("I sent a letter to every lord last night. They have lost their loved ones while you sat on your cache of ‘Pieces of Heaven’. They won’t fight for me, but they won’t fight for you either.")
+				S().SetMessage("Blair’s army marches to surround the King. Royal Retinue marches in response. Royal Guards urge the King to fall back."),
+				S().SetMessage("However, no other army on the Crater makes a move to stop Blair’s apparent act of revolt."),
+				S().SetMessage("I sent a letter to every lord last night. They have lost their loved ones while you sat on your cache of ‘Pieces of Heaven’.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("They won’t fight for me, but they won’t fight for you either.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("This. This is why I should’ve killed you. This time, I’ll kill you with my own hands.")
 					.SetSpeaker("King Rouen")
@@ -1270,51 +1232,47 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Scene 9
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().AddActor(CutsceneSide.FarRight, "RouenActor", "King Rouen"),
-				S().SetMessage("King Rouen is defeated. He lies on the ground facing Blair who stands before " +
-					"the King with the crystalline sword in hand.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("King Rouen is defeated. He lies on the ground facing Blair who stands before the King with the crystalline sword in hand."),
 				S().SetMessage("I took you for a naive kid chasing fairy tales.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("You’ve won the war. You held all the ‘Pieces of Heaven’ your kingdom needed. " +
-					"Why choose this path when you could’ve saved your kingdom?")
+				S().SetMessage("You’ve won the war. You held all the ‘Pieces of Heaven’ your kingdom needed. Why choose this path when you could’ve saved your kingdom?")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("Because I could’ve saved the world. Rid it of war forever. Be the last king to have known the horrors of war.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("I wasn’t the only one chasing fairy tales, then. All my life, I wanted to be like you. " +
-					"I believed you were special! Like the kings and queens from the tales! But you were just a man, " +
-					"mortal and mistaken like the rest of us. Surrender now, and....")
+				S().SetMessage("I wasn’t the only one chasing fairy tales, then. All my life, I wanted to be like you.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("I believed you were special! Like the kings and queens from the tales! But you were just a man, mortal and mistaken like the rest of us.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("Surrender now, and....")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("Hand over the crown in peace? I don’t think so.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("Rouen grabs the sword’s blade and buries it in his chest.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Rouen grabs the sword’s blade and buries it in his chest."),
 				S().SetMessage("The Monarch is dead. Long live…")
 					.SetSpeaker("Rouen"),
-				S().SetMessage("Rouen, instead of finishing the phrase, grins at Blair. Blair’s tears drop on Rouen as his last breath escapes him.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Rouen, instead of finishing the phrase, grins at Blair. Blair’s tears drop on Rouen as his last breath escapes him."),
 				S().AddLeaver("King Rouen"),
-				S().SetMessage("Blair takes out the sword and picks up the crown from Rouen’s still head. Blair looks down; " +
-					"the crown on one hand and the crystalline sword on the other.")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("Blair takes out the sword and picks up the crown from Rouen’s still head."),
+				S().SetMessage("the crown on one hand and the crystalline sword on the other."),
 				S().AddActor(CutsceneSide.Right, "JuniperActor", "Juniper"),
 				S().AddActor(CutsceneSide.FarRight, "BrunoActor", "Bruno"),
 				S().SetMessage("And he dies without naming his successor. Even at his last moment, he thinks nothing of his kingdom.")
 					.SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("Blair. If we don’t take our next step very carefully...")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
-				S().SetMessage("To everyone’s shock, Blair puts on the crown.")
-					.SetSpeaker("Narrator"),
-				S().SetMessage("I won’t promise you a world without a war. I don’t claim to be humanity’s only salvation. " +
-					"I claim the crown simply by my own merit. I proved my military leadership. I proved my courage to stand " +
-					"up to the unjust, even if he is the most powerful man in Xingata. No, the world. I will prove my righteousness " +
-					"by using this sword only to root out the plague from every town of Xingata. So, I ask you. Will you believe in me to lead you?")
+				S().SetMessage("To everyone’s shock, Blair puts on the crown."),
+				S().SetMessage("I won’t promise you a world without a war. I don’t claim to be humanity’s only salvation.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
-				S().SetMessage("Bruno and Juniper are first to kneel.Blair’s army follows suit. Without any expression of agreement, thousands of soldiers standing in Harmony Crater kneel in waves.Xingatan lords look to their soldiers, their people, and one-by - one kneel before Blair.")
-					.SetSpeaker("Narrator"),
-				S().SetMessage("Blair looks to the dead eyes of Rouen, and declares:")
-					.SetSpeaker("Narrator"),
+				S().SetMessage("I claim the crown simply by my own merit. I proved my military leadership.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("I proved my courage to stand up to the unjust, even if he is the most powerful man in Xingata. No, the world.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("I will prove my righteousness by using this sword only to root out the plague from every town of Xingata. So, I ask you. Will you believe in me to lead you?")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("Bruno and Juniper are first to kneel.Blair’s army follows suit. Without any expression of agreement, thousands of soldiers standing in Harmony Crater kneel in waves."),
+				S().SetMessage("Xingatan lords look to their soldiers, their people, and one-by - one kneel before Blair."),
+				S().SetMessage("Blair looks to the dead eyes of Rouen, and declares:"),
 				S().SetMessage("Long live the Monarch.")
 					.SetSpeaker("Blair").SetExpression("Neutral")
 			};

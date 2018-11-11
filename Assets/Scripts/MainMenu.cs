@@ -34,6 +34,8 @@ public class MainMenu : MonoBehaviour {
 		optionsSliders[2].value = Persistence.SfxVolume;//PlayerPrefs.GetFloat(Persistence.SFX_VOLUME);
 		muteButton.GetComponentInChildren<Text>().text = (Persistence.IsMuted ? "Audio Muted" : "Audio Not Muted");
 
+		Audio.playSound("MainTheme1", true, true);
+
 		setupDefaultCampaign();
 	}
 

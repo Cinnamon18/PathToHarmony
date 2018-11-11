@@ -15,6 +15,16 @@ public class PauseMenu : MonoBehaviour {
 		pauseCanvas.enabled = false;
 	}
 
+	void Update() {
+		if (Input.GetButtonDown("Cancel")) {
+			if (pauseCanvas.enabled == false) {
+				showMenu();
+			} else {
+				resumeGame();
+			}
+		}
+	}
+
 	public void showMenu() {
 		pauseCanvas.enabled = true;
 	}
