@@ -138,7 +138,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Narrator"),
 				S().SetMessage("There are six different game objectives.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("Capture a VIP")
+				S().SetMessage("Intercept a VIP")
 					.SetSpeaker("Narrator"),
 				S().SetMessage("Escort a VIP")
 					.SetSpeaker("Narrator"),
