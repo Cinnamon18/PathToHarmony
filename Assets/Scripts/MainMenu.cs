@@ -64,6 +64,7 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void resumeGame() {
+		Persistence.loadProgress();
 		playGame();
 	}
 
@@ -200,6 +201,12 @@ public class MainMenu : MonoBehaviour {
 		};
 		Level level7 = new Level("CraterBattle", "7", CraterBattleCharacters, new Cutscene[] { new PreBattle7(), new PostBattle7() });
 
+		//Level 8: Battle for Xingata
+		Character[] XingataCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("King Rouen", false, new EliminationAgent())
+		};
+		Level level8 = new Level("CraterCenter", "8", XingataCharacters, new Cutscene[] { });
 
 
 
@@ -211,7 +218,8 @@ public class MainMenu : MonoBehaviour {
 			level4,
 			level5,
 			level6,
-			level7
+			level7,
+			level8
 		});
 
 		Persistence.campaign = RealActualFinCampaign;

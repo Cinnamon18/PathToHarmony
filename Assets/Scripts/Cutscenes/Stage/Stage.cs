@@ -272,13 +272,13 @@ namespace Cutscenes.Stages {
 			blackBackground.GetComponent<Image>().color = new Color(0, 0, 0, 1);
 			blackBackground.transform.SetSiblingIndex(0);
 
-			yield return Util.Lerp(0.75f, t => {
+			yield return Util.Lerp(1f, t => {
 				background.color = Color.Lerp(initial, final, t * t);
 			});
 
 			background.sprite = sprite;
 
-			yield return Util.Lerp(0.75f, t => {
+			yield return Util.Lerp(1f, t => {
 				background.color = Color.Lerp(final, initial, t * t);
 			});
 

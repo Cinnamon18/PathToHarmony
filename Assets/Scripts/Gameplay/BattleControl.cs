@@ -132,7 +132,7 @@ namespace Gameplay {
 					currentCharacter = (currentCharacter + 1) % level.characters.Length;
 					turnPlayerText.text =
 						level.characters[currentCharacter].name + "'s turn\n" +
-						"Turns remaining:  " + (objective.maxHalfTurns - ((halfTurnsElapsed / 2) + 1));
+						"Turns remaining:  " + (objective.maxHalfTurns - halfTurnsElapsed);
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
 
@@ -210,8 +210,9 @@ namespace Gameplay {
 
 						//Re-grey model if needed... I'm regretting my desire to make the health ui manager stateless :p
 						if (ourUnit is HealerUnit) {
-							if (selectedUnit.hasMovedThisTurn || selectedUnit.getHasAttackedThisTurn()) {
-								// selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+							if ((selectedUnit.hasMovedThisTurn
+								&& selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0)
+								|| selectedUnit.getHasAttackedThisTurn()) {
 								selectedUnit.greyOut();
 							}
 						}
@@ -276,7 +277,7 @@ namespace Gameplay {
 		}
 
 		private bool checkWinAndLose() {
-			if (objective.isWinCondition(halfTurnsElapsed)) {
+			if (objective.isWinCondition(halfTurnsElapsed) || Input.GetKeyDown(KeyCode.O)) {
 				advanceCampaign();
 				return true;
 
@@ -499,10 +500,10 @@ namespace Gameplay {
 			List<Coord> goalPositions = levelInfo.goalPositions;
 			switch (levelInfo.objective) {
 				case ObjectiveType.Elimination:
-					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 30);
 					break;
 				case ObjectiveType.Escort:
-					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 15);
 					//add vips
 					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[0], pos.x, pos.y, Faction.Xingata);
@@ -512,7 +513,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Intercept:
-					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 30);
 					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[1], pos.x, pos.y, enemyFaction);
 						Unit unit = battlefield.units[pos.x, pos.y];
@@ -522,7 +523,7 @@ namespace Gameplay {
 
 					break;
 				case ObjectiveType.Capture:
-					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 2);
+					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 30, goalPositions, 2);
 					foreach (Coord pos in goalPositions) {
 						Instantiate(vipCrownPrefab,
 							battlefield.map[pos.x, pos.y].Peek().transform.position + new Vector3(0, 3, 0),
@@ -540,7 +541,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Survival:
-					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 10);
+					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 15);
 					break;
 				default:
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
