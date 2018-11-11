@@ -39,6 +39,10 @@ namespace AI {
 				}
 			}
 
+			if (curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield).Count == 0) {
+				return new Move(unitCoord, unitCoord);
+			}
+
 			//Decide action based on type
 			if (curUnit is HealerUnit) {
 				Coord bestTarget = null;
@@ -199,6 +203,7 @@ namespace AI {
 					}
 				}
 			} else if (curUnit is RangedUnit) {
+				Debug.Log("Range");
 				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee
@@ -229,6 +234,7 @@ namespace AI {
 					}
 				}
 			} else if (curUnit is StatusUnit) {
+				Debug.Log("Status");
 				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee

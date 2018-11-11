@@ -555,10 +555,10 @@ namespace Gameplay {
 			if (Persistence.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
-					new Character("The evil lord zxqv", false, new EliminationAgent())
+					new Character("The evil lord zxqv", false, new defendAgent(new Coord(11,10)))
 				};
 
-				level = new Level("DemoMap2", "AITest", characters, new Cutscene[] { });
+				level = new Level("BorderPost", "1", characters, new Cutscene[] { });
 				Persistence.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 			}

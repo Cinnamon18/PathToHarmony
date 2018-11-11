@@ -114,6 +114,7 @@ namespace Units {
 				for (int x = 0; x < moveDirs.GetLength(0); x++) {
 					int targetX = currentMove.x + moveDirs[x, 0];
 					int targetY = currentMove.y + moveDirs[x, 1];
+					Debug.Log(targetX.ToString() + ", " + targetY.ToString());
 					if (targetX < battlefield.map.GetLength(0) && targetY < battlefield.map.GetLength(1) && targetX >= 0 && targetY >= 0) {
 						Stack<Tile> targetTile = battlefield.map[targetX, targetY];
 						if (targetTile.Count != 0) {
