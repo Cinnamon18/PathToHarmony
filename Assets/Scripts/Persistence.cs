@@ -5,13 +5,59 @@ using Gameplay;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public static class Persistance {
+public static class Persistence {
 	public static Campaign campaign { get; set; }
 
-	private const string CAMPAIGN_LEVEL_INDEX = "campaignLevelIndex";
+    public static float MasterVolume {
+        get {
+            return masterVolume;
+        }
+
+        set {
+            masterVolume = value;
+        }
+    }
+
+    public static float MusicVolume {
+        get {
+            return musicVolume;
+        }
+
+        set {
+            musicVolume = value;
+        }
+    }
+
+    public static float SfxVolume {
+        get {
+            return sfxVolume;
+        }
+
+        set {
+            sfxVolume = value;
+        }
+    }
+
+    public static bool IsMuted {
+        get {
+            return isMuted;
+        }
+
+        set {
+            isMuted = value;
+        }
+    }
+
+    private const string CAMPAIGN_LEVEL_INDEX = "campaignLevelIndex";
 	public const string MASTER_VOLUME = "MasterVolume";
 	public const string MUSIC_VOLUME = "MusicVolume";
-	public const string SFX_VOLUEME = "SfxVolume";
+	public const string SFX_VOLUME = "SfxVolume";
+	public const string IS_MUTED = "IsMuted";
+
+	private static float masterVolume;
+	private static float musicVolume;
+	private static float sfxVolume;
+	private static bool isMuted;
 
 	public static void saveProgress() {
 		PlayerPrefs.SetInt(CAMPAIGN_LEVEL_INDEX, campaign.levelIndex);
@@ -27,31 +73,35 @@ public static class Persistance {
 	}
 
 	public static void saveAudioSettings(AudioMixer mixer) {
-		float masterVolume = 0;
-		float musicVolume = 0;
-		float sfxVolume = 0;
-
-		mixer.GetFloat(MASTER_VOLUME, out masterVolume);
-		mixer.GetFloat(MUSIC_VOLUME, out musicVolume);
-		mixer.GetFloat(SFX_VOLUEME, out sfxVolume);
+		updateMixer(mixer);
 
 		PlayerPrefs.SetFloat(MASTER_VOLUME, masterVolume);
 		PlayerPrefs.SetFloat(MUSIC_VOLUME, musicVolume);
-		PlayerPrefs.SetFloat(SFX_VOLUEME, sfxVolume);
-
+		PlayerPrefs.SetFloat(SFX_VOLUME, sfxVolume);
+		PlayerPrefs.SetInt(IS_MUTED, isMuted?1:0);
 		PlayerPrefs.Save();
 	}
 
 	public static void loadAudioSettings(AudioMixer mixer) {
 		if (PlayerPrefs.HasKey(MASTER_VOLUME)) {
-			mixer.SetFloat(MASTER_VOLUME, PlayerPrefs.GetFloat(MASTER_VOLUME));
+			masterVolume = PlayerPrefs.GetFloat(MASTER_VOLUME);
 		}
 		if (PlayerPrefs.HasKey(MUSIC_VOLUME)) {
-			mixer.SetFloat(MUSIC_VOLUME, PlayerPrefs.GetFloat(MUSIC_VOLUME));
+			musicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME);
 		}
-		if (PlayerPrefs.HasKey(SFX_VOLUEME)) {
-			mixer.SetFloat(SFX_VOLUEME, PlayerPrefs.GetFloat(SFX_VOLUEME));
+		if (PlayerPrefs.HasKey(SFX_VOLUME)) {
+			sfxVolume = PlayerPrefs.GetFloat(SFX_VOLUME);
 		}
+		if (PlayerPrefs.HasKey(IS_MUTED)) {
+			isMuted = PlayerPrefs.GetInt(IS_MUTED) == 1;
+		}
+
+		updateMixer(mixer);
 	}
 
+	public static void updateMixer(AudioMixer mixer) {
+		mixer.SetFloat(MASTER_VOLUME, isMuted?-100:masterVolume);
+		mixer.SetFloat(MUSIC_VOLUME, isMuted?-100:musicVolume);
+		mixer.SetFloat(SFX_VOLUME, isMuted?-100:sfxVolume);
+	}
 }

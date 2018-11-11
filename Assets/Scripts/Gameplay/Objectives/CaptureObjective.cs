@@ -59,7 +59,15 @@ namespace Gameplay {
 					allCaptured = timeHeld[i] >= timeToHold && allCaptured;
 				}
 			}
-			return allCaptured;
+			
+			if (allCaptured) {
+				return true;
+			}
+			if (new EliminationObjective(battlefield, level, playerCharacter, maxHalfTurns).isWinCondition(halfTurnsElapsed)) {
+				return true;
+			}
+
+			return false;
 		}
 	}
 }

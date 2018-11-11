@@ -48,7 +48,7 @@ namespace Cutscenes.Stages {
 		private Transform textboxBackground;
 
 		[SerializeField]
-		private GameObject skipButton;
+		public GameObject skipButton;
 
 		private List<Actor> actors = new List<Actor>();
 
@@ -138,6 +138,18 @@ namespace Cutscenes.Stages {
 
 			if (stageBuilder.sfx != null) {
 				Audio.playSfx(stageBuilder.sfx);
+			}
+
+			if (stageBuilder.background != null) {
+				Sprite foundSprite = (Resources.Load<Sprite>("Sprites/" + stageBuilder.background));
+
+				if (foundSprite == null) {
+					throw new UnityException(
+						"There exists no background " + stageBuilder.background + " in the Resources/Sprites folder, or it has not been imported as a Sprite."
+					);
+				}
+
+				yield return changeBackground(foundSprite);
 			}
 
 			if (stageBuilder.message != null) {
@@ -248,6 +260,31 @@ namespace Cutscenes.Stages {
 			actors.Remove(actor);
 		}
 
+		private IEnumerator changeBackground(Sprite sprite) {
+			Color initial = background.color;
+			Color final = background.color;
+			final.a = 0;
+
+			GameObject blackBackground = Instantiate(background.gameObject,
+				background.transform.position + new Vector3(0, 0, 1),
+				background.transform.rotation,
+				background.transform.parent.transform);
+			blackBackground.GetComponent<Image>().color = new Color(0, 0, 0, 1);
+			blackBackground.transform.SetSiblingIndex(0);
+
+			yield return Util.Lerp(1f, t => {
+				background.color = Color.Lerp(initial, final, t * t);
+			});
+
+			background.sprite = sprite;
+
+			yield return Util.Lerp(1f, t => {
+				background.color = Color.Lerp(final, initial, t * t);
+			});
+
+			Destroy(blackBackground);
+		}
+
 		private Transform GetSideParent(CutsceneSide side) {
 			Transform parent = null;
 			switch (side) {
@@ -277,7 +314,14 @@ namespace Cutscenes.Stages {
 			skipButton.SetActive(true);
 		}
 
+
 		public void skipCutscene() {
+			// foreach (Actor actor in actors) {
+			// 	Destroy(actor.gameObject);
+			// }
+			// actors.Clear();
+			// textbox.AddText(Cut, stageBuilder.speaker, stageBuilder.message);
+
 			stopCurrentCutsceneLine();
 			skipCutFlag = true;
 		}

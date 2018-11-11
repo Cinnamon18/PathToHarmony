@@ -13,7 +13,6 @@ using Buffs;
 using Editors;
 using System.IO;
 using Cutscenes.Stages;
-using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace Gameplay {
@@ -32,6 +31,8 @@ namespace Gameplay {
 		private Transform tilesHolder;
 		[SerializeField]
 		private TileGenerator generator;
+		[SerializeField]
+		private FadeOutTransition fade;
 
 
 		private LevelInfo levelInfo;
@@ -58,7 +59,9 @@ namespace Gameplay {
 		[SerializeField]
 		private Image defeatImage;
 		[SerializeField]
-		private Stage cutsceneCanvas;
+		private GameObject cutsceneCanvasPrefab;
+		[SerializeField]
+		private Button skipButton;
 		[SerializeField]
 		private GameObject vipCrownPrefab;
 
@@ -73,14 +76,14 @@ namespace Gameplay {
 			turnChangeBackground.enabled = false;
 			victoryImage.enabled = false;
 			defeatImage.enabled = false;
-			cutsceneCanvas.hideVisualElements();
+
 			useNormalCamera();
 
 			getLevel();
 			deserializeMap();
 			deserializeLevel();
 
-
+			mainCamera.GetComponent<CameraController>().updateMaxPos(battlefield.map.GetLength(0), battlefield.map.GetLength(1));
 		}
 
 		// Poor man's state machine. in retrospect i have no idea why i didn't use a proper one. oh well, next game.
@@ -105,6 +108,9 @@ namespace Gameplay {
 					break;
 				case BattleLoopStage.Pick:
 					advanceBattleStage();
+					turnPlayerText.enabled = false;
+					turnChangeBackground.enabled = false;
+
 					break;
 				case BattleLoopStage.BattleLoopStart:
 					if (!battleStageChanged) {
@@ -126,7 +132,7 @@ namespace Gameplay {
 					currentCharacter = (currentCharacter + 1) % level.characters.Length;
 					turnPlayerText.text =
 						level.characters[currentCharacter].name + "'s turn\n" +
-						"Turns remaining:  " + (objective.maxHalfTurns - ((halfTurnsElapsed / 2) + 1));
+						"Turns remaining:  " + (objective.maxHalfTurns - halfTurnsElapsed);
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
 
@@ -204,8 +210,9 @@ namespace Gameplay {
 
 						//Re-grey model if needed... I'm regretting my desire to make the health ui manager stateless :p
 						if (ourUnit is HealerUnit) {
-							if (selectedUnit.hasMovedThisTurn || selectedUnit.getHasAttackedThisTurn()) {
-								// selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+							if ((selectedUnit.hasMovedThisTurn
+								&& selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0)
+								|| selectedUnit.getHasAttackedThisTurn()) {
 								selectedUnit.greyOut();
 							}
 						}
@@ -219,6 +226,8 @@ namespace Gameplay {
 					// checkWinAndLose();
 
 					ourUnit.hasMovedThisTurn = true;
+
+					await runAppropriateCutscenes();
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => {
@@ -268,7 +277,7 @@ namespace Gameplay {
 		}
 
 		private bool checkWinAndLose() {
-			if (objective.isWinCondition(halfTurnsElapsed)) {
+			if (objective.isWinCondition(halfTurnsElapsed) || Input.GetKey(KeyCode.P)) {
 				advanceCampaign();
 				return true;
 
@@ -299,15 +308,17 @@ namespace Gameplay {
 			await Task.Delay(TimeSpan.FromMilliseconds(6000));
 			victoryImage.enabled = false;
 
-			Persistance.campaign.levelIndex++;
+			Persistence.campaign.levelIndex++;
+
+			await runAppropriateCutscenes(true);
 
 			//check for end of campaign
-			if (Persistance.campaign.levelIndex >= Persistance.campaign.levels.Count()) {
-				SceneManager.LoadScene("VictoryScene");
+			if (Persistence.campaign.levelIndex >= Persistence.campaign.levels.Count()) {
+				fade.fadeToScene("VictoryScene");
 			} else {
-				Persistance.saveProgress();
+				Persistence.saveProgress();
 				//Oh Boy im glad this works.
-				SceneManager.LoadScene("DemoBattle");
+				fade.fadeToScene("DemoBattle");
 			}
 		}
 
@@ -318,7 +329,7 @@ namespace Gameplay {
 			//TODO show ui to quit or retry
 
 			//Restart the level, don't increment
-			SceneManager.LoadScene("DemoBattle");
+			fade.fadeToScene("DemoBattle");
 		}
 
 		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
@@ -361,7 +372,7 @@ namespace Gameplay {
 			unit.gameObject.transform.position = endPos;
 
 			//Yes yes i know this is terrible.
-			if(unit is RangedUnit) {
+			if (unit is RangedUnit) {
 				unit.setHasAttackedThisTurn(true);
 			}
 		}
@@ -390,9 +401,9 @@ namespace Gameplay {
 			unit.gameObject.transform.rotation = endPos;
 		}
 
-		private async Task runAppropriateCutscenes() {
+		private async Task runAppropriateCutscenes(bool afterVictoryImage = false) {
 			foreach (Cutscene cutscene in level.cutscenes) {
-				if (cutscene.executionCondition(new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage))) {
+				if (cutscene.executionCondition(new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage, afterVictoryImage))) {
 					await runCutscene(cutscene);
 					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
 					break;
@@ -401,6 +412,16 @@ namespace Gameplay {
 		}
 
 		private async Task runCutscene(Cutscene cutscene) {
+
+			//Hacky solution to cutscene canvas not being designed for multiple different cutscenes being played.
+			Stage cutsceneCanvas = Instantiate(
+				cutsceneCanvasPrefab,
+				cutsceneCanvasPrefab.transform.position,
+				cutsceneCanvasPrefab.transform.rotation,
+				this.transform)
+				.GetComponent<Stage>();
+			skipButton.onClick.AddListener(() => cutsceneCanvas.skipCutscene());
+			cutsceneCanvas.skipButton = skipButton.gameObject;
 			cutsceneCanvas.startCutscene(cutscene);
 			useCutsceneCamera();
 
@@ -409,6 +430,10 @@ namespace Gameplay {
 				//Unity, forgive me for not using coroutines. I am repentant. I understand my crimes and will not recommimt.
 				await Task.Delay(100);
 			}
+
+			//Even though the cutscene can never be accessed again, this is a whole lot cleaner.
+			Destroy(cutsceneCanvas);
+			skipButton.onClick.RemoveAllListeners();
 
 			useNormalCamera();
 		}
@@ -475,10 +500,10 @@ namespace Gameplay {
 			List<Coord> goalPositions = levelInfo.goalPositions;
 			switch (levelInfo.objective) {
 				case ObjectiveType.Elimination:
-					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 30);
 					break;
 				case ObjectiveType.Escort:
-					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 15);
 					//add vips
 					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[0], pos.x, pos.y, Faction.Xingata);
@@ -488,7 +513,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Intercept:
-					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 30);
 					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[1], pos.x, pos.y, enemyFaction);
 						Unit unit = battlefield.units[pos.x, pos.y];
@@ -498,7 +523,7 @@ namespace Gameplay {
 
 					break;
 				case ObjectiveType.Capture:
-					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 2);
+					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 30, goalPositions, 2);
 					foreach (Coord pos in goalPositions) {
 						Instantiate(vipCrownPrefab,
 							battlefield.map[pos.x, pos.y].Peek().transform.position + new Vector3(0, 3, 0),
@@ -516,7 +541,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Survival:
-					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 15);
 					break;
 				default:
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
@@ -527,22 +552,21 @@ namespace Gameplay {
 
 		private void getLevel() {
 			//This indicates the scene has been played from the editor, without first running MainMenu. This is a debug mode.
-			if (Persistance.campaign == null && Application.isEditor) {
+			if (Persistence.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
-					new Character("The evil lord zxqv", false, new eliminationAgent())
+					new Character("The evil lord zxqv", false, new EliminationAgent())
 				};
 
 				level = new Level("DemoMap2", "AITest", characters, new Cutscene[] { });
-				Persistance.campaign = new Campaign("test", 0, new[] { level });
+				Persistence.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
-				cutsceneCanvas.hideVisualElements();
 			}
 			//  else {
 			// 	Persistance.loadProgress();
 			// }
 
-			level = Persistance.campaign.levels[Persistance.campaign.levelIndex];
+			level = Persistence.campaign.levels[Persistence.campaign.levelIndex];
 			foreach (Character character in level.characters) {
 				character.agent.battlefield = this.battlefield;
 			}

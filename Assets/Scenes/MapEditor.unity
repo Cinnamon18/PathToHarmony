@@ -1481,6 +1481,11 @@ Prefab:
       objectReference: {fileID: 249689884}
     - target: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
         type: 2}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 1308532607}
+    - target: {fileID: 114573901254484572, guid: b0d77d4d3f15d974ba491bbc9aa2149a,
+        type: 2}
       propertyPath: loadFileText
       value: 
       objectReference: {fileID: 183176396}
@@ -1796,6 +1801,11 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1276193659}
   m_CullTransparentMesh: 0
+--- !u!20 &1308532607 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 20524185427130784, guid: dabee2a0e1337dd459a4e326caa905d4,
+    type: 2}
+  m_PrefabInternal: {fileID: 887119901}
 --- !u!1 &1340386494
 GameObject:
   m_ObjectHideFlags: 0

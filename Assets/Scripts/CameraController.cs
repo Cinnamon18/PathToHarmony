@@ -42,6 +42,9 @@ public class CameraController : MonoBehaviour {
 	private float maintainedDistance = 1;   //The distance intended to be maintained between the camera and the terrain, adjusted via mouse wheel.
 	private float lastPlaneViewed = 0;      //The y-coordinate of the tile being looked at. This is used to prevent things like trees and players from messing with the zoom.
 
+	private int maxXPos = 10;
+	private int maxYPos = 10;
+
 	public static bool inputEnabled = true;
 
 	// Use this for initialization
@@ -177,7 +180,7 @@ public class CameraController : MonoBehaviour {
 		//First, the focus is moved according to any translation inputs.
 		focus += Quaternion.Euler(0, gameObject.transform.rotation.eulerAngles.y, 0) * new Vector3(linearMomentum.x, 0, linearMomentum.y);
 		var unclampedFocus = focus;
-		focus = new Vector3(Mathf.Clamp(focus.x, -5, 10 * (Util.GridWidth) - 15), focus.y, Mathf.Clamp(focus.z, -5, 10 * (Util.GridWidth) - 15));
+		focus = new Vector3(Mathf.Clamp(focus.x, -5, maxXPos * (Util.GridWidth) - 15), focus.y, Mathf.Clamp(focus.z, -5, maxYPos * (Util.GridWidth) - 15));
 		if (!focus.Equals(unclampedFocus)) {
 			linearMomentum = Vector2.zero;
 		}
@@ -218,6 +221,11 @@ public class CameraController : MonoBehaviour {
 			zDistance = -(zPos % Util.GridWidth);
 		}
 		gameObject.transform.Translate(xDistance, 0, zDistance, Space.World);
+	}
+
+	public void updateMaxPos(int x, int y) {
+		this.maxXPos = x;
+		this.maxYPos = y;
 	}
 
 	public void resetCamera() {

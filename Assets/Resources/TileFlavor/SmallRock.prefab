@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4512673729373872}
   - component: {fileID: 33113217816375442}
   - component: {fileID: 23867177901492978}
-  - component: {fileID: 95373992794692662}
   m_Layer: 0
   m_Name: SmallRock
   m_TagString: Untagged
@@ -84,21 +83,3 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1254236742350408}
   m_Mesh: {fileID: 4300000, guid: 962c59814f7c82f4bb5d33dba4f65822, type: 3}
---- !u!95 &95373992794692662
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1254236742350408}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 962c59814f7c82f4bb5d33dba4f65822, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0

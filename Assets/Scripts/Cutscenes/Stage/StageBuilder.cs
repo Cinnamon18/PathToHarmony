@@ -13,6 +13,7 @@ namespace Cutscenes.Stages {
 		public string leaverName;
 		public Sprite expression;
 		public string sfx;
+		public string background;
 
 		public StageBuilder SetSpeaker(string speaker) {
 			this.speaker = speaker;
@@ -39,8 +40,19 @@ namespace Cutscenes.Stages {
 			return this;
 		}
 
+		public StageBuilder SetBackground(string background) {
+			this.background = background;
+			return this;
+		}
+
 		public StageBuilder AddActor(CutsceneSide side, string actorName, string name) {
 			Actor newcomer = Resources.Load<Actor>("Actors/" + actorName);
+			if (newcomer == null) {
+				throw new UnityException(
+					"There exists no actor in Resources/Actors with name: "
+					+ actorName
+					);
+			}
 			newcomer = GameObject.Instantiate(newcomer);
 
 			newcomer.name = name;

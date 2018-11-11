@@ -27,7 +27,8 @@ namespace Editors {
 		private Transform tilesHolder;
 		[SerializeField]
 		private TileGenerator tilesGenerator;
-	
+
+		public Camera mainCamera;
 
 		private string mapName;
 
@@ -46,6 +47,7 @@ namespace Editors {
 			//Tell editor type
 			setEditorType();
 
+			mainCamera.GetComponent<CameraController>().updateMaxPos(objs.GetLength(0), objs.GetLength(1));
 		}
 
 		void Update() {
@@ -176,23 +178,23 @@ namespace Editors {
 
 
 		public void deserializeTiles() {
-		
+
 			string mapData = Serialization.ReadData(loadFileText.text, Paths.mapsPath());
-			if (mapData != null)
-			{
+			if (mapData != null) {
 				updateMapName(loadFileText.text);
 				eraseTiles();
 				base.objs = Serialization.DeserializeTiles(mapData, tilesGenerator, tilesHolder);
 				makeYellowBaseTiles();
+				drawBorders();
+				mainCamera.GetComponent<CameraController>().updateMaxPos(objs.GetLength(0), objs.GetLength(1));
 			}
-			
+
 
 		}
 
 		private void eraseTiles() {
 
-			foreach(Transform child in tilesHolder)
-			{
+			foreach (Transform child in tilesHolder) {
 				Destroy(child.gameObject);
 			}
 
@@ -246,12 +248,11 @@ namespace Editors {
 			Tile[] flattenedTile = Util.Flatten3DArray(base.objs);
 
 			foreach (Tile tile in flattenedTile) {
-				
+
 				if (tile == null) {
 					serialized.Append(",");
 				} else {
-					if (tile.initialType == TileType.None)
-					{
+					if (tile.initialType == TileType.None) {
 						Debug.Log("Empty is here");
 					}
 					serialized.Append(tile.serialize() + ",");
@@ -272,16 +273,14 @@ namespace Editors {
 				}
 				return num;
 			}).ToArray();
-			
+
 			//Make sure dimension text is in correct format
-			if (dimensions.Length != 3)
-			{
+			if (dimensions.Length != 3) {
 				Debug.LogError("Dimension text is in incorrect format.");
-			} else
-			{
+			} else {
 				updateSize(dimensions[0], dimensions[1], dimensions[2]);
 			}
-			
+
 		}
 
 	}
