@@ -12,7 +12,7 @@ namespace AI {
 
 		private Coord capturePoint;
 
-		public defendAgent(Coord capturePoints) : base() {
+		public defendAgent(Coord capturePoint) : base() {
 			this.capturePoint = capturePoint;
 		}
 
@@ -120,7 +120,7 @@ namespace AI {
 							bestScore = Int32.MaxValue;
 							Coord bestCoord = null;
 							foreach (Coord coord in safeZone) {
-								distScore = manhattanDistance(capturePoint, coord);
+								int distScore = manhattanDistance(capturePoint, coord);
 								if (distScore < bestScore) {
 									bestScore = distScore;
 									bestCoord = coord;
@@ -222,9 +222,8 @@ namespace AI {
 						}
 						return new Move(unitCoord, bestTarget);
 					} else {
-						// Else if there are no enemies in move range, find the nearest to move to
-						targets = findNearestEnemies(unitCoord);
-						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+						// Move towards defence point
+						Coord bestCoord = nearestCoord(capturePoint, curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
 						return new Move(unitCoord, bestCoord);
 					}
 				}
@@ -252,9 +251,8 @@ namespace AI {
 						}
 						return new Move(unitCoord, bestTarget);
 					} else {
-						// Else if there are no enemies in move range, find the nearest to move to
-						targets = findNearestEnemies(unitCoord);
-						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+						// Move towards defence point
+						Coord bestCoord = nearestCoord(capturePoint, curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
 						return new Move(unitCoord, bestCoord);
 					}
 				}
