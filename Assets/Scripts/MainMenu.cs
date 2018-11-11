@@ -155,14 +155,14 @@ public class MainMenu : MonoBehaviour {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Infantry", false, new EliminationAgent())
 		};
-		Level level1 = new Level("BorderPost", "1", BorderPostCharacter, new Cutscene[] { });
+		Level level1 = new Level("BorderPost", "1", BorderPostCharacter, new Cutscene[] { new PreBattle1(), new PostBattle1() });
 
 		//Level 2: Midas river
 		Character[] MidasRiverCharacter = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Infantry", false, new EliminationAgent())
 		};
-		Level level2 = new Level("MidasRiver", "2", MidasRiverCharacter, new Cutscene[] { });
+		Level level2 = new Level("MidasRiver", "2", MidasRiverCharacter, new Cutscene[] { new PostBattle2() });
 
 
 		//Level 3: Retreat
@@ -170,35 +170,35 @@ public class MainMenu : MonoBehaviour {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Infantry", false, new EliminationAgent())
 		};
-		Level level3 = new Level("Retreat", "3", RetreatCharacters, new Cutscene[] { });
+		Level level3 = new Level("Retreat", "3", RetreatCharacters, new Cutscene[] { new PreBattle3(), new PostBattle3() });
 
 		//Level 4: Central Plains
 		Character[] CentralPlainsCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Corbitan Raiders", false, new EliminationAgent())
 		};
-		Level level4 = new Level("CentralPlains", "4", CentralPlainsCharacters, new Cutscene[] { });
+		Level level4 = new Level("CentralPlains", "4", CentralPlainsCharacters, new Cutscene[] { new PreBattle4(), new PostBattle4() });
 
 		//Level 5: Chasing
 		Character[] ChasingCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Corbitan Raiders", false, new EliminationAgent())
 		};
-		Level level5 = new Level("Chasing", "5", ChasingCharacters, new Cutscene[] { });
+		Level level5 = new Level("Chasing", "5", ChasingCharacters, new Cutscene[] { new PreBattle5(), new PostBattle5() });
 
 		//Level 6: Crater Attack
 		Character[] CraterAttackCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Velgarian Army", false, new EliminationAgent())
 		};
-		Level level6 = new Level("CraterAttack", "6", CraterAttackCharacters, new Cutscene[] { });
+		Level level6 = new Level("CraterAttack", "6", CraterAttackCharacters, new Cutscene[] { new PreBattle6(), new PostBattle6() });
 
 		//Level 7: Crater Battle
 		Character[] CraterBattleCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Army", false, new EliminationAgent())
 		};
-		Level level7 = new Level("CraterBattle", "7", CraterBattleCharacters, new Cutscene[] { });
+		Level level7 = new Level("CraterBattle", "7", CraterBattleCharacters, new Cutscene[] { new PreBattle7(), new PostBattle7() });
 
 
 

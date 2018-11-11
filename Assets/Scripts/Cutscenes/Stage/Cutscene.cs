@@ -554,13 +554,31 @@ namespace Cutscenes.Stages {
 				S().SetMessage("You can’t win an unwinnable battle just because you believe in it! That’s a fairy tale!")
 					.SetSpeaker("Juniper").SetExpression("angry"),
 				S().SetMessage("A kingdom is built on beliefs. What is a battle to a kingdom? And it’s not unwinnable, trust me. Go. You have your orders. Go!")
-					.SetSpeaker("Blair").SetExpression("Smile"),
-				// Scene Transition
-				S().AddLeaver("Blair"),
-				S().AddLeaver("Juniper"),
-				S().AddLeaver("Narrator"),
-				S().AddLeaver("Sir Tibolt"),
-				S().SetBackground(""),
+					.SetSpeaker("Blair").SetExpression("Smile")
+			};
+		}
+	}
+
+	public class PreBattle3 : Cutscene
+	{
+		public override bool executionCondition(ExecutionInfo info)
+		{
+			if (hasExecuted)
+			{
+				return false;
+			}
+			if (info.halfTurnsElapsed == 0)
+			{
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage()
+		{
+			hasExecuted = true;
+			return new StageBuilder[] {
 				// Pre-battle 3
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().SetMessage("Your lord is dead, and I am your new commander. You might think why would a commander lead a suicide mission. " +
