@@ -178,7 +178,7 @@ public class MainMenu : MonoBehaviour {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Corbitan Raiders", false, new EliminationAgent())
 		};
-		Level level4 = new Level("CentralPlains", "4", CentralPlainsCharacters, new Cutscene[] { });
+		Level level4 = new Level("CentralPlains", "4", CentralPlainsCharacters, new Cutscene[] { });	
 
 		//Level 5: Chasing
 		Character[] ChasingCharacters = new[] {
