@@ -210,8 +210,9 @@ namespace Gameplay {
 
 						//Re-grey model if needed... I'm regretting my desire to make the health ui manager stateless :p
 						if (ourUnit is HealerUnit) {
-							if (selectedUnit.hasMovedThisTurn || selectedUnit.getHasAttackedThisTurn()) {
-								// selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+							if ((selectedUnit.hasMovedThisTurn
+								&& selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0)
+								|| selectedUnit.getHasAttackedThisTurn()) {
 								selectedUnit.greyOut();
 							}
 						}
@@ -512,7 +513,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Intercept:
-					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 30);
 					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[1], pos.x, pos.y, enemyFaction);
 						Unit unit = battlefield.units[pos.x, pos.y];
@@ -522,7 +523,7 @@ namespace Gameplay {
 
 					break;
 				case ObjectiveType.Capture:
-					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 2);
+					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 30, goalPositions, 2);
 					foreach (Coord pos in goalPositions) {
 						Instantiate(vipCrownPrefab,
 							battlefield.map[pos.x, pos.y].Peek().transform.position + new Vector3(0, 3, 0),
