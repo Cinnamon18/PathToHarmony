@@ -62,7 +62,7 @@ public class MainMenu : MonoBehaviour {
 
 	public void playGame() {
 		Persistence.saveProgress();
-		fade.fadeToScene("DemoBattle");
+		fade.fadeToScene("Controls");
 	}
 
 	public void resumeGame() {

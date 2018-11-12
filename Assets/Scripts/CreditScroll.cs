@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class CreditScroll : MonoBehaviour {
 
 	[SerializeField]
-	private float scrollSpeed = 150f;
+	public float scrollSpeed = 150f;
 	[SerializeField]
 	private Text creditText;
 	public MainMenu mainMenu;
