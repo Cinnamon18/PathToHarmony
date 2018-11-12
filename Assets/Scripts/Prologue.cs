@@ -12,6 +12,7 @@ public class Prologue : MonoBehaviour {
 
 	void Start() {
 		initialScrollSpeed = scrollSpeed;
+		Audio.playSound("MainTheme1", true, true);
 	}
 
 	// Update is called once per frame
@@ -29,5 +30,9 @@ public class Prologue : MonoBehaviour {
 		}
 
 		prologueText.transform.position += new Vector3(0, scrollSpeed * Time.deltaTime, 0);
+
+		if (prologueText.transform.position.y > 1700) {
+			fade.fadeToScene("DemoBattle");
+		}
 	}
 }
