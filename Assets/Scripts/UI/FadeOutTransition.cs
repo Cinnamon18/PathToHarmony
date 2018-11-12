@@ -39,7 +39,7 @@ public class FadeOutTransition : MonoBehaviour {
 	}
 
 	public void fadeToScene(string sceneName) {
-		Util.Log("Begine fade");
+		Debug.Log("Begine fade");
 
 
 		destination = sceneName;
