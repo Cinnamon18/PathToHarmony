@@ -134,7 +134,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Narrator"),
 				S().SetMessage("You won't have any input this battle, but next time you'll play as Blair and victory will be your responsibility!")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("You can move the camera with wasd, or by moving your cursor to the edge of the screen.	")
+				S().SetMessage("You can move the camera with wasd, or by moving your cursor to the edge of the screen.")
 					.SetSpeaker("Narrator"),
 				S().SetMessage("There are six different game objectives.")
 					.SetSpeaker("Narrator"),
@@ -756,7 +756,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
 				S().SetMessage("Is it usual for our King to send his personal bodyguards away on a transport mission?")
 					.SetSpeaker("Juniper").SetExpression("Frown"),
-				S().SetMessage("No. Not even for him.")
+				S().SetMessage("No. Not even for him.")
 					.SetSpeaker("Bruno").SetExpression("Neutral")
 			};
 		}
@@ -1090,20 +1090,20 @@ namespace Cutscenes.Stages {
 				S().AddActor(CutsceneSide.Left, "SoldierActor", "Healer"),
 				S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
 				S().SetMessage("I...I can’t.")
-				  .SetSpeaker("Healer").SetExpression(""),
+				  .SetSpeaker("Healer"),
 				S().SetMessage("What do you mean you can’t?!")
 				  .SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("My magic isn’t working on the commander’s wound. I can’t heal it!")
-				  .SetSpeaker("Healer").SetExpression(""),
+				  .SetSpeaker("Healer"),
 				S().SetMessage("Blair’ wound is bleeding with no sign of slowing down.Their face is trembling in terror. Juniper pulls out a ‘Piece of Heaven’ from under her tunic."),
 				S().SetMessage("Do you know how to use it?")
 				.SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().SetMessage("Where did you...?")
-				  .SetSpeaker("Healer").SetExpression(""),
+				  .SetSpeaker("Healer"),
 				S().SetMessage("Do you or not?!")
 				  .SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("I, I do, but I don’t know if it will work on…")
-				  .SetSpeaker("Healer").SetExpression(""),
+				  .SetSpeaker("Healer"),
 				S().SetMessage("Just do it!")
 				  .SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("The light of the crystal slowly dims as the healer murmurs her incantations."),
