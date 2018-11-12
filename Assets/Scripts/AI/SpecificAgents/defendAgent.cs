@@ -11,9 +11,11 @@ namespace AI {
 	public class defendAgent : Agent {
 
 		private Coord capturePoint;
+		public List<Unit> VIPs;
 
 		public defendAgent(Coord capturePoint) : base() {
 			this.capturePoint = capturePoint;
+			this.VIPs = new List<Unit>();
 		}
 
 		public override async Task<Move> getMove() {
@@ -46,6 +48,35 @@ namespace AI {
 			
 			if (curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield).Count == 0) {
 				return new Move(unitCoord, unitCoord);
+			}
+
+			if (VIPs.Contains(curUnit)) {
+				// Evade
+				HashSet<Coord> dangerZone = enemyAttackZone(enemies);
+				HashSet<Coord> safeZone = safeMoves(unitCoord, dangerZone);
+				if (safeZone.Count > 0) {
+					bestScore = Int32.MaxValue;
+					Coord bestCoord = null;
+					foreach (Coord coord in safeZone) {
+						int distScore = sumDistances(coord, allies);
+						if (distScore < bestScore) {
+							bestScore = distScore;
+							bestCoord = coord;
+						}
+					}
+					return new Move(unitCoord, bestCoord);
+				} else {
+					bestScore = 0;
+					Coord bestCoord = null;
+					foreach (Coord coord in curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
+						int distScore = sumDistances(coord, enemies);
+						if (distScore > bestScore) {
+							bestScore = distScore;
+							bestCoord = coord;
+						}
+					}
+					return new Move(unitCoord, bestCoord);
+				}
 			}
 
 			//Decide action based on type
