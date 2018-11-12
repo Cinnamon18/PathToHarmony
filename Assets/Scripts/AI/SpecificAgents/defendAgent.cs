@@ -55,7 +55,7 @@ namespace AI {
 				HashSet<Coord> dangerZone = enemyAttackZone(enemies);
 				HashSet<Coord> safeZone = safeMoves(unitCoord, dangerZone);
 				if (safeZone.Count > 0) {
-					int bestScore = Int32.MaxValue;
+					bestScore = Int32.MaxValue;
 					Coord bestCoord = null;
 					foreach (Coord coord in safeZone) {
 						int distScore = sumDistances(coord, allies);
@@ -66,7 +66,7 @@ namespace AI {
 					}
 					return new Move(unitCoord, bestCoord);
 				} else {
-					int bestScore = 0;
+					bestScore = 0;
 					Coord bestCoord = null;
 					foreach (Coord coord in curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
 						int distScore = sumDistances(coord, enemies);
