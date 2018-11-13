@@ -2,7 +2,7 @@
 <!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
 <project xmlns="http://audacity.sourceforge.net/xml/" projname="KnightAttack_data" version="1.3.0" audacityversion="2.1.3" sel0="0.0000000000" sel1="0.6449689967" vpos="672" h="0.0000000000" zoom="868.2481462913" rate="48000.0" snapto="off" selectionformat="hh:mm:ss + milliseconds" frequencyformat="Hz" bandwidthformat="octaves">
 	<tags/>
-	<wavetrack name="KnightAttack" channel="0" linked="1" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.501187" pan="0.0">
+	<wavetrack name="KnightAttack" channel="0" linked="1" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.251189" pan="0.0">
 		<waveclip offset="0.00000000">
 			<sequence maxsamples="262144" sampleformat="262159" numsamples="29300">
 				<waveblock start="0">
@@ -12,7 +12,7 @@
 			<envelope numpoints="0"/>
 		</waveclip>
 	</wavetrack>
-	<wavetrack name="KnightAttack" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.501187" pan="0.0">
+	<wavetrack name="KnightAttack" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.251189" pan="0.0">
 		<waveclip offset="0.00000000">
 			<sequence maxsamples="262144" sampleformat="262159" numsamples="29300">
 				<waveblock start="0">
@@ -22,7 +22,7 @@
 			<envelope numpoints="0"/>
 		</waveclip>
 	</wavetrack>
-	<wavetrack name="KnightAttack" channel="0" linked="1" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.501187" pan="0.0">
+	<wavetrack name="KnightAttack" channel="0" linked="1" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.251189" pan="0.0">
 		<waveclip offset="0.01612442">
 			<sequence maxsamples="262144" sampleformat="262159" numsamples="29300">
 				<waveblock start="0">
@@ -32,7 +32,7 @@
 			<envelope numpoints="0"/>
 		</waveclip>
 	</wavetrack>
-	<wavetrack name="KnightAttack" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.501187" pan="0.0">
+	<wavetrack name="KnightAttack" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.251189" pan="0.0">
 		<waveclip offset="0.01612442">
 			<sequence maxsamples="262144" sampleformat="262159" numsamples="29300">
 				<waveblock start="0">
@@ -42,7 +42,7 @@
 			<envelope numpoints="0"/>
 		</waveclip>
 	</wavetrack>
-	<wavetrack name="KnightAttack" channel="0" linked="1" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.501187" pan="0.0">
+	<wavetrack name="KnightAttack" channel="0" linked="1" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.251189" pan="0.0">
 		<waveclip offset="0.03455233">
 			<sequence maxsamples="262144" sampleformat="262159" numsamples="29300">
 				<waveblock start="0">
@@ -52,7 +52,7 @@
 			<envelope numpoints="0"/>
 		</waveclip>
 	</wavetrack>
-	<wavetrack name="KnightAttack" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.501187" pan="0.0">
+	<wavetrack name="KnightAttack" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.251189" pan="0.0">
 		<waveclip offset="0.03455233">
 			<sequence maxsamples="262144" sampleformat="262159" numsamples="29300">
 				<waveblock start="0">
@@ -62,7 +62,7 @@
 			<envelope numpoints="0"/>
 		</waveclip>
 	</wavetrack>
-	<wavetrack name="KnightAttack" channel="0" linked="1" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.562341" pan="0.0">
+	<wavetrack name="KnightAttack" channel="0" linked="1" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.251189" pan="0.0">
 		<waveclip offset="0.01151744">
 			<sequence maxsamples="262144" sampleformat="262159" numsamples="29300">
 				<waveblock start="0">
@@ -72,7 +72,7 @@
 			<envelope numpoints="0"/>
 		</waveclip>
 	</wavetrack>
-	<wavetrack name="KnightAttack" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.562341" pan="0.0">
+	<wavetrack name="KnightAttack" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="48000" gain="0.251189" pan="0.0">
 		<waveclip offset="0.01151744">
 			<sequence maxsamples="262144" sampleformat="262159" numsamples="29300">
 				<waveblock start="0">

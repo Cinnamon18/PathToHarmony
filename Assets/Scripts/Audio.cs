@@ -14,7 +14,7 @@ public class Audio : MonoBehaviour {
 	public static string[] battleBgm = new string[] {"BattleTheme1"};
 
 	// Use this for initialization
-	void Start() {
+	void Awake() {
 		if (tracks == null) {
 			tracks = new Dictionary<string, AudioClip>();
 			tracks.Add("ArcherAttack", Resources.Load<AudioClip>("Audio/ArcherAttack"));
@@ -24,7 +24,7 @@ public class Audio : MonoBehaviour {
 			tracks.Add("MageAttack", Resources.Load<AudioClip>("Audio/MageAttack"));
 			tracks.Add("RogueAttack", Resources.Load<AudioClip>("Audio/RogueAttack"));
 			tracks.Add("BattleTheme1", Resources.Load<AudioClip>("Audio/BattleTheme1"));
-
+			tracks.Add("MainTheme1", Resources.Load<AudioClip>("Audio/MainTheme1"));
 		}
 
 		sfxSource = initialSfx;

@@ -8,9 +8,9 @@ using UnityEngine;
 using Constants;
 
 namespace AI {
-	public class eliminationAgent : Agent {
+	public class EliminationAgent : Agent {
 
-		public eliminationAgent() : base() { }
+		public EliminationAgent() : base() { }
 
 		public override async Task<Move> getMove() {
 
@@ -37,6 +37,10 @@ namespace AI {
 					unitCoord = coord;
 					curUnit = unit;
 				}
+			}
+
+			if (curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield).Count == 0) {
+				return new Move(unitCoord, unitCoord);
 			}
 
 			//Decide action based on type
@@ -199,6 +203,7 @@ namespace AI {
 					}
 				}
 			} else if (curUnit is RangedUnit) {
+				Debug.Log("Range");
 				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee
@@ -229,6 +234,7 @@ namespace AI {
 					}
 				}
 			} else if (curUnit is StatusUnit) {
+				Debug.Log("Status");
 				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee

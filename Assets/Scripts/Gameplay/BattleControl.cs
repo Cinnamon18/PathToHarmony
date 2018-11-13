@@ -83,7 +83,7 @@ namespace Gameplay {
 			deserializeMap();
 			deserializeLevel();
 
-
+			mainCamera.GetComponent<CameraController>().updateMaxPos(battlefield.map.GetLength(0), battlefield.map.GetLength(1));
 		}
 
 		// Poor man's state machine. in retrospect i have no idea why i didn't use a proper one. oh well, next game.
@@ -132,7 +132,7 @@ namespace Gameplay {
 					currentCharacter = (currentCharacter + 1) % level.characters.Length;
 					turnPlayerText.text =
 						level.characters[currentCharacter].name + "'s turn\n" +
-						"Turns remaining:  " + (objective.maxHalfTurns - ((halfTurnsElapsed / 2) + 1));
+						"Turns remaining:  " + (objective.maxHalfTurns - halfTurnsElapsed);
 					turnPlayerText.enabled = true;
 					turnChangeBackground.enabled = true;
 
@@ -210,8 +210,9 @@ namespace Gameplay {
 
 						//Re-grey model if needed... I'm regretting my desire to make the health ui manager stateless :p
 						if (ourUnit is HealerUnit) {
-							if (selectedUnit.hasMovedThisTurn || selectedUnit.getHasAttackedThisTurn()) {
-								// selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0) {
+							if ((selectedUnit.hasMovedThisTurn
+								&& selectedUnit.getTargets(move.to.x, move.to.y, battlefield, level.characters[currentCharacter]).Count == 0)
+								|| selectedUnit.getHasAttackedThisTurn()) {
 								selectedUnit.greyOut();
 							}
 						}
@@ -225,6 +226,8 @@ namespace Gameplay {
 					// checkWinAndLose();
 
 					ourUnit.hasMovedThisTurn = true;
+
+					await runAppropriateCutscenes();
 
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => {
@@ -274,7 +277,7 @@ namespace Gameplay {
 		}
 
 		private bool checkWinAndLose() {
-			if (objective.isWinCondition(halfTurnsElapsed)) {
+			if (objective.isWinCondition(halfTurnsElapsed) || Input.GetKey(KeyCode.P)) {
 				advanceCampaign();
 				return true;
 
@@ -306,6 +309,8 @@ namespace Gameplay {
 			victoryImage.enabled = false;
 
 			Persistence.campaign.levelIndex++;
+
+			await runAppropriateCutscenes(true);
 
 			//check for end of campaign
 			if (Persistence.campaign.levelIndex >= Persistence.campaign.levels.Count()) {
@@ -396,9 +401,9 @@ namespace Gameplay {
 			unit.gameObject.transform.rotation = endPos;
 		}
 
-		private async Task runAppropriateCutscenes() {
+		private async Task runAppropriateCutscenes(bool afterVictoryImage = false) {
 			foreach (Cutscene cutscene in level.cutscenes) {
-				if (cutscene.executionCondition(new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage))) {
+				if (cutscene.executionCondition(new ExecutionInfo(battlefield, objective, halfTurnsElapsed, battleStage, afterVictoryImage))) {
 					await runCutscene(cutscene);
 					//I know this is bad practice, but it'll force the engine not to execute multiple cutscenes with the static resources
 					break;
@@ -495,10 +500,10 @@ namespace Gameplay {
 			List<Coord> goalPositions = levelInfo.goalPositions;
 			switch (levelInfo.objective) {
 				case ObjectiveType.Elimination:
-					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 30);
 					break;
 				case ObjectiveType.Escort:
-					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new EscortObjective(battlefield, level, level.characters[playerCharacter], 15);
 					//add vips
 					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[0], pos.x, pos.y, Faction.Xingata);
@@ -508,7 +513,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Intercept:
-					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new InterceptObjective(battlefield, level, level.characters[playerCharacter], 30);
 					foreach (Coord pos in goalPositions) {
 						addUnit(UnitType.Knight, level.characters[1], pos.x, pos.y, enemyFaction);
 						Unit unit = battlefield.units[pos.x, pos.y];
@@ -518,7 +523,7 @@ namespace Gameplay {
 
 					break;
 				case ObjectiveType.Capture:
-					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 20, goalPositions, 2);
+					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 30, goalPositions, 2);
 					foreach (Coord pos in goalPositions) {
 						Instantiate(vipCrownPrefab,
 							battlefield.map[pos.x, pos.y].Peek().transform.position + new Vector3(0, 3, 0),
@@ -536,7 +541,7 @@ namespace Gameplay {
 					}
 					break;
 				case ObjectiveType.Survival:
-					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 20);
+					objective = new SurvivalObjective(battlefield, level, level.characters[playerCharacter], 15);
 					break;
 				default:
 					objective = new EliminationObjective(battlefield, level, level.characters[playerCharacter], 20);
@@ -550,10 +555,10 @@ namespace Gameplay {
 			if (Persistence.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
-					new Character("The evil lord zxqv", false, new eliminationAgent())
+					new Character("The evil lord zxqv", false, new defendAgent(new Coord(11,10)))
 				};
 
-				level = new Level("DemoMap2", "AITest", characters, new Cutscene[] { });
+				level = new Level("BorderPost", "1", characters, new Cutscene[] { });
 				Persistence.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 			}

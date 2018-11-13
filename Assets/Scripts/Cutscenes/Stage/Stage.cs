@@ -140,6 +140,18 @@ namespace Cutscenes.Stages {
 				Audio.playSfx(stageBuilder.sfx);
 			}
 
+			if (stageBuilder.background != null) {
+				Sprite foundSprite = (Resources.Load<Sprite>("Sprites/" + stageBuilder.background));
+
+				if (foundSprite == null) {
+					throw new UnityException(
+						"There exists no background " + stageBuilder.background + " in the Resources/Sprites folder, or it has not been imported as a Sprite."
+					);
+				}
+
+				yield return changeBackground(foundSprite);
+			}
+
 			if (stageBuilder.message != null) {
 				CutsceneSide side = CutsceneSide.None;
 
@@ -246,6 +258,31 @@ namespace Cutscenes.Stages {
 
 			Destroy(actor.gameObject);
 			actors.Remove(actor);
+		}
+
+		private IEnumerator changeBackground(Sprite sprite) {
+			Color initial = background.color;
+			Color final = background.color;
+			final.a = 0;
+
+			GameObject blackBackground = Instantiate(background.gameObject,
+				background.transform.position + new Vector3(0, 0, 1),
+				background.transform.rotation,
+				background.transform.parent.transform);
+			blackBackground.GetComponent<Image>().color = new Color(0, 0, 0, 1);
+			blackBackground.transform.SetSiblingIndex(0);
+
+			yield return Util.Lerp(1f, t => {
+				background.color = Color.Lerp(initial, final, t * t);
+			});
+
+			background.sprite = sprite;
+
+			yield return Util.Lerp(1f, t => {
+				background.color = Color.Lerp(final, initial, t * t);
+			});
+
+			Destroy(blackBackground);
 		}
 
 		private Transform GetSideParent(CutsceneSide side) {
