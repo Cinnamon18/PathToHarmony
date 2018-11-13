@@ -456,7 +456,6 @@ namespace Cutscenes.Stages {
 				S().SetMessage("Lord Sweyn’s camp. The whole camp appears much busier."),
 				S().AddActor(CutsceneSide.FarLeft, "SweynActor", "Sweyn"),
 				S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
-				S().AddActor(CutsceneSide.Right, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.FarRight, "BlairActor", "Blair"),
 				S().SetMessage("So, enemies were already crossing behind us. Great work retaking Kova, because Tsubin ships are approaching. They will land within the next three hours.")
 					.SetSpeaker("Sweyn"),
