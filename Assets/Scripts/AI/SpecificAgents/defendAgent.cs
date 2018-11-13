@@ -10,7 +10,7 @@ using Constants;
 namespace AI {
 	public class defendAgent : Agent {
 
-		private Coord capturePoint;
+		public Coord capturePoint;
 		public List<Unit> VIPs;
 
 		public defendAgent(Coord capturePoint) : base() {
@@ -46,11 +46,12 @@ namespace AI {
 			}
 
 			
-			if (curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield).Count == 0) {
+			if (curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield).Count == 0 && curUnit.getTargets(unitCoord.x, unitCoord.y, battlefield, character).Count == 0) {
 				return new Move(unitCoord, unitCoord);
 			}
 
 			if (VIPs.Contains(curUnit)) {
+				Debug.Log("VIP");
 				// Evade
 				HashSet<Coord> dangerZone = enemyAttackZone(enemies);
 				HashSet<Coord> safeZone = safeMoves(unitCoord, dangerZone);
