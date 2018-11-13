@@ -8,9 +8,15 @@ using UnityEngine;
 using Constants;
 
 namespace AI {
-	public class EliminationAgent : Agent {
+	public class defendAgent : Agent {
 
-		public EliminationAgent() : base() { }
+		private Coord capturePoint;
+		public List<Unit> VIPs;
+
+		public defendAgent(Coord capturePoint) : base() {
+			this.capturePoint = capturePoint;
+			this.VIPs = new List<Unit>();
+		}
 
 		public override async Task<Move> getMove() {
 
@@ -39,8 +45,38 @@ namespace AI {
 				}
 			}
 
+			
 			if (curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield).Count == 0) {
 				return new Move(unitCoord, unitCoord);
+			}
+
+			if (VIPs.Contains(curUnit)) {
+				// Evade
+				HashSet<Coord> dangerZone = enemyAttackZone(enemies);
+				HashSet<Coord> safeZone = safeMoves(unitCoord, dangerZone);
+				if (safeZone.Count > 0) {
+					int bestScore = Int32.MaxValue;
+					Coord bestCoord = null;
+					foreach (Coord coord in safeZone) {
+						int distScore = sumDistances(coord, allies);
+						if (distScore < bestScore) {
+							bestScore = distScore;
+							bestCoord = coord;
+						}
+					}
+					return new Move(unitCoord, bestCoord);
+				} else {
+					int bestScore = 0;
+					Coord bestCoord = null;
+					foreach (Coord coord in curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
+						int distScore = sumDistances(coord, enemies);
+						if (distScore > bestScore) {
+							bestScore = distScore;
+							bestCoord = coord;
+						}
+					}
+					return new Move(unitCoord, bestCoord);
+				}
 			}
 
 			//Decide action based on type
@@ -113,14 +149,14 @@ namespace AI {
 							return new Move(unitCoord, bestCoord);
 						}
 					} else {
-						// Evade
+						// Evade around the capture point
 						HashSet<Coord> dangerZone = enemyAttackZone(enemies);
 						HashSet<Coord> safeZone = safeMoves(unitCoord, dangerZone);
 						if (safeZone.Count > 0) {
 							bestScore = Int32.MaxValue;
 							Coord bestCoord = null;
 							foreach (Coord coord in safeZone) {
-								int distScore = sumDistances(coord, allies);
+								int distScore = manhattanDistance(capturePoint, coord);
 								if (distScore < bestScore) {
 									bestScore = distScore;
 									bestCoord = coord;
@@ -131,7 +167,7 @@ namespace AI {
 							bestScore = 0;
 							Coord bestCoord = null;
 							foreach (Coord coord in curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
-								int distScore = sumDistances(coord, enemies);
+								int distScore = manhattanDistance(capturePoint, coord);
 								if (distScore > bestScore) {
 									bestScore = distScore;
 									bestCoord = coord;
@@ -193,17 +229,12 @@ namespace AI {
 						}
 						return new Move(unitCoord, bestCoord);
 					} else {
-						// Else if there are no enemies in move range, find the nearest to move to
-						targets = findNearestEnemies(unitCoord);
-						// if (targets.Count == 0) {
-						// 	return new Move(unitCoord, unitCoord);
-						// }
-						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+						// Move towards defence point
+						Coord bestCoord = nearestCoord(capturePoint, curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
 						return new Move(unitCoord, bestCoord);
 					}
 				}
 			} else if (curUnit is RangedUnit) {
-				Debug.Log("Range");
 				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee
@@ -227,14 +258,12 @@ namespace AI {
 						}
 						return new Move(unitCoord, bestTarget);
 					} else {
-						// Else if there are no enemies in move range, find the nearest to move to
-						targets = findNearestEnemies(unitCoord);
-						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+						// Move towards defence point
+						Coord bestCoord = nearestCoord(capturePoint, curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
 						return new Move(unitCoord, bestCoord);
 					}
 				}
 			} else if (curUnit is StatusUnit) {
-				Debug.Log("Status");
 				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee
@@ -258,35 +287,12 @@ namespace AI {
 						}
 						return new Move(unitCoord, bestTarget);
 					} else {
-						// Else if there are no enemies in move range, find the nearest to move to
-						targets = findNearestEnemies(unitCoord);
-						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+						// Move towards defence point
+						Coord bestCoord = nearestCoord(capturePoint, curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
 						return new Move(unitCoord, bestCoord);
 					}
 				}
 			}
-			// Unit unit = selectUnit();
-			// Coord unitCoord = battlefield.getUnitCoords(unit);	
-
-			// List<Coord> targetCoords = findNearestEnemies(unitCoord);
-
-			// List<Coord> targets = unit.getTargets(unitCoord.x, unitCoord.y, battlefield, character);
-
-			// int minDist = Int32.MaxValue;
-			// Coord bestCoord = null;
-			// foreach (Coord targetCoord in targetCoords){
-			// 	if (targets.Any(t => t.x == targetCoord.x && t.y == targetCoord.y)) {
-			// 		return new Move(unitCoord.x, unitCoord.y, targetCoord.x, targetCoord.y);
-			// 	}
-				
-			// 	foreach (Coord coord in unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
-			// 		int dist = this.manhattanDistance(coord, targetCoord);
-			// 		if (dist < minDist) {
-			// 			minDist = dist;
-			// 			bestCoord = coord;
-			// 		}
-			// 	}
-			// }
 			
 			//Just so the player can keep track of what's happening
 			await Task.Delay(300);
