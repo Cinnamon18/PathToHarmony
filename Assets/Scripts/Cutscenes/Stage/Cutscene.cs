@@ -262,7 +262,6 @@ namespace Cutscenes.Stages {
 				// Scene Transition
 				S().AddLeaver("Cadets"),
 				S().AddLeaver("Blair"),
-				S().AddLeaver("Narrator"),
 				S().AddLeaver("Headmaster"),
                 S().SetBackground("TempBackground"),
 				// Scene 1
@@ -456,7 +455,8 @@ namespace Cutscenes.Stages {
 				S().SetMessage("Lord Sweyn’s camp. The whole camp appears much busier."),
 				S().AddActor(CutsceneSide.FarLeft, "SweynActor", "Sweyn"),
 				S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
-				S().AddActor(CutsceneSide.FarRight, "BlairActor", "Blair"),
+				S().AddActor(CutsceneSide.Right, "BlairActor", "Blair"),
+				S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
 				S().SetMessage("So, enemies were already crossing behind us. Great work retaking Kova, because Tsubin ships are approaching. They will land within the next three hours.")
 					.SetSpeaker("Sweyn"),
 				S().SetMessage("They will soon figure out we are few in numbers. We must do the most damage and retreat.")
