@@ -7,42 +7,29 @@ using UnityEngine.UI;
 namespace Buffs {
 	public class BuffUIManager : MonoBehaviour {
 
-		private const float ICON_WIDTH = 1.3f;//I just tuned this value by hand...
-		private List<Image> buffIcons = new List<Image>();
-		private List<Buff> buffs = new List<Buff>();
-		
-		//Hmm this doesn't seem necessary but it's less fragile than saying parent.parent in code...
-		[SerializeField]
-		Unit unit;
-		[SerializeField]
-		Image buffIconPrefab;
-		
-		private Sprite[] buffIconSprites;
+		private GameObject indicator;
+		private GameObject buffModel;
+
+		private float rotateSpeed = 20f;
 
 		void Start() {
-			Sprite[] icons = {
-				Resources.Load<Sprite>("Buffs/DamageBuff")
-			};
-			buffIconSprites = icons;
+			buffModel = Resources.Load<GameObject>("Buffs/DebuffCircle");
+		}
+
+		void Update() {
+			if (indicator != null)
+				indicator.transform.Rotate(new Vector3(0, 0, rotateSpeed * Time.deltaTime));
 		}
 
 		public void addBuff(Buff buff) {
-			buffs.Add(buff);
-
-			Image newIcon = Instantiate(buffIconPrefab, this.transform);
-			newIcon.sprite = buffIconSprites[(int)(buff.buffType)];
-			newIcon.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, ICON_WIDTH * buffIcons.Count);
-			buffIcons.Add(newIcon);
+			indicator = Instantiate(buffModel,
+				transform.parent.position + new Vector3(0, -2, 0),
+				buffModel.transform.rotation,
+				transform.parent);
 		}
 
 		public void removeBuff(Buff buff) {
-			int index = buffs.IndexOf(buff);
-			buffs.Remove(buff);
-
-			Image removedImage = buffIcons[index];
-			buffIcons.Remove(removedImage);
-
-			Destroy(removedImage);
+			Destroy(indicator);
 		}
 
 	}
