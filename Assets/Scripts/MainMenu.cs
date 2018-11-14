@@ -67,7 +67,12 @@ public class MainMenu : MonoBehaviour {
 
 	public void resumeGame() {
 		Persistence.loadProgress();
-		playGame();
+
+		if(Persistence.campaign.levelIndex > 0) {
+			fade.fadeToScene("demobattle");
+		} else {
+			playGame();
+		}		
 	}
 
 	public void showOptions() {
