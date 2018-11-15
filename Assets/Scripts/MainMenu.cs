@@ -67,12 +67,7 @@ public class MainMenu : MonoBehaviour {
 
 	public void resumeGame() {
 		Persistence.loadProgress();
-
-		if(Persistence.campaign.levelIndex > 0) {
-			fade.fadeToScene("demobattle");
-		} else {
-			playGame();
-		}		
+		playGame();
 	}
 
 	public void showOptions() {
@@ -213,7 +208,7 @@ public class MainMenu : MonoBehaviour {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("King Rouen", false, new EliminationAgent())
 		};
-		Level level8 = new Level("CraterCenter", "8", XingataCharacters, new Cutscene[] { });
+		Level level8 = new Level("CraterCenter", "8", XingataCharacters, new Cutscene[] { new PreBattle8(), new PostBattle8() });
 
 
 
