@@ -468,10 +468,6 @@ namespace Cutscenes.Stages {
 				S().AddActor(CutsceneSide.FarLeft, "SweynActor", "Sweyn"),
 				S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
 				S().AddActor(CutsceneSide.Right, "BlairActor", "Blair"),
-<<<<<<< HEAD
-=======
-				S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
->>>>>>> 4326c2a85e71caee8ef8fde1e8540605c50b432a
 				S().SetMessage("So, enemies were already crossing behind us. Great work retaking Kova, because Tsubin ships are approaching. They will land within the next three hours.")
 					.SetSpeaker("Sweyn"),
 				S().SetMessage("They will soon figure out we are few in numbers. We must do the most damage and retreat.")
