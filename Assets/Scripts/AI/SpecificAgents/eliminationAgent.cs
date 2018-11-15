@@ -39,7 +39,7 @@ namespace AI {
 				}
 			}
 
-			if (curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield).Count == 0) {
+			if (curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield).Count == 0 && curUnit.getTargets(unitCoord.x, unitCoord.y, battlefield, character).Count == 0) {
 				return new Move(unitCoord, unitCoord);
 			}
 
@@ -130,7 +130,9 @@ namespace AI {
 						} else {
 							bestScore = 0;
 							Coord bestCoord = null;
-							foreach (Coord coord in curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield)) {
+							List<Coord> moves = curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
+							moves.Add(unitCoord);
+							foreach (Coord coord in moves) {
 								int distScore = sumDistances(coord, enemies);
 								if (distScore > bestScore) {
 									bestScore = distScore;
@@ -198,7 +200,9 @@ namespace AI {
 						// if (targets.Count == 0) {
 						// 	return new Move(unitCoord, unitCoord);
 						// }
-						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+						List<Coord> moves = curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
+						moves.Add(unitCoord);
+						Coord bestCoord = nearestCoord(targets[0], moves);
 						return new Move(unitCoord, bestCoord);
 					}
 				}
@@ -229,7 +233,9 @@ namespace AI {
 					} else {
 						// Else if there are no enemies in move range, find the nearest to move to
 						targets = findNearestEnemies(unitCoord);
-						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+						List<Coord> moves = curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
+						moves.Add(unitCoord);
+						Coord bestCoord = nearestCoord(targets[0], moves);
 						return new Move(unitCoord, bestCoord);
 					}
 				}
@@ -260,7 +266,9 @@ namespace AI {
 					} else {
 						// Else if there are no enemies in move range, find the nearest to move to
 						targets = findNearestEnemies(unitCoord);
-						Coord bestCoord = nearestCoord(targets[0], curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+						List<Coord> moves = curUnit.getValidMoves(unitCoord.x, unitCoord.y, battlefield);
+						moves.Add(unitCoord);
+						Coord bestCoord = nearestCoord(targets[0], moves);
 						return new Move(unitCoord, bestCoord);
 					}
 				}
