@@ -116,6 +116,10 @@ namespace Cutscenes.Stages {
 
 		private IEnumerator Invoke(StageBuilder stageBuilder) {
 
+			if(stageBuilder.stopAudio) {
+				Audio.stopAudio(false);
+			}
+
 			if(stageBuilder.pauseBattleTheme) {
 				Audio.pauseAudio(true);
 			}
