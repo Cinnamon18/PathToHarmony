@@ -76,8 +76,10 @@ namespace Cutscenes.Stages {
 		}
 
 		public void startCutscene(Cutscene cutscene) {
+			Audio.pauseAudio(true);
 			showVisualElements();
 			StartCoroutine(Invoke(cutscene.getStage()));
+
 		}
 
 		public IEnumerator Invoke(params StageBuilder[] stageBuilders) {
@@ -94,6 +96,7 @@ namespace Cutscenes.Stages {
 			skipCutFlag = false;
 			isRunning = false;
 			hideVisualElements();
+			Audio.resumeAudio(true);
 		}
 
 		private IEnumerator RaiseUpTextbox() {
