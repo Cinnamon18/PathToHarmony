@@ -25,6 +25,9 @@ public class Audio : MonoBehaviour {
 			tracks.Add("RogueAttack", Resources.Load<AudioClip>("Audio/RogueAttack"));
 			tracks.Add("BattleTheme1", Resources.Load<AudioClip>("Audio/BattleTheme1"));
 			tracks.Add("MainTheme1", Resources.Load<AudioClip>("Audio/MainTheme1"));
+			tracks.Add("TheBlade", Resources.Load<AudioClip>("Audio/TheBlade"));
+			tracks.Add("TheBladeTakeTwo", Resources.Load<AudioClip>("Audio/TheBladeTakeTwo"));
+
 		}
 
 		sfxSource = initialSfx;

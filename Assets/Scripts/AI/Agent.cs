@@ -267,6 +267,7 @@ namespace AI {
 			Unit unit = coordToUnit(unitCoord);
 			if (unit != null) {
 				HashSet<Coord> moves = new HashSet<Coord>(unit.getValidMoves(unitCoord.x, unitCoord.y, battlefield));
+				moves.Add(unitCoord);
 				moves.ExceptWith(dangerZone);
 				return moves;
 			}
