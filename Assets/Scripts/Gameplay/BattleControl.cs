@@ -229,6 +229,15 @@ namespace Gameplay {
 
 					await runAppropriateCutscenes();
 
+					// Update AI capture point if Intercept mission
+					if (objective is InterceptObjective) {
+						foreach (Character c in level.characters) {
+							if(c.agent is defendAgent) {
+								(c.agent as defendAgent).capturePoint = battlefield.getUnitCoords((objective as InterceptObjective).vips[0]);
+							}
+						}
+					}
+
 					//If all of our units have moved advance. Otherwise, go back to unit selection.
 					if (battlefield.charactersUnits[level.characters[currentCharacter]].All(unit => {
 						//I know this looks inelegant but it avoid calling getUnitCoords if necessary
@@ -518,6 +527,11 @@ namespace Gameplay {
 						addUnit(UnitType.Knight, level.characters[1], pos.x, pos.y, enemyFaction);
 						Unit unit = battlefield.units[pos.x, pos.y];
 						(objective as InterceptObjective).vips.Add(unit);
+						foreach (Character c in level.characters) {
+							if(c.agent is defendAgent) {
+								(c.agent as defendAgent).VIPs.Add(unit);
+							}
+						}
 						Instantiate(vipCrownPrefab, unit.transform.position + new Vector3(0, 3, 0), vipCrownPrefab.transform.rotation, unit.transform);
 					}
 
@@ -555,10 +569,10 @@ namespace Gameplay {
 			if (Persistence.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
-					new Character("The evil lord zxqv", false, new defendAgent(new Coord(11,10)))
+					new Character("The evil lord zxqv", false, new defendAgent(new Coord(3,7)))
 				};
 
-				level = new Level("BorderPost", "1", characters, new Cutscene[] { });
+				level = new Level("CraterCenter", "8", characters, new Cutscene[] { });
 				Persistence.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 			}
