@@ -127,6 +127,7 @@ namespace Cutscenes.Stages {
 		public override StageBuilder[] getStage() {
 			hasExecuted = true;
 			return new StageBuilder[] {
+				S().PauseBattleTheme(),
 				S().AddActor(CutsceneSide.FarLeft, "NarratorActor", "Tutorial"),
 				S().SetMessage("Over a field flanked by a forest on one side and rows and steps of spectating seats on the other, two parties are in the heat of battle."),
 				S().SetMessage("The commanders of each party shout orders to soldiers who are all holding sparring weapons."),
