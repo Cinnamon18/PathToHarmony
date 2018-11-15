@@ -76,7 +76,7 @@ namespace Cutscenes.Stages {
 		}
 
 		public void startCutscene(Cutscene cutscene) {
-			Audio.pauseAudio(true);
+			// Audio.pauseAudio(true);
 			showVisualElements();
 			StartCoroutine(Invoke(cutscene.getStage()));
 
@@ -115,6 +115,10 @@ namespace Cutscenes.Stages {
 		}
 
 		private IEnumerator Invoke(StageBuilder stageBuilder) {
+
+			if(stageBuilder.pauseBattleTheme) {
+				Audio.pauseAudio(true);
+			}
 
 			if (stageBuilder.newcomer != null) {
 				if (FindActor(stageBuilder.newcomer.name) != null) {

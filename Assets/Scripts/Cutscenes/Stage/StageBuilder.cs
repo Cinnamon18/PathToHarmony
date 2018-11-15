@@ -15,6 +15,8 @@ namespace Cutscenes.Stages {
 		public string sfx;
 		public string background;
 
+		public bool pauseBattleTheme = false;
+
 		public StageBuilder SetSpeaker(string speaker) {
 			this.speaker = speaker;
 			return this;
@@ -32,6 +34,11 @@ namespace Cutscenes.Stages {
 				throw new UnityException("Expression \"" + unNumberedSpeaker + expression + "\" not found");
 			}
 
+			return this;
+		}
+
+		public StageBuilder PauseBattleTheme() {
+			pauseBattleTheme = true;
 			return this;
 		}
 
