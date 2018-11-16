@@ -241,9 +241,9 @@ namespace Units {
 
 			float animLenght = animators[0].GetCurrentAnimatorStateInfo(0).length;
 			//Play the sound effect halfway through. this is closer to the "hit" portion of the animation.
-			await Task.Delay((int)(animLenght * 500));
+			await Task.Delay((int)(animLenght * 400));
 			Audio.playSfx(attackSoundEffect);
-			await Task.Delay((int)(animLenght * 500));
+			await Task.Delay((int)(animLenght * 600));
 		}
 
 		public async void startIdleAnimation() {

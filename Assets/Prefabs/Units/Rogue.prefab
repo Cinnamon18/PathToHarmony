@@ -90,7 +90,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1629421154834734}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 21.802723, y: 8.622866, z: 54.539818}
+  m_LocalPosition: {x: 26.382454, y: 5.2633014, z: 83.846}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224403954332622900}
@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114738306655082024}
-  unitModelPrefab: {fileID: 1287115949482446, guid: 369dfc6082f6432429061c5a0919ec5e,
+  unitModelPrefab: {fileID: 1651935608516630, guid: d9e39c10b03b05046850cb4e1c079ed5,
     type: 2}
   unit: {fileID: 114529739108469126}
 --- !u!114 &114529739108469126
@@ -207,10 +207,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hasMovedThisTurn: 0
   factionMaterials:
-  - {fileID: 2100000, guid: 20370b9f95d7f344c9231b49341c796a, type: 2}
-  - {fileID: 2100000, guid: bc76b035f66e4654cb7cd55b3725e0f6, type: 2}
-  - {fileID: 2100000, guid: 09bc9d9c67dafe1488bd908246fc34ef, type: 2}
-  - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
+  - {fileID: 2100000, guid: d39e32888b7478b4b9ecdb3831918f15, type: 2}
+  - {fileID: 2100000, guid: 37e3504dc20feed408599a8683f2b037, type: 2}
+  - {fileID: 2100000, guid: 2dac4d86afe633149acbcb8a11a42607, type: 2}
+  - {fileID: 2100000, guid: b883e6aeff368244aaefa4eccf4b19c7, type: 2}
   buffUIManager: {fileID: 114369513706906222}
   healthUIManager: {fileID: 114498037091705390}
   attackSoundEffect: RogueAttack

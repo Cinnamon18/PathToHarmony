@@ -90,7 +90,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1629421154834734}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 29.53638, y: 7.8634872, z: 53.304806}
+  m_LocalPosition: {x: 30.556015, y: 3.8677247, z: 88.279785}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224403954332622900}
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114738306655082024}
-  unitModelPrefab: {fileID: 1682296314895496, guid: e361c2cbe4340514bab3ba053bef87fa,
+  unitModelPrefab: {fileID: 1251152768805192, guid: 4f25019534b47544187e5e18b6dc7f78,
     type: 2}
   unit: {fileID: 114560664085255754}
 --- !u!114 &114560664085255754
@@ -196,10 +196,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hasMovedThisTurn: 0
   factionMaterials:
-  - {fileID: 2100000, guid: 20370b9f95d7f344c9231b49341c796a, type: 2}
-  - {fileID: 2100000, guid: bc76b035f66e4654cb7cd55b3725e0f6, type: 2}
-  - {fileID: 2100000, guid: 09bc9d9c67dafe1488bd908246fc34ef, type: 2}
-  - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
+  - {fileID: 2100000, guid: d39e32888b7478b4b9ecdb3831918f15, type: 2}
+  - {fileID: 2100000, guid: 37e3504dc20feed408599a8683f2b037, type: 2}
+  - {fileID: 2100000, guid: 2dac4d86afe633149acbcb8a11a42607, type: 2}
+  - {fileID: 2100000, guid: b883e6aeff368244aaefa4eccf4b19c7, type: 2}
   buffUIManager: {fileID: 114970031707002548}
   healthUIManager: {fileID: 114498037091705390}
   attackSoundEffect: LightHorseAttack

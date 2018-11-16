@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class VictoryScene : MonoBehaviour {
 
+	void Start() {
+		Audio.playSound("MainTheme1", true, true);
+	}
 
 	[SerializeField]
 	private FadeOutTransition fade;

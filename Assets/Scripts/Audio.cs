@@ -11,7 +11,7 @@ public class Audio : MonoBehaviour {
 	public AudioSource initialSfx;
 	public AudioSource initialMusic;
 
-	public static string[] battleBgm = new string[] {"BattleTheme1"};
+	public static string[] battleBgm = new string[] { "BattleTheme1" };
 
 	// Use this for initialization
 	void Awake() {
@@ -28,6 +28,8 @@ public class Audio : MonoBehaviour {
 			tracks.Add("TheBlade", Resources.Load<AudioClip>("Audio/TheBlade"));
 			tracks.Add("TheBladeTakeTwo", Resources.Load<AudioClip>("Audio/TheBladeTakeTwo"));
 			tracks.Add("ChestOpening", Resources.Load<AudioClip>("Audio/ChestOpening"));
+			tracks.Add("FinalBattle", Resources.Load<AudioClip>("Audio/FinalBattle"));
+			tracks.Add("Victory", Resources.Load<AudioClip>("Audio/Victory"));
 		}
 
 		sfxSource = initialSfx;

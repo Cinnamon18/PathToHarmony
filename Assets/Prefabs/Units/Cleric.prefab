@@ -90,7 +90,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1629421154834734}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 23.715479, y: 9.104494, z: 55.51708}
+  m_LocalPosition: {x: 26.170815, y: 4.267066, z: 89.32947}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224403954332622900}
@@ -122,10 +122,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hasMovedThisTurn: 0
   factionMaterials:
-  - {fileID: 2100000, guid: 20370b9f95d7f344c9231b49341c796a, type: 2}
-  - {fileID: 2100000, guid: bc76b035f66e4654cb7cd55b3725e0f6, type: 2}
-  - {fileID: 2100000, guid: 09bc9d9c67dafe1488bd908246fc34ef, type: 2}
-  - {fileID: 2100000, guid: 02f66acb77f7eb44299f487cdba7d4cd, type: 2}
+  - {fileID: 2100000, guid: d39e32888b7478b4b9ecdb3831918f15, type: 2}
+  - {fileID: 2100000, guid: 37e3504dc20feed408599a8683f2b037, type: 2}
+  - {fileID: 2100000, guid: 2dac4d86afe633149acbcb8a11a42607, type: 2}
+  - {fileID: 2100000, guid: b883e6aeff368244aaefa4eccf4b19c7, type: 2}
   buffUIManager: {fileID: 114483167165532752}
   healthUIManager: {fileID: 114498037091705390}
   attackSoundEffect: ClericAttack
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114738306655082024}
-  unitModelPrefab: {fileID: 1418090738876766, guid: 266183e989a5bd04cab8704bd3a50a2c,
+  unitModelPrefab: {fileID: 1651935608516630, guid: 3a07225a64530e9459a8c85e271d9afd,
     type: 2}
   unit: {fileID: 114064902006437736}
 --- !u!114 &114596612612201020

@@ -232,7 +232,7 @@ namespace Gameplay {
 					// Update AI capture point if Intercept mission
 					if (objective is InterceptObjective) {
 						foreach (Character c in level.characters) {
-							if(c.agent is defendAgent) {
+							if (c.agent is defendAgent) {
 								(c.agent as defendAgent).capturePoint = battlefield.getUnitCoords((objective as InterceptObjective).vips[0]);
 							}
 						}
@@ -314,6 +314,7 @@ namespace Gameplay {
 
 		private async void advanceCampaign() {
 			victoryImage.enabled = true;
+			Audio.playSound("Victory", false, false);
 			await Task.Delay(TimeSpan.FromMilliseconds(6000));
 			victoryImage.enabled = false;
 
@@ -344,9 +345,15 @@ namespace Gameplay {
 		private void addUnit(UnitType unitType, Character character, int x, int y, Faction faction) {
 			int index = (int)(unitType);
 
+			//hack demo is in 15 hours i'm so tired let me sleep
+			Vector3 offset = new Vector3(0, -1.8f, 0);
+			if (unitType == UnitType.LightHorse) {
+				offset += new Vector3(0, -0.8f, 0);
+			}
+
 			GameObject newUnitGO = Instantiate(
 				unitPrefabs[index],
-				Util.GridToWorld(x, y, battlefield.map[x, y].Count + 1),
+				Util.GridToWorld(x, y, battlefield.map[x, y].Count + 1) + offset,
 				unitPrefabs[index].gameObject.transform.rotation);
 
 			Unit newUnit = newUnitGO.GetComponent<Unit>();
@@ -363,6 +370,13 @@ namespace Gameplay {
 			Vector3 endPos = Util.GridToWorld(
 				new Vector3Int(target.x, target.y, battlefield.map[target.x, target.y].Count + 1)
 			);
+
+			//hack demo is in 15 hours i'm so tired let me sleep
+			Vector3 offset = new Vector3(0, -1.8f, 0);
+			if (unit is LightHorse) {
+				offset += new Vector3(0, -0.8f, 0);
+			}
+			endPos += offset;
 
 			//Rotate to face target
 			await rotateUnit(unit, target);
@@ -461,6 +475,12 @@ namespace Gameplay {
 
 		private void playBgm() {
 			string bgm = Audio.battleBgm[Random.Range(0, Audio.battleBgm.Length - 1)];
+
+			//Hack to play finall boss music
+			if (Persistence.campaign.levelIndex == (Persistence.campaign.levels.Count() - 1)) {
+				bgm = "FinalBattle";
+			}
+
 			Audio.playSound(bgm, true, true);
 		}
 
@@ -528,7 +548,7 @@ namespace Gameplay {
 						Unit unit = battlefield.units[pos.x, pos.y];
 						(objective as InterceptObjective).vips.Add(unit);
 						foreach (Character c in level.characters) {
-							if(c.agent is defendAgent) {
+							if (c.agent is defendAgent) {
 								(c.agent as defendAgent).VIPs.Add(unit);
 							}
 						}
