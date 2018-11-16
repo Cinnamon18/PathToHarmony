@@ -207,7 +207,6 @@ namespace AI {
 					}
 				}
 			} else if (curUnit is RangedUnit) {
-				Debug.Log("Range");
 				if (curUnit.getHealth() < curUnit.maxHealth * -0.4) {
 					// TODO
 					// Flee

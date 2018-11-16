@@ -86,19 +86,19 @@ public class UnitHealthUIManager : MonoBehaviour {
 				break;
 			case 4:
 				unitModels = new List<GameObject> {
-					InstantiateRelative(ROW_HEIGHT / 2, 0, -COL_WIDTH / 2),
-					InstantiateRelative(-ROW_HEIGHT/ 2, 0, -COL_WIDTH / 2),
-					InstantiateRelative(ROW_HEIGHT / 2, 0, COL_WIDTH / 2),
-					InstantiateRelative(-ROW_HEIGHT / 2, 0, COL_WIDTH / 2)
+					InstantiateRelative(ROW_HEIGHT / 1.5, 0, -COL_WIDTH / 2),
+					InstantiateRelative(-ROW_HEIGHT / 1.5, 0, -COL_WIDTH / 2),
+					InstantiateRelative(ROW_HEIGHT / 1.5, 0, COL_WIDTH / 2),
+					InstantiateRelative(-ROW_HEIGHT / 1.5, 0, COL_WIDTH / 2)
 				};
 				break;
 			case 5:
 				unitModels = new List<GameObject> {
-					InstantiateRelative(ROW_HEIGHT / 2, 0, -COL_WIDTH),
-					InstantiateRelative(ROW_HEIGHT / 2, 0, 0),
-					InstantiateRelative(ROW_HEIGHT / 2, 0, COL_WIDTH),
-					InstantiateRelative(-ROW_HEIGHT / 2, 0, COL_WIDTH / 2),
-					InstantiateRelative(-ROW_HEIGHT / 2, 0, -COL_WIDTH / 2)
+					InstantiateRelative(ROW_HEIGHT / 1.5, 0, -COL_WIDTH),
+					InstantiateRelative(ROW_HEIGHT / 1.5, 0, 0),
+					InstantiateRelative(ROW_HEIGHT / 1.5, 0, COL_WIDTH),
+					InstantiateRelative(-ROW_HEIGHT / 1.5, 0, COL_WIDTH / 2),
+					InstantiateRelative(-ROW_HEIGHT / 1.5, 0, -COL_WIDTH / 2)
 				};
 				break;
 			case 6:
@@ -149,12 +149,12 @@ public class UnitHealthUIManager : MonoBehaviour {
 				break;
 			case 10:
 				unitModels = new List<GameObject> {
-					InstantiateRelative(-ROW_HEIGHT / 2, 0, COL_WIDTH),
-					InstantiateRelative(-ROW_HEIGHT / 2, 0, 0),
-					InstantiateRelative(-ROW_HEIGHT / 2, 0, -COL_WIDTH),
-					InstantiateRelative(ROW_HEIGHT / 2, 0, COL_WIDTH),
-					InstantiateRelative(ROW_HEIGHT / 2, 0, 0),
-					InstantiateRelative(ROW_HEIGHT / 2, 0, -COL_WIDTH),
+					InstantiateRelative(-ROW_HEIGHT / 1.5, 0, COL_WIDTH),
+					InstantiateRelative(-ROW_HEIGHT / 1.5, 0, 0),
+					InstantiateRelative(-ROW_HEIGHT / 1.5, 0, -COL_WIDTH),
+					InstantiateRelative(ROW_HEIGHT / 1.5, 0, COL_WIDTH),
+					InstantiateRelative(ROW_HEIGHT / 1.5, 0, 0),
+					InstantiateRelative(ROW_HEIGHT / 1.5, 0, -COL_WIDTH),
 					InstantiateRelative(-3.0 / 2 * ROW_HEIGHT, 0, COL_WIDTH / 2),
 					InstantiateRelative(-3.0 / 2 * ROW_HEIGHT, 0, -COL_WIDTH / 2),
 					InstantiateRelative(3.0 / 2 * ROW_HEIGHT, 0, COL_WIDTH / 2),
