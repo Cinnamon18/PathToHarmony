@@ -331,7 +331,7 @@ Prefab:
     - target: {fileID: 224823898250032648, guid: ac24b48690fed974ca3c0660df5a2b45,
         type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 224823898250032648, guid: ac24b48690fed974ca3c0660df5a2b45,
         type: 2}
@@ -932,21 +932,20 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "    The delicate balance of power between the four nations, Kingdom of
-    Xingata, Kingdom of Tsubin, Velgari Alliance and Tribes of Corbita, kept the world
-    at peace for a century. That peace ended when a plague of unknown origin and cause
-    swept across the land. No cure proved effective against the terrible disease except
-    rare crystals aptly named \u2018Pieces of Heaven\u2019 that are only found on
-    meteorites that fell from the sky.\r\n    Four nations\u2019 frantic search for
-    \u2018Pieces of Heaven\u2019 met an unexpected turn when large meteors filled
-    with the crystals fell to Harmony Crater. Now, all four nations mobilize their
-    armies and rush to the Crater to obtain the only known cures to the plague.\r\nMeanwhile,
-    another class of cadets are about to graduate Royal Academy of Xingata and become
-    officers of Royal Retinue, Xingatan King\u2019s personal army. Some of these officers
-    carry out special missions as tactical advisers and supervisors to Xingatan feudal
-    lords who answer to the King\u2019s orders but command their own armies. Blair
-    and Juniper, the two brightest cadets of their class, are about to embark on one
-    such mission, accompanied by a veteran officer and old friend, Bruno.\r\n"
+  m_Text: "The delicate balance of power between the four nations, Kingdom of Xingata,
+    Kingdom of Tsubin, Velgari Alliance and Tribes of Corbita, kept the world at peace
+    for a century. That peace ended when a plague of unknown origin and cause swept
+    across the land. No cure proved effective against the terrible disease except
+    rare crystals aptly named \u2018Pieces of Heaven\u2019, which are only found on
+    meteorites fallen to earth.\r\n\nThe four nations\u2019 frantic search for Pieces
+    of Heaven met an unexpected turn when large meteors filled with the crystals fell
+    to Harmony Crater. Now, all four nations mobilize their armies and rush to the
+    Crater to obtain the only known cures of the plague.\r\n\nMeanwhile, another class
+    of cadets are about to graduate Royal Academy of Xingata and become officers of
+    Royal Retinue, King Rouen\u2019s personal army. Some of these officers carry out
+    special missions as tactical advisers and supervisors to Xingatan feudal lords.
+    Blair and Juniper, the two brightest cadets of their class, are about to embark
+    on one such mission accompanied by a veteran officer and old friend, Bruno.\r"
 --- !u!222 &2140467361
 CanvasRenderer:
   m_ObjectHideFlags: 0

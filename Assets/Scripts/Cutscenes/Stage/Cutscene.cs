@@ -298,7 +298,7 @@ namespace Cutscenes.Stages {
 				S().SetMessage("You just described what a king’s supposed to be. You don’t know if he’s the king you " +
 					"believe him to be.")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
-				S().AddActor(CutsceneSide.Right, "BrunoActor", "Bruno"),
+				S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
 				S().SetMessage("He IS the King, and that’s all we, the officers of his retinue, have to know. " +
 					"Congratulations, both of you.")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
@@ -880,13 +880,13 @@ namespace Cutscenes.Stages {
 				S().SetMessage("Come take a look at what the Royal Guard was sent to transport.")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().SetAudio("TheBladeTakeTwo"),
-				S().SetMessage("It’s filled with enough ‘Pieces of Heaven’ to cure half the plagued population of Xingata. Care to explain, Captain?")
+				S().SetMessage("It’s filled with enough Pieces of Heaven to cure half the plagued population of Xingata. Care to explain, Captain?")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().SetMessage("I have nothing to say.")
 					.SetSpeaker("Shreya"),
 				S().SetMessage("So you knew? The royal family was sitting on this much cure while its subjects suffered and died in misery!")
 					.SetSpeaker("Juniper").SetExpression("Angry"),
-				S().SetMessage("I know a ‘Piece of Heaven’ when I see one. That dagger in your hand is made out of it, isn’t it? I didn’t even know you could weaponize the crystals.")
+				S().SetMessage("I know a Piece of Heaven when I see one. That dagger in your hand is made out of it, isn’t it? I didn’t even know you could weaponize the crystals.")
 					.SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("Stop. We’re done here. Burn the bodies and pack up.")
 					.SetSpeaker("Blair").SetExpression("Angry"),
@@ -902,7 +902,7 @@ namespace Cutscenes.Stages {
 				S().AddLeaver("Blair"),
 				S().SetMessage("Juniper is furious, but the army is already following its commander’s order.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("Sometime later, Juniper sneaks up on a chest through the confusion of hustling soldiers, picks up a ‘Piece of Heaven’, and hides it in her knapsack.")
+				S().SetMessage("Sometime later, Juniper sneaks up on a chest through the confusion of hustling soldiers, picks up a Piece of Heaven, and hides it in her knapsack.")
 					.SetSpeaker("Narrator"),
 				S().AddActor(CutsceneSide.FarRight, "BlairActor", "Blair"),
 				S().SetMessage("As soon as she turns around, her eyes meet Blair’s gaze from a distance. Their eyes lock for a long moment, then Blair walks away.")
@@ -1068,7 +1068,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Narrator"),
 				S().SetMessage("Across the vast inner crater thousands of shattered pieces of charred meteorites lie among Velgarian tents.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("‘Pieces of Heaven’ that are embedded in the meteorites glitter with light.")
+				S().SetMessage("Pieces of Heaven that are embedded in the meteorites glitter with light.")
 					.SetSpeaker("Narrator")
 			};
 		}
@@ -1150,7 +1150,7 @@ namespace Cutscenes.Stages {
 				  .SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("My magic isn’t working on the commander’s wound. I can’t heal it!")
 				  .SetSpeaker("Healer"),
-				S().SetMessage("Blair’ wound is bleeding with no sign of slowing down. Blair's face is trembling in terror. Juniper pulls out a ‘Piece of Heaven’ from under her tunic.")
+				S().SetMessage("Blair’ wound is bleeding with no sign of slowing down. Blair's face is trembling in terror. Juniper pulls out a Piece of Heaven from under her tunic.")
 					.SetSpeaker("Narrator"),
 				S().SetMessage("Do you know how to use it?")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
@@ -1226,7 +1226,7 @@ namespace Cutscenes.Stages {
 				S().SetAudio("MainTheme1"),
 				S().SetMessage("At dawn, thousands of Xingatan soldiers stand at Harmony Crater.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("All of the ‘Pieces of Heaven’ have disappeared from scattered meteorites.")
+				S().SetMessage("All of the Pieces of Heaven have disappeared from scattered meteorites.")
 					.SetSpeaker("Narrator"),
 				S().AddActor(CutsceneSide.FarLeft, "RouenActor", "King Rouen"),
 				S().SetMessage("In the center of them all, King Rouen stands with a heavenly sword in his hand.")
@@ -1239,7 +1239,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("Yesterday’s victory is the gods’ proclamation that it is not my will, but my fate to rule.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("All the world's ‘Pieces of Heaven’ have been condensed into this sword. It is now the only salvation from the plague.")
+				S().SetMessage("All the world's Pieces of Heaven have been condensed into this sword. It is now the only salvation from the plague.")
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("And now that the gods have gifted it to me, I am humanity’s only salvation.")
 					.SetSpeaker("King Rouen"),
@@ -1275,7 +1275,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Narrator"),
 				S().SetMessage("However, no other army on the Crater makes a move to stop Blair’s apparent act of revolt.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("I sent a letter to every lord last night. They have lost their loved ones while you sat on your cache of ‘Pieces of Heaven’.")
+				S().SetMessage("I sent a letter to every lord last night. They have lost their loved ones while you sat on your cache of Pieces of Heaven.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("They won’t fight for you.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
@@ -1311,7 +1311,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Narrator"),
 				S().SetMessage("I took you for a naive kid chasing fairy tales.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("You’ve won the war. You held all the ‘Pieces of Heaven’ your kingdom needed. Why choose this path when you could’ve saved your kingdom?")
+				S().SetMessage("You’ve won the war. You held all the Pieces of Heaven your kingdom needed. Why choose this path when you could’ve saved your kingdom?")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("Because I could’ve saved the world. Rid it of war forever. Be the last king to have known the horrors of war.")
 					.SetSpeaker("King Rouen"),
