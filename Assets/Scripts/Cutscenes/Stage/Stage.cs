@@ -120,7 +120,7 @@ namespace Cutscenes.Stages {
 				Audio.stopAudio(false);
 			}
 
-			if(stageBuilder.pauseBattleTheme) {
+			if (stageBuilder.pauseBattleTheme) {
 				Audio.pauseAudio(true);
 			}
 
@@ -334,6 +334,7 @@ namespace Cutscenes.Stages {
 			// textbox.AddText(Cut, stageBuilder.speaker, stageBuilder.message);
 
 			stopCurrentCutsceneLine();
+			Audio.stopAudio(false);
 			skipCutFlag = true;
 		}
 
@@ -341,7 +342,7 @@ namespace Cutscenes.Stages {
 			if (currentDialogLine != null) {
 				currentDialogLine.Stop();
 			}
-			Audio.stopAudio(false);
+			//Audio.stopAudio(false);
 		}
 
 		private IEnumerator waitForSeconds(float seconds) {
