@@ -346,7 +346,7 @@ namespace Gameplay {
 			int index = (int)(unitType);
 
 			//hack demo is in 15 hours i'm so tired let me sleep
-			Vector3 offset = new Vector3(0, -1.8f, 0);
+			Vector3 offset = new Vector3(0, -2.2f, 0);
 			if (unitType == UnitType.LightHorse) {
 				offset += new Vector3(0, -0.8f, 0);
 			}
@@ -372,7 +372,7 @@ namespace Gameplay {
 			);
 
 			//hack demo is in 15 hours i'm so tired let me sleep
-			Vector3 offset = new Vector3(0, -1.8f, 0);
+			Vector3 offset = new Vector3(0, -2.2f, 0);
 			if (unit is LightHorse) {
 				offset += new Vector3(0, -0.8f, 0);
 			}

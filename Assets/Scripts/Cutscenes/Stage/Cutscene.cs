@@ -268,7 +268,7 @@ namespace Cutscenes.Stages {
 				// Scene 1
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
                 S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
-				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
+				// S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().SetMessage("Blair sits alone on the spectator seat, facing the empty field " +
                     "where the mock battle took place. Juniper walks up the stepped seats and sits next to Blair.")
 					.SetSpeaker("Narrator"),

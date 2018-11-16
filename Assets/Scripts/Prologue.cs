@@ -31,7 +31,7 @@ public class Prologue : MonoBehaviour {
 
 		prologueText.transform.position += new Vector3(0, scrollSpeed * Time.deltaTime, 0);
 
-		if (prologueText.transform.position.y > 1700) {
+		if (prologueText.transform.position.y > 2300) {
 			fade.fadeToScene("DemoBattle");
 		}
 	}
