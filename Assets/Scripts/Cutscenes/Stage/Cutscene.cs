@@ -500,7 +500,7 @@ namespace Cutscenes.Stages {
 				S().SetMessage("War isn’t quite what you believed to be, is it?")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
 				S().SetMessage("No. I imagined a sense of pride and accomplishment. In reality, I was just relieved it was over.")
-					.SetSpeaker("Juniper").SetExpression("Sad"),
+					.SetSpeaker("Juniper").SetExpression("Frown"),
 				S().SetMessage("Killing our youthful beliefs. That’s how we grow up.")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
 				S().SetMessage("I have to head out early. Congratulations on your first victory. Try to get some rest. Try as if your life depends on it.")

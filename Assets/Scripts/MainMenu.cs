@@ -206,7 +206,7 @@ public class MainMenu : MonoBehaviour {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Army", false, new EliminationAgent())
 		};
-		Level level7 = new Level("CraterBattle", "7", CraterBattleCharacters, new Cutscene[] { new PreBattle7(), new PostBattle7() });
+		Level level7 = new Level("CraterBattleNew", "7New", CraterBattleCharacters, new Cutscene[] { new PreBattle7(), new PostBattle7() });
 
 		//Level 8: Battle for Xingata
 		Character[] XingataCharacters = new[] {
