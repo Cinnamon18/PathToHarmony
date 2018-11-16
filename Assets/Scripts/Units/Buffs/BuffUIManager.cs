@@ -22,8 +22,13 @@ namespace Buffs {
 		}
 
 		public void addBuff(Buff buff) {
+			Vector3 offset = new Vector3(0, -0.3f, 0);
+			if (this.gameObject.GetComponentInParent<LightHorse>() != null) {
+				offset += new Vector3(0, 0.8f, 0);
+			}
+
 			indicator = Instantiate(buffModel,
-				transform.parent.position + new Vector3(0, -2, 0),
+				transform.parent.position + offset,
 				buffModel.transform.rotation,
 				transform.parent);
 		}
