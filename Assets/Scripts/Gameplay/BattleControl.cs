@@ -155,20 +155,16 @@ namespace Gameplay {
 					}
 					battleStageChanged = false;
 
-					//After patching the RTS bug, the getMove function will now return null if no move should be made.
+					//The getMove function returns null if no move should be made,
+					//possibly in the event of the selection loop being interrupted by a manually ended turn
 					Move move = await level.characters[currentCharacter].getMove();
-
+					//Since no move occurs, nothing else needs to be done this turn (since nothing changed).
 					if (move == null) {
-						//A null move will be returned if the selection loop is interrupted by an ending turn.
-						//Since no move occurs, nothing else needs to be done this turn (since nothing changed).
 						break;
 					}
 
 					Unit ourUnit = battlefield.units[move.from.x, move.from.y];
 
-					//The unit sometimes would no longer be in its expected position before the RTS bug was patched,
-					//but this bug might no longer occur, so this check might be unnecessary. It doesn't hurt to leave it in,
-					//since the behavior is the same: either this loop terminates due to a break, or due to an exception.
 					if (ourUnit == null) {
 						Debug.LogWarning("In BattleControl.update(), a move originated from a nonexistent unit, probably due to an ended turn.");
 						break;
@@ -223,11 +219,13 @@ namespace Gameplay {
 						Debug.LogWarning("Item of unrecognized type clicked on.");
 					}
 
-					// checkWinAndLose();
 
 					ourUnit.hasMovedThisTurn = true;
 
 					await runAppropriateCutscenes();
+					
+					//Check that that didn't eliminate the last unit.
+					checkWinAndLose();
 
 					// Update AI capture point if Intercept mission
 					if (objective is InterceptObjective) {
