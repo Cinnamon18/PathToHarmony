@@ -224,8 +224,8 @@ namespace Gameplay {
 
 					await runAppropriateCutscenes();
 					
-					//Check that that didn't eliminate the last unit.
-					checkWinAndLose();
+					//Check if we eliminated the last unit.
+					await checkWinAndLose();
 
 					// Update AI capture point if Intercept mission
 					if (objective is InterceptObjective) {
@@ -272,7 +272,7 @@ namespace Gameplay {
 						unit.setHasAttackedThisTurn(false);
 					}
 
-					bool endGame = checkWinAndLose();
+					bool endGame = await checkWinAndLose();
 					if (!endGame) {
 						advanceBattleStage();
 					}
@@ -283,13 +283,13 @@ namespace Gameplay {
 			}
 		}
 
-		private bool checkWinAndLose() {
+		private async Task<bool> checkWinAndLose() {
 			if (objective.isWinCondition(halfTurnsElapsed) || Input.GetKey(KeyCode.P)) {
-				advanceCampaign();
+				await advanceCampaign();
 				return true;
 
 			} else if (objective.isLoseCondition(halfTurnsElapsed)) {
-				restartLevelDefeat();
+				await restartLevelDefeat();
 				return true;
 			} else {
 				return false;
@@ -310,7 +310,7 @@ namespace Gameplay {
 			}
 		}
 
-		private async void advanceCampaign() {
+		private async Task advanceCampaign() {
 			victoryImage.enabled = true;
 			Audio.playSound("Victory", false, false);
 			await Task.Delay(TimeSpan.FromMilliseconds(6000));
@@ -330,7 +330,7 @@ namespace Gameplay {
 			}
 		}
 
-		private async void restartLevelDefeat() {
+		private async Task restartLevelDefeat() {
 			defeatImage.enabled = true;
 			await Task.Delay(TimeSpan.FromMilliseconds(6000));
 			victoryImage.enabled = false;
