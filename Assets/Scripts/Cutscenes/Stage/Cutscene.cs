@@ -130,6 +130,7 @@ namespace Cutscenes.Stages {
 		public override StageBuilder[] getStage() {
 			hasExecuted = true;
 			return new StageBuilder[] {
+				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.FarLeft, "NarratorActor", "Tutorial"),
 				S().SetMessage("Over a field flanked by a forest on one side and rows and steps of spectating seats on the other, two parties are in the heat of battle."),
 				S().SetMessage("The commanders of each party shout orders to soldiers holding sparring weapons."),
@@ -247,6 +248,7 @@ namespace Cutscenes.Stages {
 				// S().SetMessage("Blair has successfully won the mock battle with Juniper.")
 				// 	,
 				S().PauseBattleTheme(),
+				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.FarRight, "SoldierActor", "Headmaster"),
 				S().AddActor(CutsceneSide.Right, "NarratorActor", "Narrator"),
@@ -269,7 +271,7 @@ namespace Cutscenes.Stages {
 				S().AddLeaver("Headmaster"),
 				S().SetBackground("TempBackground"),
 				// Scene 1
-				S().SetAudio("MainTheme1"),
+				// S().SetAudio("MainTheme1"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.FarRight, "JuniperActor", "Juniper"),
 				// S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
@@ -466,7 +468,7 @@ namespace Cutscenes.Stages {
 				S().AddLeaver("Juniper"),
 				S().SetBackground("TempBackground"),
 				// Scene 3
-				S().SetAudio("MainTheme1"),
+				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.FarRight, "NarratorActor", "Narrator"),
 				S().SetMessage("Lord Sweyn’s camp. The whole camp appears much busier.")
 					.SetSpeaker("Narrator"),
@@ -639,7 +641,7 @@ namespace Cutscenes.Stages {
 				S().SetBackground("TempBackground"),
 				// Scene 4
 				S().PauseBattleTheme(),
-				S().SetAudio("MainTheme1"),
+				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().SetMessage("After a successful retreat, Blair leads the army to march east to chase the Tsubin army.")
 					.SetSpeaker("Narrator"),
@@ -734,7 +736,7 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Post-battle 4
 				S().PauseBattleTheme(),
-				S().SetAudio("MainTheme1"),
+				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
 				S().AddActor(CutsceneSide.FarRight, "SoldierActor", "Shreya"),
@@ -834,7 +836,7 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Scene 5
 				S().PauseBattleTheme(),
-				S().SetAudio("MainTheme1"),
+				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().SetMessage("A wounded soldier lies on the ground. Life is visibly escaping from his terrified eyes.")
 					.SetSpeaker("Narrator"),
@@ -929,7 +931,7 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Scene 6
 				S().PauseBattleTheme(),
-				S().SetAudio("MainTheme1"),
+				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().SetMessage("Blair, immediately after arriving at Xingatan main army camp near Harmony Crater, is called to the King’s tent.")
 					.SetSpeaker("Narrator"),
@@ -1090,6 +1092,8 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
 			return new StageBuilder[] {
 				// Pre-battle 7
+				S().PauseBattleTheme(),
+				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.Left, "JuniperActor", "Juniper"),
 				S().AddActor(CutsceneSide.Right, "BrunoActor", "Bruno"),
@@ -1127,15 +1131,16 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Scene 7
 				S().PauseBattleTheme(),
+				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.Right, "NarratorActor", "Narrator"),
 				S().SetMessage("Battle for Harmony Crater is over.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("Inside Blair’s tent, Blair sits alone on the bed in pitch black darkness. In nocturnal silence, Blair’s mind is at war.")
+				S().SetMessage("Inside their tent, Blair sits alone on the bed in pitch black darkness. In nocturnal silence, their mind is at war.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("Blair doesn’t hear the approaching footsteps. A shadow enters Blair’s tent.")
+				S().SetMessage("Blair doesn’t hear the approaching footsteps. A shadow enters the tent.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("Blair tries to say something in protest, but a radiant dagger made out of pure crystal is plunged through Blair’s abdomen.")
+				S().SetMessage("Blair tries to say something in protest, but a radiant dagger made out of pure crystal is plunged through their abdomen.")
 					.SetSpeaker("Narrator"),
 				S().SetAudio("TheBladeTakeTwo"),
 				S().SetMessage("The assassin pulls out the dagger for a second strike, but Juniper and Bruno barge in. Bruno lunges to grapple the assassin,")
@@ -1175,7 +1180,7 @@ namespace Cutscenes.Stages {
 				  .SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().AddLeaver("Healer"),
 				S().AddLeaver("Narrator"),
-				S().SetAudio("MainTheme1"),
+				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().SetMessage("Bruno comes back into the tent, angry and frustrated.")
 					.SetSpeaker("Narrator"),

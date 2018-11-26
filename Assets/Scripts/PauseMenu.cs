@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour {
 
 	[SerializeField]
-	Canvas pauseCanvas;
+	private Canvas pauseCanvas;
+	[SerializeField]
+	private Canvas controls;
 	[SerializeField]
 	private FadeOutTransition fade;
 
 	// Use this for initialization
 	void Start() {
+		controls.enabled = false;
 		pauseCanvas.enabled = false;
 	}
 
@@ -41,5 +44,13 @@ public class PauseMenu : MonoBehaviour {
 	public void quitGame() {
 		Persistence.saveProgress();
 		Application.Quit();
+	}
+
+	public void showControls() {
+		controls.enabled = true;
+	}
+
+	public void hideControls() {
+		controls.enabled = false;
 	}
 }
