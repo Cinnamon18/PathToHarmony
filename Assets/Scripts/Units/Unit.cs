@@ -96,8 +96,7 @@ namespace Units {
 		}
 
 
-		//For now this will use a simple approach using a visited set instead of a disjoint set approach
-		//We can get away with this because there's only one "flow" source point (the unit).
+		// DFS your way to victory! It's better than smth like A* because we're getting all possibilities, not pathing.
 		public List<Coord> getValidMoves(int myX, int myY, Battlefield battlefield) {
 			if (hasMovedThisTurn) {
 				return new List<Coord>();
