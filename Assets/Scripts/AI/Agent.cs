@@ -160,7 +160,7 @@ namespace AI {
 		protected List<Coord> filterThreats(List<Coord> units, Coord myUnit, float score) {
 			List<Coord> lowThreat = new List<Coord>();
 			foreach (Coord enemy in units) {
-				AIBattle battle = new AIBattle(battlefield.units[enemy.x, enemy.y], battlefield.units[myUnit.x, myUnit.y], battlefield.map[myUnit.x, myUnit.y].Peek(), myUnit);
+				AIBattle battle = new AIBattle(battlefield.units[enemy.x, enemy.y], battlefield.units[myUnit.x, myUnit.y], battlefield.map[myUnit.x, myUnit.y].Peek(), myUnit, battlefield);
 				if (battle.score >= score) {
 					lowThreat.Add(enemy);
 				}
@@ -246,7 +246,7 @@ namespace AI {
 				Unit enemy = coordToUnit(target);
 				if (enemy != null) {
 					Tile enemyTile = battlefield.map[target.x, target.y].Peek();
-					targetPQueue.Enqueue(new AIBattle(unit, enemy, enemyTile, target));
+					targetPQueue.Enqueue(new AIBattle(unit, enemy, enemyTile, target, battlefield));
 				}
 			}
 			return targetPQueue.Dequeue().coord;

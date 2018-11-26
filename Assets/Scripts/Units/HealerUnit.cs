@@ -31,7 +31,7 @@ namespace Units {
 			this.meleeAttackStrength = meleeAttackStrength;
 		}
 
-		public override int battleDamage(Unit enemy, Tile enemyTile) {
+		public override int battleDamage(Unit enemy, Tile enemyTile, int attackerHeight, int defenderHeight) {
 			float healing = -1 * this.meleeAttackStrength * (1f * (this as Unit).getHealth() / this.maxHealth);
 			// damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
 			// damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
@@ -47,7 +47,7 @@ namespace Units {
 		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
 			await playAttackAnimation();
 
-			int damage = this.battleDamage(enemy, enemyTile);
+			int damage = this.battleDamage(enemy, enemyTile, 0, 0);
 			//Damage rounds up
 			await enemy.changeHealth(-damage, true);
 

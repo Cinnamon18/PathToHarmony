@@ -160,7 +160,7 @@ namespace AI {
 						foreach (Coord target in targets) {
 							Tile enemyTile = battlefield.map[target.x, target.y].Peek();
 							Unit enemy = battlefield.units[target.x, target.y];
-							AIBattle battle = new AIBattle(curUnit, enemy, enemyTile, target);
+							AIBattle battle = new AIBattle(curUnit, enemy, enemyTile, target, battlefield);
 							if (battle.score > bestScore) {
 								bestScore = battle.score;
 								bestTarget = target;
@@ -222,7 +222,7 @@ namespace AI {
 						foreach (Coord target in targets) {
 							Tile enemyTile = battlefield.map[target.x, target.y].Peek();
 							Unit enemy = battlefield.units[target.x, target.y];
-							AIBattle battle = new AIBattle(curUnit, enemy, enemyTile, target);
+							AIBattle battle = new AIBattle(curUnit, enemy, enemyTile, target, battlefield);
 							if (battle.score > bestScore) {
 								bestScore = battle.score;
 								bestTarget = target;
@@ -255,7 +255,7 @@ namespace AI {
 						foreach (Coord target in targets) {
 							Tile enemyTile = battlefield.map[target.x, target.y].Peek();
 							Unit enemy = battlefield.units[target.x, target.y];
-							AIBattle battle = new AIBattle(curUnit, enemy, enemyTile, target);
+							AIBattle battle = new AIBattle(curUnit, enemy, enemyTile, target, battlefield);
 							if (battle.score > bestScore) {
 								bestScore = battle.score;
 								bestTarget = target;

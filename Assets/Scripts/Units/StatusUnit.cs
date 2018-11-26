@@ -32,7 +32,7 @@ namespace Units {
 			this.range = range;
 		}
 
-		public override int battleDamage(Unit enemy, Tile enemyTile) {
+		public override int battleDamage(Unit enemy, Tile enemyTile, int attackerHeight, int defenderHeight) {
 			return 0; //Status units dont deal any direct damage
 		}
 

@@ -34,9 +34,10 @@ namespace Units {
 			this.range = range;
 		}
 
-		public override int battleDamage(Unit enemy, Tile enemyTile) {
+		public override int battleDamage(Unit enemy, Tile enemyTile, int attackerHeight, int defenderHeight) {
 			//TODO: create specific implementation for ranged units
 			float damage = this.rangedAttackStrength * (1f * (this as Unit).getHealth() / this.maxHealth);
+			damage = damage * (1 + ((attackerHeight - defenderHeight) * 0.1f));
 			damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
 			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
@@ -51,7 +52,12 @@ namespace Units {
 		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
 			await playAttackAnimation();
 
-			int damage = this.battleDamage(enemy, enemyTile);
+			Coord unitCoord = battlefield.getUnitCoords(this);
+			Coord targetCoord = battlefield.getUnitCoords(enemy);
+			int unitHeight = battlefield.map[unitCoord.x, unitCoord.y].Count;
+			int targetHeight = battlefield.map[unitCoord.x, unitCoord.y].Count;
+
+			int damage = this.battleDamage(enemy, enemyTile, unitHeight, targetHeight);
 			//Damage rounds up
 			await enemy.changeHealth(-damage, true);
 

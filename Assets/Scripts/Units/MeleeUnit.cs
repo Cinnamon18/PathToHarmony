@@ -31,23 +31,32 @@ namespace Units {
 			this.meleeAttackStrength = meleeAttackStrength;
 		}
 
-		public override int battleDamage(Unit enemy, Tile enemyTile) {
+		public override int battleDamage(Unit enemy, Tile enemyTile, int attackerHeight, int defenderHeight) {
+			//calculate terrain effects
 			float damage = this.meleeAttackStrength * (1f * (this as Unit).getHealth() / this.maxHealth);
+			damage = damage * (1 + ((attackerHeight - defenderHeight) * 0.1f));
 			damage = damage * ((100 - this.damageType.DamageReduction(enemy.armor)) / 100.0f);
 			damage = damage * ((100 - enemyTile.tileType.DefenseBonus()) / 100.0f);
 
+			//Apply buffs
 			List<Buff> damageBuffs = getBuffsOfType(BuffType.Damage);
 			foreach (Buff buff in damageBuffs) {
 				damage *= (buff as DamageBuff).getDamageBonus();
 			}
 
+			//Round up! Prevent stalemates.
 			return (int)(Mathf.Ceil(damage));
 		}
 
 		public override async Task<bool> doBattleWith(Unit enemy, Tile enemyTile, Battlefield battlefield) {
 			await playAttackAnimation();
 
-			int damage = this.battleDamage(enemy, enemyTile);
+			Coord unitCoord = battlefield.getUnitCoords(this);
+			Coord targetCoord = battlefield.getUnitCoords(enemy);
+			int unitHeight = battlefield.map[unitCoord.x, unitCoord.y].Count;
+			int targetHeight = battlefield.map[unitCoord.x, unitCoord.y].Count;
+
+			int damage = this.battleDamage(enemy, enemyTile, unitHeight, targetHeight);
 			//Damage rounds up
 			await enemy.changeHealth(-damage, true);
 
