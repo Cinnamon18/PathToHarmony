@@ -269,7 +269,7 @@ namespace Cutscenes.Stages {
 				S().AddLeaver("Cadets"),
 				S().AddLeaver("Blair"),
 				S().AddLeaver("Headmaster"),
-				S().SetBackground("TempBackground"),
+				S().SetBackground("NewBackground"),
 				// Scene 1
 				// S().SetAudio("MainTheme1"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
@@ -399,7 +399,7 @@ namespace Cutscenes.Stages {
 				S().AddLeaver("Bruno"),
 				S().AddLeaver("Blair"),
 				S().AddLeaver("Juniper"),
-				S().SetBackground("TempBackground"),
+				S().SetBackground("NewBackground"),
 				// Pre-battle 1
 				S().SetAudio("TheBlade"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
@@ -466,7 +466,7 @@ namespace Cutscenes.Stages {
 				// Scene Transition
 				S().AddLeaver("Blair"),
 				S().AddLeaver("Juniper"),
-				S().SetBackground("TempBackground"),
+				S().SetBackground("NewBackground"),
 				// Scene 3
 				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.FarRight, "NarratorActor", "Narrator"),
@@ -638,7 +638,7 @@ namespace Cutscenes.Stages {
 				// Scene Transition
 				S().AddLeaver("Blair"),
 				S().AddLeaver("Bruno"),
-				S().SetBackground("TempBackground"),
+				S().SetBackground("NewBackground"),
 				// Scene 4
 				S().PauseBattleTheme(),
 				S().SetAudio("CutsceneBgm"),
@@ -1025,7 +1025,7 @@ namespace Cutscenes.Stages {
 				S().AddLeaver("King Rouen"),
 				S().AddLeaver("Blair"),
 				S().AddLeaver("Narrator"),
-				S().SetBackground("TempBackground"),
+				S().SetBackground("NewBackground"),
 				// Pre-battle 6
 				S().SetAudio("TheBlade"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
