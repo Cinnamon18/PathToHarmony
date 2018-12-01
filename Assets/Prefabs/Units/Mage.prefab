@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114279958490815484}
-  unitModelPrefab: {fileID: 1651935608516630, guid: 58e628151cebdec4b938a0aa09ad94dd,
+  unitModelPrefab: {fileID: 1730063655502826, guid: 28539c3dd148e9f4d916826a7d265511,
     type: 2}
   unit: {fileID: 114873663971810214}
 --- !u!114 &114603807495047558

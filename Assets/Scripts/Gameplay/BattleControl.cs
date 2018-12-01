@@ -590,7 +590,7 @@ namespace Gameplay {
 					new Character("The evil lord zxqv", false, new defendAgent(new Coord(3,7)))
 				};
 
-				level = new Level("BorderPost", "1", characters, new Cutscene[] { });
+				level = new Level("CraterCenter", "8", characters, new Cutscene[] { });
 				Persistence.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 			}

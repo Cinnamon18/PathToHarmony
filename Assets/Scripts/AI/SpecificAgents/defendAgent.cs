@@ -51,7 +51,7 @@ namespace AI {
 			}
 
 			if (VIPs.Contains(curUnit)) {
-				Debug.Log("VIP");
+				// Debug.Log("VIP");
 				// Evade
 				HashSet<Coord> dangerZone = enemyAttackZone(enemies);
 				HashSet<Coord> safeZone = safeMoves(unitCoord, dangerZone);

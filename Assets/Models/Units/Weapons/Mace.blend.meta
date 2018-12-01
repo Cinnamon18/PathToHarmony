@@ -1,70 +1,17 @@
 fileFormatVersion: 2
-guid: f8ac59e341a897a45ab6f3543dc892ae
+guid: b24d16c6e8669f947920f8dc81e26690
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: Armature
-    100002: Body
-    100004: Head
-    100006: helmet
-    100008: Hips
-    100010: LeftArm
-    100012: LeftFoot
-    100014: LeftForeArm
-    100016: LeftHand
-    100018: LeftLeg
-    100020: LeftLowerLeg
-    100022: //RootNode
-    100024: RightArm
-    100026: RightFoot
-    100028: RightForeArm
-    100030: RightHand
-    100032: RightLeg
-    100034: RightLowerLeg
-    100036: spear1
-    100038: stave
-    100040: Torso
-    400000: Armature
-    400002: Body
-    400004: Head
-    400006: helmet
-    400008: Hips
-    400010: LeftArm
-    400012: LeftFoot
-    400014: LeftForeArm
-    400016: LeftHand
-    400018: LeftLeg
-    400020: LeftLowerLeg
-    400022: //RootNode
-    400024: RightArm
-    400026: RightFoot
-    400028: RightForeArm
-    400030: RightHand
-    400032: RightLeg
-    400034: RightLowerLeg
-    400036: spear1
-    400038: stave
-    400040: Torso
-    2100000: Body1
-    2100002: Helmet
-    2100004: lambert1
-    2100006: Shaft
-    2100008: Orb
-    2300000: spear1
-    2300002: stave
-    3300000: spear1
-    3300002: stave
-    4300000: Body
-    4300002: helmet
-    4300004: spear1
-    4300006: stave
+    100000: //RootNode
+    400000: //RootNode
+    2100000: Shaft
+    2100002: Metal
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: spear1
     7400000: Default Take
-    7400002: Armature_Take_001_BaseLayer
-    7400004: MagicCast
-    7400006: SlashCrush
     9500000: //RootNode
-    13700000: Body
-    13700002: helmet
   externalObjects: {}
   materials:
     importMaterials: 1
