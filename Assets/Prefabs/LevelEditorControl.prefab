@@ -60,6 +60,10 @@ MonoBehaviour:
   - {fileID: 100000, guid: ca2d0397ae7772d40a268f4f27759d8d, type: 3}
   - {fileID: 100004, guid: d4df879346cd6bb41aa9a688f7dc442c, type: 3}
   - {fileID: 1953023960320156, guid: 472d2cd7f437d0f418a46300780c204e, type: 2}
+  - {fileID: 1960810696831196, guid: 00042c8241cacd543b52dd1bd9d453ec, type: 2}
+  - {fileID: 1542517468048792, guid: 6e21e0b0595ae57419f0cd2ac4d3b79a, type: 2}
+  - {fileID: 1843672745570856, guid: 73287c3e8a3ec2242b11b7b9a0c0b1be, type: 2}
+  - {fileID: 1345293667352356, guid: df07c80deccb2224caa25e364664c42c, type: 2}
   previewHolder: {fileID: 0}
   initialDim: {x: 10, y: 10, z: 10}
   defaultMap: DemoMap
@@ -81,6 +85,10 @@ MonoBehaviour:
   - {fileID: 1434694798503106, guid: e6af2e076be38264f9620648a2a888a9, type: 2}
   - {fileID: 1629421154834734, guid: 69c0be666f9bbac4fb58123a3fdc8d65, type: 2}
   - {fileID: 1629421154834734, guid: c17983c11eecd5545b4630ae0bd53033, type: 2}
+  - {fileID: 1629421154834734, guid: dc7f162fc96564545b7bca1075c7e107, type: 2}
+  - {fileID: 1629421154834734, guid: 79231425a0a17524c90c52ffeeb36f31, type: 2}
+  - {fileID: 1629421154834734, guid: a380691cdd572c845abce8451e433e90, type: 2}
+  - {fileID: 1629421154834734, guid: 5037a042f6f0b7b4eb5403eb27fd7cdc, type: 2}
   mainCamera: {fileID: 0}
 --- !u!120 &120062188739160932
 LineRenderer:

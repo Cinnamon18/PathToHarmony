@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114425848792275622}
   - component: {fileID: 114609432408875802}
   - component: {fileID: 114157555706328888}
-  - component: {fileID: 114970031707002548}
+  - component: {fileID: 114090425470185386}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -73,11 +73,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4970945173330864}
-  - component: {fileID: 114560664085255754}
+  - component: {fileID: 114163161610115318}
   - component: {fileID: 114498037091705390}
   - component: {fileID: 65530104501836048}
   m_Layer: 0
-  m_Name: LightHorse
+  m_Name: Spearman
   m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -90,7 +90,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1629421154834734}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 342.145, y: 259.8523, z: -432.60428}
+  m_LocalPosition: {x: 341.8451, y: 259.3523, z: -432.58218}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224403954332622900}
@@ -136,6 +136,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114090425470185386
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1214039177007956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768a8178c70685d4dbc598b97f53e6f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114157555706328888
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -147,6 +158,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3846fc1807b1b8e409a1572e47874a0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114163161610115318
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1629421154834734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73c05f96e9eda65448644a1901d8ecfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasMovedThisTurn: 0
+  factionMaterials:
+  - {fileID: 2100000, guid: d39e32888b7478b4b9ecdb3831918f15, type: 2}
+  - {fileID: 2100000, guid: 37e3504dc20feed408599a8683f2b037, type: 2}
+  - {fileID: 2100000, guid: 2dac4d86afe633149acbcb8a11a42607, type: 2}
+  - {fileID: 2100000, guid: b883e6aeff368244aaefa4eccf4b19c7, type: 2}
+  buffUIManager: {fileID: 114090425470185386}
+  healthUIManager: {fileID: 114498037091705390}
+  attackSoundEffect: KnightAttack
 --- !u!114 &114425848792275622
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -180,29 +211,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 114738306655082024}
-  unitModelPrefab: {fileID: 1251152768805192, guid: 4f25019534b47544187e5e18b6dc7f78,
+  unitModelPrefab: {fileID: 1345293667352356, guid: df07c80deccb2224caa25e364664c42c,
     type: 2}
-  unit: {fileID: 114560664085255754}
---- !u!114 &114560664085255754
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1629421154834734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fc95ff5ceeb8e744bc4e8e63a9c4972, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hasMovedThisTurn: 0
-  factionMaterials:
-  - {fileID: 2100000, guid: d39e32888b7478b4b9ecdb3831918f15, type: 2}
-  - {fileID: 2100000, guid: 37e3504dc20feed408599a8683f2b037, type: 2}
-  - {fileID: 2100000, guid: 2dac4d86afe633149acbcb8a11a42607, type: 2}
-  - {fileID: 2100000, guid: b883e6aeff368244aaefa4eccf4b19c7, type: 2}
-  buffUIManager: {fileID: 114970031707002548}
-  healthUIManager: {fileID: 114498037091705390}
-  attackSoundEffect: LightHorseAttack
+  unit: {fileID: 114163161610115318}
 --- !u!114 &114609432408875802
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -246,17 +257,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114970031707002548
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1214039177007956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 768a8178c70685d4dbc598b97f53e6f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!222 &222509604232229978
 CanvasRenderer:
   m_ObjectHideFlags: 1

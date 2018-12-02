@@ -23,7 +23,8 @@ namespace Buffs {
 
 		public void addBuff(Buff buff) {
 			Vector3 offset = new Vector3(0, -0.3f, 0);
-			if (this.gameObject.GetComponentInParent<LightHorse>() != null) {
+			if (this.gameObject.GetComponentInParent<LightHorse>() != null ||
+				this.gameObject.GetComponentInParent<HeavyHorse>() != null) {
 				offset += new Vector3(0, 0.8f, 0);
 			}
 

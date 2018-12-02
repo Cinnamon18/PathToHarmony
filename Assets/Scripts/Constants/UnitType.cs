@@ -5,6 +5,10 @@ namespace Constants {
 		Cleric,
 		Archer,
 		Rogue,
-		LightHorse
+		LightHorse,
+		ArcherHorse,
+		HeavyHorse,
+		Macer,
+		Spearman
 	}
 }

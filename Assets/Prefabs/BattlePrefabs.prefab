@@ -2502,6 +2502,10 @@ MonoBehaviour:
   - {fileID: 1434694798503106, guid: e6af2e076be38264f9620648a2a888a9, type: 2}
   - {fileID: 1629421154834734, guid: 69c0be666f9bbac4fb58123a3fdc8d65, type: 2}
   - {fileID: 1629421154834734, guid: c17983c11eecd5545b4630ae0bd53033, type: 2}
+  - {fileID: 1629421154834734, guid: dc7f162fc96564545b7bca1075c7e107, type: 2}
+  - {fileID: 1629421154834734, guid: 79231425a0a17524c90c52ffeeb36f31, type: 2}
+  - {fileID: 1629421154834734, guid: a380691cdd572c845abce8451e433e90, type: 2}
+  - {fileID: 1629421154834734, guid: 5037a042f6f0b7b4eb5403eb27fd7cdc, type: 2}
   tilesHolder: {fileID: 0}
   generator: {fileID: 0}
   fade: {fileID: 114531392503573374}

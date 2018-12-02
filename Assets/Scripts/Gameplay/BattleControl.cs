@@ -345,7 +345,7 @@ namespace Gameplay {
 
 			//hack demo is in 15 hours i'm so tired let me sleep
 			Vector3 offset = new Vector3(0, -2.2f, 0);
-			if (unitType == UnitType.LightHorse) {
+			if (unitType == UnitType.LightHorse || unitType == UnitType.HeavyHorse) {
 				offset += new Vector3(0, -0.8f, 0);
 			}
 
@@ -371,7 +371,7 @@ namespace Gameplay {
 
 			//hack demo is in 15 hours i'm so tired let me sleep
 			Vector3 offset = new Vector3(0, -2.2f, 0);
-			if (unit is LightHorse) {
+			if (unit is LightHorse || unit is HeavyHorse) {
 				offset += new Vector3(0, -0.8f, 0);
 			}
 			endPos += offset;
@@ -590,7 +590,7 @@ namespace Gameplay {
 					new Character("The evil lord zxqv", false, new defendAgent(new Coord(3,7)))
 				};
 
-				level = new Level("CraterCenter", "8", characters, new Cutscene[] { });
+				level = new Level("CraterCenter", "NewUnitsTest", characters, new Cutscene[] { });
 				Persistence.campaign = new Campaign("test", 0, new[] { level });
 				// cutscene.startCutscene("tutorialEnd");
 			}
