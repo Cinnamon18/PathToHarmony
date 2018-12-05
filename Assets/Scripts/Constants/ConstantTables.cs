@@ -18,8 +18,8 @@ namespace Constants {
 			{ {0,20,40,60}, //No weapon
 			  {0,20,30,40}, //Slash
 			  {0,10,20,30}, //Pierce
-			  {0,10,10,20}, //Blunt. Unused at the current time.
-			  {200,200,200,200}}; //Heal. Unused at the current time.
+			  {0,10,10,20}, //Blunt.
+			  {200,200,200,200}}; //Heal.
 
 		//First dimension is TileType. Holds the % defense a Tile piece grants
 		public static int[] TileDefense = new int[]
