@@ -4,10 +4,18 @@ ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Circle
+    100004: Empty_001
+    100006: Empty_002
     400000: //RootNode
+    400002: Circle
+    400004: Empty_001
+    400006: Empty_002
     2100000: unnamed
     2300000: //RootNode
+    2300002: Circle
     3300000: //RootNode
+    3300002: Circle
     4300000: Circle
     7400000: Default Take
     9500000: //RootNode
