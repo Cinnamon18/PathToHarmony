@@ -55,6 +55,13 @@ namespace cakeslice {
 
 		public Color[] colors;
 
+		private static readonly Color[] MATERIAL_COLORS = new Color[] {
+			new Color(1, 0, 0, 0),
+			new Color(0, 1, 0, 0),
+			new Color(0, 0, 1, 0),
+			new Color(0, 0, 0, 1)
+		};
+
 		public bool additiveRendering = false;
 
 		public bool backfaceCulling = true;
@@ -249,8 +256,9 @@ namespace cakeslice {
 				outlineShaderMaterial.hideFlags = HideFlags.HideAndDontSave;
 				UpdateMaterialsPublicProperties();
 			}
-			if (outlineEraseMaterial == null)
+			if (outlineEraseMaterial == null) {
 				outlineEraseMaterial = CreateMaterial(new Color(0, 0, 0, 0));
+			}
 
 			// for (int x = 0; x < outlineMaterials.Length; x++) {
 			// if (outlineMaterials[x] == null) {
@@ -258,10 +266,11 @@ namespace cakeslice {
 			// }
 			// }
 
-			outlineMaterials[0] = CreateMaterial(new Color(1, 0, 0, 0));
-			outlineMaterials[1] = CreateMaterial(new Color(0, 1, 0, 0));
-			outlineMaterials[2] = CreateMaterial(new Color(0, 0, 1, 0));
-			outlineMaterials[3] = CreateMaterial(new Color(0, 0, 0, 1));
+			for (int i = 0; i < OutlineEffect.MATERIAL_COLORS.Length; i++) {
+				if (outlineMaterials[i] == null) {
+					outlineMaterials[i] = CreateMaterial(OutlineEffect.MATERIAL_COLORS[i]);
+				}
+			}
 
 		}
 
