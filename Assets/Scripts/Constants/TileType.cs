@@ -20,7 +20,8 @@
 		PalisadeVertical,
 		PalisadeHorizontal,
 		PalisadeCorner,
-		Rock
+		Rock,
+		Snow
 	}
     public enum TileEffects
     {

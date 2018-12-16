@@ -223,15 +223,15 @@ namespace Gameplay {
 					ourUnit.hasMovedThisTurn = true;
 
 					await runAppropriateCutscenes();
-					
+
 					//Check if we eliminated the last unit.
 					await checkWinAndLose();
 
 					// Update AI capture point if Intercept mission
 					if (objective is InterceptObjective) {
 						foreach (Character c in level.characters) {
-							if (c.agent is defendAgent) {
-								(c.agent as defendAgent).capturePoint = battlefield.getUnitCoords((objective as InterceptObjective).vips[0]);
+							if (c.agent is DefendAgent) {
+								(c.agent as DefendAgent).capturePoint = battlefield.getUnitCoords((objective as InterceptObjective).vips[0]);
 							}
 						}
 					}
@@ -546,8 +546,8 @@ namespace Gameplay {
 						Unit unit = battlefield.units[pos.x, pos.y];
 						(objective as InterceptObjective).vips.Add(unit);
 						foreach (Character c in level.characters) {
-							if (c.agent is defendAgent) {
-								(c.agent as defendAgent).VIPs.Add(unit);
+							if (c.agent is DefendAgent) {
+								(c.agent as DefendAgent).VIPs.Add(unit);
 							}
 						}
 						Instantiate(vipCrownPrefab, unit.transform.position + new Vector3(0, 3, 0), vipCrownPrefab.transform.rotation, unit.transform);
@@ -557,6 +557,11 @@ namespace Gameplay {
 				case ObjectiveType.Capture:
 					objective = new CaptureObjective(battlefield, level, level.characters[playerCharacter], 30, goalPositions, 2);
 					foreach (Coord pos in goalPositions) {
+						foreach (Character c in level.characters) {
+							if (c.agent is DefendAgent) {
+								(c.agent as DefendAgent).capturePoint = pos;
+							}
+						}
 						Instantiate(vipCrownPrefab,
 							battlefield.map[pos.x, pos.y].Peek().transform.position + new Vector3(0, 3, 0),
 							vipCrownPrefab.transform.rotation,
@@ -587,7 +592,7 @@ namespace Gameplay {
 			if (Persistence.campaign == null && Application.isEditor) {
 				Character[] characters = new[] {
 					new Character("Alice", true, new PlayerAgent()),
-					new Character("The evil lord zxqv", false, new defendAgent(new Coord(3,7)))
+					new Character("The evil lord zxqv", false, new DefendAgent(new Coord(3,7)))
 				};
 
 				level = new Level("CraterCenter", "NewUnitsTest", characters, new Cutscene[] { });

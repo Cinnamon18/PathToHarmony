@@ -161,7 +161,7 @@ public class MainMenu : MonoBehaviour {
 		//Level 1: border post kova
 		Character[] BorderPostCharacter = new[] {
 			new Character("Blair", true, new PlayerAgent()),
-			new Character("Tsubin Infantry", false, new EliminationAgent())
+			new Character("Tsubin Infantry", false, new DefendAgent())
 		};
 		Level level1 = new Level("BorderPost", "1", BorderPostCharacter, new Cutscene[] { new PreBattle1(), new PostBattle1() });
 
@@ -187,33 +187,68 @@ public class MainMenu : MonoBehaviour {
 		};
 		Level level4 = new Level("CentralPlains", "4", CentralPlainsCharacters, new Cutscene[] { new PreBattle4(), new PostBattle4() });
 
-		//Level 5: Chasing
-		Character[] ChasingCharacters = new[] {
+		// Level 5: SupplyTrain
+		Character[] SupplyTrainCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Corbitan Raiders", false, new EliminationAgent())
 		};
-		Level level5 = new Level("Chasing", "5", ChasingCharacters, new Cutscene[] { new PreBattle5(), new PostBattle5() });
+		Level level5 = new Level("SupplyTrain", "5", SupplyTrainCharacters, new Cutscene[] { new PreBattle5(), new PostBattle5() });
 
-		//Level 6: Crater Attack
+		// Level 6: DefendCity
+		Character[] DefendCityCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Corbitan Raiders", false, new EliminationAgent())
+		};
+		Level level6 = new Level("DefendCity", "6", DefendCityCharacters, new Cutscene[] { new PreBattle6(), new PostBattle6() });
+
+		//Level 7: Chasing
+		// Character[] ChasingCharacters = new[] {
+		// 	new Character("Blair", true, new PlayerAgent()),
+		// 	new Character("Corbitan Raiders", false, new EliminationAgent())
+		// };
+		// Level level7 = new Level("Chasing", "7", ChasingCharacters, new Cutscene[] { new PreBattle7(), new PostBattle7() });
+
+		//Level 8: PatrolAmbush
+		// Character[] PatrolAmbushCharacters = new[] {
+		// 	new Character("Blair", true, new PlayerAgent()),
+		// 	new Character("Corbitan Raiders", false, new EliminationAgent())
+		// };
+		// Level level8 = new Level("PatrolAmbush", "8", PatrolAmbushCharacters, new Cutscene[] { new PreBattle8(), new PostBattle8() });
+
+		//Level 9: DistractDistraction
+		// Character[] DistractDistractionCharacters = new[] {
+		// 	new Character("Blair", true, new PlayerAgent()),
+		// 	new Character("Corbitan Raiders", false, new EliminationAgent())
+		// };
+		// Level level9 = new Level("DistractDistraction", "9", DistractDistractionCharacters, new Cutscene[] { new PreBattle9(), new PostBattle9() });
+
+		//Level 10: CapitalSiege
+		// Character[] CapitalSiegeCharacters = new[] {
+		// 	new Character("Blair", true, new PlayerAgent()),
+		// 	new Character("Corbitan Raiders", false, new DefendAgent())
+		// };
+		// Level level10 = new Level("CapitalSiege", "10", CapitalSiegeCharacters, new Cutscene[] { new PreBattle10(), new PostBattle10() });
+
+		//Level 11: Crater Attack
 		Character[] CraterAttackCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Velgarian Army", false, new EliminationAgent())
 		};
-		Level level6 = new Level("CraterAttack", "6", CraterAttackCharacters, new Cutscene[] { new PreBattle6(), new PostBattle6() });
+		Level level11 = new Level("CraterAttack", "11", CraterAttackCharacters, new Cutscene[] { new PreBattle11(), new PostBattle11() });
 
-		//Level 7: Crater Battle
+		//Level 12: Crater Battle
 		Character[] CraterBattleCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Tsubin Army", false, new EliminationAgent())
 		};
-		Level level7 = new Level("CraterBattleNew", "7New", CraterBattleCharacters, new Cutscene[] { new PreBattle7(), new PostBattle7() });
+		Level level12 = new Level("CraterBattleNew", "12", CraterBattleCharacters, new Cutscene[] { new PreBattle12(), new PostBattle12() });
 
-		//Level 8: Battle for Xingata
+		//Level 13: Battle for Xingata
 		Character[] XingataCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("King Rouen", false, new EliminationAgent())
 		};
-		Level level8 = new Level("CraterCenter", "8", XingataCharacters, new Cutscene[] { new PreBattle8(), new PostBattle8() });
+		Level level13 = new Level("CraterCenter", "13", XingataCharacters, new Cutscene[] { new PreBattle13(), new PostBattle13() });
 
 
 
@@ -224,9 +259,14 @@ public class MainMenu : MonoBehaviour {
 			level3,
 			level4,
 			level5,
-			level6,
-			level7,
-			level8
+			// level6,
+			// level7,
+			// level8,
+			// level9,
+			// level10,
+			level11,
+			level12,
+			level13
 		});
 
 		Persistence.campaign = RealActualFinCampaign;

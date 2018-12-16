@@ -805,6 +805,100 @@ namespace Cutscenes.Stages {
 		public override StageBuilder[] getStage() {
 			hasExecuted = true;
 			return new StageBuilder[] {
+				S().PauseBattleTheme(),
+				S().SetAudio("CutsceneBgm"),
+				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
+				S().AddActor(CutsceneSide.Left, "BrunoActor", "Bruno"),
+				S().AddActor(CutsceneSide.FarRight, "SoldierActor", "Shreya"),
+				S().AddActor(CutsceneSide.Right, "JuniperActor", "Juniper"),
+				S().SetMessage("Look up ahead! There's a Corbitan supply train!")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().SetMessage("A supply train? This deep in Xingatan territory? This is no raid! It's an invasion!")
+					.SetSpeaker("Bruno").SetExpression("Surprised"),
+				S().SetMessage("They must've broken camp before we could arive. And that means his majdsetys' poseessions wiar with wtem")
+					.SetSpeaker("Shreya"),
+			};
+		}
+	}
+
+	public class PostBattle5 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.afterVictoryImage) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+
+
+			};
+		}
+	}
+
+	public class PreBattle6 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 0) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+
+
+			};
+		}
+	}
+
+	public class PostBattle6 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.afterVictoryImage) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+
+
+			};
+		}
+	}
+
+	public class PreBattle7 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 0) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
 				// Pre-battle 5
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.FarRight, "BrunoActor", "Bruno"),
@@ -819,7 +913,7 @@ namespace Cutscenes.Stages {
 		}
 	}
 
-	public class PostBattle5 : Cutscene {
+	public class PostBattle7 : Cutscene {
 		public override bool executionCondition(ExecutionInfo info) {
 			if (hasExecuted) {
 				return false;
@@ -914,7 +1008,131 @@ namespace Cutscenes.Stages {
 		}
 	}
 
-	public class PreBattle6 : Cutscene {
+	public class PreBattle8 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 0) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+
+				
+			};
+		}
+	}
+
+	public class PostBattle8 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.afterVictoryImage) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+
+
+			};
+		}
+	}
+	
+	public class PreBattle9 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 0) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+
+				
+			};
+		}
+	}
+
+	public class PostBattle9 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.afterVictoryImage) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+
+
+			};
+		}
+	}
+	public class PreBattle10 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 0) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+
+				
+			};
+		}
+	}
+
+	public class PostBattle10 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.afterVictoryImage) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+
+
+			};
+		}
+	}
+	public class PreBattle11 : Cutscene {
 		public override bool executionCondition(ExecutionInfo info) {
 			if (hasExecuted) {
 				return false;
@@ -1049,7 +1267,7 @@ namespace Cutscenes.Stages {
 		}
 	}
 
-	public class PostBattle6 : Cutscene {
+	public class PostBattle11 : Cutscene {
 		public override bool executionCondition(ExecutionInfo info) {
 			if (hasExecuted) {
 				return false;
@@ -1076,7 +1294,7 @@ namespace Cutscenes.Stages {
 		}
 	}
 
-	public class PreBattle7 : Cutscene {
+	public class PreBattle12 : Cutscene {
 		public override bool executionCondition(ExecutionInfo info) {
 			if (hasExecuted) {
 				return false;
@@ -1108,13 +1326,13 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Blair").SetExpression("Smile"),
 				S().SetMessage("Corbita and Velgari are retreating. Corbitan cavalries were of no use attacking up the slope, and the Velgarians")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("that sent Corbitans home saw their lines breaking on the other sides. Ralley your soldiers and join the rank. We now face the full might of Tsubin.")
+				S().SetMessage("that sent Corbitans home saw their lines breaking on the other sides. Rally your soldiers and join the rank. We now face the full might of Tsubin.")
 					.SetSpeaker("King Rouen")
 			};
 		}
 	}
 
-	public class PostBattle7 : Cutscene {
+	public class PostBattle12 : Cutscene {
 		public override bool executionCondition(ExecutionInfo info) {
 			if (hasExecuted) {
 				return false;
@@ -1210,7 +1428,7 @@ namespace Cutscenes.Stages {
 		}
 	}
 
-	public class PreBattle8 : Cutscene {
+	public class PreBattle13 : Cutscene {
 		public override bool executionCondition(ExecutionInfo info) {
 			if (hasExecuted) {
 				return false;
@@ -1291,7 +1509,7 @@ namespace Cutscenes.Stages {
 		}
 	}
 
-	public class PostBattle8 : Cutscene {
+	public class PostBattle13 : Cutscene {
 		public override bool executionCondition(ExecutionInfo info) {
 			if (hasExecuted) {
 				return false;

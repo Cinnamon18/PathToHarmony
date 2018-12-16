@@ -8,12 +8,15 @@ using UnityEngine;
 using Constants;
 
 namespace AI {
-	public class defendAgent : Agent {
+	public class DefendAgent : Agent {
 
 		public Coord capturePoint;
 		public List<Unit> VIPs;
 
-		public defendAgent(Coord capturePoint) : base() {
+		//Capture points may not be known at instantiation time. They must be assigned at some point before getMove is called.
+		public DefendAgent() : this(new Coord(0,0)) {}
+
+		public DefendAgent(Coord capturePoint) : base() {
 			this.capturePoint = capturePoint;
 			this.VIPs = new List<Unit>();
 		}

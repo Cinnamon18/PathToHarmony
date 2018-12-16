@@ -49,7 +49,8 @@ namespace Gameplay {
 					new GameObject[] {},
 					new GameObject[] {},
 					new GameObject[] {},
-					new GameObject[] {smallRock, pieceOfHeaven}
+					new GameObject[] {smallRock, pieceOfHeaven},
+					new GameObject[] {smallTree}
 				};
 
 				Tile.tileFlavor = _tileFlavor;
