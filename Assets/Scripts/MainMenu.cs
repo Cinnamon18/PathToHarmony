@@ -201,33 +201,33 @@ public class MainMenu : MonoBehaviour {
 		};
 		Level level6 = new Level("DefendCity", "6", DefendCityCharacters, new Cutscene[] { new PreBattle6(), new PostBattle6() });
 
-		//Level 7: Chasing
-		// Character[] ChasingCharacters = new[] {
-		// 	new Character("Blair", true, new PlayerAgent()),
-		// 	new Character("Corbitan Raiders", false, new EliminationAgent())
-		// };
-		// Level level7 = new Level("Chasing", "7", ChasingCharacters, new Cutscene[] { new PreBattle7(), new PostBattle7() });
+		// Level 7: Chasing
+		Character[] ChasingCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Corbitan Raiders", false, new EliminationAgent())
+		};
+		Level level7 = new Level("Chasing", "7", ChasingCharacters, new Cutscene[] { new PreBattle7(), new PostBattle7() });
 
 		//Level 8: PatrolAmbush
-		// Character[] PatrolAmbushCharacters = new[] {
-		// 	new Character("Blair", true, new PlayerAgent()),
-		// 	new Character("Corbitan Raiders", false, new EliminationAgent())
-		// };
-		// Level level8 = new Level("PatrolAmbush", "8", PatrolAmbushCharacters, new Cutscene[] { new PreBattle8(), new PostBattle8() });
+		Character[] PatrolAmbushCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Corbitan Raiders", false, new EliminationAgent())
+		};
+		Level level8 = new Level("PatrolAmbush", "8", PatrolAmbushCharacters, new Cutscene[] { new PreBattle8(), new PostBattle8() });
 
 		//Level 9: DistractDistraction
-		// Character[] DistractDistractionCharacters = new[] {
-		// 	new Character("Blair", true, new PlayerAgent()),
-		// 	new Character("Corbitan Raiders", false, new EliminationAgent())
-		// };
-		// Level level9 = new Level("DistractDistraction", "9", DistractDistractionCharacters, new Cutscene[] { new PreBattle9(), new PostBattle9() });
+		Character[] DistractDistractionCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Corbitan Raiders", false, new EliminationAgent())
+		};
+		Level level9 = new Level("DistractDistraction2", "9", DistractDistractionCharacters, new Cutscene[] { new PreBattle9(), new PostBattle9() });
 
 		//Level 10: CapitalSiege
-		// Character[] CapitalSiegeCharacters = new[] {
-		// 	new Character("Blair", true, new PlayerAgent()),
-		// 	new Character("Corbitan Raiders", false, new DefendAgent())
-		// };
-		// Level level10 = new Level("CapitalSiege", "10", CapitalSiegeCharacters, new Cutscene[] { new PreBattle10(), new PostBattle10() });
+		Character[] CapitalSiegeCharacters = new[] {
+			new Character("Blair", true, new PlayerAgent()),
+			new Character("Corbitan Raiders", false, new DefendAgent())
+		};
+		Level level10 = new Level("CapitalSiege", "10", CapitalSiegeCharacters, new Cutscene[] { new PreBattle10(), new PostBattle10() });
 
 		//Level 11: Crater Attack
 		Character[] CraterAttackCharacters = new[] {
@@ -252,18 +252,18 @@ public class MainMenu : MonoBehaviour {
 
 
 
-		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 0, new[] {
+		Campaign RealActualFinCampaign = new Campaign("Path to Harmony", 10, new[] {
 			level0,
 			level1,
 			level2,
 			level3,
 			level4,
 			level5,
-			// level6,
-			// level7,
-			// level8,
-			// level9,
-			// level10,
+			level6,
+			level7,
+			level8,
+			level9,
+			level10,
 			level11,
 			level12,
 			level13
