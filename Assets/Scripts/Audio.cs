@@ -31,6 +31,7 @@ public class Audio : MonoBehaviour {
 			tracks.Add("FinalBattle", Resources.Load<AudioClip>("Audio/FinalBattle"));
 			tracks.Add("Victory", Resources.Load<AudioClip>("Audio/Victory"));
 			tracks.Add("CutsceneBgm", Resources.Load<AudioClip>("Audio/CutsceneBgm"));
+			tracks.Add("Error", Resources.Load<AudioClip>("Audio/Error"));
 		}
 
 		sfxSource = initialSfx;

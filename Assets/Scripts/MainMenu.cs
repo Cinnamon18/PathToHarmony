@@ -156,7 +156,7 @@ public class MainMenu : MonoBehaviour {
 			new Character("Blair", true, new BlairTutorialAgent()),
 			new Character("Juniper", false, new JuniperTutorialAgent())
 		};
-		Level level0 = new Level("TutorialMap", "TutorialLevel", TutorialCharacters, new Cutscene[] { new TutorialStart(), new TutorialTileDefense(), new TutorialJuniperUnitLoss(), new TutorialBlairUnitLoss(), new TutorialEnd() });
+		Level level0 = new Level("TutorialMap", "TutorialLevel", TutorialCharacters, new Cutscene[] { new TutorialStart(), new Tutorial2(), new Tutorial3(), new TutorialTileDefense(), new TutorialJuniperUnitLoss(), new TutorialBlairUnitLoss(), new TutorialEnd() });
 
 		//Level 1: border post kova
 		Character[] BorderPostCharacter = new[] {

@@ -131,7 +131,7 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
 			return new StageBuilder[] {
 				S().SetAudio("CutsceneBgm"),
-				S().AddActor(CutsceneSide.FarLeft, "NarratorActor", "Tutorial"),
+				S().AddActor(CutsceneSide.Left, "NarratorActor", "Tutorial"),
 				S().SetMessage("Over a field flanked by a forest on one side and rows and steps of spectating seats on the other, two parties are in the heat of battle."),
 				S().SetMessage("The commanders of each party shout orders to soldiers holding sparring weapons."),
 				S().SetMessage("You won't have any input this battle, but next time you'll play as Blair and victory will be your responsibility!")
@@ -154,8 +154,13 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Tutorial"),
 				S().SetMessage("All objectives can also be won by eliminating all opponents.")
 					.SetSpeaker("Tutorial"),
-				S().SetMessage("Now lets see how combat happens in Path to Harmony!")
+				S().SetMessage("Now lets see how combat happens in Path to Harmony. Follow Blair's instructions and the on screen arrows.")
 					.SetSpeaker("Tutorial"),
+				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
+				S().SetMessage("Let's see... I should probably boost my knight's already strong defense by putting them in the trees.")
+					.SetSpeaker("Blair"),
+				S().SetMessage("I'll move my archers away from the road so Juniper's calvalry can't get to them.")
+					.SetSpeaker("Blair"),
 			};
 		}
 	}
@@ -176,10 +181,32 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
 			return new StageBuilder[] {
 				S().AddActor(CutsceneSide.FarLeft, "JuniperActor", "Juniper"),
-				S().SetMessage("I can't lose this yet! I'll place my rogues in the trees so Blair's units can't hit them as easily.")
+				S().SetMessage("Hah! Blair forgot that my rogues' don't suffer a movement penalty through trees. I'll hit their exposed archers!")
 					.SetSpeaker("Juniper"),
-				S().SetMessage("My calvalry moves faster on roads, so I'll attack Blair's archers directly before they can chip away at me.")
+				S().SetMessage("My calvalry moves faster on roads, so I'll attack Blair's knights directly.")
 					.SetSpeaker("Juniper"),
+			};
+		}
+	}
+
+	public class Tutorial2 : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 2) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
+				S().SetMessage("I forgot about her rogues' movement features! Oh well, I should still be able to finish them before they get me.")
+					.SetSpeaker("Blair"),
 			};
 		}
 	}
@@ -190,7 +217,7 @@ namespace Cutscenes.Stages {
 			if (hasExecuted) {
 				return false;
 			}
-			if (info.halfTurnsElapsed == 5) {
+			if (info.halfTurnsElapsed == 3) {
 				hasExecuted = true;
 				return true;
 			}
@@ -201,13 +228,40 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
 			return new StageBuilder[] {
 				S().AddActor(CutsceneSide.FarLeft, "JuniperActor", "Juniper"),
-				S().SetMessage("Blair eliminated another one of my units! This isn't looking good.")
+				S().SetMessage("Blair concentrated their fire and eliminated another one of my units! This isn't looking good.")
 					.SetSpeaker("Juniper").SetExpression("Frown"),
+				S().AddActor(CutsceneSide.FarRight, "BlairActor", "Blair"),
+				S().SetMessage("You gonna be okay without that calvalry, Juniper?.")
+					.SetSpeaker("Blair").SetExpression("Smile"),
+				S().SetMessage("Can it, Blair.")
+					.SetSpeaker("Juniper").SetExpression("Angry"),
 			};
 		}
 	}
 
 	public class TutorialBlairUnitLoss : Cutscene {
+		public override bool executionCondition(ExecutionInfo info) {
+			if (hasExecuted) {
+				return false;
+			}
+			if (info.halfTurnsElapsed == 4) {
+				hasExecuted = true;
+				return true;
+			}
+			return false;
+		}
+
+		public override StageBuilder[] getStage() {
+			hasExecuted = true;
+			return new StageBuilder[] {
+				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
+				S().SetMessage("My archers lost health but they're still up. That’s fine. Small sacrifices are necessary in a battle.")
+					.SetSpeaker("Blair").SetExpression("Neutral"),
+			};
+		}
+	}
+
+	public class Tutorial3 : Cutscene {
 		public override bool executionCondition(ExecutionInfo info) {
 			if (hasExecuted) {
 				return false;
@@ -222,9 +276,9 @@ namespace Cutscenes.Stages {
 		public override StageBuilder[] getStage() {
 			hasExecuted = true;
 			return new StageBuilder[] {
-				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().SetMessage("I lost a unit. That’s fine. Small sacrifices are necessary in a battle.")
-					.SetSpeaker("Blair").SetExpression("Neutral"),
+				S().AddActor(CutsceneSide.Left, "NarratorActor", "Tutorial"),
+				S().SetMessage("Now it's your turn! Eliminate Juniper's remaining rogue.")
+					.SetSpeaker("Tutorial"),
 			};
 		}
 	}
@@ -1024,7 +1078,7 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
 			return new StageBuilder[] {
 
-				
+
 			};
 		}
 	}
@@ -1049,7 +1103,7 @@ namespace Cutscenes.Stages {
 			};
 		}
 	}
-	
+
 	public class PreBattle9 : Cutscene {
 		public override bool executionCondition(ExecutionInfo info) {
 			if (hasExecuted) {
@@ -1066,7 +1120,7 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
 			return new StageBuilder[] {
 
-				
+
 			};
 		}
 	}
@@ -1107,7 +1161,7 @@ namespace Cutscenes.Stages {
 			hasExecuted = true;
 			return new StageBuilder[] {
 
-				
+
 			};
 		}
 	}

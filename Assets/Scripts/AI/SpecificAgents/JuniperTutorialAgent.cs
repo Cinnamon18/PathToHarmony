@@ -11,13 +11,11 @@ namespace AI {
 			new Move(6, 5, 3, 4),
 			new Move(3, 4, 2, 4),
 			new Move(5, 5, 2, 5),
-			new Move(2, 5, 2, 4),
+			new Move(2, 5, 1, 5),
 
+			new Move(2, 5, 1, 5),
 
-			new Move(3, 4, 2, 4),
-			new Move(2, 5, 2, 4),
-
-			new Move(2, 5, 2, 4),
+			new Move(2, 5, 1, 5),
 		});
 
 		public override async Task<Move> getMove() {
@@ -28,7 +26,7 @@ namespace AI {
 				EliminationAgent backupAgent = new EliminationAgent();
 				backupAgent.battlefield = this.battlefield;
 				backupAgent.character = this.character;
-				return await backupAgent.getMove(); 
+				return await backupAgent.getMove();
 			}
 		}
 

@@ -16,5 +16,17 @@ namespace Gameplay {
 			this.from = new Coord(fromX, fromY);
 			this.to = new Coord(toX, toY);
 		}
+
+		public override bool Equals(object other) {
+			if (other == null || GetType() != other.GetType())
+				return false;
+
+			Move otherMove = (Move)other;
+			return this.from.Equals(otherMove.from) && this.to.Equals(otherMove.to);
+		}
+
+		public override int GetHashCode() {
+			return from.GetHashCode() * 347 + to.GetHashCode();
+		}
 	}
 }
