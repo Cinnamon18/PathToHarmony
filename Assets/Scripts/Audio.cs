@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Audio : MonoBehaviour {
 
@@ -10,6 +11,9 @@ public class Audio : MonoBehaviour {
 
 	public AudioSource initialSfx;
 	public AudioSource initialMusic;
+
+	public static AudioMixer masterMixer;
+
 
 	public static string[] battleBgm = new string[] { "BattleTheme1" };
 
@@ -43,6 +47,10 @@ public class Audio : MonoBehaviour {
 	}
 
 	public static void playSound(string id, bool isMusic, bool loop) {
+		if (masterMixer != null) {
+			Persistence.loadAudioSettings(masterMixer);
+		}
+
 		AudioClip clip = tracks[id];
 		if (clip == null) {
 			throw new UnityException("The requested audio track has not yet been imported in the Audio.cs file");

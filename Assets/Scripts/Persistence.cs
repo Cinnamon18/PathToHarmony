@@ -100,8 +100,8 @@ public static class Persistence {
 	}
 
 	public static void updateMixer(AudioMixer mixer) {
-		mixer.SetFloat(MASTER_VOLUME, isMuted?-100:masterVolume);
-		mixer.SetFloat(MUSIC_VOLUME, isMuted?-100:musicVolume);
-		mixer.SetFloat(SFX_VOLUME, isMuted?-100:sfxVolume);
+		mixer.SetFloat(MASTER_VOLUME, isMuted?-70:masterVolume);
+		mixer.SetFloat(MUSIC_VOLUME, isMuted?-70:musicVolume);
+		mixer.SetFloat(SFX_VOLUME, isMuted?-70:sfxVolume);
 	}
 }

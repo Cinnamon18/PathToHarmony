@@ -27,6 +27,7 @@ public class MainMenu : MonoBehaviour {
 		creditsCanvas.enabled = false;
 
 		//setup audio sliders
+		Audio.masterMixer = masterMixer;
 		Persistence.loadAudioSettings(masterMixer);
 		Slider[] optionsSliders = optionsCanvas.GetComponentsInChildren<Slider>();
 		optionsSliders[0].value = Persistence.MasterVolume;//PlayerPrefs.GetFloat(Persistence.MASTER_VOLUME);
@@ -190,42 +191,42 @@ public class MainMenu : MonoBehaviour {
 		// Level 5: SupplyTrain
 		Character[] SupplyTrainCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
-			new Character("Corbitan Raiders", false, new EliminationAgent())
+			new Character("Corbitan Train", false, new EliminationAgent())
 		};
 		Level level5 = new Level("SupplyTrain", "5", SupplyTrainCharacters, new Cutscene[] { new PreBattle5(), new PostBattle5() });
 
 		// Level 6: DefendCity
 		Character[] DefendCityCharacters = new[] {
-			new Character("Blair", true, new PlayerAgent()),
-			new Character("Corbitan Raiders", false, new EliminationAgent())
+			new Character("Bruno", true, new PlayerAgent()),
+			new Character("Corbitan Army", false, new EliminationAgent())
 		};
-		Level level6 = new Level("DefendCity", "6", DefendCityCharacters, new Cutscene[] { new PreBattle6(), new PostBattle6() });
+		Level level6 = new Level("DefendCity", "6", DefendCityCharacters, new Cutscene[] { new PreBattle6() /*, new PostBattle6()*/ });
 
 		// Level 7: Chasing
 		Character[] ChasingCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
-			new Character("Corbitan Raiders", false, new EliminationAgent())
+			new Character("Corbitan Train", false, new EliminationAgent())
 		};
 		Level level7 = new Level("Chasing", "7", ChasingCharacters, new Cutscene[] { new PreBattle7(), new PostBattle7() });
 
 		//Level 8: PatrolAmbush
 		Character[] PatrolAmbushCharacters = new[] {
-			new Character("Blair", true, new PlayerAgent()),
-			new Character("Corbitan Raiders", false, new EliminationAgent())
+			new Character("Juniper", true, new PlayerAgent()),
+			new Character("Velgaran Ambush", false, new EliminationAgent())
 		};
 		Level level8 = new Level("PatrolAmbush", "8", PatrolAmbushCharacters, new Cutscene[] { new PreBattle8(), new PostBattle8() });
 
 		//Level 9: DistractDistraction
 		Character[] DistractDistractionCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
-			new Character("Corbitan Raiders", false, new EliminationAgent())
+			new Character("Velgaran Army", false, new EliminationAgent())
 		};
 		Level level9 = new Level("DistractDistraction2", "9", DistractDistractionCharacters, new Cutscene[] { new PreBattle9(), new PostBattle9() });
 
 		//Level 10: CapitalSiege
 		Character[] CapitalSiegeCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
-			new Character("Corbitan Raiders", false, new DefendAgent())
+			new Character("Velgaran Guard", false, new DefendAgent())
 		};
 		Level level10 = new Level("CapitalSiege", "10", CapitalSiegeCharacters, new Cutscene[] { new PreBattle10(), new PostBattle10() });
 

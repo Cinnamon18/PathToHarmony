@@ -39,9 +39,6 @@ public class FadeOutTransition : MonoBehaviour {
 	}
 
 	public void fadeToScene(string sceneName) {
-		Debug.Log("Begine fade");
-
-
 		destination = sceneName;
 		countdown = true;
 		image.enabled = true;

@@ -96,6 +96,7 @@ namespace Cutscenes.Stages {
 			skipCutFlag = false;
 			isRunning = false;
 			hideVisualElements();
+			Audio.stopAudio(false);
 			Audio.resumeAudio(true);
 		}
 
