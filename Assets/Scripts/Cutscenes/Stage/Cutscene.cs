@@ -905,19 +905,19 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("Hold up, Juniper. A supply train isn't a vanguard - it was going to support a larger force somewhere.")
 					.SetSpeaker("Bruno").SetExpression("Frown"),
-				S().SetMessage("They were traveling west on the xxxx road. The only major city from here is...")
+				S().SetMessage("They were traveling west on the Yai road. The only major city from here is...")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
-				S().SetMessage("xxxx city.")
+				S().SetMessage("Arnan.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				//Juniper doesn't actually care abt the posessions, she just knows it'll help convince blair. Blair is well aware of this.
-				S().SetMessage("You want to march to xxxx on the off chance it's under siege? We can't just let them get away!")
+				S().SetMessage("You want to march to Arnan on the off chance it's under siege? We can't just let them get away!")
 					.SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("They could have crucial intel on Corbitan plans. Not to mention his majesty's posessions!")
 					.SetSpeaker("Juniper").SetExpression("Angry"),
-				S().SetMessage("No, we cannot let xxxx fall. If we can warn the garrison there they'll have a much better chance of holding the city.")
+				S().SetMessage("No, we cannot let Arnan fall. If we can warn the garrison there they'll have a much better chance of holding the city.")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
 				S().SetMessage("We can do both. I'll head east with our calvlary. If we ride hard we should be able to catch them before " +
-					"they cross back into Corbita. You two take our armor and head west to xxxx.")
+					"they cross back into Corbita. You two take our armor and head west to Arnan.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("Hmm... That could work. I'll go with you - you need my help more than Bruno does.")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
@@ -925,7 +925,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Shreya").SetExpression("Neutral"),
 				S().SetMessage("Splitting our forces when we're almost surely outnumbered? Potentially fighting the enemy on their own ground?")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
-				S().SetMessage("Can you think of any other way? Xxxx needs your experience. We can be spared to chase leads.")
+				S().SetMessage("Can you think of any other way? Arnan needs your experience. We can be spared to chase leads.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
 				S().SetMessage("Alright alright, you and your silver tongue have convinced me.")
 					.SetSpeaker("Bruno").SetExpression("Smile"),
@@ -958,7 +958,7 @@ namespace Cutscenes.Stages {
 				S().AddActor(CutsceneSide.FarRight, "SoldierActor", "Soldier"),
 				S().SetMessage("Sir! Corbitan calvalry have been spotted on the roads! They're moving to encircle us!")
 					.SetSpeaker("Soldier").SetExpression("Neutral"),
-				S().SetMessage("Our fears proved correct. Be brave Xingatans! The walls of Xxxx have weathered many attacks, they will not fail us now!")
+				S().SetMessage("Our fears proved correct. Be brave Xingatans! The walls of Arnan have weathered many attacks, they will not fail us now!")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
 			};
 		}
@@ -1001,7 +1001,6 @@ namespace Cutscenes.Stages {
 			return new StageBuilder[] {
 				// Pre-battle 5
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.FarRight, "BrunoActor", "Bruno"),
 				S().AddActor(CutsceneSide.Right, "JuniperActor", "Juniper"),
 				S().SetMessage("Look up ahead! In the pass, calvalry wearing Corbitan colors! They recieved reinforcements!")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
@@ -1060,7 +1059,7 @@ namespace Cutscenes.Stages {
 					.SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("This is Royal Guard business. Stay out of it.")
 					.SetSpeaker("Shreya"),
-				S().SetMessage("Do you see any Royal Guard here other than yourself?")
+				S().SetMessage("Do you see any Royal Guard here besides yourself?")
 					.SetSpeaker("Juniper").SetExpression("Angry"),
 				S().SetMessage("Are you threatening me?")
 					.SetSpeaker("Shreya"),
@@ -1127,7 +1126,7 @@ namespace Cutscenes.Stages {
 				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().SetMessage("Corbitans defeated and crystals in hand, Blair's forces return to the main body of the Xingatan army. The trip is tense, but passes without event.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("The two are overjoyed to reunite with Bruno, who tells them of his victory at Xxxx.")
+				S().SetMessage("The two are overjoyed to reunite with Bruno, who tells them of his victory at Arnan.")
 					.SetSpeaker("Narrator"),
 				S().SetMessage("Blair, immediately after arriving at the camp near Harmony Crater, is called to the King’s tent.")
 					.SetSpeaker("Narrator"),
@@ -1196,22 +1195,21 @@ namespace Cutscenes.Stages {
 				S().SetAudio("TheBlade"),
 				S().SetMessage("I didn’t call you to punish you. Any of you. You proved your loyalty by delivering the crystals back to me.")
 					.SetSpeaker("King Rouen"),
-					//king: the truth is, we're losing, we need a distraction. move leading the crater attack to later.
 				S().SetMessage("King Rouen suddenly looks tired. For the first time, Blair notices the deep circles under his eyes.")
 					.SetSpeaker("Narrator"),
 				S().SetMessage("The truth is, Blair, the war isn't going well. The Velgarian armor has dug in at the crater's rim, and they have us out manned, out manuvered, and out supplied.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("Not one of our strategists have come up with a viable plan to dislodge them.")
+				S().SetMessage("Not one of our strategists has come up with a viable plan to dislodge them.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("Your majesty, if I may. Just a week ago we repelled a Coribtan attack on Xxxx. They were likely trying to take control of our food supply.")
+				S().SetMessage("Your majesty, if I may. Just a week ago we repelled a Coribtan attack on Arnan. They were likely trying to take control of our food supply.")
 					.SetSpeaker("Blair"),
 				S().SetMessage("What if we tried a similar tactic? Cut their supply lines, split the Velgaran army, and force them to fight on open ground.")
 					.SetSpeaker("Blair"),
 				S().SetMessage("Rouen is shaking his head before Blair's finishes their sentence.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("I have neither the soldiers nor the months a siege on Xxxxx would require.")
+				S().SetMessage("I have neither the soldiers nor the months a siege on Brunwara would require.")
 					.SetSpeaker("King Rouen"),
-				S().SetMessage("You don't need to wait for a months. Give me two weeks and I'll have Xxxx, and the Velgaran supply lines with it.")
+				S().SetMessage("You don't need to wait for a months. Give me two weeks and I'll have Brunwara, and the Velgaran supply lines with it.")
 					.SetSpeaker("Blair"),
 				S().SetMessage("If you're confident I will consider it. You've proven yourself a competent tactician.")
 					.SetSpeaker("King Rouen"),
@@ -1236,7 +1234,6 @@ namespace Cutscenes.Stages {
 				S().AddLeaver("King Rouen"),
 				S().SetBackground("NewBackground"),
 				// Scene 1
-				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().AddActor(CutsceneSide.FarLeft, "JuniperActor", "Juniper"),
 				S().SetMessage("Rouen agrees to Blair's plan, and the three friends find themselves leading their largest force yet.")
 					.SetSpeaker("Narrator"),
@@ -1299,9 +1296,9 @@ namespace Cutscenes.Stages {
 				S().AddActor(CutsceneSide.FarRight, "BrunoActor", "Bruno"),
 				S().SetMessage("That must be half the Velgarian army up ahead!")
 					.SetSpeaker("Blair").SetExpression("Surprised"),
-				S().SetMessage("The troops that ambushed us must've warned the main force.!")
+				S().SetMessage("The troops that ambushed us must've warned the main force.")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
-				S().SetMessage("In any case, it certainly seems we've distracted them. Let's hope we have the abilities to match our threats.")
+				S().SetMessage("It certainly seems we've distracted them. Let's hope we have the abilities to match our threats.")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
 			};
 		}
@@ -1345,10 +1342,8 @@ namespace Cutscenes.Stages {
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.Left, "JuniperActor", "Juniper"),
 				S().AddActor(CutsceneSide.FarRight, "BrunoActor", "Bruno"),
-				S().SetMessage("Here we are, Xxxx, the largest city in this half of Velgari.")
+				S().SetMessage("At last we arrive, Brunwara, the largest city in Velgari.")
 					.SetSpeaker("Blair").SetExpression("Neutral"),
-				S().SetMessage("And a garrison to match!")
-					.SetSpeaker("Juniper").SetExpression("Neutral"),
 			};
 		}
 	}
@@ -1392,10 +1387,10 @@ namespace Cutscenes.Stages {
 				S().SetAudio("TheBlade"),
 				S().AddActor(CutsceneSide.Left, "NarratorActor", "Narrator"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
-				S().AddActor(CutsceneSide.FarRight, "RouenActor", "King Rouen"),
 				S().SetMessage("Blair, Juniper, and Bruno return safely to the Xingatan camp, where they recieve a hero's welcome.")
 					.SetSpeaker("Narrator"),
-				S().SetMessage("Blair, there you are! You plan was successful! ")
+				S().AddActor(CutsceneSide.FarRight, "RouenActor", "King Rouen"),
+				S().SetMessage("Blair, there you are! It seemed impossible, but your plan was successful. You have earned my respect.")
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("Tomorrow, all four powers of the world will clash at Harmony Crater. The following battles will determine the fate of this world.")
 					.SetSpeaker("King Rouen"),
