@@ -922,7 +922,7 @@ namespace Cutscenes.Stages {
 				S().SetMessage("Hmm... That could work. I'll go with you - you need my help more than Bruno does.")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().SetMessage("I will come as well. It was my reponsibility to guard his majesty's posessions and I could not face him if I failed.")
-					.SetSpeaker("Shreya").SetExpression("Neutral"),
+					.SetSpeaker("Shreya"),
 				S().SetMessage("Splitting our forces when we're almost surely outnumbered? Potentially fighting the enemy on their own ground?")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
 				S().SetMessage("Can you think of any other way? Arnan needs your experience. We can be spared to chase leads.")
@@ -1474,12 +1474,12 @@ namespace Cutscenes.Stages {
 				S().SetAudio("CutsceneBgm"),
 				S().AddActor(CutsceneSide.FarLeft, "BlairActor", "Blair"),
 				S().AddActor(CutsceneSide.Left, "JuniperActor", "Juniper"),
-				S().AddActor(CutsceneSide.Right, "BrunoActor", "Bruno"),
+				S().AddActor(CutsceneSide.FarRight, "BrunoActor", "Bruno"),
 				S().SetMessage("I can’t believe we are still alive.")
 					.SetSpeaker("Juniper").SetExpression("Neutral"),
 				S().SetMessage("Don’t celebrate yet. This battle is far from over.")
 					.SetSpeaker("Bruno").SetExpression("Neutral"),
-				S().AddActor(CutsceneSide.FarRight, "RouenActor", "King Rouen"),
+				S().AddActor(CutsceneSide.Right, "RouenActor", "King Rouen"),
 				S().SetMessage("You are alive! Well done, officers. Thanks to you, we now hold the Crater with minimal casualties.")
 					.SetSpeaker("King Rouen"),
 				S().SetMessage("Anything for you, your majesty.")

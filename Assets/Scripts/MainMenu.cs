@@ -214,19 +214,20 @@ public class MainMenu : MonoBehaviour {
 			new Character("Juniper", true, new PlayerAgent()),
 			new Character("Velgaran Ambush", false, new EliminationAgent())
 		};
-		Level level8 = new Level("PatrolAmbush", "8", PatrolAmbushCharacters, new Cutscene[] { new PreBattle8(), new PostBattle8() });
+		Level level8 = new Level("PatrolAmbush", "8", PatrolAmbushCharacters, new Cutscene[] { new PreBattle8() });
 
 		//Level 9: DistractDistraction
 		Character[] DistractDistractionCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
 			new Character("Velgaran Army", false, new EliminationAgent())
 		};
-		Level level9 = new Level("DistractDistraction2", "9", DistractDistractionCharacters, new Cutscene[] { new PreBattle9(), new PostBattle9() });
+		Level level9 = new Level("DistractDistraction2", "9", DistractDistractionCharacters, new Cutscene[] { new PreBattle9() });
 
 		//Level 10: CapitalSiege
 		Character[] CapitalSiegeCharacters = new[] {
 			new Character("Blair", true, new PlayerAgent()),
-			new Character("Velgaran Guard", false, new DefendAgent())
+			new Character("Velgaran Guard", false, new EliminationAgent())
+			//Note here: it's the elimination agent bc the behavior works better given the map
 		};
 		Level level10 = new Level("CapitalSiege", "10", CapitalSiegeCharacters, new Cutscene[] { new PreBattle10(), new PostBattle10() });
 
